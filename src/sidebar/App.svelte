@@ -1,67 +1,107 @@
 <script lang="ts">
-  import FieldGroup from "./FieldGroup.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import * as Tabs from "$lib/components/ui/tabs";
-  import * as Table from "$lib/components/ui/table";
-  import { Plus } from "@lucide/svelte";
-  import * as Resizable from "$lib/components/ui/resizable/index.js";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import { Download } from "@lucide/svelte";
+import FieldGroup from "./FieldGroup.svelte";
+import ActionBar from "./ActionBar.svelte";
 
-  const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
-  const { Root: TableRoot, Header: TableHeader, Row: TableRow, Head: TableHead, Body: TableBody, Cell: TableCell } = Table;
-  const { Root: DropdownMenuRoot, Trigger: DropdownMenuTrigger, Content: DropdownMenuContent, Item: DropdownMenuItem, Separator: DropdownMenuSeparator } = DropdownMenu;
+import { Button } from "$lib/components/ui/button";
+import * as Tabs from "$lib/components/ui/tabs";
+import * as Table from "$lib/components/ui/table";
+import { Plus } from "@lucide/svelte";
+import * as Resizable from "$lib/components/ui/resizable/index.js";
+import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+import { Download } from "@lucide/svelte";
 
-  // State for Fields
-  let fields = $state([
-    { id: 1, name: "", selector: "" }
-  ]);
-  let nextId = 2;
+const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
+const { Root: TableRoot, Header: TableHeader, Row: TableRow, Head: TableHead, Body: TableBody, Cell: TableCell } = Table;
+const { Root: DropdownMenuRoot, Trigger: DropdownMenuTrigger, Content: DropdownMenuContent, Item: DropdownMenuItem, Separator: DropdownMenuSeparator } = DropdownMenu;
 
-  function addField() {
-    fields.push({ id: nextId++, name: "", selector: "" });
+// State for Fields
+let fields = $state([
+  { id: 1, name: "", selector: "" }
+]);
+let nextId = 2;
+
+function addField() {
+  fields.push({ id: nextId++, name: "", selector: "" });
+}
+
+function deleteField(id: number) {
+  fields = fields.filter(field => field.id !== id);
+}
+
+// Sample data for results
+let sampleData = $state([
+  { id: 'a', name: 'Load Balancer 1', protocol: 'HTTP', port: 3000, rule: 'Round robin' },
+  { id: 'b', name: 'Load Balancer 2', protocol: 'HTTP', port: 443, rule: 'Round robin' },
+  { id: 'c', name: 'Load Balancer 3', protocol: 'HTTP', port: 80, rule: 'DNS delegation' },
+]);
+let sampleJson = $derived(JSON.stringify(sampleData, null, 2));
+// Automatically get columns from first object, excluding 'id'
+let columns = $derived(
+  sampleData.length > 0 
+    ? Object.keys(sampleData[0]).filter(key => key !== 'id')
+    : []
+);
+
+// Helper function to capitalize column names
+function formatColumnName(name: string): string {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+
+function handleExtract() {
+  const selectors = fields.filter(f => f.name && f.selector);
+
+  if (selectors.length === 0) {
+    console.warn("No selectors to extract")
+    console.dir(fields);
+    return "Error";
   }
 
-  function deleteField(id: number) {
-    fields = fields.filter(field => field.id !== id);
-  }
 
-  // Sample data for results
-  const sampleData = [
-    { id: 'a', name: 'Load Balancer 1', protocol: 'HTTP', port: 3000, rule: 'Round robin' },
-    { id: 'b', name: 'Load Balancer 2', protocol: 'HTTP', port: 443, rule: 'Round robin' },
-    { id: 'c', name: 'Load Balancer 3', protocol: 'HTTP', port: 80, rule: 'DNS delegation' },
-  ];
-  const sampleJson = JSON.stringify(sampleData, null, 2);
+  browser.tabs.query({ active: true, currentWindow: true }).then((tabs: browser.tabs.Tab[]) => {
+    if (tabs[0]?.id) {
+      browser.tabs.sendMessage(
+        tabs[0].id, {
+          action: "extractData",
+          selectors: JSON.parse(JSON.stringify(selectors))
+        }).then(
+          (response) => {
+            if (response && response.result) {
+              sampleData = response.result;
+              return "Idle";
+            } else {
+              console.log("Error, failed to extract selectors");
+              return "Error";
+            }
+          }
+        );
+    }
+  })
 
-  function downloadData() {
-    const csvContent = "data:text/csv;charset=utf-8," + sampleData.map(e => Object.values(e).join(",")).join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "data.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+}
 
-  function downloadJson() {
-    const jsonContent = "data:application/json;charset=utf-8," + encodeURIComponent(sampleJson);
-    const link = document.createElement("a");
-    link.setAttribute("href", jsonContent);
-    link.setAttribute("download", "data.json");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+function handleLoadConfig(event: Event) {
+  const fileInput = event.target as HTMLInputElement;
+  const file = fileInput.files?.[0];
+  if (!file) return;
+  // TODO: read and load config
+  console.log("Loaded config file:", file.name);
+  fileInput.value = ""; // Reset for next use
+}
+
+function handleSaveConfig() {
+  // TODO: trigger config export logic
+  console.log("Downloading config...");
+}
 
 </script>
 
 <main class="p-4 space-y-8">
+  <ActionBar handleExtract={handleExtract} handleSaveConfig={handleSaveConfig} handleLoadConfig={handleLoadConfig}/>
   <Resizable.PaneGroup
     direction="vertical"
     class="min-h-screen"
-    >
+  >
 
     <Resizable.Pane defaultSize={50}>
       <TabsRoot value="fields" class="h-full">
@@ -73,6 +113,7 @@
           <div class="space-y-4">
             {#each fields as field (field.id)}
               <FieldGroup
+                id={field.id}
                 bind:fieldName={field.name}
                 bind:cssSelector={field.selector}
                 on:delete={() => deleteField(field.id)}
@@ -80,7 +121,7 @@
             {/each}
           </div>
           <Button onclick={addField} class="mt-4 w-full">
-            <Plus class="mr-2 h-4 w-4" /> Add Field
+            <Plus /> Add Field
           </Button>
         </TabsContent>
         <TabsContent value="properties" class="pt-4">
@@ -101,13 +142,13 @@
             </div>
             <DropdownMenuRoot>
               <DropdownMenuTrigger>
-                <Button variant="secondary" size="sm" class="bg-green-500 text-white hover:bg-green-600">
-                  <Download class="mr-2 h-4 w-4" /> Download
+                <Button variant="secondary" size="sm" >
+                  <Download /> Download
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onclick={downloadData}>Download CSV</DropdownMenuItem>
-                <DropdownMenuItem onclick={downloadJson}>Download JSON</DropdownMenuItem>
+                <DropdownMenuItem >Download CSV</DropdownMenuItem>
+                <DropdownMenuItem >Download JSON</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenuRoot>
           </TabsList>
@@ -116,24 +157,22 @@
               <TableRoot>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Protocol</TableHead>
-                    <TableHead>Port</TableHead>
-                    <TableHead>Rule</TableHead>
+                    {#each columns as column}
+                      <TableHead>{formatColumnName(column)}</TableHead>
+                    {/each}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {#each sampleData as row}
                     <TableRow>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.protocol}</TableCell>
-                      <TableCell>{row.port}</TableCell>
-                      <TableCell>{row.rule}</TableCell>
+                      {#each columns as column}
+                        <TableCell>{row[column]}</TableCell>
+                      {/each}
                     </TableRow>
                   {/each}
                 </TableBody>
               </TableRoot>
-            </div>
+            </div> 
           </TabsContent>
           <TabsContent value="json" class="pt-4">
             <div class="bg-slate-100 p-4 rounded-md text-sm">
