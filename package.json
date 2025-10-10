@@ -7,7 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@svelteuidev/composables": "^0.15.7",
@@ -18,6 +19,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.4.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.36.0",
     "@eslint/json": "^0.13.2",
@@ -26,8 +28,10 @@
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/firefox-webext-browser": "^120.0.4",
+    "@types/node": "^22",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.36.0",
+    "eslint-plugin-svelte": "^3.12.4",
     "globals": "^16.4.0",
     "paneforge": "^1.0.2",
     "postcss": "^8.5.6",
