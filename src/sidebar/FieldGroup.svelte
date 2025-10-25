@@ -5,13 +5,7 @@
   import { Trash2, Pipette } from "@lucide/svelte";
   import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
-  let { id, fieldName = $bindable(), cssSelector = $bindable() } = $props();
-
-  const dispatch = createEventDispatcher();
-
-  function handleDelete() {
-    dispatch("delete");
-  }
+  let { id, deleteHandler, fieldName = $bindable(), cssSelector = $bindable() } = $props();
 
   function handleInspect() {
     return;
@@ -43,7 +37,7 @@
     <Tooltip.Provider>
       <Tooltip.Root>
         <Tooltip.Trigger>
-          <Button onclick={handleDelete} variant="destructive" size="icon">
+          <Button onclick={deleteHandler} variant="destructive" size="icon">
             <Trash2 />
           </Button>
         </Tooltip.Trigger>

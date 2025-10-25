@@ -1,5 +1,6 @@
 <script lang="ts">
 import FieldGroup from "./FieldGroup.svelte";
+import PropertyGroup from "./PropertyGroup.svelte";
 import ActionBar from "./ActionBar.svelte";
 
 import { Button } from "$lib/components/ui/button";
@@ -26,6 +27,26 @@ function addField() {
 
 function deleteField(id: number) {
   fields = fields.filter(field => field.id !== id);
+}
+
+let currentURL = $state("");
+browser.runtime.sendMessage({ action: "getTabUrl" }).then((response) => {
+  currentURL = response.url;
+  console.log(`Current URL is ${response.url}`)
+});
+
+
+let properties = $derived([
+  { id: 1, key: "URL", value: currentURL }
+]);
+let nextPropId = 2;
+
+function addProperty() {
+  properties.push({ id: nextPropId++, key: "", value: "" });
+}
+
+function deleteProperty(id: number) {
+  properties = properties.filter(prop => prop.id !== id);
 }
 
 // Sample data for results
@@ -114,9 +135,9 @@ function handleSaveConfig() {
             {#each fields as field (field.id)}
               <FieldGroup
                 id={field.id}
+                deleteHandler={() => deleteField(field.id)}
                 bind:fieldName={field.name}
                 bind:cssSelector={field.selector}
-                on:delete={() => deleteField(field.id)}
               />
             {/each}
           </div>
@@ -125,7 +146,19 @@ function handleSaveConfig() {
           </Button>
         </TabsContent>
         <TabsContent value="properties" class="pt-4">
-          <p>Properties content goes here.</p>
+          <div class="space-y-4">
+            {#each properties as property (property.id)}
+              <PropertyGroup
+                id={property.id}
+                deleteHandler={() => deleteProperty(property.id)}
+                bind:key={property.key}
+                bind:value={property.value}
+              />
+            {/each}
+          </div>
+          <Button onclick={addProperty} class="mt-4 w-full">
+            <Plus /> Add Property
+          </Button>
         </TabsContent>
       </TabsRoot>
     </Resizable.Pane>

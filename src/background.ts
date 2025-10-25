@@ -11,3 +11,23 @@ browser.browserAction.onClicked.addListener(() => {
   // Update the state variable.
   sidebarOpen = !sidebarOpen;
 });
+
+
+browser.runtime.onMessage.addListener(
+  (
+    request: any,
+    sender: any,
+    sendResponse: (response: any) => void
+  ): boolean => {
+    if (request.action === 'getTabUrl') {
+
+      browser.tabs.query({ active: true, currentWindow: true }).then((tabs: browser.tabs.Tab[]) => {
+        if (tabs[0]?.id) {
+          sendResponse({ url: tabs[0].url });
+        }
+      })
+    }
+    return true; // Keep the message channel open for async sendResponse
+  }
+);
+
