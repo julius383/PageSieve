@@ -1,33 +1,25 @@
 {
-  "manifest_version": 2,
-  "name": "PageWeave",
-  "version": "1.0",
-  "description": "Extracts text from a page using CSS selectors.",
-  "permissions": [
-    "activeTab"
-  ],
-  "content_security_policy": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
-  "background": {
-    "scripts": [
-      "background.js"
+    "manifest_version": 2,
+    "name": "PageWeave",
+    "version": "1.0",
+    "description": "Extracts text from a page using CSS selectors.",
+    "permissions": ["activeTab", "storage"],
+    "content_security_policy": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "browser_action": {
+        "default_icon": "icons/icon.png",
+        "default_title": "Toggle Sidebar"
+    },
+    "sidebar_action": {
+        "default_panel": "sidebar.html",
+        "default_icon": "icons/icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
     ]
-  },
-  "browser_action": {
-    "default_icon": "icons/icon.png",
-    "default_title": "Toggle Sidebar"
-  },
-  "sidebar_action": {
-    "default_panel": "sidebar.html",
-    "default_icon": "icons/icon.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content.js"
-      ]
-    }
-  ]
 }
