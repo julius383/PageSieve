@@ -26,6 +26,10 @@
     function save() {
         props.handleSaveConfig();
     }
+    function triggerLoad() {
+        let fileinput = document.getElementById('loadconfig');
+        fileinput?.click();
+    }
 </script>
 
 <div class="flex items-center justify-between border-b bg-background px-2 py-1.5">
@@ -46,8 +50,8 @@
         </Button>
 
         <label class="cursor-pointer">
-            <input type="file" accept=".json" hidden onchange={load} />
-            <Button size="icon" variant="ghost" asChild>
+            <input id="loadconfig" type="file" accept=".json" hidden onchange={load} />
+            <Button size="icon" variant="ghost" onclick={triggerLoad}>
                 <Upload class="size-4" strokeWidth={2.5} />
             </Button>
         </label>

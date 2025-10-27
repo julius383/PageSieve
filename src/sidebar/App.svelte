@@ -109,20 +109,54 @@
         const fileInput = event.target as HTMLInputElement;
         const file = fileInput.files?.[0];
         if (!file) return;
-        // TODO: read and load config
+        let configData;
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.result) {
+                configData = JSON.parse(reader.result as string);
+
+                console.dir(configData);
+                if (configData != undefined) {
+                    properties = configData['propsConf'];
+                    fields = configData['fieldConf'];
+                }
+            }
+        }
+        reader.readAsText(file);
         console.log('Loaded config file:', file.name);
         fileInput.value = ''; // Reset for next use
+    }
+    function downloadJSON() {
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sampleData));
+        let downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", "data.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 
     function handleSaveConfig() {
         // TODO: trigger config export logic
         console.log('Downloading config...');
+        let config = {
+            fieldConf: $state.snapshot(fields),
+            propsConf: $state.snapshot(properties),
+        }
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config));
+        let downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", "config.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
     }
 </script>
 
-<main class="p-4 space-y-8">
+<main class="p-4 space-y-8 h-screen">
     <ActionBar {handleExtract} {handleSaveConfig} {handleLoadConfig} />
-    <Resizable.PaneGroup direction="vertical" class="min-h-screen">
+    <Resizable.PaneGroup direction="vertical" class="h-full">
         <Resizable.Pane defaultSize={50}>
             <TabsRoot value="fields" class="h-full">
                 <TabsList class="grid w-full grid-cols-2">
@@ -180,7 +214,7 @@
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                                 <DropdownMenuItem>Download CSV</DropdownMenuItem>
-                                <DropdownMenuItem>Download JSON</DropdownMenuItem>
+                                <DropdownMenuItem onclick={downloadJSON}>Download JSON</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenuRoot>
                     </TabsList>
