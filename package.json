@@ -11,6 +11,7 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "@json2csv/plainjs": "^7.0.6",
         "@svelteuidev/composables": "^0.15.7",
         "@svelteuidev/core": "^0.15.7",
         "bits-ui": "^2.11.4",

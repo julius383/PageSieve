@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { Parser } from '@json2csv/plainjs';
+
     import FieldGroup from './FieldGroup.svelte';
     import PropertyGroup from './PropertyGroup.svelte';
     import ActionBar from './ActionBar.svelte';
@@ -136,8 +138,27 @@
         downloadAnchorNode.remove();
     }
 
+    function downloadCSV() {
+        try {
+            const parser = new Parser();
+            const csv = parser.parse(sampleData);
+
+            let dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+            let downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href",     dataStr);
+            downloadAnchorNode.setAttribute("download", "data.csv");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+
+            console.log(csv);
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+
     function handleSaveConfig() {
-        // TODO: trigger config export logic
         console.log('Downloading config...');
         let config = {
             fieldConf: $state.snapshot(fields),
