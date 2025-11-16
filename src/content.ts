@@ -26,10 +26,21 @@ function extractDataFromPage(selectors: SelectorConfig[]): any {
 
     selectors.forEach(({ name, selector }) => {
         const items: string[] = [];
+        const parts = /\?(\w+)$/gm.exec(selector);
+        let attribute: string;
+        if (parts != null) {
+            attribute = parts[1];
+            selector = selector.slice(0, parts.index);
+        }
         try {
             const found = document.querySelectorAll(selector);
             found.forEach((item, _) => {
-                items.push(item.textContent?.trim());
+                if (attribute) {
+                    // TODO: add special handling for different attributes such as using full URL for href
+                    items.push(item.getAttribute(attribute));
+                } else {
+                    items.push(item.textContent?.trim());
+                }
                 foundItems[name] = items;
             });
         } catch (error) {

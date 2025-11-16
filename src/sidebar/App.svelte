@@ -60,16 +60,22 @@
     }
 
     // Sample data for results
-    let sampleData = $state([
+    let extractedData = $state([
         { id: 'a', name: 'Load Balancer 1', protocol: 'HTTP', port: 3000, rule: 'Round robin' },
         { id: 'b', name: 'Load Balancer 2', protocol: 'HTTP', port: 443, rule: 'Round robin' },
         { id: 'c', name: 'Load Balancer 3', protocol: 'HTTP', port: 80, rule: 'DNS delegation' },
     ]);
-    let sampleJson = $derived(JSON.stringify(sampleData, null, 2));
+    let sampleJson = $derived(JSON.stringify(extractedData, null, 2));
     // Automatically get columns from first object, excluding 'id'
     let columns = $derived(
-        sampleData.length > 0 ? Object.keys(sampleData[0]).filter((key) => key !== 'id') : [],
+        extractedData.length > 0 ? Object.keys(extractedData[0]).filter((key) => key !== 'id') : [],
     );
+
+    let extractedTableData = $derived([columns, ...(extractedData.length > 0 ? extractedData.slice(1) : [])])
+    $effect(() => {
+        console.log('extracted data...');
+        console.dir($state.snapshot(extractedTableData));
+    })
 
     // Helper function to capitalize column names
     function formatColumnName(name: string): string {
@@ -96,7 +102,7 @@
                         })
                         .then((response) => {
                             if (response && response.result) {
-                                sampleData = response.result;
+                                extractedData = response.result;
                                 return 'Idle';
                             } else {
                                 console.log('Error, failed to extract selectors');
@@ -129,7 +135,7 @@
         fileInput.value = ''; // Reset for next use
     }
     function downloadJSON() {
-        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sampleData));
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(extractedData));
         let downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href",     dataStr);
         downloadAnchorNode.setAttribute("download", "data.json");
@@ -141,7 +147,7 @@
     function downloadCSV() {
         try {
             const parser = new Parser();
-            const csv = parser.parse(sampleData);
+            const csv = parser.parse(extractedData);
 
             let dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
             let downloadAnchorNode = document.createElement('a');
@@ -218,56 +224,56 @@
         </Resizable.Pane>
         <Resizable.Handle withHandle />
         <Resizable.Pane defaultSize={50}>
-            <div class="space-y-4 h-full">
+            <div class="space-y-4">
                 <hr />
                 <h2 class="text-2xl font-bold">Results</h2>
-                <TabsRoot value="data">
-                    <TabsList class="flex justify-between items-center w-full">
-                        <div class="flex">
-                            <TabsTrigger value="data">Data</TabsTrigger>
-                            <TabsTrigger value="json">JSON</TabsTrigger>
-                        </div>
-                        <DropdownMenuRoot>
-                            <DropdownMenuTrigger>
-                                <Button variant="secondary" size="sm">
-                                    <Download /> Download
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem>Download CSV</DropdownMenuItem>
-                                <DropdownMenuItem onclick={downloadJSON}>Download JSON</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenuRoot>
-                    </TabsList>
-                    <TabsContent value="data" class="pt-4">
-                        <div class="border rounded-md">
-                            <TableRoot>
-                                <TableHeader>
+            </div>
+            <TabsRoot value="data" class="h-full flex flex-col">
+                <TabsList class="flex justify-between items-center w-full">
+                    <div class="flex">
+                        <TabsTrigger value="data">Data</TabsTrigger>
+                        <TabsTrigger value="json">JSON</TabsTrigger>
+                    </div>
+                    <DropdownMenuRoot>
+                        <DropdownMenuTrigger>
+                            <Button variant="secondary" size="sm">
+                                <Download /> Download
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem onclick={downloadCSV}>Download CSV</DropdownMenuItem>
+                            <DropdownMenuItem onclick={downloadJSON}>Download JSON</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenuRoot>
+                </TabsList>
+                <TabsContent value="data" class="pt-4 overflow-auto flex-grow">
+                    <div class="border rounded-md">
+                        <TableRoot>
+                            <TableHeader>
+                                <TableRow>
+                                    {#each columns as column}
+                                        <TableHead>{formatColumnName(column)}</TableHead>
+                                    {/each}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {#each extractedData as row}
                                     <TableRow>
                                         {#each columns as column}
-                                            <TableHead>{formatColumnName(column)}</TableHead>
+                                            <TableCell>{row[column]}</TableCell>
                                         {/each}
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {#each sampleData as row}
-                                        <TableRow>
-                                            {#each columns as column}
-                                                <TableCell>{row[column]}</TableCell>
-                                            {/each}
-                                        </TableRow>
-                                    {/each}
-                                </TableBody>
-                            </TableRoot>
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="json" class="pt-4">
-                        <div class="bg-slate-100 p-4 rounded-md text-sm">
-                            <pre><code>{sampleJson}</code></pre>
-                        </div>
-                    </TabsContent>
-                </TabsRoot>
-            </div>
+                                {/each}
+                            </TableBody>
+                        </TableRoot>
+                    </div>
+                </TabsContent>
+                <TabsContent value="json" class="pt-4 overflow-auto flex-grow">
+                    <div class="bg-slate-100 p-4 rounded-md text-sm">
+                        <pre><code>{sampleJson}</code></pre>
+                    </div>
+                </TabsContent>
+            </TabsRoot>
         </Resizable.Pane>
     </Resizable.PaneGroup>
 </main>
