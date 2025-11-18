@@ -15,8 +15,10 @@
 
     let props = $props();
 
-    function extract() {
-        status = props.handleExtract();
+    async function extract() {
+        status = 'Extracting';
+        status = await props.handleExtract();
+        console.log(`Set status to ${$state.snapshot(status)}`);
     }
 
     function load(event: Event) {

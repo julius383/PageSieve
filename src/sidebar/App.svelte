@@ -82,7 +82,7 @@
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    function handleExtract() {
+    async function handleExtract() {
         const selectors = fields.filter((f) => f.name && f.selector);
 
         if (selectors.length === 0) {
@@ -91,26 +91,29 @@
             return 'Error';
         }
 
-        browser.tabs
-            .query({ active: true, currentWindow: true })
-            .then((tabs: browser.tabs.Tab[]) => {
-                if (tabs[0]?.id) {
-                    browser.tabs
-                        .sendMessage(tabs[0].id, {
-                            action: 'extractData',
-                            selectors: JSON.parse(JSON.stringify(selectors)),
-                        })
-                        .then((response) => {
-                            if (response && response.result) {
-                                extractedData = response.result;
-                                return 'Idle';
-                            } else {
-                                console.log('Error, failed to extract selectors');
-                                return 'Error';
-                            }
-                        });
+        try {
+            const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+            if (tabs[0]?.id) {
+                const response = await browser.tabs.sendMessage(tabs[0].id, {
+                    action: 'extractData',
+                    selectors: JSON.parse(JSON.stringify(selectors)),
+                });
+
+                if (response && response.result) {
+                    extractedData = response.result;
+                    return 'Idle';
+                } else {
+                    console.log('Error, failed to extract selectors');
+                    return 'Error';
                 }
-            });
+            } else {
+                console.log('Error: No active tab found.');
+                return 'Error';
+            }
+        } catch (error) {
+            console.error('Error during extraction:', error);
+            return 'Error';
+        }
     }
 
     function handleLoadConfig(event: Event) {
