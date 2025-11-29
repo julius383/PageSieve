@@ -12,17 +12,11 @@ browser.browserAction.onClicked.addListener(() => {
     sidebarOpen = !sidebarOpen;
 });
 
-browser.runtime.onMessage.addListener(
-    (request: any, sender: any, sendResponse: (response: any) => void): boolean => {
-        if (request.action === 'getTabUrl') {
-            browser.tabs
-                .query({ active: true, currentWindow: true })
-                .then((tabs: browser.tabs.Tab[]) => {
-                    if (tabs[0]?.id) {
-                        sendResponse({ url: tabs[0].url });
-                    }
-                });
+browser.runtime.onMessage.addListener(async (request, sender) => {
+    if (request.action === 'getTabUrl') {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+            return {url: tab.url, title: tab.title};
         }
-        return true; // Keep the message channel open for async sendResponse
-    },
-);
+    }
+});
