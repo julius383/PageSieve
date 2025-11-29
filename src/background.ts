@@ -13,10 +13,13 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 browser.runtime.onMessage.addListener(async (request, sender) => {
-    if (request.action === 'getTabUrl') {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    if (request.action === "getTabUrl") {
+        const [tab] = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+        });
         if (tab?.id) {
-            return {url: tab.url, title: tab.title};
+            return { url: tab.url, title: tab.title };
         }
     }
 });

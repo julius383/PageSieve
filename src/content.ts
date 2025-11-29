@@ -13,7 +13,7 @@ interface SelectorConfig {
 function extractDataFromPage(selectors: SelectorConfig[]): any {
     // Validate input
     if (!selectors || selectors.length === 0) {
-        console.warn('No selectors provided');
+        console.warn("No selectors provided");
         return null;
     }
 
@@ -21,7 +21,7 @@ function extractDataFromPage(selectors: SelectorConfig[]): any {
         [key: string]: string[];
     };
     const foundItems: StringArrayMap = {};
-    console.log('Attempting to extract data with');
+    console.log("Attempting to extract data with");
     console.dir(selectors);
 
     selectors.forEach(({ name, selector }) => {
@@ -71,7 +71,7 @@ browser.runtime.onMessage.addListener(
         sender: browser.runtime.MessageSender,
         sendResponse: (response: any) => void,
     ): boolean => {
-        if (request.action === 'extractData') {
+        if (request.action === "extractData") {
             try {
                 const data = extractDataFromPage(request.selectors);
                 const result = zipObjectArrays(data);
@@ -80,11 +80,14 @@ browser.runtime.onMessage.addListener(
                     success: true,
                 });
             } catch (error) {
-                console.error('Failed to extract data:', error);
+                console.error("Failed to extract data:", error);
                 sendResponse({
                     result: [],
                     success: false,
-                    error: error instanceof Error ? error.message : 'Unknown error occurred',
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : "Unknown error occurred",
                 });
             }
 
