@@ -5,7 +5,7 @@
   import ActionBar from "./ActionBar.svelte";
   import ConfigStorage from "./ConfigStorage.svelte";
 
-  import { saveConfig, formatColumnName } from "./util";
+  import { formatColumnName } from "./util";
 
   import {
     fields,

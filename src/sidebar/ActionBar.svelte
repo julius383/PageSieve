@@ -39,7 +39,9 @@
   }
 
   function save(event: Event) {
+    status = "Saving";
     handleSaveConfig();
+    status = "Idle";
   }
 
   function export_() {
@@ -72,7 +74,7 @@
       <Play class="size-4 mr-1" strokeWidth={2.5} />
     </Button>
 
-    <Button size="icon" variant="ghost" onclick={handleSaveConfig}>
+    <Button size="icon" variant="ghost" onclick={save}>
       <Save class="size-4" strokeWidth={2.5} />
     </Button>
 
