@@ -3,7 +3,7 @@
     "name": "PageWeave",
     "version": "1.0",
     "description": "Extracts text from a page using CSS selectors.",
-    "permissions": ["activeTab", "storage"],
+    "permissions": ["activeTab", "tabs", "storage"],
     "content_security_policy": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
     "background": {
         "scripts": ["background.js"]
