@@ -7,47 +7,38 @@
         handleExtract,
     } from './state.svelte';
 
+    import StatusIndicator from './StatusIndicator.svelte';
+
     import { Button } from '$lib/components/ui/button';
     import { Separator } from '$lib/components/ui/separator';
     import { Upload, Download, Play, Save, ListRestart } from '@lucide/svelte';
 
-    let status = $state<'Idle' | 'Extracting' | 'Error' | 'Importing' | 'Exporting' | 'Saving'>(
-        'Idle',
-    );
-
-    let statusColor = $derived(
-        {
-            Idle: 'bg-green-500',
-            Extracting: 'bg-yellow-500 animate-pulse',
-            Error: 'bg-red-500',
-            Importing: 'bg-indigo-500 animate-pulse',
-            Exporting: 'bg-aqua-500 animate-pulse',
-            Saving: 'bg-aqua-500 animate-pulse',
-        }[status],
+    let status = $state<'idle' | 'extracting' | 'error' | 'importing' | 'exporting' | 'saving'>(
+        'idle',
     );
 
     async function extract() {
-        status = 'Extracting';
+        status = 'extracting';
         status = await handleExtract();
         console.log(`Set status to ${$state.snapshot(status)}`);
     }
 
     function import_(event: Event) {
-        status = 'Importing';
+        status = 'importing';
         handleImportConfig(event);
-        status = 'Idle';
+        status = 'idle';
     }
 
     function save(event: Event) {
-        status = 'Saving';
+        status = 'saving';
         handleSaveConfig();
-        status = 'Idle';
+        status = 'idle';
     }
 
     function export_() {
-        status = 'Exporting';
+        status = 'exporting';
         handleExportConfig();
-        status = 'Idle';
+        status = 'idle';
     }
     function triggerLoad() {
         let fileinput = document.getElementById('import-config');
@@ -56,12 +47,6 @@
 </script>
 
 <div class="flex items-center justify-between border-b bg-background px-2 py-1.5">
-    <div class="flex items-center gap-2">
-        <div class="size-2 rounded-full {statusColor}"></div>
-        <span class="text-sm text-muted-foreground">{status}</span>
-    </div>
-    <Separator orientation="vertical" class="mx-2 h-4" />
-
     <!-- Right side: Config actions -->
     <div class="flex items-center gap-2">
         <Button
@@ -91,4 +76,8 @@
             <ListRestart class="size-4" strokeWidth={2.5} />
         </Button>
     </div>
+
+    <Separator orientation="vertical" class="mx-2 h-4" />
+
+    <StatusIndicator {status} />
 </div>

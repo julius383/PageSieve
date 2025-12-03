@@ -137,7 +137,7 @@ export async function handleExtract() {
     if (selectors.length === 0) {
         console.warn('No selectors to extract');
         console.dir(get(fields));
-        return 'Error';
+        return 'error';
     }
 
     try {
@@ -180,18 +180,18 @@ export async function handleExtract() {
                 }
 
                 console.dir(get(extractedData));
-                return 'Idle';
+                return 'idle';
             } else {
                 console.log('Error, failed to extract selectors');
-                return 'Error';
+                return 'error';
             }
         } else {
             console.log('Error: No active tab found.');
-            return 'Error';
+            return 'error';
         }
     } catch (error) {
         console.error('Error during extraction:', error);
-        return 'Error';
+        return 'error';
     }
 }
 
