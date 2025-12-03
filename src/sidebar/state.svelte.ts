@@ -15,6 +15,33 @@ localforage.config({
 
 dayjs.extend(advancedFormat);
 
+interface SelectorConfig {
+    id: number;
+    name: string;
+    selector: string;
+}
+
+interface PropConfig {
+    id: number;
+    key: string;
+    value: string;
+}
+
+interface ScrapeConfig {
+    fieldConf: SelectorConfig[];
+    propsConf: PropConfig[];
+    createdAt: string;
+    updatedAt: string;
+    id: string;
+    url: string;
+}
+
+interface Settings {
+    appendData: boolean;
+}
+
+const SETTINGS: Settings = { appendData: false };
+
 export const fields = writable([{ id: 1, name: '', selector: '' }]);
 let nextId = 2;
 
@@ -64,10 +91,16 @@ export const extractedJSON = derived(extractedData, ($extractedData) =>
     JSON.stringify($extractedData, null, 2),
 );
 
+export function resetExtractedData() {
+    extractedData.set([]);
+}
+
 // Derived store for columns
 export const columns = derived(extractedData, ($extractedData) =>
     $extractedData.length > 0 ? Object.keys($extractedData[0]).filter((key) => key !== 'id') : [],
 );
+
+const scrapeRuns = $state([]);
 
 export function downloadJSON() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(get(extractedJSON));
@@ -118,9 +151,34 @@ export async function handleExtract() {
                 selectors: JSON.parse(JSON.stringify(selectors)),
             });
 
+            console.log('Runs is');
+            console.dir($state.snapshot(scrapeRuns));
             if (response && response.result) {
-                // Object.assign(extractedData, response.result);
-                extractedData.set(response.result);
+                const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+                scrapeRuns.length = scrapeRuns.length > 4 ? 4 : scrapeRuns.length;
+                if (get(fields).length > 0 && response.result) {
+                    const contentHashShort = await shortHash(get(fields));
+                    const runInst = {
+                        url: new SvelteURL(tabInfo.url).hostname,
+                        shortHash: contentHashShort,
+                    };
+                    if (scrapeRuns.length > 0) {
+                        if (
+                            JSON.stringify($state.snapshot(scrapeRuns[0])) ==
+                            JSON.stringify(runInst)
+                        ) {
+                            SETTINGS.appendData = true;
+                        }
+                    } else {
+                        scrapeRuns.unshift(runInst);
+                    }
+                }
+                if (SETTINGS.appendData) {
+                    extractedData.update((current) => [...current, ...response.result]);
+                } else {
+                    extractedData.set(response.result);
+                }
+
                 console.dir(get(extractedData));
                 return 'Idle';
             } else {
@@ -178,27 +236,6 @@ export async function handleExportConfig() {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-}
-
-interface SelectorConfig {
-    id: number;
-    name: string;
-    selector: string;
-}
-
-interface PropConfig {
-    id: number;
-    key: string;
-    value: string;
-}
-
-interface ScrapeConfig {
-    fieldConf: SelectorConfig[];
-    propsConf: PropConfig[];
-    createdAt: string;
-    updatedAt: string;
-    id: string;
-    url: string;
 }
 
 function createPathSlug(url: string) {

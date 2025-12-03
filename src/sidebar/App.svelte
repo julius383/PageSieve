@@ -18,6 +18,7 @@
         columns,
         downloadCSV,
         downloadJSON,
+        resetExtractedData,
     } from './state.svelte';
 
     import { Button } from '$lib/components/ui/button';
@@ -96,6 +97,9 @@
                                     >
                                     <DropdownMenuItem onclick={downloadJSON}
                                         >Download JSON</DropdownMenuItem
+                                    >
+                                    <DropdownMenuItem onclick={resetExtractedData}
+                                        >Clear Data</DropdownMenuItem
                                     >
                                 </DropdownMenuContent>
                             </DropdownMenuRoot>
