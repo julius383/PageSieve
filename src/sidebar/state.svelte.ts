@@ -87,7 +87,7 @@ export function resetProperties() {
 }
 
 export const extractedData = writable([]);
-export const extractedJSON = derived(extractedData, ($extractedData) =>
+const extractedJSON = derived(extractedData, ($extractedData) =>
     JSON.stringify($extractedData, null, 2),
 );
 
