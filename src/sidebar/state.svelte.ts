@@ -30,8 +30,8 @@ interface PropConfig {
 interface ScrapeConfig {
     fieldConf: SelectorConfig[];
     propsConf: PropConfig[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt: number;
+    updatedAt: number;
     id: string;
     url: string;
 }
@@ -319,4 +319,21 @@ export async function loadAllConfigs() {
         console.log(err);
         return [];
     }
+}
+
+export async function renameConfig(oldId: string, newId: string) {
+    const existing = await localforage.getItem(newId);
+    if (existing) {
+        console.error(`Config with id "${newId}" already exists.`);
+        return false;
+    }
+    const conf = (await localforage.getItem(oldId)) as ScrapeConfig;
+    if (conf) {
+        await localforage.removeItem(oldId);
+        conf.id = newId;
+        conf.updatedAt = parseInt(dayjs().format('x'));
+        await localforage.setItem(newId, conf);
+        return true;
+    }
+    return false;
 }

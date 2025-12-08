@@ -7,16 +7,25 @@
     import * as Collapsible from '$lib/components/ui/collapsible/index.js';
     import * as Card from '$lib/components/ui/card/index.js';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+    import * as Dialog from '$lib/components/ui/dialog/index.js';
     import { buttonVariants } from '$lib/components/ui/button/index.js';
 
     import { default as dayjs } from 'dayjs';
     import advancedFormat from 'dayjs/plugin/advancedFormat.js';
     dayjs.extend(advancedFormat);
 
-    import { Search, Pencil, Trash2, ChevronsUpDownIcon, ArrowUpToLine } from '@lucide/svelte';
+    import {
+        Search,
+        Pencil,
+        Trash2,
+        ChevronsUpDownIcon,
+        ArrowUpToLine,
+        Check,
+        X,
+    } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
-    import { loadAllConfigs, loadConfig } from './state.svelte';
+    import { loadAllConfigs, loadConfig, renameConfig } from './state.svelte';
     /*
     const items = [
         {
@@ -41,8 +50,38 @@
         // console.dir(items);
     });
 
-    function rename(id) {
-        return id;
+    let editingId = $state(null);
+    let newIdValue = $state('');
+
+    function startEditing(item) {
+        editingId = item.id;
+        newIdValue = item.id;
+    }
+
+    function cancelEditing() {
+        editingId = null;
+        newIdValue = '';
+    }
+
+    async function saveRename(oldId) {
+        if (newIdValue && oldId !== newIdValue) {
+            const success = await renameConfig(oldId, newIdValue);
+            if (success) {
+                items = await loadAllConfigs();
+            } else {
+                // TODO: Show an error to the user
+                console.error('Failed to rename config. New ID might already exist.');
+            }
+        }
+        cancelEditing();
+    }
+
+    async function handleInputKeydown(event, oldId) {
+        if (event.key === 'Enter') {
+            await saveRename(oldId);
+        } else if (event.key === 'Escape') {
+            cancelEditing();
+        }
     }
 
     function delete_(id) {
@@ -67,46 +106,77 @@
         <div class="p-1 rounded-md mb-2 w-full">
             <Card.Root>
                 <Card.Header>
-                    <Card.Title class="text-wrap break-all">{item.id}</Card.Title>
+                    <Card.Title class="text-wrap break-all">
+                        {#if editingId === item.id}
+                            <input
+                                type="text"
+                                bind:value={newIdValue}
+                                onkeydown={(e) => handleInputKeydown(e, item.id)}
+                                class="bg-transparent border-b border-current w-full focus:outline-none"
+                            />
+                        {:else}
+                            {item.id}
+                        {/if}
+                    </Card.Title>
                     <Card.Description
                         >Saved on {dayjs(item.updatedAt).format('D MMM YYYY')}</Card.Description
                     >
                     <Card.Action>
-                        <div class="flex items-end gap-x-1 flex-start">
-                            <Tooltip.Provider>
-                                <Tooltip.Root>
-                                    <Tooltip.Trigger>
-                                        <Button
-                                            onclick={() => rename(item.id)}
-                                            variant="outline"
-                                            size="icon"
-                                        >
-                                            <Pencil />
-                                        </Button>
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>
-                                        <p>Rename config</p>
-                                    </Tooltip.Content>
-                                </Tooltip.Root>
-                            </Tooltip.Provider>
+                        {#if editingId === item.id}
+                            <div class="flex items-end gap-x-1 flex-start">
+                                <Button
+                                    onclick={() => saveRename(item.id)}
+                                    variant="outline"
+                                    size="icon"
+                                >
+                                    <Check />
+                                </Button>
+                                <Button onclick={cancelEditing} variant="destructive" size="icon">
+                                    <X />
+                                </Button>
+                            </div>
+                        {:else}
+                            <div class="flex items-end gap-x-1 flex-start">
+                                <Tooltip.Provider>
+                                    <Tooltip.Root>
+                                        <Tooltip.Trigger>
+                                            <Button
+                                                onclick={() => startEditing(item)}
+                                                variant="outline"
+                                                size="icon"
+                                            >
+                                                <Pencil />
+                                            </Button>
+                                        </Tooltip.Trigger>
+                                        <Tooltip.Content>
+                                            <p>Rename config</p>
+                                        </Tooltip.Content>
+                                    </Tooltip.Root>
+                                </Tooltip.Provider>
 
-                            <Tooltip.Provider>
-                                <Tooltip.Root>
-                                    <Tooltip.Trigger>
-                                        <Button
-                                            onclick={() => delete_(item.id)}
-                                            variant="destructive"
-                                            size="icon"
-                                        >
-                                            <Trash2 />
-                                        </Button>
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>
-                                        <p>Delete config</p>
-                                    </Tooltip.Content>
-                                </Tooltip.Root>
-                            </Tooltip.Provider>
-                        </div>
+                                <Dialog.Root>
+                                    <Dialog.Trigger>
+                                        <Tooltip.Provider>
+                                            <Tooltip.Root>
+                                                <Tooltip.Trigger>
+                                                    <Button
+                                                        onclick={() => delete_(item.id)}
+                                                        variant="destructive"
+                                                        size="icon"
+                                                    >
+                                                        <Trash2 />
+                                                    </Button>
+                                                </Tooltip.Trigger>
+                                                <Tooltip.Content>
+                                                    <p>Delete config</p>
+                                                </Tooltip.Content>
+                                            </Tooltip.Root>
+                                        </Tooltip.Provider>
+                                    </Dialog.Trigger>
+                                    <Dialog.Content>Delete entry</Dialog.Content>
+                                </Dialog.Root>
+                            </div>
+                        {/if}
                     </Card.Action>
                 </Card.Header>
                 <Card.Content>

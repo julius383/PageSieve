@@ -7,7 +7,6 @@ interface SelectorConfig {
 /**
  * Extracts data from DOM elements using provided selectors
  * @param selectors - Array of selector configurations
- * @param parentSelector - Optional parent container selector
  * @returns Array of extracted data objects
  */
 function extractDataFromPage(selectors: SelectorConfig[]): any {

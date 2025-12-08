@@ -15,7 +15,6 @@
         resetExtractedData,
     } from './state.svelte';
 
-
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 </script>
 
@@ -29,22 +28,22 @@
             <Tabs.Trigger value="data">Data</Tabs.Trigger>
             <Tabs.Trigger value="json">JSON</Tabs.Trigger>
         </div>
-    <div>
-        <DropdownMenu.Root>
-            <DropdownMenu.Trigger>
-                <Button variant="secondary" size="sm">
-                    <Download />
-                </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content>
-                <DropdownMenu.Item onclick={downloadCSV}>Download CSV</DropdownMenu.Item>
-                <DropdownMenu.Item onclick={downloadJSON}>Download JSON</DropdownMenu.Item>
-            </DropdownMenu.Content>
-        </DropdownMenu.Root>
-      <Button size="icon" variant="destructive" onclick={resetExtractedData}>
-        <SquareX class="size-4" strokeWidth={2.5} />
-      </Button>
-    </div>
+        <div>
+            <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                    <Button variant="secondary" size="sm">
+                        <Download />
+                    </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                    <DropdownMenu.Item onclick={downloadCSV}>Download CSV</DropdownMenu.Item>
+                    <DropdownMenu.Item onclick={downloadJSON}>Download JSON</DropdownMenu.Item>
+                </DropdownMenu.Content>
+            </DropdownMenu.Root>
+            <Button size="icon" variant="destructive" onclick={resetExtractedData}>
+                <SquareX class="size-4" strokeWidth={2.5} />
+            </Button>
+        </div>
     </Tabs.List>
     <Tabs.Content value="data" class="pt-4 overflow-auto flex-grow">
         <div class="border rounded-md">
@@ -69,9 +68,8 @@
         </div>
     </Tabs.Content>
     <Tabs.Content value="json" class="pt-4 overflow-auto flex-grow">
-
-    <div class="bg-slate-100 p-4 rounded-md text-sm overflow-wrap">
-      <JsonViewer value={$extractedData} />
-    </div>
+        <div class="bg-slate-100 p-4 rounded-md text-sm overflow-wrap">
+            <JsonViewer value={$extractedData} />
+        </div>
     </Tabs.Content>
 </Tabs.Root>
