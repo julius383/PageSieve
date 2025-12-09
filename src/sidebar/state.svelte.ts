@@ -4,7 +4,7 @@ import localforage from 'localforage';
 
 import { default as dayjs } from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat.js';
-import { SvelteURL } from 'svelte/reactivity';
+// import { SvelteURL } from 'svelte/reactivity';
 
 const CONFIG_STORAGE_KEY = 'pageweave-configs';
 
@@ -159,7 +159,7 @@ export async function handleExtract() {
                 if (get(fields).length > 0 && response.result) {
                     const contentHashShort = await shortHash(get(fields));
                     const runInst = {
-                        url: new SvelteURL(tabInfo.url).hostname,
+                        url: new URL(tabInfo.url).hostname,
                         shortHash: contentHashShort,
                     };
                     if (scrapeRuns.length > 0) {
@@ -277,14 +277,28 @@ async function createConfig() {
     return config;
 }
 
+export const allConfigs = writable<ScrapeConfig[]>([]);
+
+export async function refreshConfigs() {
+    try {
+        allConfigs.set([]);
+        await localforage.iterate((value, key, idx) => {
+            allConfigs.update((current) => [...current, value]);
+        });
+    } catch (err) {
+        console.log(err);
+        return [];
+    }
+}
+
 export async function handleSaveConfig() {
     try {
         const config = await createConfig();
-
         await localforage.setItem(config.id, config);
         console.log('Configuration saved successfully');
         console.log('Saving the following config');
         console.dir(config);
+        await refreshConfigs();
     } catch (err) {
         console.error('Error saving configuration:', err);
         throw err;
@@ -306,21 +320,6 @@ export function loadConfig(configData: ScrapeConfig) {
     }
 }
 
-export async function loadAllConfigs() {
-    const items = [];
-    try {
-        await localforage.iterate((value, key, idx) => {
-            items.push(value);
-        });
-        console.log('Done loading configs');
-        // console.dir(items);
-        return items;
-    } catch (err) {
-        console.log(err);
-        return [];
-    }
-}
-
 export async function renameConfig(oldId: string, newId: string) {
     const existing = await localforage.getItem(newId);
     if (existing) {
@@ -333,6 +332,17 @@ export async function renameConfig(oldId: string, newId: string) {
         conf.id = newId;
         conf.updatedAt = parseInt(dayjs().format('x'));
         await localforage.setItem(newId, conf);
+        await refreshConfigs();
+        return true;
+    }
+    return false;
+}
+
+export async function removeConfig(itemId: string) {
+    const conf = (await localforage.getItem(itemId)) as ScrapeConfig;
+    if (conf) {
+        await localforage.removeItem(itemId);
+        await refreshConfigs();
         return true;
     }
     return false;

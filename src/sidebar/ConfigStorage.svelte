@@ -1,13 +1,10 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
     import * as Collapsible from '$lib/components/ui/collapsible/index.js';
     import * as Card from '$lib/components/ui/card/index.js';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-    import * as Dialog from '$lib/components/ui/dialog/index.js';
     import { buttonVariants } from '$lib/components/ui/button/index.js';
 
     import { default as dayjs } from 'dayjs';
@@ -25,7 +22,14 @@
     } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
-    import { loadAllConfigs, loadConfig, renameConfig } from './state.svelte';
+    import {
+        allConfigs,
+        loadConfig,
+        renameConfig,
+        removeConfig,
+        refreshConfigs,
+    } from './state.svelte';
+
     /*
     const items = [
         {
@@ -44,11 +48,6 @@
         },
     ];
     */
-    let items = $state([]);
-    onMount(async () => {
-        items = await loadAllConfigs();
-        // console.dir(items);
-    });
 
     let editingId = $state(null);
     let newIdValue = $state('');
@@ -67,7 +66,7 @@
         if (newIdValue && oldId !== newIdValue) {
             const success = await renameConfig(oldId, newIdValue);
             if (success) {
-                items = await loadAllConfigs();
+                console.log(`Renamed config to ${oldId}`);
             } else {
                 // TODO: Show an error to the user
                 console.error('Failed to rename config. New ID might already exist.');
@@ -84,8 +83,29 @@
         }
     }
 
-    function delete_(id) {
-        return;
+    async function handleDelete(id: string): Promise<void> {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+            const response = await browser.tabs.sendMessage(tab.id, {
+                action: 'showConfirmation',
+                data: {
+                    title: 'Delete Item',
+                    message:
+                        'Are you sure you want to delete this item? This action cannot be undone.',
+                    confirmText: 'Delete',
+                    cancelText: 'Cancel',
+                },
+            });
+
+            if (response && response.confirmed) {
+                console.log('User confirmed deletion');
+                // Proceed with destructive operation
+                await removeConfig(id);
+                await refreshConfigs();
+            } else {
+                console.log('User cancelled');
+            }
+        }
     }
 </script>
 
@@ -102,7 +122,7 @@
 <hr />
 
 <div>
-    {#each items as item}
+    {#each $allConfigs as item}
         <div class="p-1 rounded-md mb-2 w-full">
             <Card.Root>
                 <Card.Header>
@@ -154,27 +174,13 @@
                                     </Tooltip.Root>
                                 </Tooltip.Provider>
 
-                                <Dialog.Root>
-                                    <Dialog.Trigger>
-                                        <Tooltip.Provider>
-                                            <Tooltip.Root>
-                                                <Tooltip.Trigger>
-                                                    <Button
-                                                        onclick={() => delete_(item.id)}
-                                                        variant="destructive"
-                                                        size="icon"
-                                                    >
-                                                        <Trash2 />
-                                                    </Button>
-                                                </Tooltip.Trigger>
-                                                <Tooltip.Content>
-                                                    <p>Delete config</p>
-                                                </Tooltip.Content>
-                                            </Tooltip.Root>
-                                        </Tooltip.Provider>
-                                    </Dialog.Trigger>
-                                    <Dialog.Content>Delete entry</Dialog.Content>
-                                </Dialog.Root>
+                                <Button
+                                    onclick={() => handleDelete(item.id)}
+                                    variant="destructive"
+                                    size="icon"
+                                >
+                                    <Trash2 />
+                                </Button>
                             </div>
                         {/if}
                     </Card.Action>
