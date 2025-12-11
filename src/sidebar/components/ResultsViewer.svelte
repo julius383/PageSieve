@@ -13,7 +13,7 @@
         downloadCSV,
         downloadJSON,
         resetExtractedData,
-    } from '../state';
+    } from '../state.svelte';
 
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 </script>
