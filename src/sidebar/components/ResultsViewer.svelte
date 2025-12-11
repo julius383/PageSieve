@@ -5,7 +5,7 @@
     import * as Table from '$lib/components/ui/table';
     import { Download, SquareX } from '@lucide/svelte';
 
-    import { formatColumnName } from './util';
+    import { formatColumnName } from '../util';
 
     import {
         extractedData,
@@ -13,7 +13,7 @@
         downloadCSV,
         downloadJSON,
         resetExtractedData,
-    } from './state.svelte';
+    } from '../state.svelte';
 
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 </script>

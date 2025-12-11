@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { Trash2, Pipette } from '@lucide/svelte';
+    import { Trash2 } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     let { id, deleteHandler, key = $bindable(), value = $bindable() } = $props();

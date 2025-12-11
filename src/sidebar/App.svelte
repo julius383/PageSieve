@@ -1,9 +1,9 @@
 <script lang="ts">
-    import FieldGroup from './FieldGroup.svelte';
-    import PropertyGroup from './PropertyGroup.svelte';
-    import ActionBar from './ActionBar.svelte';
-    import ConfigStorage from './ConfigStorage.svelte';
-    import ResultsViewer from './ResultsViewer.svelte';
+    import FieldGroup from './components/FieldGroup.svelte';
+    import PropertyGroup from './components/PropertyGroup.svelte';
+    import ActionBar from './components/ActionBar.svelte';
+    import ConfigStorage from './components/ConfigStorage.svelte';
+    import ResultsViewer from './components/ResultsViewer.svelte';
 
     import {
         fields,

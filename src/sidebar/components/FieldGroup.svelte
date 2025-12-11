@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
     import { Trash2, Pipette } from '@lucide/svelte';
