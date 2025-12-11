@@ -5,7 +5,7 @@
         handleExportConfig,
         handleSaveConfig,
         handleExtract,
-    } from '../state.svelte';
+    } from '../state';
 
     import StatusIndicator from './StatusIndicator.svelte';
 

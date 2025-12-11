@@ -28,7 +28,7 @@
         renameConfig,
         removeConfig,
         refreshConfigs,
-    } from '../state.svelte';
+    } from '../state';
 
     /*
     const items = [

@@ -12,7 +12,7 @@
         properties,
         addProperty,
         deleteProperty,
-    } from './state.svelte';
+    } from './state';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
