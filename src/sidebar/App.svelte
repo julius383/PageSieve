@@ -5,6 +5,12 @@
     import ConfigStorage from './components/ConfigStorage.svelte';
     import ResultsViewer from './components/ResultsViewer.svelte';
 
+    import StatusIndicator from './components/StatusIndicator.svelte';
+    import LogViewer from './components/LogViewer.svelte';
+
+    import { Separator } from '$lib/components/ui/separator';
+    import * as Accordion from "$lib/components/ui/accordion/index.js";
+
     import {
         fields,
         addField,
@@ -16,14 +22,44 @@
 
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
-    import { Plus } from '@lucide/svelte';
+    import { Plus, ChevronDown, ChevronUp } from '@lucide/svelte';
     import * as Resizable from '$lib/components/ui/resizable/index.js';
 
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
+
+    let status = $state<'idle' | 'extracting' | 'error' | 'importing' | 'exporting' | 'saving'>(
+        'idle',
+    );
+    let logViewerAccordionValue = $state<string | undefined>(undefined);
 </script>
 
-<main class="p-4 h-screen flex flex-col gap-8">
-    <ActionBar />
+<main class="p-4 h-screen flex flex-col gap-4 bg-background text-foreground">
+    <div class="flex items-center justify-between border-b bg-background py-1.5">
+      <ActionBar />
+      <Separator orientation="vertical" class="mx-2 h-4" />
+      <StatusIndicator {status} />
+      <Button
+        variant="ghost"
+        size="icon"
+        onclick={() => logViewerAccordionValue = logViewerAccordionValue === 'log-viewer-item' ? undefined : 'log-viewer-item'}
+      >
+      {#if logViewerAccordionValue === 'log-viewer-item'}
+        <ChevronUp class="size-4" strokeWidth={2} color=#fff/>
+      {:else}
+        <ChevronDown class="size-4" strokeWidth={2} color=#fff/>
+      {/if}
+      </Button>
+    </div>
+
+    <!-- Moved Accordion.Root -->
+    <Accordion.Root type="single" bind:value={logViewerAccordionValue}>
+        <Accordion.Item value="log-viewer-item">
+          <Accordion.Content>
+            <LogViewer />
+            <Separator orientation="horizontal" class="mx-2 h-4" />
+          </Accordion.Content>
+        </Accordion.Item>
+    </Accordion.Root>
     <TabsRoot value="fields" class="flex-1 min-h-0 flex flex-col">
         <TabsList class="grid w-full grid-cols-3">
             <TabsTrigger value="fields">Fields</TabsTrigger>
