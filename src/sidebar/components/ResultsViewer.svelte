@@ -48,7 +48,7 @@
     <Tabs.Content value="data" class="pt-4 overflow-auto flex-grow">
         <div class="border rounded-md">
             <Table.Root>
-                <Table.Header>
+                <Table.Header class="bg-accent">
                     <Table.Row>
                         {#each $columns as column}
                             <Table.Head>{formatColumnName(column)}</Table.Head>
@@ -68,7 +68,7 @@
         </div>
     </Tabs.Content>
     <Tabs.Content value="json" class="pt-4 overflow-auto flex-grow">
-        <div class="bg-slate-100 p-4 rounded-md text-sm overflow-wrap">
+        <div class="p-4 rounded-md text-sm overflow-wrap">
             <JsonViewer value={$extractedData} />
         </div>
     </Tabs.Content>

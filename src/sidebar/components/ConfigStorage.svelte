@@ -201,7 +201,8 @@
                             </Collapsible.Trigger>
                         </div>
                         <Collapsible.Content>
-                            <div class="bg-slate-100 p-4 rounded-md text-sm overflow-wrap">
+                            <div class="p-4 rounded-md text-sm overflow-wrap">
+                                <!-- FIXME: large config overflowing container -->
                                 <JsonViewer value={item} />
                             </div>
                         </Collapsible.Content>
