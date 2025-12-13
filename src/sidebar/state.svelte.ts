@@ -6,7 +6,7 @@ import localforage from 'localforage';
 import { SelectorConfig, PropConfig, ScrapeConfig, ScrapInstance, ExtensionStatus } from '../types';
 import { SvelteURL } from 'svelte/reactivity';
 
-const CONFIG_STORAGE_KEY = 'pageweave-configs';
+const CONFIG_STORAGE_KEY = 'pagesieve-configs';
 
 localforage.config({
     name: CONFIG_STORAGE_KEY,
@@ -126,6 +126,11 @@ export function downloadCSV() {
     }
 }
 
+/**
+ * Extracts data from current tab using defined selector. Returns via
+ * browser sendMessage
+ *
+ */
 export async function handleExtract() {
     const selectors = get(fields).filter((f) => f.name && f.selector);
 
@@ -192,6 +197,11 @@ export async function handleExtract() {
     }
 }
 
+/**
+ * Imports ScrapeConfig from a file
+ *
+ * @param {Event} event - holds input holding file to load
+ */
 export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
@@ -226,6 +236,11 @@ export function handleImportConfig(event: Event) {
     fileInput.value = ''; // Reset for next use
 }
 
+/**
+ * Export ScrapeConfig to JSON file for download by user
+ *
+ * @returns {string} auto-generated filename, may differ than one used to save
+ */
 export async function handleExportConfig() {
     console.log('Downloading config...');
     const config = await createConfig();
@@ -233,6 +248,7 @@ export async function handleExportConfig() {
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
 
+    // replicates logic in generateConfigId
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const domain = new SvelteURL(tabInfo.url).hostname.replace('www.', '');
     const contentHashShort = await shortHash(get(fields));
@@ -243,8 +259,15 @@ export async function handleExportConfig() {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+    return filename;
 }
 
+/**
+ * Removes characters illegal in filenames
+ *
+ * @param {string} str - string to sanitize
+ * @returns {string} string with illegal characters
+ */
 function sanitizeForFilename(str: string) {
     return str
         .replace(/[^.a-zA-Z0-9\-_]/g, '')
@@ -252,6 +275,12 @@ function sanitizeForFilename(str: string) {
         .replace(/\.+$/, '');
 }
 
+/**
+ * Guesses a unique part of a URL
+ *
+ * @param {string} url - full web page URL
+ * @returns {string} - substring of URL
+ */
 function createPathSlug(url: string) {
     const path = new URL(url).pathname;
     const segments = path.split('/').filter((s) => s && s !== 'index.html');
@@ -261,6 +290,12 @@ function createPathSlug(url: string) {
         .replace(/\.[^.]+$/, '');
 }
 
+/**
+ * Computes SHA-256 hash of an object
+ *
+ * @param {object} data - object hash
+ * @returns {string} - hex substring of hash
+ */
 async function shortHash(data: object) {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(JSON.stringify(data));
@@ -299,6 +334,10 @@ async function createConfig() {
 
 export const allConfigs = writable<ScrapeConfig[]>([]);
 
+/**
+ * Loads ScrapeConfigs from browser local storage
+ *
+ */
 export async function refreshConfigs() {
     try {
         allConfigs.set([]);
@@ -311,6 +350,10 @@ export async function refreshConfigs() {
     }
 }
 
+/**
+ * Saves current config to browser local storage
+ *
+ */
 export async function handleSaveConfig() {
     try {
         const config = await createConfig();
@@ -339,6 +382,11 @@ export async function handleSaveConfig() {
     }
 }
 
+/**
+ * Loads config into plugin
+ *
+ * @param {ScrapeConfig} configData - config to load
+ */
 export function loadConfig(configData: ScrapeConfig) {
     if (configData != undefined) {
         fields.set([]);
@@ -354,6 +402,12 @@ export function loadConfig(configData: ScrapeConfig) {
     }
 }
 
+/**
+ * Rename config stored in browser localstorage
+ *
+ * @param {string} oldId - old id used to store config
+ * @param {string} newId - new id to store config
+ */
 export async function renameConfig(oldId: string, newId: string) {
     const existing = await localforage.getItem(newId);
     if (existing) {
@@ -372,6 +426,11 @@ export async function renameConfig(oldId: string, newId: string) {
     return false;
 }
 
+/**
+ * Remove config stored in browser localstorage
+ *
+ * @param {string} itemId - id of config to remove
+ */
 export async function removeConfig(itemId: string) {
     const conf = (await localforage.getItem(itemId)) as ScrapeConfig;
     if (conf) {
