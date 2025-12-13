@@ -1,9 +1,9 @@
-import { ExtensionStatus } from "./types"
+import { ExtensionStatus } from './types';
 
 let currentStatus: ExtensionStatus = {
-  level: "idle",
-  message: "Ready",
-  timestamp: Date.now(),
+    level: 'idle',
+    message: 'Ready',
+    timestamp: Date.now(),
 };
 
 let sidebarOpen = false;
@@ -31,11 +31,11 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
         }
     }
 
-    if (request.action === "set-status") {
+    if (request.action === 'set-status') {
         setStatus(request.data);
     }
 
-    if (request.action === "get-status") {
+    if (request.action === 'get-status') {
         return currentStatus;
     }
 });
@@ -49,7 +49,7 @@ function setStatus(newStatus: ExtensionStatus) {
 
     // Broadcast to all extension pages
     browser.runtime.sendMessage({
-        action: "status-updated",
+        action: 'status-updated',
         status: currentStatus,
     });
 }

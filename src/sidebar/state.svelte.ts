@@ -13,24 +13,22 @@ localforage.config({
     driver: localforage.LOCALSTORAGE,
 });
 
-
-
 export const status = writable<ExtensionStatus>({
-    level: "idle",
-    message: "ready",
+    level: 'idle',
+    message: 'ready',
     timestamp: Date.now(),
 });
 
 // Sync initial value from background
-browser.runtime.sendMessage({ type: "get-status" }).then((s) => {
-  if (s) status.set(s);
+browser.runtime.sendMessage({ type: 'get-status' }).then((s) => {
+    if (s) status.set(s);
 });
 
 // Listen for updates from background
 browser.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "status-updated") {
-    status.set(msg.status);
-  }
+    if (msg.action === 'status-updated') {
+        status.set(msg.status);
+    }
 });
 
 interface Settings {
@@ -132,7 +130,10 @@ export async function handleExtract() {
     const selectors = get(fields).filter((f) => f.name && f.selector);
 
     if (selectors.length === 0) {
-        browser.runtime.sendMessage({action: "set-status", data: {level: 'error', message:`No valid selectors to extract.`}});
+        browser.runtime.sendMessage({
+            action: 'set-status',
+            data: { level: 'error', message: `No valid selectors to extract.` },
+        });
         return;
     }
 
@@ -195,7 +196,10 @@ export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
-    browser.runtime.sendMessage({action: "set-status", data: {level: 'importing', message:`importing ScrapeConfig from ${file.name}`}});
+    browser.runtime.sendMessage({
+        action: 'set-status',
+        data: { level: 'importing', message: `importing ScrapeConfig from ${file.name}` },
+    });
     let configData;
     const reader = new FileReader();
     reader.onload = () => {
@@ -242,9 +246,10 @@ export async function handleExportConfig() {
 }
 
 function sanitizeForFilename(str: string) {
-    return str.replace(/[^.a-zA-Z0-9\-_]/g, '')
-              .replace(/^\.+/, '')
-              .replace(/\.+$/, '');
+    return str
+        .replace(/[^.a-zA-Z0-9\-_]/g, '')
+        .replace(/^\.+/, '')
+        .replace(/\.+$/, '');
 }
 
 function createPathSlug(url: string) {
@@ -273,13 +278,13 @@ async function generateConfigId() {
     const domain = new URL(tabInfo.url).hostname.replace('www.', '');
     const pathslug = createPathSlug(tabInfo.url);
     const contentHashShort = await shortHash(get(fields));
-    console.log(`domain: ${domain}, pathslug ${pathslug}, shortHash: ${contentHashShort}`)
+    console.log(`domain: ${domain}, pathslug ${pathslug}, shortHash: ${contentHashShort}`);
     const configKey = `${domain}--${pathslug}--${contentHashShort}`;
     return [tabInfo.url, configKey];
 }
 
 async function createConfig() {
-    const [url, id] = await generateConfigId()
+    const [url, id] = await generateConfigId();
 
     const config = {
         fieldConf: get(fields),
@@ -310,11 +315,17 @@ export async function handleSaveConfig() {
     try {
         const config = await createConfig();
 
-        browser.runtime.sendMessage({action: "set-status", data: {level: 'saving', message:`Saving config for ${config.url}`}});
+        browser.runtime.sendMessage({
+            action: 'set-status',
+            data: { level: 'saving', message: `Saving config for ${config.url}` },
+        });
         const existing = await localforage.getItem(config.id);
         if (existing) {
             // TODO: prompt user to rename or overwrite
-            browser.runtime.sendMessage({action: "set-status", data: {level: 'error', message:`Config with id ${config.id} already exists`}});
+            browser.runtime.sendMessage({
+                action: 'set-status',
+                data: { level: 'error', message: `Config with id ${config.id} already exists` },
+            });
             return false;
         }
         await localforage.setItem(config.id, config);

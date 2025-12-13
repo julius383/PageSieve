@@ -1,4 +1,4 @@
-import { SelectorConfig } from "./types";
+import { SelectorConfig } from './types';
 
 /**
  * Extracts data from DOM elements using provided selectors

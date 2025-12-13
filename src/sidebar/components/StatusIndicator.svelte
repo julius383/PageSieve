@@ -3,8 +3,7 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Badge } from '$lib/components/ui/badge/index.js';
 
-    import { status } from '../state.svelte'
-
+    import { status } from '../state.svelte';
 
     const STATUS_CONFIG = {
         ['idle']: { label: 'Idle', style: 'bg-gray-500' },
@@ -28,7 +27,7 @@
             </Badge>
         </Tooltip.Trigger>
         <Tooltip.Content>
-          {$status.message}
+            {$status.message}
         </Tooltip.Content>
     </Tooltip.Root>
 </Tooltip.Provider>

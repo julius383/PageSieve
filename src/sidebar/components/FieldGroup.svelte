@@ -24,7 +24,7 @@
             <Tooltip.Root>
                 <Tooltip.Trigger>
                     <Button onclick={handleInspect} variant="outline" size="icon">
-                        <Pipette color=#fff/>
+                        <Pipette color="#fff" />
                     </Button>
                 </Tooltip.Trigger>
                 <Tooltip.Content>

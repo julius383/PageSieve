@@ -1,4 +1,3 @@
-
 export interface SelectorConfig {
     id: number;
     name: string;
@@ -27,10 +26,8 @@ export interface ScrapInstance {
 
 export type StatusLevel = 'idle' | 'extracting' | 'error' | 'importing' | 'exporting' | 'saving';
 
-
 export interface ExtensionStatus {
-  level: StatusLevel;
-  message: string;
-  timestamp: number;
+    level: StatusLevel;
+    message: string;
+    timestamp: number;
 }
-
