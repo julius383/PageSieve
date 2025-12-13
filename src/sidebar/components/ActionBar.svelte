@@ -17,15 +17,11 @@
     );
 
     async function extract() {
-        status = 'extracting';
-        status = await handleExtract();
-        console.log(`Set status to ${$state.snapshot(status)}`);
+        await handleExtract();
     }
 
     function import_(event: Event) {
-        status = 'importing';
         handleImportConfig(event);
-        status = 'idle';
     }
 
     function save(event: Event) {

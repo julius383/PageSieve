@@ -2,9 +2,9 @@ import { Parser } from '@json2csv/plainjs';
 import { writable, derived, get } from 'svelte/store';
 import localforage from 'localforage';
 
-import { default as dayjs } from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat.js';
 // import { SvelteURL } from 'svelte/reactivity';
+import { SelectorConfig, PropConfig, ScrapeConfig, ScrapInstance, ExtensionStatus } from '../types';
+import { SvelteURL } from 'svelte/reactivity';
 
 const CONFIG_STORAGE_KEY = 'pageweave-configs';
 
@@ -13,28 +13,25 @@ localforage.config({
     driver: localforage.LOCALSTORAGE,
 });
 
-dayjs.extend(advancedFormat);
 
-interface SelectorConfig {
-    id: number;
-    name: string;
-    selector: string;
-}
 
-interface PropConfig {
-    id: number;
-    key: string;
-    value: string;
-}
+export const status = writable<ExtensionStatus>({
+    level: "idle",
+    message: "ready",
+    timestamp: Date.now(),
+});
 
-interface ScrapeConfig {
-    fieldConf: SelectorConfig[];
-    propsConf: PropConfig[];
-    createdAt: number;
-    updatedAt: number;
-    id: string;
-    url: string;
-}
+// Sync initial value from background
+browser.runtime.sendMessage({ type: "get-status" }).then((s) => {
+  if (s) status.set(s);
+});
+
+// Listen for updates from background
+browser.runtime.onMessage.addListener((msg) => {
+  if (msg.action === "status-updated") {
+    status.set(msg.status);
+  }
+});
 
 interface Settings {
     appendData: boolean;
@@ -42,7 +39,7 @@ interface Settings {
 
 const SETTINGS: Settings = { appendData: false };
 
-export const fields = writable([{ id: 1, name: '', selector: '' }]);
+export const fields = writable<SelectorConfig[]>([{ id: 1, name: '', selector: '' }]);
 let nextId = 2;
 
 export function addField() {
@@ -67,7 +64,7 @@ browser.runtime.sendMessage({ action: 'getTabUrl' }).then((response) => {
     console.log(`Current URL is ${response.url}`);
 });
 
-export const properties = writable([{ id: 1, key: 'URL', value: '' }]);
+export const properties = writable<PropConfig[]>([{ id: 1, key: 'URL', value: '' }]);
 let nextPropId = 2;
 
 export function addProperty() {
@@ -100,7 +97,7 @@ export const columns = derived(extractedData, ($extractedData) =>
     $extractedData.length > 0 ? Object.keys($extractedData[0]).filter((key) => key !== 'id') : [],
 );
 
-const scrapeRuns = $state([]);
+const scrapeRuns = $state<ScrapInstance[]>([]);
 
 export function downloadJSON() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(get(extractedJSON));
@@ -135,9 +132,8 @@ export async function handleExtract() {
     const selectors = get(fields).filter((f) => f.name && f.selector);
 
     if (selectors.length === 0) {
-        console.warn('No selectors to extract');
-        console.dir(get(fields));
-        return 'error';
+        browser.runtime.sendMessage({action: "set-status", data: {level: 'error', message:`No valid selectors to extract.`}});
+        return;
     }
 
     try {
@@ -151,8 +147,8 @@ export async function handleExtract() {
                 selectors: JSON.parse(JSON.stringify(selectors)),
             });
 
-            console.log('Runs is');
-            console.dir($state.snapshot(scrapeRuns));
+            // console.log('Runs is');
+            // console.dir($state.snapshot(scrapeRuns));
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
                 scrapeRuns.length = scrapeRuns.length > 4 ? 4 : scrapeRuns.length;
@@ -199,6 +195,7 @@ export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
+    browser.runtime.sendMessage({action: "set-status", data: {level: 'importing', message:`importing ScrapeConfig from ${file.name}`}});
     let configData;
     const reader = new FileReader();
     reader.onload = () => {
@@ -222,7 +219,6 @@ export function handleImportConfig(event: Event) {
         }
     };
     reader.readAsText(file);
-    console.log('Loaded config file:', file.name);
     fileInput.value = ''; // Reset for next use
 }
 
@@ -232,10 +228,23 @@ export async function handleExportConfig() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(config));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', 'config.json');
-    document.body.appendChild(downloadAnchorNode); // required for firefox
+
+    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+    const domain = new SvelteURL(tabInfo.url).hostname.replace('www.', '');
+    const contentHashShort = await shortHash(get(fields));
+    const pathslug = createPathSlug(tabInfo.url);
+    const filename = `${sanitizeForFilename(domain)}_${sanitizeForFilename(pathslug)}_${contentHashShort}.json`;
+
+    downloadAnchorNode.setAttribute('download', filename);
+    document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+}
+
+function sanitizeForFilename(str: string) {
+    return str.replace(/[^.a-zA-Z0-9\-_]/g, '')
+              .replace(/^\.+/, '')
+              .replace(/\.+$/, '');
 }
 
 function createPathSlug(url: string) {
@@ -259,20 +268,26 @@ async function shortHash(data: object) {
         .join('');
 }
 
-async function createConfig() {
+async function generateConfigId() {
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const domain = new URL(tabInfo.url).hostname.replace('www.', '');
     const pathslug = createPathSlug(tabInfo.url);
     const contentHashShort = await shortHash(get(fields));
-    const configKey = `${domain}:${pathslug}:${contentHashShort}`;
+    console.log(`domain: ${domain}, pathslug ${pathslug}, shortHash: ${contentHashShort}`)
+    const configKey = `${domain}--${pathslug}--${contentHashShort}`;
+    return [tabInfo.url, configKey];
+}
+
+async function createConfig() {
+    const [url, id] = await generateConfigId()
 
     const config = {
         fieldConf: get(fields),
         propsConf: get(properties),
-        createdAt: parseInt(dayjs().format('x')),
-        updatedAt: parseInt(dayjs().format('x')),
-        id: configKey,
-        url: tabInfo.url,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        id,
+        url,
     };
     return config;
 }
@@ -294,9 +309,17 @@ export async function refreshConfigs() {
 export async function handleSaveConfig() {
     try {
         const config = await createConfig();
+
+        browser.runtime.sendMessage({action: "set-status", data: {level: 'saving', message:`Saving config for ${config.url}`}});
+        const existing = await localforage.getItem(config.id);
+        if (existing) {
+            // TODO: prompt user to rename or overwrite
+            browser.runtime.sendMessage({action: "set-status", data: {level: 'error', message:`Config with id ${config.id} already exists`}});
+            return false;
+        }
         await localforage.setItem(config.id, config);
         console.log('Configuration saved successfully');
-        console.log('Saving the following config');
+        console.log(`Saving the following config ${config.id}`);
         console.dir(config);
         await refreshConfigs();
     } catch (err) {
@@ -330,7 +353,7 @@ export async function renameConfig(oldId: string, newId: string) {
     if (conf) {
         await localforage.removeItem(oldId);
         conf.id = newId;
-        conf.updatedAt = parseInt(dayjs().format('x'));
+        conf.updatedAt = Date.now();
         await localforage.setItem(newId, conf);
         await refreshConfigs();
         return true;

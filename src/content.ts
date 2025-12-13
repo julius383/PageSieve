@@ -1,8 +1,4 @@
-interface SelectorConfig {
-    id: number;
-    name: string;
-    selector: string;
-}
+import { SelectorConfig } from "./types";
 
 /**
  * Extracts data from DOM elements using provided selectors

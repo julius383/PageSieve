@@ -1,3 +1,11 @@
+import { ExtensionStatus } from "./types"
+
+let currentStatus: ExtensionStatus = {
+  level: "idle",
+  message: "Ready",
+  timestamp: Date.now(),
+};
+
 let sidebarOpen = false;
 
 // Listen for a click on the browser action icon.
@@ -22,4 +30,26 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
             return { url: tab.url, title: tab.title };
         }
     }
+
+    if (request.action === "set-status") {
+        setStatus(request.data);
+    }
+
+    if (request.action === "get-status") {
+        return currentStatus;
+    }
 });
+
+function setStatus(newStatus: ExtensionStatus) {
+    currentStatus = {
+        ...newStatus,
+        timestamp: Date.now(),
+    };
+    console.log(`changed status to ${currentStatus.level}`);
+
+    // Broadcast to all extension pages
+    browser.runtime.sendMessage({
+        action: "status-updated",
+        status: currentStatus,
+    });
+}
