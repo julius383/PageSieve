@@ -10,7 +10,7 @@ locally, and can be exported for further processing.
 
 The extension is designed around a few core principles:
 - Ergonomic CSS selection - discovering CSS selectors should be a simple point-and-click operation.
-- Minimal UI — simple sidebar that does not take you outside the browser.
+- Minimal UI - simple sidebar that does not take you outside the browser.
 - Local first - scraping can be done entirely on your system.
 - Reusable recipes - once you define fields and selectors, you can save your
   configuration for use at a later date or share it online.

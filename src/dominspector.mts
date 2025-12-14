@@ -1,14 +1,14 @@
 export class DOMInspector {
     isActive: boolean;
     currentHighlighted: HTMLElement | null;
-    originalOutline: string | null;
     originalCursor: string | null;
+    highlightOverlay: HTMLDivElement | null;
 
     constructor() {
         this.isActive = false;
         this.currentHighlighted = null;
-        this.originalOutline = null;
         this.originalCursor = null;
+        this.highlightOverlay = null;
 
         // Bind methods to preserve 'this' context
         this.handleMouseOver = this.handleMouseOver.bind(this);
@@ -18,13 +18,27 @@ export class DOMInspector {
 
         // Listen for messages from popup
         browser.runtime.onMessage.addListener((request, _, sendResponse) => {
-            if (request.action === 'toggle') {
+            if (request.action === 'inspector-toggle') {
                 this.toggle();
                 sendResponse({ isActive: this.isActive });
-            } else if (request.action === 'getState') {
+            } else if (request.action === 'inspector-getState') {
                 sendResponse({ isActive: this.isActive });
             }
         });
+
+        if (typeof document !== 'undefined') {
+            this.highlightOverlay = document.createElement('div');
+            this.highlightOverlay.style.position = 'absolute';
+            this.highlightOverlay.style.zIndex = '9999999';
+            this.highlightOverlay.style.border = '2px solid #FFD700';
+            this.highlightOverlay.style.backgroundColor = 'rgba(255, 215, 0, 0.2)';
+            this.highlightOverlay.style.boxSizing = 'border-box';
+            this.highlightOverlay.style.pointerEvents = 'none';
+            this.highlightOverlay.style.display = 'none';
+            document.body.appendChild(this.highlightOverlay);
+        }
+
+        console.log('Inspector instance created');
     }
 
     toggle() {
@@ -36,6 +50,7 @@ export class DOMInspector {
     }
 
     activate() {
+        console.log('Activating DOM inspector');
         if (this.isActive) return;
 
         this.isActive = true;
@@ -45,10 +60,10 @@ export class DOMInspector {
         document.body.style.cursor = 'crosshair';
 
         // Add event listeners
-        document.addEventListener('mouseover', this.handleMouseOver, true);
-        document.addEventListener('mouseout', this.handleMouseOut, true);
-        document.addEventListener('click', this.handleClick, true);
-        document.addEventListener('keydown', this.handleKeyDown, true);
+        window.addEventListener('mouseover', this.handleMouseOver, true);
+        window.addEventListener('mouseout', this.handleMouseOut, true);
+        window.addEventListener('keydown', this.handleKeyDown, true);
+        window.addEventListener('click', this.handleClick, true);
 
         console.log(
             'DOM Inspector activated. Hover over elements to highlight, click to inspect. Press ESC to exit.',
@@ -61,16 +76,16 @@ export class DOMInspector {
         this.isActive = false;
 
         // Restore original cursor
-        document.body.style.cursor = '';
+        document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
 
         // Remove highlight from current element
         this.removeHighlight();
 
         // Remove event listeners
-        document.removeEventListener('mouseover', this.handleMouseOver, true);
-        document.removeEventListener('mouseout', this.handleMouseOut, true);
-        document.removeEventListener('click', this.handleClick, true);
-        document.removeEventListener('keydown', this.handleKeyDown, true);
+        window.removeEventListener('mouseover', this.handleMouseOver, true);
+        window.removeEventListener('mouseout', this.handleMouseOut, true);
+        window.removeEventListener('keydown', this.handleKeyDown, true);
+        window.removeEventListener('click', this.handleClick, true);
 
         console.log('DOM Inspector deactivated.');
     }
@@ -94,6 +109,10 @@ export class DOMInspector {
     handleClick(event: Event) {
         if (!this.isActive) return;
 
+        // if (event.target === this.highlightOverlay) {
+        //     return;
+        // }
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -111,26 +130,31 @@ export class DOMInspector {
     }
 
     highlightElement(element: HTMLElement) {
-        // Remove previous highlight
-        this.removeHighlight();
+        if (element === this.highlightOverlay || element === document.body) {
+            if (this.highlightOverlay) {
+                this.highlightOverlay.style.display = 'none';
+            }
+            this.currentHighlighted = null;
+            return;
+        }
 
-        // Store current element and its original outline
         this.currentHighlighted = element;
-        this.originalOutline = element.style.outline;
 
-        // Apply yellow border highlight
-        element.style.outline = '8px solid #FFD700';
-        element.style.outlineOffset = '1px';
+        if (this.highlightOverlay) {
+            const rect = element.getBoundingClientRect();
+            this.highlightOverlay.style.display = 'block';
+            this.highlightOverlay.style.top = `${rect.top + window.scrollY}px`;
+            this.highlightOverlay.style.left = `${rect.left + window.scrollX}px`;
+            this.highlightOverlay.style.width = `${rect.width}px`;
+            this.highlightOverlay.style.height = `${rect.height}px`;
+        }
     }
 
     removeHighlight() {
-        if (this.currentHighlighted) {
-            // Restore original outline
-            this.currentHighlighted.style.outline = this.originalOutline || '';
-            this.currentHighlighted.style.outlineOffset = '';
-            this.currentHighlighted = null;
-            this.originalOutline = null;
+        if (this.highlightOverlay) {
+            this.highlightOverlay.style.display = 'none';
         }
+        this.currentHighlighted = null;
     }
 
     inspectElement(element: HTMLElement) {
@@ -166,6 +190,11 @@ export class DOMInspector {
         // Make it available globally for further inspection
         // window.lastInspectedElement = elementData;
         console.log('Element data saved to window.lastInspectedElement');
+
+        browser.runtime.sendMessage({
+            action: 'selector-elementSelected',
+            selector: element.className,
+        });
     }
 
     getAttributes(element: HTMLElement) {

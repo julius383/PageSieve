@@ -24,7 +24,14 @@ export interface ScrapInstance {
     shortHash: string;
 }
 
-export type StatusLevel = 'idle' | 'extracting' | 'error' | 'importing' | 'exporting' | 'saving';
+export type StatusLevel =
+    | 'idle'
+    | 'extracting'
+    | 'error'
+    | 'importing'
+    | 'exporting'
+    | 'saving'
+    | 'selecting';
 
 export interface ExtensionStatus {
     level: StatusLevel;

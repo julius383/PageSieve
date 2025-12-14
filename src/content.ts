@@ -1,4 +1,7 @@
 import { SelectorConfig } from './types';
+import { DOMInspector } from './dominspector.mjs';
+
+const inspector = new DOMInspector();
 
 /**
  * Extracts data from DOM elements using provided selectors

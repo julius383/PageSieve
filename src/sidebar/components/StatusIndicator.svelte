@@ -12,6 +12,7 @@
         ['importing']: { label: 'Importing', style: 'bg-[#8a3ffc] animate-pulse' },
         ['exporting']: { label: 'Exporting', style: 'bg-[#0043ce] animate-pulse' },
         ['saving']: { label: 'Saving', style: 'bg-[#8a3ffc] animate-pulse' },
+        ['selecting']: { label: 'Selecting', style: 'bg-[#ffd700] animate-pulse' },
     };
     let cfg = () => STATUS_CONFIG[$status?.level] ?? STATUS_CONFIG['idle'];
 </script>
