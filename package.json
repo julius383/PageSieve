@@ -8,7 +8,8 @@
     "main": "index.js",
     "scripts": {
         "build": "vite build",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "format": "npx prettier src/ --write"
     },
     "dependencies": {
         "@json2csv/plainjs": "^7.0.6",

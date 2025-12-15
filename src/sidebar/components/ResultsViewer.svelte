@@ -3,6 +3,7 @@
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
     import * as Table from '$lib/components/ui/table';
+    import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Download, SquareX } from '@lucide/svelte';
 
     import { formatColumnName } from '../util';
@@ -31,18 +32,32 @@
         <div>
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                    <Button variant="secondary" size="sm">
-                        <Download />
-                    </Button>
+                    <Tooltip.Provider>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <Button variant="secondary" size="sm">
+                                    <Download />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>Download Data</Tooltip.Content>
+                        </Tooltip.Root>
+                    </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
                     <DropdownMenu.Item onclick={downloadCSV}>Download CSV</DropdownMenu.Item>
                     <DropdownMenu.Item onclick={downloadJSON}>Download JSON</DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
-            <Button size="icon" variant="destructive" onclick={resetExtractedData}>
-                <SquareX class="size-4" strokeWidth={2.5} />
-            </Button>
+            <Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button size="icon" variant="destructive" onclick={resetExtractedData}>
+                            <SquareX class="size-4" strokeWidth={2.5} />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>Download Data</Tooltip.Content>
+                </Tooltip.Root>
+            </Tooltip.Provider>
         </div>
     </Tabs.List>
     <Tabs.Content value="data" class="pt-4 overflow-auto flex-grow">
