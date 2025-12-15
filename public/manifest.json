@@ -2,9 +2,9 @@
     "manifest_version": 2,
     "name": "PageSieve",
     "version": "1.0",
-    "description": "Extracts data from a page using CSS selectors.",
+    "description": "PageSieve is a browser extension that lets users extract structured data from any webpage they visit by defining field names and CSS selectors in a sidebar UI.",
     "permissions": ["activeTab", "tabs", "storage"],
-    "content_security_policy": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';",
+    "content_security_policy": "script-src 'self'; object-src 'self'; style-src 'self';",
     "background": {
         "scripts": ["background.js"]
     },
