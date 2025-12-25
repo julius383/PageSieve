@@ -1,6 +1,6 @@
 <script lang="ts">
     import {
-        resetFields,
+        resetDefinitions,
         handleImportConfig,
         handleExportConfig,
         handleSaveConfig,
@@ -79,11 +79,11 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={resetFields}>
+                <Button size="icon" variant="ghost" onclick={resetDefinitions}>
                     <ListRestart class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>
-            <Tooltip.Content>Reset fields</Tooltip.Content>
+            <Tooltip.Content>Reset selectors</Tooltip.Content>
         </Tooltip.Root>
     </Tooltip.Provider>
 </div>

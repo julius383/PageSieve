@@ -1,9 +1,11 @@
+// vim:set foldlevel=0 foldmethod=marker:
+import { SvelteURL } from 'svelte/reactivity';
 import { Parser } from '@json2csv/plainjs';
 import { writable, derived, get } from 'svelte/store';
-import localforage from 'localforage';
+import localforage, { config } from 'localforage';
 
 // import { SvelteURL } from 'svelte/reactivity';
-import { SelectorConfig, PropConfig, ScrapeConfig, ScrapInstance, ExtensionStatus } from '../types';
+import { SelectorDefinition, ScrapeConfig, ScrapeInstance, ExtensionStatus, StoredScrape, PaginationConfig, Metadata, ExtractionOptions, } from '../types';
 import { SvelteURL } from 'svelte/reactivity';
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
@@ -35,52 +37,37 @@ interface Settings {
     appendData: boolean;
 }
 
-const SETTINGS: Settings = { appendData: false };
 
-export const fields = writable<SelectorConfig[]>([{ id: 1, name: '', selector: '' }]);
-let nextId = 2;
+// PaginationConfig handling start {{{
+export const pagination = writable<PaginationConfig>({mode: 'none'})
 
-export function addField() {
-    fields.update((currentFields) => [...currentFields, { id: nextId++, name: '', selector: '' }]);
+// }}}
+
+
+// SelectorDefinition handling start {{{
+export const selectorDefs = writable<SelectorDefinition[]>([{ id: 1, name: '', selector: '' }]);
+let nextSelectorId = 2;
+
+export function addDefinition() {
+    selectorDefs.update((currentFields) => [...currentFields, { id: nextSelectorId++, name: '', selector: '' }]);
 }
 
-export function deleteField(id: number) {
-    fields.update((currentFields) => currentFields.filter((item) => item.id !== id));
+export function deleteDefinition(id: number) {
+    selectorDefs.update((currentFields) => currentFields.filter((item) => item.id !== id));
 }
 
-export function resetFields() {
-    nextId = 1;
-    fields.set([{ id: nextId++, name: '', selector: '' }]);
+export function resetDefinitions() {
+    nextSelectorId = 1;
+    selectorDefs.set([{ id: nextSelectorId++, name: '', selector: '' }]);
 }
+
+// }}}
 
 let currentURL = $state('');
 let currentTitle = $state('');
 
-browser.runtime.sendMessage({ action: 'getTabUrl' }).then((response) => {
-    currentURL = response.url;
-    currentTitle = response.title;
-    console.log(`Current URL is ${response.url}`);
-});
 
-export const properties = writable<PropConfig[]>([{ id: 1, key: 'URL', value: '' }]);
-let nextPropId = 2;
-
-export function addProperty() {
-    properties.update((currentFields) => [
-        ...currentFields,
-        { id: nextPropId++, key: '', value: '' },
-    ]);
-}
-
-export function deleteProperty(id: number) {
-    properties.update((currentFields) => currentFields.filter((item) => item.id !== id));
-}
-
-export function resetProperties() {
-    nextPropId = 1;
-    properties.set([{ id: nextPropId++, key: '', value: '' }]);
-}
-
+// extractedData handling start {{{
 export const extractedData = writable([]);
 const extractedJSON = derived(extractedData, ($extractedData) =>
     JSON.stringify($extractedData, null, 2),
@@ -94,8 +81,20 @@ export function resetExtractedData() {
 export const columns = derived(extractedData, ($extractedData) =>
     $extractedData.length > 0 ? Object.keys($extractedData[0]).filter((key) => key !== 'id') : [],
 );
+// }}}
 
-const scrapeRuns = $state<ScrapInstance[]>([]);
+// Metadata handling start {{{
+export const metadata = writable<Metadata>({id: '', url: '', version: '1.0' })
+
+// }}}
+
+// ExtractOptions handling start {{{
+export const extractOptions = writable<ExtractionOptions>({waitForNetworkIdle: true, appendData: false})
+
+// }}}
+
+
+const scrapeRuns = $state<ScrapeInstance[]>([]);
 
 export function downloadJSON() {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(get(extractedJSON));
@@ -132,7 +131,7 @@ export function downloadCSV() {
  *
  */
 export async function handleExtract() {
-    const selectors = get(fields).filter((f) => f.name && f.selector);
+    const selectors = get(selectorDefs).filter((f) => f.name && f.selector);
 
     if (selectors.length === 0) {
         browser.runtime.sendMessage({
@@ -158,24 +157,47 @@ export async function handleExtract() {
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
                 scrapeRuns.length = scrapeRuns.length > 4 ? 4 : scrapeRuns.length;
-                if (get(fields).length > 0 && response.result) {
-                    const contentHashShort = await shortHash(get(fields));
+                if (get(selectorDefs).length > 0 && response.result) {
+                    const contentHashShort = await shortHash(get(selectorDefs));
                     const runInst = {
-                        url: new URL(tabInfo.url).hostname,
+                        url: new SvelteURL(tabInfo.url).hostname,
                         shortHash: contentHashShort,
+                        timestamp: Date.now(),
                     };
                     if (scrapeRuns.length > 0) {
+                        // check if last run has identical config
                         if (
                             JSON.stringify($state.snapshot(scrapeRuns[0])) ==
                             JSON.stringify(runInst)
                         ) {
-                            SETTINGS.appendData = true;
+                            extractOptions.update((current) => {
+                                return { ...current, appendData: true }
+                            })
+
+                            metadata.update((current) => {
+                                return {
+                                    ...current,
+                                    lastRunAt: Date.now()
+                                }
+                            });
                         }
                     } else {
+                        // this is the first run with with new config
                         scrapeRuns.unshift(runInst);
+                        const response = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+
+                        // update URL in metadata
+                        metadata.update((current) => {
+                            return {
+                                ...current,
+                                url: response.url,
+                                selectorCount: get(selectorDefs).length,
+                                lastRunAt: Date.now()
+                            }
+                        });
                     }
                 }
-                if (SETTINGS.appendData) {
+                if (get(extractOptions).appendData) {
                     extractedData.update((current) => [...current, ...response.result]);
                 } else {
                     extractedData.set(response.result);
@@ -203,6 +225,7 @@ export async function handleExtract() {
  * @param {Event} event - holds input holding file to load
  */
 export function handleImportConfig(event: Event) {
+    // FIXME: import new config fields
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
@@ -219,16 +242,16 @@ export function handleImportConfig(event: Event) {
             console.dir(configData);
             // FIXME: figure out how to load extra data such as the id and createdAt
             if (configData != undefined) {
-                fields.set([]);
-                for (const item of configData['fieldConf']) {
-                    fields.update((currentFields) => [...currentFields, item]);
-                }
-                properties.set([]);
-                for (const item of configData['propsConf']) {
-                    properties.update((current) => [...current, item]);
-                }
-                nextId = get(fields).length;
-                nextPropId = get(properties).length;
+                // metadata
+                metadata.set(configData.config.metadata);
+                // selectors
+                selectorDefs.set(configData.config.selectors);
+                nextSelectorId = get(selectorDefs).length
+                // options
+                extractOptions.set(configData.config.options);
+                // pagination
+                pagination.set(configData.config.pagination);
+                // variables
             }
         }
     };
@@ -251,7 +274,7 @@ export async function handleExportConfig() {
     // replicates logic in generateConfigId
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const domain = new SvelteURL(tabInfo.url).hostname.replace('www.', '');
-    const contentHashShort = await shortHash(get(fields));
+    const contentHashShort = await shortHash(get(selectorDefs));
     const pathslug = createPathSlug(tabInfo.url);
     const filename = `${sanitizeForFilename(domain)}_${sanitizeForFilename(pathslug)}_${contentHashShort}.json`;
 
@@ -296,7 +319,7 @@ function createPathSlug(url: string) {
  * @param {object} data - object hash
  * @returns {string} - hex substring of hash
  */
-async function shortHash(data: object) {
+async function shortHash(data) {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(JSON.stringify(data));
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
@@ -312,24 +335,28 @@ async function generateConfigId() {
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const domain = new URL(tabInfo.url).hostname.replace('www.', '');
     const pathslug = createPathSlug(tabInfo.url);
-    const contentHashShort = await shortHash(get(fields));
+    const contentHashShort = await shortHash(get(selectorDefs));
     console.log(`domain: ${domain}, pathslug ${pathslug}, shortHash: ${contentHashShort}`);
     const configKey = `${domain}--${pathslug}--${contentHashShort}`;
-    return [tabInfo.url, configKey];
+    return configKey;
 }
 
 async function createConfig() {
-    const [url, id] = await generateConfigId();
+    const id = await generateConfigId();
 
     const config = {
-        fieldConf: get(fields),
-        propsConf: get(properties),
+        metadata: { ...get(metadata), id: id},
+        selectors: get(selectorDefs),
+        options: get(extractOptions),
+        pagination: get(pagination),
+    };
+    const scrape = {
+        id,
         createdAt: Date.now(),
         updatedAt: Date.now(),
-        id,
-        url,
-    };
-    return config;
+        config,
+    }
+    return scrape;
 }
 
 export const allConfigs = writable<ScrapeConfig[]>([]);
@@ -389,16 +416,12 @@ export async function handleSaveConfig() {
  */
 export function loadConfig(configData: ScrapeConfig) {
     if (configData != undefined) {
-        fields.set([]);
+        selectorDefs.set([]);
         for (const item of configData['fieldConf']) {
-            fields.update((currentFields) => [...currentFields, item]);
+            selectorDefs.update((currentFields) => [...currentFields, item]);
         }
-        properties.set([]);
-        for (const item of configData['propsConf']) {
-            properties.update((current) => [...current, item]);
-        }
-        nextId = get(fields).length;
-        nextPropId = get(properties).length;
+        // FIXME: load right congig
+        nextSelectorId = get(selectorDefs).length;
     }
 }
 
