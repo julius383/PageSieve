@@ -57,13 +57,13 @@ export interface SelectorDefinition {
 
 export interface ScrapeConfig {
     metadata: Metadata;
-    selectos: SelectorDefinition[];
+    selectors: SelectorDefinition[];
     options: ExtractionOptions;
     pagination: PaginationConfig;
     variables?: Record<string, VariableDefinition>;
 }
 
-export interface StoredScrape {
+export interface StoredConfig {
     id: string;
     createdAt: number;
     updatedAt: number;

@@ -11,14 +11,14 @@
     import advancedFormat from 'dayjs/plugin/advancedFormat.js';
     dayjs.extend(advancedFormat);
 
+    import EditableInput from './EditableInput.svelte';
+
     import {
         Search,
         Pencil,
         Trash2,
         ChevronsUpDownIcon,
         ArrowUpToLine,
-        Check,
-        X,
     } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
@@ -29,25 +29,6 @@
         removeConfig,
         refreshConfigs,
     } from '../state.svelte';
-
-    /*
-    const items = [
-        {
-            fieldConf: [{ id: 1, name: 'title', selector: 'h2' }],
-            propsConf: [{ id: 1, key: 'URL', value: '' }],
-            createdAt: 1764496643810,
-            updatedAt: 1764496643812,
-            id: 'developer.mozilla.org:tabs-Tab:a2db756c',
-        },
-        {
-            fieldConf: [{ id: 1, name: 'title', selector: 'h2' }],
-            propsConf: [{ id: 1, key: 'URL', value: '' }],
-            createdAt: 1764496643810,
-            updatedAt: 1764496643812,
-            id: 'developer.mozilla.org:tabs-Tab:a2db756c',
-        },
-    ];
-    */
 
     let editingId = $state(null);
     let newIdValue = $state('');
@@ -73,14 +54,6 @@
             }
         }
         cancelEditing();
-    }
-
-    async function handleInputKeydown(event, oldId) {
-        if (event.key === 'Enter') {
-            await saveRename(oldId);
-        } else if (event.key === 'Escape') {
-            cancelEditing();
-        }
     }
 
     async function handleDelete(id: string): Promise<void> {
@@ -127,35 +100,19 @@
             <Card.Root>
                 <Card.Header>
                     <Card.Title class="text-wrap break-all">
-                        {#if editingId === item.id}
-                            <input
-                                type="text"
-                                bind:value={newIdValue}
-                                onkeydown={(e) => handleInputKeydown(e, item.id)}
-                                class="bg-transparent border-b border-current w-full focus:outline-none"
-                            />
-                        {:else}
-                            {item.id}
-                        {/if}
+                      <EditableInput
+                        editing={editingId === item.id}
+                        displayValue={item.id}
+                        bind:editValue={newIdValue}
+                        onSave={() => saveRename(item.id)}
+                        onCancel={cancelEditing}
+                      />
                     </Card.Title>
                     <Card.Description
                         >Saved on {dayjs(item.updatedAt).format('D MMM YYYY')}</Card.Description
                     >
                     <Card.Action>
-                        {#if editingId === item.id}
-                            <div class="flex items-end gap-x-1 flex-start">
-                                <Button
-                                    onclick={() => saveRename(item.id)}
-                                    variant="outline"
-                                    size="icon"
-                                >
-                                    <Check />
-                                </Button>
-                                <Button onclick={cancelEditing} variant="destructive" size="icon">
-                                    <X />
-                                </Button>
-                            </div>
-                        {:else}
+                        {#if editingId !== item.id}
                             <div class="flex items-end gap-x-1 flex-start">
                                 <Tooltip.Provider>
                                     <Tooltip.Root>

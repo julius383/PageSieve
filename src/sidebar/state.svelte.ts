@@ -5,7 +5,7 @@ import { writable, derived, get } from 'svelte/store';
 import localforage, { config } from 'localforage';
 
 // import { SvelteURL } from 'svelte/reactivity';
-import { SelectorDefinition, ScrapeConfig, ScrapeInstance, ExtensionStatus, StoredScrape, PaginationConfig, Metadata, ExtractionOptions, } from '../types';
+import { SelectorDefinition, ScrapeConfig, ScrapeInstance, ExtensionStatus, StoredConfig, PaginationConfig, Metadata, ExtractionOptions, } from '../types';
 import { SvelteURL } from 'svelte/reactivity';
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
@@ -167,8 +167,7 @@ export async function handleExtract() {
                     if (scrapeRuns.length > 0) {
                         // check if last run has identical config
                         if (
-                            JSON.stringify($state.snapshot(scrapeRuns[0])) ==
-                            JSON.stringify(runInst)
+                            (scrapeRuns[0].shortHash == runInst.shortHash)
                         ) {
                             extractOptions.update((current) => {
                                 return { ...current, appendData: true }
@@ -195,6 +194,10 @@ export async function handleExtract() {
                                 lastRunAt: Date.now()
                             }
                         });
+
+                        extractOptions.update((current) => {
+                            return { ...current, appendData: false }
+                        })
                     }
                 }
                 if (get(extractOptions).appendData) {
@@ -240,19 +243,7 @@ export function handleImportConfig(event: Event) {
             configData = JSON.parse(reader.result as string);
 
             console.dir(configData);
-            // FIXME: figure out how to load extra data such as the id and createdAt
-            if (configData != undefined) {
-                // metadata
-                metadata.set(configData.config.metadata);
-                // selectors
-                selectorDefs.set(configData.config.selectors);
-                nextSelectorId = get(selectorDefs).length
-                // options
-                extractOptions.set(configData.config.options);
-                // pagination
-                pagination.set(configData.config.pagination);
-                // variables
-            }
+            loadConfig(configData);
         }
     };
     reader.readAsText(file);
@@ -359,7 +350,7 @@ async function createConfig() {
     return scrape;
 }
 
-export const allConfigs = writable<ScrapeConfig[]>([]);
+export const allConfigs = writable<StoredConfig[]>([]);
 
 /**
  * Loads ScrapeConfigs from browser local storage
@@ -412,16 +403,21 @@ export async function handleSaveConfig() {
 /**
  * Loads config into plugin
  *
- * @param {ScrapeConfig} configData - config to load
+ * @param {StoredConfig} configData - config to load
  */
-export function loadConfig(configData: ScrapeConfig) {
+export function loadConfig(configData: StoredConfig) {
+    // FIXME: figure out how to load extra data such as the id and createdAt
     if (configData != undefined) {
-        selectorDefs.set([]);
-        for (const item of configData['fieldConf']) {
-            selectorDefs.update((currentFields) => [...currentFields, item]);
-        }
-        // FIXME: load right congig
-        nextSelectorId = get(selectorDefs).length;
+        // metadata
+        metadata.set(configData.config.metadata);
+        // selectors
+        selectorDefs.set(configData.config.selectors);
+        nextSelectorId = get(selectorDefs).length
+        // options
+        extractOptions.set(configData.config.options);
+        // pagination
+        pagination.set(configData.config.pagination);
+        // variables
     }
 }
 
@@ -437,7 +433,7 @@ export async function renameConfig(oldId: string, newId: string) {
         console.error(`Config with id "${newId}" already exists.`);
         return false;
     }
-    const conf = (await localforage.getItem(oldId)) as ScrapeConfig;
+    const conf = (await localforage.getItem(oldId)) as StoredConfig;
     if (conf) {
         await localforage.removeItem(oldId);
         conf.id = newId;
