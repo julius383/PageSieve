@@ -159,7 +159,6 @@
                         </div>
                         <Collapsible.Content>
                             <div class="p-4 rounded-md text-sm overflow-wrap">
-                                <!-- FIXME: large config overflowing container -->
                                 <JsonViewer value={item} />
                             </div>
                         </Collapsible.Content>
