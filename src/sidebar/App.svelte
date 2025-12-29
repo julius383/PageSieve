@@ -27,7 +27,7 @@
     let logViewerAccordionValue = $state<string | undefined>(undefined);
 </script>
 
-<main class="p-4 h-screen flex flex-col gap-4 bg-background text-foreground">
+<main class="p-4 flex flex-col gap-4 bg-background text-foreground h-screen">
     <div class="flex items-center justify-between border-b bg-background py-1.5">
         <ActionBar />
         <Separator orientation="vertical" class="mx-2 h-4" />
@@ -62,8 +62,8 @@
             <TabsTrigger value="properties">Config</TabsTrigger>
             <TabsTrigger value="saved-configs">Library</TabsTrigger>
         </TabsList>
-        <TabsContent value="selectorDefs">
-            <Resizable.PaneGroup direction="vertical" class="pt-4 flex-1 overflow-auto">
+        <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
+            <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
                 <Resizable.Pane defaultSize={50} class="flex flex-col">
                     <div class="space-y-4 flex-1 overflow-y-auto">
                         {#each $selectorDefs as field (field.id)}
@@ -86,12 +86,12 @@
                 </Resizable.Pane>
             </Resizable.PaneGroup>
         </TabsContent>
-        <TabsContent value="properties" class="pt-4">
+        <TabsContent value="properties" class="pt-4 overflow-y-auto">
             <div class="space-y-4">
               <ConfigPanel />
             </div>
         </TabsContent>
-        <TabsContent value="saved-configs" class="pt-4">
+        <TabsContent value="saved-configs" class="pt-4 overflow-y-auto">
             <SavedLibrary />
         </TabsContent>
     </TabsRoot>
