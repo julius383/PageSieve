@@ -2,6 +2,7 @@
   import * as Accordion from "$lib/components/ui/accordion/index.js";
 
   import MetadataSection from "./MetadataSection.svelte";
+  import OptionsSection from "./OptionsSection.svelte";
 
 </script>
 
@@ -17,7 +18,7 @@
  <Accordion.Item value="item-2">
   <Accordion.Trigger class="text-white font-bold text-xl">Extraction Options</Accordion.Trigger>
   <Accordion.Content>
-      Some options
+      <OptionsSection />
   </Accordion.Content>
  </Accordion.Item>
 
