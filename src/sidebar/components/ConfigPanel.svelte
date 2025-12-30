@@ -3,6 +3,7 @@
 
     import MetadataSection from './MetadataSection.svelte';
     import OptionsSection from './OptionsSection.svelte';
+    import PaginationSection from './PaginationSection.svelte';
 </script>
 
 <Accordion.Root value={['item-1']} type="multiple">
@@ -24,7 +25,9 @@
 
     <Accordion.Item value="item-3">
         <Accordion.Trigger class="text-white font-bold text-xl">Pagination</Accordion.Trigger>
-        <Accordion.Content>Some pagination options</Accordion.Content>
+        <Accordion.Content>
+      <PaginationSection />
+    </Accordion.Content>
     </Accordion.Item>
 
     <Accordion.Item value="item-4">

@@ -28,24 +28,28 @@ export interface ExtractionOptions {
     // javascript: string;
 }
 
-export type PaginationMode = 'none' | 'next' | 'links' | 'template';
+export type PaginationConfig =
+  | { mode: 'none' }
 
-export interface PaginationConfig {
-    mode: PaginationMode;
+  | {
+      mode: 'next';
+      nextSelector: string;
+      maxPages?: number;
+    }
 
-    // Next button mode
-    nextSelector?: string;
-    clickNext?: boolean;
-    stopIfMissing?: boolean;
+  | {
+      mode: 'links';
+      pageLinks: string[];
+    }
 
-    // links mode
-    pageLinks?: string[];
+  | {
+      mode: "template";
+      urlTemplate: string;     // e.g. "/products?page={{page}}"
+      startPage: number;       // default: 1
+      increment?: number;      // default: 1
+      maxPages?: number;       // optional safety cap
+    };
 
-    // URL template mode
-    urlTemplate?: string; // e.g. /page={{page}}
-    startPage?: number;
-    increment?: number;
-}
 
 export interface SelectorDefinition {
     id: number;

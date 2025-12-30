@@ -42,12 +42,9 @@ browser.runtime.onMessage.addListener((msg) => {
     }
 });
 
-interface Settings {
-    appendData: boolean;
-}
-
 // PaginationConfig handling start {{{
-export const pagination = writable<PaginationConfig>({ mode: 'none' });
+// TODO: figure out best default here and in other exported stores
+export const pagination = writable<PaginationConfig>({ mode: 'next', nextSelector: '' });
 
 // }}}
 
