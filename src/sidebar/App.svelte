@@ -11,11 +11,7 @@
     import { Separator } from '$lib/components/ui/separator';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
 
-    import {
-        selectorDefs,
-        addDefinition,
-        deleteDefinition,
-    } from './state.svelte';
+    import { selectorDefs, addDefinition, deleteDefinition } from './state.svelte';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
@@ -88,7 +84,7 @@
         </TabsContent>
         <TabsContent value="properties" class="pt-4 overflow-y-auto">
             <div class="space-y-4">
-              <ConfigPanel />
+                <ConfigPanel />
             </div>
         </TabsContent>
         <TabsContent value="saved-configs" class="pt-4 overflow-y-auto">

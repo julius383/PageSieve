@@ -21,7 +21,11 @@
 
 <div class="space-y-4">
     <hr />
-    <h2 class="text-2xl font-bold">Results {#if $extractedData.length > 0} ({$extractedData.length}) {/if}</h2>
+    <h2 class="text-2xl font-bold">
+        Results {#if $extractedData.length > 0}
+            ({$extractedData.length})
+        {/if}
+    </h2>
 </div>
 <Tabs.Root value="data" class="h-full flex flex-col">
     <Tabs.List class="flex justify-between items-center w-full">

@@ -13,13 +13,7 @@
 
     import EditableInput from './EditableInput.svelte';
 
-    import {
-        Search,
-        Pencil,
-        Trash2,
-        ChevronsUpDownIcon,
-        ArrowUpToLine,
-    } from '@lucide/svelte';
+    import { Search, Pencil, Trash2, ChevronsUpDownIcon, ArrowUpToLine } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
     import {
@@ -100,13 +94,13 @@
             <Card.Root>
                 <Card.Header>
                     <Card.Title class="text-wrap break-all">
-                      <EditableInput
-                        editing={editingId === item.id}
-                        displayValue={item.id}
-                        bind:editValue={newIdValue}
-                        onSave={() => saveRename(item.id)}
-                        onCancel={cancelEditing}
-                      />
+                        <EditableInput
+                            editing={editingId === item.id}
+                            displayValue={item.id}
+                            bind:editValue={newIdValue}
+                            onSave={() => saveRename(item.id)}
+                            onCancel={cancelEditing}
+                        />
                     </Card.Title>
                     <Card.Description
                         >Saved on {dayjs(item.updatedAt).format('D MMM YYYY')}</Card.Description

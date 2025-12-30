@@ -5,7 +5,16 @@ import { writable, derived, get } from 'svelte/store';
 import localforage, { config } from 'localforage';
 
 // import { SvelteURL } from 'svelte/reactivity';
-import { SelectorDefinition, ScrapeConfig, ScrapeInstance, ExtensionStatus, StoredConfig, PaginationConfig, Metadata, ExtractionOptions, } from '../types';
+import {
+    SelectorDefinition,
+    ScrapeConfig,
+    ScrapeInstance,
+    ExtensionStatus,
+    StoredConfig,
+    PaginationConfig,
+    Metadata,
+    ExtractionOptions,
+} from '../types';
 import { SvelteURL } from 'svelte/reactivity';
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
@@ -37,19 +46,20 @@ interface Settings {
     appendData: boolean;
 }
 
-
 // PaginationConfig handling start {{{
-export const pagination = writable<PaginationConfig>({mode: 'none'})
+export const pagination = writable<PaginationConfig>({ mode: 'none' });
 
 // }}}
-
 
 // SelectorDefinition handling start {{{
 export const selectorDefs = writable<SelectorDefinition[]>([{ id: 1, name: '', selector: '' }]);
 let nextSelectorId = 2;
 
 export function addDefinition() {
-    selectorDefs.update((currentFields) => [...currentFields, { id: nextSelectorId++, name: '', selector: '' }]);
+    selectorDefs.update((currentFields) => [
+        ...currentFields,
+        { id: nextSelectorId++, name: '', selector: '' },
+    ]);
 }
 
 export function deleteDefinition(id: number) {
@@ -65,7 +75,6 @@ export function resetDefinitions() {
 
 let currentURL = $state('');
 let currentTitle = $state('');
-
 
 // extractedData handling start {{{
 export const extractedData = writable([]);
@@ -84,15 +93,17 @@ export const columns = derived(extractedData, ($extractedData) =>
 // }}}
 
 // Metadata handling start {{{
-export const metadata = writable<Metadata>({id: '', url: '', version: '1.0' })
+export const metadata = writable<Metadata>({ id: '', url: '', version: '1.0' });
 
 // }}}
 
 // ExtractOptions handling start {{{
-export const extractOptions = writable<ExtractionOptions>({waitForNetworkIdle: true, appendData: false})
+export const extractOptions = writable<ExtractionOptions>({
+    waitForNetworkIdle: true,
+    appendData: false,
+});
 
 // }}}
-
 
 const scrapeRuns = $state<ScrapeInstance[]>([]);
 
@@ -166,18 +177,16 @@ export async function handleExtract() {
                     };
                     if (scrapeRuns.length > 0) {
                         // check if last run has identical config
-                        if (
-                            (scrapeRuns[0].shortHash == runInst.shortHash)
-                        ) {
+                        if (scrapeRuns[0].shortHash == runInst.shortHash) {
                             extractOptions.update((current) => {
-                                return { ...current, appendData: true }
-                            })
+                                return { ...current, appendData: true };
+                            });
 
                             metadata.update((current) => {
                                 return {
                                     ...current,
-                                    lastRunAt: Date.now()
-                                }
+                                    lastRunAt: Date.now(),
+                                };
                             });
                         }
                     } else {
@@ -191,13 +200,13 @@ export async function handleExtract() {
                                 ...current,
                                 url: response.url,
                                 selectorCount: get(selectorDefs).length,
-                                lastRunAt: Date.now()
-                            }
+                                lastRunAt: Date.now(),
+                            };
                         });
 
                         extractOptions.update((current) => {
-                            return { ...current, appendData: false }
-                        })
+                            return { ...current, appendData: false };
+                        });
                     }
                 }
                 if (get(extractOptions).appendData) {
@@ -228,7 +237,6 @@ export async function handleExtract() {
  * @param {Event} event - holds input holding file to load
  */
 export function handleImportConfig(event: Event) {
-    // FIXME: import new config fields
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
@@ -336,7 +344,7 @@ async function createConfig() {
     const id = await generateConfigId();
 
     const config = {
-        metadata: { ...get(metadata), id: id},
+        metadata: { ...get(metadata), id: id },
         selectors: get(selectorDefs),
         options: get(extractOptions),
         pagination: get(pagination),
@@ -346,7 +354,7 @@ async function createConfig() {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         config,
-    }
+    };
     return scrape;
 }
 
@@ -412,7 +420,7 @@ export function loadConfig(configData: StoredConfig) {
         metadata.set(configData.config.metadata);
         // selectors
         selectorDefs.set(configData.config.selectors);
-        nextSelectorId = get(selectorDefs).length
+        nextSelectorId = get(selectorDefs).length;
         // options
         extractOptions.set(configData.config.options);
         // pagination
