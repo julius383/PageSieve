@@ -70,8 +70,6 @@ export function resetDefinitions() {
 
 // }}}
 
-let currentURL = $state('');
-let currentTitle = $state('');
 
 // extractedData handling start {{{
 export const extractedData = writable([]);
@@ -383,7 +381,7 @@ export async function handleSaveConfig() {
 
         browser.runtime.sendMessage({
             action: 'set-status',
-            data: { level: 'saving', message: `Saving config for ${config.url}` },
+            data: { level: 'saving', message: `Saving config for ${config.config.metadata.url}` },
         });
         const existing = await localforage.getItem(config.id);
         if (existing) {

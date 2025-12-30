@@ -64,9 +64,7 @@
                 min="0"
                 step="1000"
                 placeholder="e.g. 1000"
-                value={$extractOptions.delayMs ?? ''}
-                onInput={(e) =>
-                    update('delayMs', Number((e.target as HTMLInputElement).value) || 0)}
+                bind:value={$extractOptions.delayMs}
             />
             <Field.Description>Wait this many milliseconds before extraction.</Field.Description>
         </Field.Field>
@@ -77,9 +75,7 @@
                 min="0"
                 step="1000"
                 placeholder="e.g. 30000"
-                value={$extractOptions.timeoutMs ?? ''}
-                onInput={(e) =>
-                    update('timeoutMs', Number((e.target as HTMLInputElement).value) || 0)}
+                bind:value={$extractOptions.timeoutMs}
             />
             <Field.Description>Abort extraction if the amount is exceeded</Field.Description>
         </Field.Field>
