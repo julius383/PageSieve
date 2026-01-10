@@ -7,12 +7,10 @@
 
     import type { ExtractionOptions } from '../../types.ts';
 
-    import { extractOptions } from '../state.svelte';
+    import { scrapeConfig } from "../stores/scrapeConfig.svelte";
 
     function update<K extends keyof ExtractionOptions>(key: K, value: ExtractionOptions[K]) {
-        extractOptions.update((current) => {
-            return { ...current, [key]: value };
-        });
+      scrapeConfig.options[key] = value;
     }
 </script>
 
@@ -22,8 +20,8 @@
     <Field.Group>
         <Field.Field orientation="horizontal">
             <Checkbox
-                checked={$extractOptions.waitForNetworkIdle ?? false}
-                onCheckedChange={(v) => update('waitForNetworkIdle', v)}
+                checked={scrapeConfig.options.waitforNetworkIdle ?? false}
+                onCheckedChange={(v) => update('waitforNetworkIdle', v)}
             />
             <Field.Content>
                 <Field.Label>Wait for network idle</Field.Label>
@@ -32,7 +30,7 @@
         </Field.Field>
         <Field.Field orientation="horizontal">
             <Checkbox
-                checked={$extractOptions.scrollToBottom ?? false}
+                checked={scrapeConfig.options.scrollToBottom ?? false}
                 onCheckedChange={(v) => update('scrollToBottom', v)}
             />
             <Field.Content>
@@ -42,7 +40,7 @@
         </Field.Field>
         <Field.Field orientation="horizontal">
             <Checkbox
-                checked={$extractOptions.runJavaScript ?? false}
+                checked={scrapeConfig.options.runJavaScript ?? false}
                 onCheckedChange={(v) => update('runJavaScript', v)}
             />
             <Field.Content>
@@ -64,7 +62,7 @@
                 min="0"
                 step="1000"
                 placeholder="e.g. 1000"
-                bind:value={$extractOptions.delayMs}
+                bind:value={scrapeConfig.options.delayMs}
             />
             <Field.Description>Wait this many milliseconds before extraction.</Field.Description>
         </Field.Field>
@@ -75,7 +73,7 @@
                 min="0"
                 step="1000"
                 placeholder="e.g. 30000"
-                bind:value={$extractOptions.timeoutMs}
+                bind:value={scrapeConfig.options.timeoutMs}
             />
             <Field.Description>Abort extraction if the amount is exceeded</Field.Description>
         </Field.Field>
@@ -88,7 +86,7 @@
     <Field.Group>
         <Field.Field orientation="horizontal">
             <Checkbox
-                checked={$extractOptions.appendData ?? false}
+                checked={scrapeConfig.options.appendData ?? false}
                 onCheckedChange={(v) => update('appendData', v)}
             />
             <Field.Content>
