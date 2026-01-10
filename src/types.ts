@@ -1,96 +1,98 @@
-export interface Metadata {
-    id: string;
-    description?: string;
-    url: string;
-    version: string;
-    author?: string;
+import * as z from "zod";
 
-    selectorCount?: number;
-    lastRunAt?: number; // timestamp
-}
+export const Metadata = z.object({
+    id: z.string().default(''),
+    description: z.string().optional(),
+    url: z.url().default("https://pagesieve.xyz"),
+    version: z.string().default("1.0.0"),
+    author: z.string().optional(),
 
-export type VariableType = 'string' | 'number' | 'boolean' | 'list' | 'enum' | 'json';
-
-export interface VariableDefinition {
-    type: VariableType;
-    value: string | number | boolean | string[] | object | number[];
-    description?: string;
-    required?: boolean;
-}
-
-export interface ExtractionOptions {
-    waitForNetworkIdle?: boolean;
-    scrollToBottom?: boolean;
-    runJavaScript?: boolean;
-    delayMs?: number;
-    timeoutMs?: number;
-    appendData?: boolean;
-    // javascript: string;
-}
-
-export type PaginationConfig =
-  | { mode: 'none' }
-
-  | {
-      mode: 'next';
-      nextSelector: string;
-      maxPages?: number;
-    }
-
-  | {
-      mode: 'links';
-      pageLinks: string[];
-    }
-
-  | {
-      mode: "template";
-      urlTemplate: string;     // e.g. "/products?page={{page}}"
-      startPage: number;       // default: 1
-      increment?: number;      // default: 1
-      maxPages?: number;       // optional safety cap
-    };
+    selectorCount: z.number().nonnegative().optional().default(0),
+    lastRunAt: z.iso.datetime( { offset: true }).optional(),
+});
 
 
-export interface SelectorDefinition {
-    id: number;
-    name: string;
-    selector: string;
-    type?: string;
-    description?: string;
-}
+export const ExtractionOptions = z.object({
+    waitforNetworkIdle: z.boolean().default(true),
+    scrollToBottom: z.boolean().optional().default(false),
+    runJavaScript: z.boolean().optional().default(true),
+    delayMs: z.number().optional().default(0),
+    timeoutMs: z.number().optional().default(60_000),
+    appendData: z.boolean().default(false),
+})
 
-export interface ScrapeConfig {
-    metadata: Metadata;
-    selectors: SelectorDefinition[];
-    options: ExtractionOptions;
-    pagination: PaginationConfig;
-    variables?: Record<string, VariableDefinition>;
-}
 
-export interface StoredConfig {
-    id: string;
-    createdAt: number;
-    updatedAt: number;
-    config: ScrapeConfig;
-}
+export const PaginationConfig = z.discriminatedUnion("mode", [
+    z.object({ mode: z.literal('none') }),
+    z.object({ mode: z.literal('next'), nextSelector: z.string(), maxPages: z.int().max(1000).optional() }),
+    z.object({ mode: z.literal('links'), pageLinks: z.string().array() }),
+    z.object({
+        mode: z.literal('template'),
+        urlTemplate: z.string().regex(/.*{{page}}.*/).default("page={{page}}"),
+        startPage: z.int().default(1),
+        increment: z.int().optional().default(1),
+        maxPages: z.int().max(1000).optional()
+    }),
+])
 
-export interface ScrapeInstance {
-    url: string;
-    shortHash: string;
-    timestamp: number;
-}
+const datatypes = ["string", "number", "date", "time", "datetime", "array", "object"];
 
-export type StatusLevel =
-    | 'idle'
-    | 'extracting'
-    | 'error'
-    | 'importing'
-    | 'exporting'
-    | 'saving'
-    | 'selecting';
+export const SelectorDefinition = z.object({
+    id: z.int().positive(),
+    name: z.string(),
+    selector: z.string(),
+    type: z.enum(datatypes).optional(),
+    description: z.string().optional(),
+});
 
-export interface ExtensionStatus {
-    level: StatusLevel;
-    message: string;
-    timestamp: number;
-}
+
+export const VariableDefinition = z.object({
+    type: z.enum(datatypes),
+    value: z.any(),
+    description: z.string().optional(),
+    required: z.boolean().optional(),
+});
+
+
+
+export const ScrapeConfig = z.object({
+    metadata: Metadata,
+    selectors: z.array(SelectorDefinition),
+    options: ExtractionOptions,
+    pagination: PaginationConfig,
+    variables: z.optional(z.array(z.record(z.string(), VariableDefinition))),
+})
+
+
+export const StoredConfig = z.object({
+    id: z.string(),
+    createdAt: z.iso.datetime( { offset: true }),
+    updatedAt: z.iso.datetime( { offset: true }),
+    config: ScrapeConfig,
+})
+
+
+export const ScrapeInstance = z.object({
+    url: z.url(),
+    shortHash: z.string().regex(/[a-f0-9]{6}/),
+    timestamp: z.iso.datetime(),
+})
+
+export type ScrapeInstance = z.infer<typeof ScrapeInstance>;
+
+const StatusLevel = z.enum([ 'idle' , 'extracting' , 'errored' , 'importing' , 'exporting', 'selecting']);
+
+const ExtensionStatus = z.object({
+    level: StatusLevel,
+    message: z.string(),
+    timestamp: z.int().positive(),
+});
+
+export type Metadata = z.infer<typeof Metadata>;
+export type ExtractionOptions = z.infer<typeof ExtractionOptions>;
+export type PaginationConfig = z.infer<typeof PaginationConfig>;
+export type SelectorDefinition = z.infer<typeof SelectorDefinition>;
+export type VariableDefinition = z.infer<typeof VariableDefinition>;
+export type ScrapeConfig = z.infer<typeof ScrapeConfig>;
+export type StoredConfig = z.infer<typeof StoredConfig>;
+export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
