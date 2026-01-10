@@ -4,8 +4,10 @@
         handleImportConfig,
         handleExportConfig,
         handleSaveConfig,
-        handleExtract,
     } from '../state.svelte';
+
+    import { scrapeConfig } from '../stores/scrapeConfig.svelte';
+    import { handleExtract } from '../actions';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
@@ -24,7 +26,7 @@
             <Tooltip.Trigger>
                 <Button
                     size="icon"
-                    onclick={handleExtract}
+                    onclick={() => handleExtract(scrapeConfig.selectors)}
                     class="bg-green-500 text-white font-bold hover:bg-green-600"
                 >
                     <Play class="size-4 mr-1" strokeWidth={2.5} />
