@@ -1,4 +1,4 @@
-import { SelectorConfig } from './types';
+import { SelectorDefinition } from './types';
 import { DOMInspector } from './dominspector.mjs';
 
 const inspector = new DOMInspector();
@@ -8,7 +8,7 @@ const inspector = new DOMInspector();
  * @param selectors - Array of selector configurations
  * @returns Array of extracted data objects
  */
-function extractDataFromPage(selectors: SelectorConfig[]): any {
+function extractDataFromPage(selectors: SelectorDefinition[]): any {
     // Validate input
     if (!selectors || selectors.length === 0) {
         console.warn('No selectors provided');
