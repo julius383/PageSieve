@@ -1,13 +1,10 @@
 <script lang="ts">
     import {
-        resetDefinitions,
-        handleImportConfig,
-        handleExportConfig,
         handleSaveConfig,
     } from '../state.svelte';
 
-    import { scrapeConfig } from '../stores/scrapeConfig.svelte';
-    import { handleExtract } from '../actions';
+    import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
+    import { handleExtract, handleImportConfig, handleExportConfig } from '../actions';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
@@ -70,7 +67,7 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={handleExportConfig}>
+                <Button size="icon" variant="ghost" onclick={() => handleExportConfig(scrapeConfig)}>
                     <Download class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>

@@ -36,20 +36,20 @@ export function downloadCSV(data: object, filename: string = 'data.csv') {
     }
 }
 
+// Characters not allowed in filenames across major OSes
+// eslint-disable-next-line no-control-regex
+const INVALID_CHARS = new RegExp('[<>:"/\\\\|?*\\x00-\\x1F]', 'g');
 
-/**
- * Removes characters illegal in filenames
- *
- * @param {string} str - string to sanitize
- * @returns {string} string with illegal characters
- */
-export function sanitizeForFilename(str: string) {
-    return str
-        .replace(/[^.a-zA-Z0-9\-_]/g, '')
-        .replace(/^\.+/, '')
-        .replace(/\.+$/, '');
+export function sanitizeSegment(input: string): string {
+    return input
+        .normalize('NFKD')                 // normalize unicode
+        .replace(INVALID_CHARS, '')        // remove illegal chars
+        .replace(/\s+/g, '-')              // spaces → dashes
+        .replace(/-+/g, '-')               // collapse dashes
+        .replace(/^\.+|\.+$/g, '')         // trim dots
+        .replace(/^[-_]+|[-_]+$/g, '')     // trim separators
+        .toLowerCase();
 }
-
 
 /**
  * Guesses a unique part of a URL
