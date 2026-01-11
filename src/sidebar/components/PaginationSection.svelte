@@ -5,14 +5,15 @@
   import { Button } from "$lib/components/ui/button";
   import { Separator } from "$lib/components/ui/separator";
 
-  import { get } from 'svelte/store';
 
   import FieldGroup from './FieldGroup.svelte';
   import { pagination } from '../state.svelte';
+  import { scrapeConfig } from "../stores/scrapeConfig.svelte";
+  import { PaginationConfig } from "../../types";
 
   import { Trash2, Plus } from "@lucide/svelte";
 
-  const stored = get(pagination);
+  const stored = scrapeConfig.pagination;
 
   // TODO: make sure defaults are set correctly
   let paginationState = $state({
@@ -41,7 +42,13 @@
 
   $effect(() => {
     const snapshot = $state.snapshot(paginationState);
-    pagination.set(snapshot[snapshot.mode])
+    const result =  PaginationConfig.safeParse(snapshot[snapshot.mode]);
+    if (!result.success) {
+      // TODO: improve show error in UI
+      console.error(result.error);   // ZodError instance
+    } else {
+      Object.assign(scrapeConfig.pagination, result.data);
+    }
   });
 
   function addLink() {
