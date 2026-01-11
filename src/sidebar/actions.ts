@@ -1,7 +1,7 @@
 import { SvelteURL } from "svelte/reactivity";
 import type { SelectorDefinition } from "../types";
 import { scrapeRuns, extractedData } from "./stores/ui.svelte";
-import { shortHash, createPathSlug, sanitizeSegment } from "./util";
+import { shortHash, createPathSlug, sanitizeSegment, generateConfigId } from "./util";
 import { scrapeConfig } from "./stores/scrapeConfig.svelte";
 import { StoredConfig, ScrapeConfig } from "../types";
 
@@ -55,12 +55,12 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
                     } else {
                         // this is the first run with with new config
                         scrapeRuns.runs.unshift(runInst);
-                        const response = await browser.runtime.sendMessage({ action: 'getTabUrl' });
 
                         // update URL in metadata
-                        scrapeConfig.metadata.url = response.url;
+                        scrapeConfig.metadata.url = tabInfo.url;
                         scrapeConfig.metadata.selectorCount = selectors.length
                         scrapeConfig.metadata.lastRunAt = new Date().toISOString();
+                        scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
 
                         scrapeConfig.options.appendData = false;
                     }
@@ -127,17 +127,17 @@ export function handleImportConfig(event: Event) {
  */
 export async function handleExportConfig(config: ScrapeConfig) {
     console.log('Downloading config...');
-    const validSelectors = config.selectors.filter((f) => f.name && f.selector);
-    const contentHashShort = await shortHash(validSelectors);
 
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
-    const domain = new SvelteURL(tabInfo.url).hostname.replace('www.', '');
-    const pathslug = createPathSlug(tabInfo.url);
+    const filename = await generateConfigId(tabInfo.url, config.selectors);
+    const storedConfig = StoredConfig.parse({
+        id: config.metadata.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        config: config
+    })
 
-    let filename = [domain, pathslug, contentHashShort].map(s => sanitizeSegment(s)).join('__')
-    filename = filename.slice(0, 200);
-
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(config));
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
 

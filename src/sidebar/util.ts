@@ -1,4 +1,5 @@
 import { Parser } from '@json2csv/plainjs';
+import { SelectorDefinition } from '../types';
 
 
 // Helper function to capitalize column names
@@ -83,4 +84,17 @@ export async function shortHash(data:object): Promise<string> {
         .slice(0, 4)
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');
+}
+
+export async function generateConfigId(url: string, selectors: SelectorDefinition[]): Promise<string> {
+    // TODO: figure out whether to use shorthash of more than just selectors
+    const validSelectors = selectors.filter((f) => f.name && f.selector);
+    const contentHashShort = await shortHash(validSelectors);
+
+    const domain = new URL(url).hostname.replace('www.', '');
+    const pathslug = createPathSlug(url);
+
+    let filename = [domain, pathslug, contentHashShort].map(s => sanitizeSegment(s)).join('__')
+    filename = filename.slice(0, 200);
+    return filename;
 }
