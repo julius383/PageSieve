@@ -12,9 +12,8 @@
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
 
     const dataColumns = $derived.by(() => {
-      return extractedData.data.length > 0 ? Object.keys(extractedData.data[0]): []
+        return extractedData.data.length > 0 ? Object.keys(extractedData.data[0]) : [];
     });
-
 </script>
 
 <div class="space-y-4">
@@ -46,8 +45,12 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data)}>Download CSV</DropdownMenu.Item>
-                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}>Download JSON</DropdownMenu.Item>
+                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data)}
+                        >Download CSV</DropdownMenu.Item
+                    >
+                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
+                        >Download JSON</DropdownMenu.Item
+                    >
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             <Tooltip.Provider>

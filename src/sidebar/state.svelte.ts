@@ -70,7 +70,6 @@ export function resetDefinitions() {
 
 // }}}
 
-
 // extractedData handling start {{{
 export const extractedData = writable([]);
 const extractedJSON = derived(extractedData, ($extractedData) =>

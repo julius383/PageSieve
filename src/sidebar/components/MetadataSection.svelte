@@ -18,9 +18,8 @@
     }
 
     function update<K extends keyof Metadata>(key: K, value: Metadata[K]) {
-      scrapeConfig.metadata[key] = value;
+        scrapeConfig.metadata[key] = value;
     }
-
 </script>
 
 <div class="space-y-4">

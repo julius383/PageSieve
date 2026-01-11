@@ -1,10 +1,9 @@
-import { SvelteURL } from "svelte/reactivity";
-import type { SelectorDefinition } from "../types";
-import { scrapeRuns, extractedData } from "./stores/ui.svelte";
-import { shortHash, createPathSlug, sanitizeSegment, generateConfigId } from "./util";
-import { scrapeConfig } from "./stores/scrapeConfig.svelte";
-import { StoredConfig, ScrapeConfig } from "../types";
-
+import { SvelteURL } from 'svelte/reactivity';
+import type { SelectorDefinition } from '../types';
+import { scrapeRuns, extractedData } from './stores/ui.svelte';
+import { shortHash, generateConfigId } from './util';
+import { scrapeConfig } from './stores/scrapeConfig.svelte';
+import { StoredConfig, ScrapeConfig } from '../types';
 
 /**
  * Extracts data from current tab using defined selector. Returns via
@@ -50,7 +49,6 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
                         if (scrapeRuns.runs[0].shortHash == runInst.shortHash) {
                             scrapeConfig.options.appendData = true;
                             scrapeConfig.metadata.lastRunAt = new Date().toISOString();
-
                         }
                     } else {
                         // this is the first run with with new config
@@ -58,10 +56,11 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
 
                         // update URL in metadata
                         scrapeConfig.metadata.url = tabInfo.url;
-                        scrapeConfig.metadata.selectorCount = selectors.length
+                        scrapeConfig.metadata.selectorCount = selectors.length;
                         scrapeConfig.metadata.lastRunAt = new Date().toISOString();
                         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
 
+                        // TODO: figure out how to respect user supplied config
                         scrapeConfig.options.appendData = false;
                     }
                 }
@@ -87,11 +86,9 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
     }
 }
 
-
 /**
  * Imports ScrapeConfig from a file
  *
- * @param {Event} event - holds input holding file to load
  */
 export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
@@ -108,7 +105,7 @@ export function handleImportConfig(event: Event) {
             configData = JSON.parse(reader.result as string);
             const result = StoredConfig.safeParse(configData);
             if (!result.success) {
-                console.error(result.error);   // ZodError instance
+                console.error(result.error); // ZodError instance
             } else {
                 Object.assign(scrapeConfig, result.data.config);
             }
@@ -119,13 +116,11 @@ export function handleImportConfig(event: Event) {
     fileInput.value = ''; // Reset for next use
 }
 
-
 /**
  * Export ScrapeConfig to JSON file for download by user
  *
- * @returns {string} auto-generated filename, may differ than one used to save
  */
-export async function handleExportConfig(config: ScrapeConfig) {
+export async function handleExportConfig(config: ScrapeConfig): Promise<string> {
     console.log('Downloading config...');
 
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
@@ -134,10 +129,11 @@ export async function handleExportConfig(config: ScrapeConfig) {
         id: config.metadata.id,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        config: config
-    })
+        config: config,
+    });
 
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
+    const dataStr =
+        'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
 

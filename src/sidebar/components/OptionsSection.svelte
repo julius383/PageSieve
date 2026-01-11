@@ -7,10 +7,10 @@
 
     import type { ExtractionOptions } from '../../types.ts';
 
-    import { scrapeConfig } from "../stores/scrapeConfig.svelte";
+    import { scrapeConfig } from '../stores/scrapeConfig.svelte';
 
     function update<K extends keyof ExtractionOptions>(key: K, value: ExtractionOptions[K]) {
-      scrapeConfig.options[key] = value;
+        scrapeConfig.options[key] = value;
     }
 </script>
 

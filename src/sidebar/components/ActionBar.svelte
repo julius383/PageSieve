@@ -1,7 +1,5 @@
 <script lang="ts">
-    import {
-        handleSaveConfig,
-    } from '../state.svelte';
+    import { handleSaveConfig } from '../state.svelte';
 
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
     import { handleExtract, handleImportConfig, handleExportConfig } from '../actions';
@@ -67,7 +65,11 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={() => handleExportConfig(scrapeConfig)}>
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onclick={() => handleExportConfig(scrapeConfig)}
+                >
                     <Download class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>

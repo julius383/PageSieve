@@ -1,12 +1,10 @@
 import { Parser } from '@json2csv/plainjs';
 import { SelectorDefinition } from '../types';
 
-
 // Helper function to capitalize column names
 export function formatColumnName(name: string): string {
     return name.charAt(0).toUpperCase() + name.slice(1);
 }
-
 
 export function downloadJSON(data: object, filename: string = 'data.json') {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
@@ -17,7 +15,6 @@ export function downloadJSON(data: object, filename: string = 'data.json') {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
-
 
 export function downloadCSV(data: object, filename: string = 'data.csv') {
     try {
@@ -31,7 +28,6 @@ export function downloadCSV(data: object, filename: string = 'data.csv') {
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
-
     } catch (err) {
         console.error(err);
     }
@@ -43,12 +39,12 @@ const INVALID_CHARS = new RegExp('[<>:"/\\\\|?*\\x00-\\x1F]', 'g');
 
 export function sanitizeSegment(input: string): string {
     return input
-        .normalize('NFKD')                 // normalize unicode
-        .replace(INVALID_CHARS, '')        // remove illegal chars
-        .replace(/\s+/g, '-')              // spaces → dashes
-        .replace(/-+/g, '-')               // collapse dashes
-        .replace(/^\.+|\.+$/g, '')         // trim dots
-        .replace(/^[-_]+|[-_]+$/g, '')     // trim separators
+        .normalize('NFKD') // normalize unicode
+        .replace(INVALID_CHARS, '') // remove illegal chars
+        .replace(/\s+/g, '-') // spaces → dashes
+        .replace(/-+/g, '-') // collapse dashes
+        .replace(/^\.+|\.+$/g, '') // trim dots
+        .replace(/^[-_]+|[-_]+$/g, '') // trim separators
         .toLowerCase();
 }
 
@@ -67,14 +63,13 @@ export function createPathSlug(url: string): string {
         .replace(/\.[^.]+$/, '');
 }
 
-
 /**
  * Computes SHA-256 hash of an object
  *
  * @param {object} data - object hash
  * @returns {string} - hex substring of hash
  */
-export async function shortHash(data:object): Promise<string> {
+export async function shortHash(data: object): Promise<string> {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(JSON.stringify(data));
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
@@ -86,7 +81,10 @@ export async function shortHash(data:object): Promise<string> {
         .join('');
 }
 
-export async function generateConfigId(url: string, selectors: SelectorDefinition[]): Promise<string> {
+export async function generateConfigId(
+    url: string,
+    selectors: SelectorDefinition[],
+): Promise<string> {
     // TODO: figure out whether to use shorthash of more than just selectors
     const validSelectors = selectors.filter((f) => f.name && f.selector);
     const contentHashShort = await shortHash(validSelectors);
@@ -94,7 +92,7 @@ export async function generateConfigId(url: string, selectors: SelectorDefinitio
     const domain = new URL(url).hostname.replace('www.', '');
     const pathslug = createPathSlug(url);
 
-    let filename = [domain, pathslug, contentHashShort].map(s => sanitizeSegment(s)).join('__')
+    let filename = [domain, pathslug, contentHashShort].map((s) => sanitizeSegment(s)).join('__');
     filename = filename.slice(0, 200);
     return filename;
 }
