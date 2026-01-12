@@ -6,6 +6,8 @@
     import { Trash2, Pipette, Check, X } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
+    import { setStatus } from '../stores/ui.svelte';
+
     let { id, deleteHandler, fieldName = $bindable(), cssSelector = $bindable() } = $props();
 
     let pickingElement = $state(false);
@@ -34,10 +36,7 @@
             });
             if (response.isActive) {
                 pickingElement = true;
-                browser.runtime.sendMessage({
-                    action: 'set-status',
-                    data: { level: 'inspecting', message: `inspecting for selector` },
-                });
+                setStatus('inspecting', 'click html element to get CSS selector');
             }
         }
     }
@@ -51,10 +50,7 @@
 
             if (!response.isActive) {
                 pickingElement = false;
-                browser.runtime.sendMessage({
-                    action: 'set-status',
-                    data: { level: 'idle', message: `Ready` },
-                });
+                setStatus('idle', 'Ready');
             }
         }
         return;
@@ -69,10 +65,7 @@
 
             if (!response.isActive) {
                 pickingElement = false;
-                browser.runtime.sendMessage({
-                    action: 'set-status',
-                    data: { level: 'idle', message: `Ready` },
-                });
+                setStatus('idle', 'Ready');
             }
         }
         return;

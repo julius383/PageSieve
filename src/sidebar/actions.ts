@@ -1,6 +1,6 @@
-import { SvelteURL } from 'svelte/reactivity';
+import { SvelteDate, SvelteURL } from 'svelte/reactivity';
 import type { SelectorDefinition } from '../types';
-import { scrapeRuns, extractedData } from './stores/ui.svelte';
+import { scrapeRuns, extractedData, extensionStatus, runWithStatus, runWithStatusAsync, setStatus } from './stores/ui.svelte';
 import { shortHash, generateConfigId } from './util';
 import { scrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../types';
@@ -15,10 +15,7 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
     const validSelectors = selectors.filter((f) => f.name && f.selector);
 
     if (validSelectors.length === 0) {
-        browser.runtime.sendMessage({
-            action: 'set-status',
-            data: { level: 'error', message: `No valid selectors to extract.` },
-        });
+        setStatus('errored', 'No valid selectors present');
         return;
     }
 
@@ -28,13 +25,12 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
             currentWindow: true,
         });
         if (tabs[0]?.id) {
+            setStatus('extracting', `Extracting data from ${tabs[0].url}`);
             const response = await browser.tabs.sendMessage(tabs[0].id, {
                 action: 'extractData',
                 selectors: JSON.parse(JSON.stringify(validSelectors)),
             });
 
-            // console.log('Runs is');
-            // console.dir($state.snapshot(scrapeRuns));
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
                 scrapeRuns.runs.length = scrapeRuns.runs.length > 4 ? 4 : scrapeRuns.runs.length;
@@ -71,19 +67,20 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
                     extractedData.data = response.result;
                 }
 
+                setStatus('idle', `Ready`);
                 console.dir(extractedData.data);
-                return 'idle';
+                return;
             } else {
-                console.log('Error, failed to extract selectors');
-                return 'error';
+                setStatus('errored', 'Failed to extract selectors');
+                return;
             }
         } else {
-            console.log('Error: No active tab found.');
-            return 'error';
+            setStatus('errored', 'Failed to find active tab');
+            return;
         }
     } catch (error) {
-        console.error('Error during extraction:', error);
-        return 'error';
+        setStatus('errored', error.message);
+        return;
     }
 }
 
@@ -95,26 +92,34 @@ export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
-    browser.runtime.sendMessage({
-        action: 'set-status',
-        data: { level: 'importing', message: `importing ScrapeConfig from ${file.name}` },
-    });
-    let configData;
-    const reader = new FileReader();
-    reader.onload = () => {
-        if (reader.result) {
-            configData = JSON.parse(reader.result as string);
-            const result = StoredConfig.safeParse(configData);
-            if (!result.success) {
-                console.error(result.error); // ZodError instance
-            } else {
-                Object.assign(scrapeConfig, result.data.config);
-            }
-            console.dir(configData);
+
+    runWithStatus(
+        {
+            status: 'importing',
+            message:`importing ScrapeConfig from ${file.name}` ,
+            timestamp: new SvelteDate().toISOString(),
+        },
+        () => {
+
+            let configData;
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (reader.result) {
+                    configData = JSON.parse(reader.result as string);
+                    const result = StoredConfig.safeParse(configData);
+                    if (!result.success) {
+                        console.error(result.error); // ZodError instance
+                    } else {
+                        Object.assign(scrapeConfig, result.data.config);
+                    }
+                    console.dir(configData);
+                }
+            };
+            reader.readAsText(file);
+            fileInput.value = ''; // Reset for next use
+
         }
-    };
-    reader.readAsText(file);
-    fileInput.value = ''; // Reset for next use
+    )
 }
 
 /**
@@ -122,27 +127,35 @@ export function handleImportConfig(event: Event) {
  *
  */
 export async function handleExportConfig(config: ScrapeConfig): Promise<string> {
-    console.log('Downloading config...');
 
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
-    const storedConfig = StoredConfig.parse({
-        id: config.metadata.id,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        config: config,
-    });
+    runWithStatus(
+        {
+            status: 'exporting',
+            message: `exporting config with id ${filename}`,
+            timestamp: new Date().toISOString()
+        },
+        () => {
 
-    const dataStr =
-        'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
+            const storedConfig = StoredConfig.parse({
+                id: config.metadata.id,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                config: config,
+            });
+            const dataStr =
+                'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute('href', dataStr);
 
-    downloadAnchorNode.setAttribute('download', `${filename}.json`);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    return filename;
+            downloadAnchorNode.setAttribute('download', `${filename}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+
+        }
+    )
 }
 
 export async function handleSaveConfig(config: ScrapeConfig) {
@@ -156,25 +169,35 @@ export async function handleSaveConfig(config: ScrapeConfig) {
         config: config,
     };
 
-    try {
 
-        browser.runtime.sendMessage({
-            action: 'set-status',
-            data: { level: 'saving', message: `Saving config for ${config.metadata.url}` },
-        });
-        await saveConfig(filename, storedConfig)
-        console.log('Configuration saved successfully');
-        console.log(`Saving the following config ${filename}`);
-    } catch (err) {
-        console.error('Error saving configuration:', err);
-        throw err;
-    }
+    await runWithStatusAsync(
+        {
+            status: 'saving',
+            message:`Saving config for ${config.metadata.url}` ,
+            timestamp: new SvelteDate().toISOString(),
+        },
+        async () => {
+            const result = await saveConfig(filename, storedConfig)
+            // FIXME: dont throw
+            if (!result) {
+                throw Error(`existing config with id ${storedConfig.id}`)
+            }
+        }
+    )
+
 }
 
 export async function handleLoadConfig(stored: StoredConfig) {
-    browser.runtime.sendMessage({
-        action: 'set-status',
-        data: { level: 'loading', message: `Loading ScrapeConfig from browser storage` },
-    });
-    Object.assign(scrapeConfig, stored.config);
+    runWithStatus(
+        {
+            status: 'loading',
+            message: `Loading config ${stored.id} from browser storage`,
+            timestamp: new Date().toISOString(),
+
+        },
+        () => {
+
+            Object.assign(scrapeConfig, stored.config);
+        }
+    )
 }

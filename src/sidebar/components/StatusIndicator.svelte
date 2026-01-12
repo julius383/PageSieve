@@ -3,18 +3,19 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Badge } from '$lib/components/ui/badge/index.js';
 
-    import { status } from '../state.svelte';
+    import { extensionStatus } from '../stores/ui.svelte';
 
     const STATUS_CONFIG = {
         ['idle']: { label: 'Idle', style: 'bg-gray-500' },
         ['extracting']: { label: 'Extracting', style: 'bg-green-500 animate-pulse' },
-        ['error']: { label: 'Error', style: 'bg-red-500 animate-bounce' },
+        ['errored']: { label: 'Error', style: 'bg-red-500 animate-bounce' },
         ['importing']: { label: 'Importing', style: 'bg-[#8a3ffc] animate-pulse' },
         ['exporting']: { label: 'Exporting', style: 'bg-[#0043ce] animate-pulse' },
+        ['loading']: { label: 'Loading', style: 'bg-[#8a3ffc] animate-pulse' },
         ['saving']: { label: 'Saving', style: 'bg-[#8a3ffc] animate-pulse' },
-        ['selecting']: { label: 'Selecting', style: 'bg-[#ffd700] animate-pulse' },
+        ['inspecting']: { label: 'Inspecting', style: 'bg-[#ffd700] animate-pulse' },
     };
-    let cfg = () => STATUS_CONFIG[$status?.level] ?? STATUS_CONFIG['idle'];
+    let cfg = () => STATUS_CONFIG[extensionStatus?.status] ?? STATUS_CONFIG['idle'];
 </script>
 
 <Tooltip.Provider>
@@ -28,7 +29,7 @@
             </Badge>
         </Tooltip.Trigger>
         <Tooltip.Content>
-            {$status.message}
+            {extensionStatus.message}
         </Tooltip.Content>
     </Tooltip.Root>
 </Tooltip.Provider>

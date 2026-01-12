@@ -31,10 +31,6 @@ export async function saveConfig(id: string, config: StoredConfig): Promise<bool
     const existing = await getConfig(id);
     if (existing) {
         // TODO: prompt user to rename or overwrite
-        browser.runtime.sendMessage({
-            action: 'set-status',
-            data: { level: 'error', message: `Config with id ${config.id} already exists` },
-        });
         return false;
     }
     await localforage.setItem(id, config);

@@ -86,15 +86,15 @@ const StatusLevel = z.enum([
     'errored',
     'importing',
     'exporting',
-    'selecting',
     'saving',
     'loading',
+    'inspecting',
 ]);
 
 const ExtensionStatus = z.object({
-    level: StatusLevel,
+    status: StatusLevel,
     message: z.string(),
-    timestamp: z.int().positive(),
+    timestamp: z.iso.datetime(),
 });
 
 export type Metadata = z.infer<typeof Metadata>;
