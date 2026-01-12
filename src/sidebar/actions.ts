@@ -4,6 +4,7 @@ import { scrapeRuns, extractedData } from './stores/ui.svelte';
 import { shortHash, generateConfigId } from './util';
 import { scrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../types';
+import { saveConfig } from './services/storage';
 
 /**
  * Extracts data from current tab using defined selector. Returns via
@@ -142,4 +143,38 @@ export async function handleExportConfig(config: ScrapeConfig): Promise<string> 
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
     return filename;
+}
+
+export async function handleSaveConfig(config: ScrapeConfig) {
+
+    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+    const filename = await generateConfigId(tabInfo.url, config.selectors);
+    const storedConfig = {
+        id: config.metadata.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        config: config,
+    };
+
+    try {
+
+        browser.runtime.sendMessage({
+            action: 'set-status',
+            data: { level: 'saving', message: `Saving config for ${config.metadata.url}` },
+        });
+        await saveConfig(filename, storedConfig)
+        console.log('Configuration saved successfully');
+        console.log(`Saving the following config ${filename}`);
+    } catch (err) {
+        console.error('Error saving configuration:', err);
+        throw err;
+    }
+}
+
+export async function handleLoadConfig(stored: StoredConfig) {
+    browser.runtime.sendMessage({
+        action: 'set-status',
+        data: { level: 'loading', message: `Loading ScrapeConfig from browser storage` },
+    });
+    Object.assign(scrapeConfig, stored.config);
 }

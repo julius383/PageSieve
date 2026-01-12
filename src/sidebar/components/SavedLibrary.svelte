@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
@@ -16,13 +18,13 @@
     import { Search, Pencil, Trash2, ChevronsUpDownIcon, ArrowUpToLine } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
-    import {
-        allConfigs,
-        loadConfig,
-        renameConfig,
-        removeConfig,
-        refreshConfigs,
-    } from '../state.svelte';
+    import { allConfigs, refreshConfigs } from '../stores/ui.svelte';
+    import { handleLoadConfig } from '../actions';
+    import { renameConfig, removeConfig } from '../services/storage';
+
+    onMount(() => {
+      refreshConfigs();
+    });
 
     let editingId = $state(null);
     let newIdValue = $state('');
@@ -37,9 +39,10 @@
         newIdValue = '';
     }
 
-    async function saveRename(oldId) {
+    async function saveRename(oldId: string) {
         if (newIdValue && oldId !== newIdValue) {
             const success = await renameConfig(oldId, newIdValue);
+            await refreshConfigs();
             if (success) {
                 console.log(`Renamed config to ${oldId}`);
             } else {
@@ -89,7 +92,7 @@
 <hr />
 
 <div>
-    {#each $allConfigs as item}
+    {#each allConfigs.configs as item}
         <div class="p-1 rounded-md mb-2 w-full">
             <Card.Root>
                 <Card.Header>
@@ -159,7 +162,7 @@
                     </Collapsible.Root>
                 </Card.Content>
                 <Card.Footer>
-                    <Button class="w-full" onclick={() => loadConfig(item)}>
+                    <Button class="w-full" onclick={() => handleLoadConfig(item)}>
                         <ArrowUpToLine />
                         Load Config
                     </Button>

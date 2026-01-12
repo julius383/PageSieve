@@ -87,6 +87,8 @@ const StatusLevel = z.enum([
     'importing',
     'exporting',
     'selecting',
+    'saving',
+    'loading',
 ]);
 
 const ExtensionStatus = z.object({
