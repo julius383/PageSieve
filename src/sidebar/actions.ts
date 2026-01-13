@@ -1,6 +1,13 @@
 import { SvelteDate, SvelteURL } from 'svelte/reactivity';
 import type { SelectorDefinition } from '../types';
-import { scrapeRuns, extractedData, extensionStatus, runWithStatus, runWithStatusAsync, setStatus } from './stores/ui.svelte';
+import {
+    scrapeRuns,
+    extractedData,
+    extensionStatus,
+    runWithStatus,
+    runWithStatusAsync,
+    setStatus,
+} from './stores/ui.svelte';
 import { shortHash, generateConfigId } from './util';
 import { scrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../types';
@@ -96,11 +103,10 @@ export function handleImportConfig(event: Event) {
     runWithStatus(
         {
             status: 'importing',
-            message:`importing ScrapeConfig from ${file.name}` ,
+            message: `importing ScrapeConfig from ${file.name}`,
             timestamp: new SvelteDate().toISOString(),
         },
         () => {
-
             let configData;
             const reader = new FileReader();
             reader.onload = () => {
@@ -117,9 +123,8 @@ export function handleImportConfig(event: Event) {
             };
             reader.readAsText(file);
             fileInput.value = ''; // Reset for next use
-
-        }
-    )
+        },
+    );
 }
 
 /**
@@ -127,17 +132,15 @@ export function handleImportConfig(event: Event) {
  *
  */
 export async function handleExportConfig(config: ScrapeConfig): Promise<string> {
-
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     runWithStatus(
         {
             status: 'exporting',
             message: `exporting config with id ${filename}`,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         },
         () => {
-
             const storedConfig = StoredConfig.parse({
                 id: config.metadata.id,
                 createdAt: new Date().toISOString(),
@@ -153,13 +156,11 @@ export async function handleExportConfig(config: ScrapeConfig): Promise<string> 
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
-
-        }
-    )
+        },
+    );
 }
 
 export async function handleSaveConfig(config: ScrapeConfig) {
-
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     const storedConfig = {
@@ -169,22 +170,20 @@ export async function handleSaveConfig(config: ScrapeConfig) {
         config: config,
     };
 
-
     await runWithStatusAsync(
         {
             status: 'saving',
-            message:`Saving config for ${config.metadata.url}` ,
+            message: `Saving config for ${config.metadata.url}`,
             timestamp: new SvelteDate().toISOString(),
         },
         async () => {
-            const result = await saveConfig(filename, storedConfig)
+            const result = await saveConfig(filename, storedConfig);
             // FIXME: dont throw
             if (!result) {
-                throw Error(`existing config with id ${storedConfig.id}`)
+                throw Error(`existing config with id ${storedConfig.id}`);
             }
-        }
-    )
-
+        },
+    );
 }
 
 export async function handleLoadConfig(stored: StoredConfig) {
@@ -193,11 +192,9 @@ export async function handleLoadConfig(stored: StoredConfig) {
             status: 'loading',
             message: `Loading config ${stored.id} from browser storage`,
             timestamp: new Date().toISOString(),
-
         },
         () => {
-
             Object.assign(scrapeConfig, stored.config);
-        }
-    )
+        },
+    );
 }

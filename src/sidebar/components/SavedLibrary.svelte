@@ -23,7 +23,7 @@
     import { renameConfig, removeConfig } from '../services/storage';
 
     onMount(() => {
-      refreshConfigs();
+        refreshConfigs();
     });
 
     let editingId = $state(null);

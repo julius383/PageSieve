@@ -1,5 +1,5 @@
 import { SvelteDate } from 'svelte/reactivity';
-import type { ScrapeInstance, ExtensionStatus, StoredConfig  } from '../../types';
+import type { ScrapeInstance, ExtensionStatus, StoredConfig } from '../../types';
 import { getAllConfigs } from '../services/storage';
 
 export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
@@ -13,7 +13,7 @@ export const extensionStatus = $state<ExtensionStatus>({
 });
 
 export function runWithStatus<T>(status: ExtensionStatus, fn: () => T) {
-    const prev = $state.snapshot(extensionStatus)
+    const prev = $state.snapshot(extensionStatus);
     Object.assign(extensionStatus, status);
     try {
         fn();
@@ -30,14 +30,13 @@ export function runWithStatus<T>(status: ExtensionStatus, fn: () => T) {
         if (extensionStatus.status !== 'errored') {
             setTimeout(() => {
                 Object.assign(extensionStatus, prev);
-            }, 1000)
+            }, 1000);
         }
     }
-
 }
 
 export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => Promise<T>) {
-    const prev = $state.snapshot(extensionStatus)
+    const prev = $state.snapshot(extensionStatus);
     Object.assign(extensionStatus, status);
     try {
         return await fn();
@@ -54,10 +53,9 @@ export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => P
         if (extensionStatus.status !== 'errored') {
             setTimeout(() => {
                 Object.assign(extensionStatus, prev);
-            }, 1000)
+            }, 1000);
         }
     }
-
 }
 
 export function setStatus(status: string, message: string) {
@@ -65,17 +63,16 @@ export function setStatus(status: string, message: string) {
         status,
         message,
         timestamp: new SvelteDate().toISOString(),
-    })
+    });
 }
-
 
 export function resetExtractedData() {
     extractedData.data = [];
 }
 
 // Library of saved configs
-export const allConfigs = $state<{configs: StoredConfig[]}>({configs: []});
+export const allConfigs = $state<{ configs: StoredConfig[] }>({ configs: [] });
 export async function refreshConfigs() {
     const configs = await getAllConfigs();
-    allConfigs.configs = configs
+    allConfigs.configs = configs;
 }

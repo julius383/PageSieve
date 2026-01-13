@@ -1,6 +1,5 @@
-import { StoredConfig } from "../../types";
+import { StoredConfig } from '../../types';
 import localforage from 'localforage';
-
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
 
@@ -9,7 +8,6 @@ localforage.config({
     driver: localforage.LOCALSTORAGE,
 });
 
-
 export async function getAllConfigs(): Promise<StoredConfig[]> {
     const configs: StoredConfig[] = [];
     await localforage.iterate((value) => {
@@ -17,7 +15,6 @@ export async function getAllConfigs(): Promise<StoredConfig[]> {
     });
     return configs;
 }
-
 
 export async function getConfig(id: string): Promise<StoredConfig | null> {
     const item = await localforage.getItem(id);
@@ -48,7 +45,7 @@ export async function renameConfig(oldId: string, newId: string): Promise<boolea
     }
     const result = StoredConfig.safeParse(await localforage.getItem(oldId));
     if (!result.success) {
-        console.error(result.error)
+        console.error(result.error);
     } else {
         await localforage.removeItem(oldId);
         result.data.id = newId;
@@ -59,12 +56,11 @@ export async function renameConfig(oldId: string, newId: string): Promise<boolea
     return false;
 }
 
-
 /**
  * Remove config stored in browser localstorage
  */
 export async function removeConfig(itemId: string): Promise<boolean> {
-    const existing = await localforage.getItem(itemId)
+    const existing = await localforage.getItem(itemId);
     if (existing) {
         await localforage.removeItem(itemId);
         return true;

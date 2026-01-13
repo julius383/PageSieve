@@ -22,5 +22,4 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
             return { url: tab.url, title: tab.title };
         }
     }
-
 });

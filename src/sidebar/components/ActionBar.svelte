@@ -1,6 +1,11 @@
 <script lang="ts">
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
-    import { handleExtract, handleImportConfig, handleExportConfig, handleSaveConfig } from '../actions';
+    import {
+        handleExtract,
+        handleImportConfig,
+        handleExportConfig,
+        handleSaveConfig,
+    } from '../actions';
     import { refreshConfigs } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';
@@ -13,10 +18,9 @@
         fileinput?.click();
     }
 
-    async function handleSave(){
-      await handleSaveConfig(scrapeConfig)
-      await refreshConfigs();
-
+    async function handleSave() {
+        await handleSaveConfig(scrapeConfig);
+        await refreshConfigs();
     }
 </script>
 
