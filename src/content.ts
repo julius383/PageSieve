@@ -1,4 +1,4 @@
-import { SelectorDefinition } from './types';
+import type { SelectorGroup } from './types';
 import { DOMInspector } from './dominspector.mjs';
 
 const inspector = new DOMInspector();
@@ -8,47 +8,78 @@ const inspector = new DOMInspector();
  * @param selectors - Array of selector configurations
  * @returns Array of extracted data objects
  */
-function extractDataFromPage(selectors: SelectorDefinition[]): any {
-    // Validate input
-    if (!selectors || selectors.length === 0) {
-        console.warn('No selectors provided');
-        return null;
-    }
+function extractDataFromPage(selectors: SelectorGroup[]): any {
 
     type StringArrayMap = {
         [key: string]: string[];
     };
-    const foundItems: StringArrayMap = {};
+    type UnknownObject = {
+        [key: string]: unknown
+    }
     console.log('Attempting to extract data with');
     console.dir(selectors);
+    const extractionResults: {id: number, results: UnknownObject[]}[] = []
 
-    selectors.forEach(({ name, selector }) => {
-        const items: string[] = [];
-        const parts = /\?(\w+)$/gm.exec(selector);
-        let attribute: string;
-        if (parts != null) {
-            attribute = parts[1];
-            selector = selector.slice(0, parts.index);
-        }
-        try {
-            const found = document.querySelectorAll(selector);
-            found.forEach((item, _) => {
-                if (attribute) {
-                    // TODO: add special handling for different attributes such as using full URL for href
-                    items.push(item.getAttribute(attribute));
-                } else {
-                    items.push(item.textContent?.trim());
-                }
-                foundItems[name] = items;
+    selectors.forEach(({ id, container, fields }) => {
+        if (container) {
+            const containerItems = document.querySelectorAll(container);
+            const rows: UnknownObject[] = []
+            containerItems.forEach((containerItem) => {
+                const fieldData = fields.map(({name, selector}) => {
+                    const parts = /\?(\w+)$/gm.exec(selector);
+                    let attribute = null;
+                    if (parts != null) {
+                        attribute = parts[1];
+                        selector = selector.slice(0, parts.index);
+                    }
+                    // TODO: add xpath support
+                    const foundItem = containerItem.querySelector(selector);
+                    const value = attribute ? foundItem?.getAttribute(attribute)?.trim() : foundItem?.textContent?.trim();
+                    return {[name]: value};
+                })
+                const row = { ...fieldData };
+                rows.push(row);
             });
-        } catch (error) {
-            console.error(`Error with selector "${selector}":`, error);
+
+            extractionResults.push({id, results: rows});
+        } else {
+            // no container so assume no missing fields and zip
+            const foundItems: StringArrayMap = {};
+            fields.forEach(({name, selector}) => {
+
+                const items: string[] = [];
+                const parts = /\?(\w+)$/gm.exec(selector);
+                let attribute: string;
+                if (parts != null) {
+                    attribute = parts[1];
+                    selector = selector.slice(0, parts.index);
+                }
+                try {
+                    const found = document.querySelectorAll(selector);
+                    found.forEach((item) => {
+                        if (attribute) {
+                            // TODO: add special handling for different attributes such as using full URL for href
+                            const attr = item.getAttribute(attribute);
+                            items.push(attr ?? '');
+                        } else {
+                            items.push(item.textContent?.trim());
+                        }
+                        foundItems[name] = items;
+                    });
+                } catch (error) {
+                    // FIXME: improve error handling here
+                    console.error(`Error with selector "${selector}":`, error);
+                }
+            });
+
+            const rows = zipObjectArrays(foundItems);
+            extractionResults.push({id, results: rows})
         }
     });
-    return foundItems;
+    return extractionResults;
 }
 
-function zipObjectArrays<T extends Record<string, any[]>>(
+function zipObjectArrays<T extends Record<string, unknown[]>>(
     obj: T,
 ): Array<{ [K in keyof T]: T[K][number] }> {
     const keys = Object.keys(obj) as (keyof T)[];
@@ -81,8 +112,7 @@ browser.runtime.onMessage.addListener(
     ): boolean => {
         if (request.action === 'extractData') {
             try {
-                const data = extractDataFromPage(request.selectors);
-                const result = zipObjectArrays(data);
+                const result = extractDataFromPage(request.selectors);
                 sendResponse({
                     result,
                     success: true,

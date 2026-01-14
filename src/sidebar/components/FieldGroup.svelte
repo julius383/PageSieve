@@ -76,10 +76,29 @@
     <div class="flex items-end gap-2 mb-2">
         <div class="grid w-full items-center gap-1.5">
             <label for="field-name-{id}" class="text-sm font-medium leading-none">Field Name</label>
-            <Input id="field-name-{id}" bind:value={fieldName} placeholder="e.g. productName" />
-        </div>
-        {#if pickingElement}
+
             <div class="flex items-end gap-x-1 flex-start">
+                <Input id="field-name-{id}" bind:value={fieldName} placeholder="e.g. productName" />
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button onclick={deleteHandler} variant="destructive" size="icon" disabled={pickingElement}>
+                                <Trash2 />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                            <p>Delete Field</p>
+                        </Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+            </div>
+        </div>
+    </div>
+    <div class="grid w-full items-center gap-1.5">
+        <label for="css-selector" class="text-sm font-medium leading-none">CSS Selector</label>
+        <div class="flex items-end gap-x-1 flex-start">
+        <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title" />
+        {#if pickingElement}
                 <Tooltip.Provider>
                     <Tooltip.Root>
                         <Tooltip.Trigger>
@@ -100,7 +119,6 @@
                         <Tooltip.Content>Accept selection</Tooltip.Content>
                     </Tooltip.Root>
                 </Tooltip.Provider>
-            </div>
         {:else}
             <Tooltip.Provider>
                 <Tooltip.Root>
@@ -114,22 +132,7 @@
                     </Tooltip.Content>
                 </Tooltip.Root>
             </Tooltip.Provider>
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button onclick={deleteHandler} variant="destructive" size="icon">
-                            <Trash2 />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                        <p>Delete Field</p>
-                    </Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
         {/if}
-    </div>
-    <div class="grid w-full items-center gap-1.5">
-        <label for="css-selector" class="text-sm font-medium leading-none">CSS Selector</label>
-        <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title" />
+        </div>
     </div>
 </div>

@@ -1,14 +1,13 @@
 import { SvelteDate, SvelteURL } from 'svelte/reactivity';
-import type { SelectorDefinition } from '../types';
+import type { SelectorGroup } from '../types';
 import {
     scrapeRuns,
     extractedData,
-    extensionStatus,
     runWithStatus,
     runWithStatusAsync,
     setStatus,
 } from './stores/ui.svelte';
-import { shortHash, generateConfigId } from './util';
+import { shortHash, generateConfigId, validateSelectors } from './util';
 import { scrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../types';
 import { saveConfig } from './services/storage';
@@ -16,33 +15,27 @@ import { saveConfig } from './services/storage';
 /**
  * Extracts data from current tab using defined selector. Returns via
  * browser sendMessage
- *
  */
-export async function handleExtract(selectors: SelectorDefinition[]) {
-    const validSelectors = selectors.filter((f) => f.name && f.selector);
-
-    if (validSelectors.length === 0) {
+export async function handleExtract(selectors: SelectorGroup[]) {
+    if (!validateSelectors(selectors)) {
         setStatus('errored', 'No valid selectors present');
         return;
     }
 
     try {
-        const tabs = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
-        });
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
         if (tabs[0]?.id) {
             setStatus('extracting', `Extracting data from ${tabs[0].url}`);
             const response = await browser.tabs.sendMessage(tabs[0].id, {
                 action: 'extractData',
-                selectors: JSON.parse(JSON.stringify(validSelectors)),
+                selectors: JSON.parse(JSON.stringify(selectors)),
             });
 
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
                 scrapeRuns.runs.length = scrapeRuns.runs.length > 4 ? 4 : scrapeRuns.runs.length;
-                if (validSelectors.length > 0 && response.result) {
-                    const contentHashShort = await shortHash(validSelectors);
+                if (response.result) {
+                    const contentHashShort = await shortHash(selectors);
                     const runInst = {
                         url: new SvelteURL(tabInfo.url).hostname,
                         shortHash: contentHashShort,
@@ -75,7 +68,7 @@ export async function handleExtract(selectors: SelectorDefinition[]) {
                 }
 
                 setStatus('idle', `Ready`);
-                console.dir(extractedData.data);
+                console.dir(response.result);
                 return;
             } else {
                 setStatus('errored', 'Failed to extract selectors');

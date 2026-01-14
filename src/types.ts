@@ -50,6 +50,13 @@ export const SelectorDefinition = z.object({
     description: z.string().optional(),
 });
 
+
+export const SelectorGroup = z.object({
+    id: z.int().positive(),
+    container: z.string().optional(),
+    fields: z.array(SelectorDefinition),
+});
+
 export const VariableDefinition = z.object({
     type: z.enum(datatypes),
     value: z.any(),
@@ -59,7 +66,7 @@ export const VariableDefinition = z.object({
 
 export const ScrapeConfig = z.object({
     metadata: Metadata,
-    selectors: z.array(SelectorDefinition),
+    selectors: z.array(SelectorGroup),
     options: ExtractionOptions,
     pagination: PaginationConfig,
     variables: z.optional(z.array(z.record(z.string(), VariableDefinition))),
@@ -105,3 +112,4 @@ export type VariableDefinition = z.infer<typeof VariableDefinition>;
 export type ScrapeConfig = z.infer<typeof ScrapeConfig>;
 export type StoredConfig = z.infer<typeof StoredConfig>;
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
+export type SelectorGroup = z.infer<typeof SelectorGroup>;

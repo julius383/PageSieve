@@ -4,7 +4,7 @@ import { getAllConfigs } from '../services/storage';
 
 export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
 
-export const extractedData = $state({ data: [] });
+export const extractedData = $state<{data: {id: number, results: any[] }[]}>({ data: [{id: 1, results:[]}] });
 
 export const extensionStatus = $state<ExtensionStatus>({
     status: 'idle',

@@ -11,17 +11,16 @@
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
 
+    // FIXME: handle multiple items in extractedData
     const dataColumns = $derived.by(() => {
-        return extractedData.data.length > 0 ? Object.keys(extractedData.data[0]) : [];
+        return extractedData.data[0].results.length > 0 ? Object.keys(extractedData.data[0].results[0]) : [];
     });
 </script>
 
 <div class="space-y-4">
     <hr />
     <h2 class="text-2xl font-bold">
-        Results {#if extractedData.data.length > 0}
-            ({extractedData.data.length})
-        {/if}
+        Results {#if extractedData.data[0]?.results?.length > 0} ({extractedData.data[0].results.length}) {/if}
     </h2>
 </div>
 <Tabs.Root value="data" class="h-full flex flex-col">
@@ -45,10 +44,10 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data)}
+                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0].results)}
                         >Download CSV</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
+                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data[0].results)}
                         >Download JSON</DropdownMenu.Item
                     >
                 </DropdownMenu.Content>
@@ -76,7 +75,7 @@
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {#each extractedData.data as row}
+                    {#each extractedData.data[0]?.results as row}
                         <Table.Row>
                             {#each dataColumns as column}
                                 <Table.Cell>{row[column]}</Table.Cell>
@@ -89,7 +88,7 @@
     </Tabs.Content>
     <Tabs.Content value="json" class="pt-4 overflow-auto flex-grow">
         <div class="p-4 rounded-md text-sm overflow-wrap">
-            <JsonViewer value={extractedData.data} />
+            <JsonViewer value={extractedData.data[0]?.results} />
         </div>
     </Tabs.Content>
 </Tabs.Root>

@@ -11,7 +11,7 @@
     import { Separator } from '$lib/components/ui/separator';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
 
-    import { scrapeConfig, addDefinition, removeDefinition } from './stores/scrapeConfig.svelte';
+    import { addDefinition, removeDefinition, getCurrentGroup } from './stores/scrapeConfig.svelte';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
@@ -62,7 +62,7 @@
             <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
                 <Resizable.Pane defaultSize={50} class="flex flex-col">
                     <div class="space-y-4 flex-1 overflow-y-auto">
-                        {#each scrapeConfig.selectors as field (field.id)}
+                        {#each getCurrentGroup()?.fields as field (field.id)}
                             <FieldGroup
                                 id={field.id}
                                 deleteHandler={() => removeDefinition(field.id)}
