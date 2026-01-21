@@ -42,6 +42,7 @@ export function resetDefinitions() {
     nextSelectorId = 1;
     const group = scrapeConfig.selectors.find(element => element.id == activeGroup)
     if (group) {
+        group.container = '';
         group.fields.length = 0;
         addDefinition();
     }

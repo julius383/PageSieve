@@ -6,6 +6,7 @@
     import { Separator } from '$lib/components/ui/separator';
 
     import FieldGroup from './FieldGroup.svelte';
+    import ElementPicker from './ElementPicker.svelte';
     import { scrapeConfig } from '../stores/scrapeConfig.svelte';
     import { PaginationConfig } from '../../types';
 
@@ -78,14 +79,7 @@
     <!-- TODO: make sure setting none config works as expected -->
     <Tabs.Content value="none"></Tabs.Content>
     <Tabs.Content value="next">
-        <FieldGroup
-            id="1"
-            deleteHandler={() => {
-                return;
-            }}
-            fieldName="Next Button Selector"
-            bind:cssSelector={paginationState.next.nextSelector}
-        />
+        <ElementPicker label="Next Button Selector" bind:cssSelector={paginationState.next.nextSelector} />
 
         <Field.Set>
             <Field.Group>

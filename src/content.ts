@@ -37,7 +37,9 @@ function extractDataFromPage(selectors: SelectorGroup[]): any {
                     const value = attribute ? foundItem?.getAttribute(attribute)?.trim() : foundItem?.textContent?.trim();
                     return {[name]: value};
                 })
-                const row = { ...fieldData };
+                console.log('found the following data')
+                const row = Object.assign({}, ...fieldData);
+                console.dir(row);
                 rows.push(row);
             });
 

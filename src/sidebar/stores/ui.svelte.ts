@@ -67,7 +67,7 @@ export function setStatus(status: string, message: string) {
 }
 
 export function resetExtractedData() {
-    extractedData.data = [];
+    extractedData.data = [{id: 1, results:[]}];
 }
 
 // Library of saved configs

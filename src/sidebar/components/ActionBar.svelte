@@ -89,7 +89,7 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={resetDefinitions}>
+                <Button size="icon" variant="destructive" onclick={resetDefinitions}>
                     <ListRestart class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>

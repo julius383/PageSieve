@@ -1,75 +1,14 @@
 <script lang="ts">
-    import { onMount, onDestroy } from 'svelte';
-
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { Trash2, Pipette, Check, X } from '@lucide/svelte';
+    import { Trash2 } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-    import { setStatus } from '../stores/ui.svelte';
+    import ElementPicker from './ElementPicker.svelte';
 
     let { id, deleteHandler, fieldName = $bindable(), cssSelector = $bindable() } = $props();
 
     let pickingElement = $state(false);
-
-    // This function will handle incoming messages from the content script.
-    function messageListener(message, sender, sendResponse) {
-        if (message.action === 'selector-elementSelected') {
-            // Update your store with the new selector.
-            cssSelector = message.selector;
-        }
-    }
-
-    onMount(() => {
-        browser.runtime.onMessage.addListener(messageListener);
-    });
-
-    onDestroy(() => {
-        browser.runtime.onMessage.removeListener(messageListener);
-    });
-
-    async function handleInspect() {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) {
-            const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
-            });
-            if (response.isActive) {
-                pickingElement = true;
-                setStatus('inspecting', 'click html element to get CSS selector');
-            }
-        }
-    }
-
-    async function acceptSelection() {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) {
-            const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
-            });
-
-            if (!response.isActive) {
-                pickingElement = false;
-                setStatus('idle', 'Ready');
-            }
-        }
-        return;
-    }
-
-    async function cancelSelection() {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) {
-            const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
-            });
-
-            if (!response.isActive) {
-                pickingElement = false;
-                setStatus('idle', 'Ready');
-            }
-        }
-        return;
-    }
 </script>
 
 <div class="border p-4 rounded-md mb-4">
@@ -94,45 +33,5 @@
             </div>
         </div>
     </div>
-    <div class="grid w-full items-center gap-1.5">
-        <label for="css-selector" class="text-sm font-medium leading-none">CSS Selector</label>
-        <div class="flex items-end gap-x-1 flex-start">
-        <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title" />
-        {#if pickingElement}
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button onclick={acceptSelection} variant="outline" size="icon">
-                                <Check />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Accept selection</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button onclick={cancelSelection} variant="destructive" size="icon">
-                                <X />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Accept selection</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-        {:else}
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button onclick={handleInspect} variant="outline" size="icon">
-                            <Pipette color="#fff" />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                        <p>Start Element Picker</p>
-                    </Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
-        {/if}
-        </div>
-    </div>
+    <ElementPicker bind:cssSelector={cssSelector} bind:pickingElement={pickingElement} />
 </div>

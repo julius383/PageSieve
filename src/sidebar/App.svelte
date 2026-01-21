@@ -1,9 +1,9 @@
 <script lang="ts">
-    import FieldGroup from './components/FieldGroup.svelte';
     import ActionBar from './components/ActionBar.svelte';
     import SavedLibrary from './components/SavedLibrary.svelte';
     import ResultsViewer from './components/ResultsViewer.svelte';
     import ConfigPanel from './components/ConfigPanel.svelte';
+    import FieldConstructor from './components/FieldConstructor.svelte';
 
     import StatusIndicator from './components/StatusIndicator.svelte';
     import LogViewer from './components/LogViewer.svelte';
@@ -11,11 +11,9 @@
     import { Separator } from '$lib/components/ui/separator';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
 
-    import { addDefinition, removeDefinition, getCurrentGroup } from './stores/scrapeConfig.svelte';
-
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
-    import { Plus, ChevronDown, ChevronUp } from '@lucide/svelte';
+    import { ChevronDown, ChevronUp } from '@lucide/svelte';
     import * as Resizable from '$lib/components/ui/resizable/index.js';
 
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
@@ -61,19 +59,7 @@
         <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
             <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
                 <Resizable.Pane defaultSize={50} class="flex flex-col">
-                    <div class="space-y-4 flex-1 overflow-y-auto">
-                        {#each getCurrentGroup()?.fields as field (field.id)}
-                            <FieldGroup
-                                id={field.id}
-                                deleteHandler={() => removeDefinition(field.id)}
-                                bind:fieldName={field.name}
-                                bind:cssSelector={field.selector}
-                            />
-                        {/each}
-                    </div>
-                    <Button onclick={addDefinition} class="mt-4 w-full">
-                        <Plus /> Add Field
-                    </Button>
+                    <FieldConstructor />
                 </Resizable.Pane>
                 <Resizable.Handle withHandle />
 
