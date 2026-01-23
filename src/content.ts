@@ -239,6 +239,18 @@ browser.runtime.onMessage.addListener(
             };
 
             return true; // keep sendResponse alive
+        } else if (request.action === 'inspector-toggle') {
+            if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
+                inspector.deactivate();
+            }
+            inspector.toggle(request.pickerId);
+            sendResponse({ isActive: inspector.isActive });
+            return true;
+        } else if (request.action === 'inspector-accept') {
+            const selector = inspector.guessSelector();
+            inspector.deactivate();
+            sendResponse({ computedSelector: selector });
+            return true;
         }
 
         // Not handling this message type

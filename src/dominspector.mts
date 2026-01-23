@@ -1,30 +1,41 @@
+import { DomPredictionHelper } from "./selectorgadget";
+
 export class DOMInspector {
     isActive: boolean;
+
+    whitelistedElements: Set<HTMLElement>;
+    blacklistedElements: Set<HTMLElement>;
     currentHighlighted: HTMLElement | null;
+    highlightOverlay: HTMLElement | null;
     originalCursor: string | null;
-    highlightOverlay: HTMLDivElement | null;
+    helper: DomPredictionHelper;
+    predictedSelector: string | null;
+    activePickerId: string | null;
+
+    // To manage highlight overlays for selected elements
+    highlightOverlays: Map<HTMLElement, HTMLDivElement>;
+    selectorOverlays: Map<HTMLElement, HTMLDivElement>;
 
     constructor() {
         this.isActive = false;
-        this.currentHighlighted = null;
         this.originalCursor = null;
+        this.activePickerId = null;
+
+        this.currentHighlighted = null;
+        this.predictedSelector = null;
+
+        this.whitelistedElements = new Set();
+        this.blacklistedElements = new Set();
+        this.highlightOverlays = new Map();
+        this.selectorOverlays = new Map();
         this.highlightOverlay = null;
+        this.helper = new DomPredictionHelper();
 
         // Bind methods to preserve 'this' context
         this.handleMouseOver = this.handleMouseOver.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-
-        // Listen for messages from popup
-        browser.runtime.onMessage.addListener((request, _, sendResponse) => {
-            if (request.action === 'inspector-toggle') {
-                this.toggle();
-                sendResponse({ isActive: this.isActive });
-            } else if (request.action === 'inspector-getState') {
-                sendResponse({ isActive: this.isActive });
-            }
-        });
 
         if (typeof document !== 'undefined') {
             this.highlightOverlay = document.createElement('div');
@@ -41,18 +52,19 @@ export class DOMInspector {
         console.log('Inspector instance created');
     }
 
-    toggle() {
+    toggle(pickerId?: string) {
         if (this.isActive) {
             this.deactivate();
-        } else {
-            this.activate();
+        } else if (pickerId) {
+            this.activate(pickerId);
         }
     }
 
-    activate() {
-        console.log('Activating DOM inspector');
+    activate(pickerId: string) {
+        console.log(`Activating DOM inspector for ${pickerId}`);
         if (this.isActive) return;
 
+        this.activePickerId = pickerId;
         this.isActive = true;
 
         this.originalCursor = document.body.style.cursor;
@@ -73,13 +85,24 @@ export class DOMInspector {
     deactivate() {
         if (!this.isActive) return;
 
+        console.log(`Deactivating DOM inspector for ${this.activePickerId}`);
         this.isActive = false;
+        this.activePickerId = null;
 
         // Restore original cursor
         document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
 
         // Remove highlight from current element
         this.removeHighlight();
+
+        // Remove all persistent highlights from whitelisted and blacklisted elements
+        this.whitelistedElements.forEach((el) => this.removePersistentHighlight(el));
+        this.blacklistedElements.forEach((el) => this.removePersistentHighlight(el));
+        this.removeSelectorHighlight();;
+
+        // Clear the sets
+        this.whitelistedElements.clear();
+        this.blacklistedElements.clear();
 
         // Remove event listeners
         window.removeEventListener('mouseover', this.handleMouseOver, true);
@@ -88,6 +111,91 @@ export class DOMInspector {
         window.removeEventListener('click', this.handleClick, true);
 
         console.log('DOM Inspector deactivated.');
+    }
+
+    guessSelector() {
+        const connectedWhitelisted = Array.from(this.whitelistedElements).filter(
+            (el) => el && el.isConnected,
+        );
+
+        const connectedBlacklisted = Array.from(this.blacklistedElements).filter(
+            (el) => el && el.isConnected,
+        );
+
+        return this.helper.predictCss(connectedWhitelisted, connectedBlacklisted);
+    }
+
+    showSelectorHighlight(selector: string) {
+        this.selectorOverlays.forEach((overlay) => overlay.remove());
+        this.selectorOverlays.clear();
+        document.querySelectorAll(selector).forEach((element) => {
+            let overlay = this.selectorOverlays.get(element as HTMLElement);
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.style.position = 'absolute';
+                overlay.style.zIndex = '999998'; // Just below hover highlight
+                overlay.style.boxSizing = 'border-box';
+                overlay.style.pointerEvents = 'none';
+                document.body.appendChild(overlay);
+                this.selectorOverlays.set(element as HTMLElement, overlay);
+            }
+
+            const rect = element.getBoundingClientRect();
+            overlay.style.display = 'block';
+            overlay.style.top = `${rect.top + window.scrollY}px`;
+            overlay.style.left = `${rect.left + window.scrollX}px`;
+            overlay.style.width = `${rect.width}px`;
+            overlay.style.height = `${rect.height}px`;
+
+            overlay.style.border = '2px solid #ffd700'; // Yellow
+            overlay.style.backgroundColor = 'rgb(255, 215, 0, 0.2)';
+        })
+
+    }
+    removeSelectorHighlight() {
+        this.selectorOverlays.forEach((overlay) => {
+            overlay.remove();
+        });
+        this.selectorOverlays.clear();
+    }
+
+    updatePersistentHighlight(element: HTMLElement, type: 'whitelisted' | 'blacklisted') {
+        let overlay = this.highlightOverlays.get(element);
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.style.position = 'absolute';
+            overlay.style.zIndex = '999998'; // Just below hover highlight
+            overlay.style.boxSizing = 'border-box';
+            overlay.style.pointerEvents = 'none';
+            document.body.appendChild(overlay);
+            this.highlightOverlays.set(element, overlay);
+        }
+
+        const rect = element.getBoundingClientRect();
+        overlay.style.display = 'block';
+        overlay.style.top = `${rect.top + window.scrollY}px`;
+        overlay.style.left = `${rect.left + window.scrollX}px`;
+        overlay.style.width = `${rect.width}px`;
+        overlay.style.height = `${rect.height}px`;
+
+        if (type === 'whitelisted') {
+            overlay.style.border = '2px solid #22C55E'; // Green
+            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.4)';
+        } else { // blacklisted
+            overlay.style.border = '2px solid #EF4444'; // Red
+            overlay.style.backgroundColor = 'rgba(239, 68, 68, 0.4)';
+        }
+    }
+
+    /**
+     * Removes a persistent highlight overlay from an element.
+     */
+    removePersistentHighlight(element: HTMLElement) {
+        const overlay = this.highlightOverlays.get(element);
+        if (overlay) {
+            overlay.remove();
+            this.highlightOverlays.delete(element);
+        }
     }
 
     handleMouseOver(event: Event) {
@@ -116,7 +224,31 @@ export class DOMInspector {
         event.preventDefault();
         event.stopPropagation();
 
-        this.inspectElement(event.target as HTMLElement);
+        const target = event.target as Node;
+        // If the click target isn't an element (e.g., it's a text node), use its parent.
+        const clickedElement = (
+            target.nodeType === Node.ELEMENT_NODE ? target : target.parentNode
+        ) as HTMLElement;
+
+        if (!clickedElement) {
+            return;
+        }
+
+        if (this.blacklistedElements.has(clickedElement)) {
+            // Cycle: Blacklisted -> Unselected
+            this.blacklistedElements.delete(clickedElement);
+            this.removePersistentHighlight(clickedElement);
+        } else if (this.whitelistedElements.has(clickedElement)) {
+            // Cycle: Whitelisted -> Blacklisted
+            this.whitelistedElements.delete(clickedElement);
+            this.blacklistedElements.add(clickedElement);
+            this.updatePersistentHighlight(clickedElement, 'blacklisted');
+        } else {
+            // Cycle: Unselected -> Whitelisted
+            this.whitelistedElements.add(clickedElement);
+            this.updatePersistentHighlight(clickedElement, 'whitelisted');
+        }
+        this.inspectElement(clickedElement);
     }
 
     handleKeyDown(event: KeyboardEvent) {
@@ -158,18 +290,6 @@ export class DOMInspector {
     }
 
     inspectElement(element: HTMLElement) {
-        console.log('=== DOM Element Inspection ===');
-        console.log('Element:', element);
-        console.log('Tag Name:', element.tagName);
-        console.log('ID:', element.id || 'None');
-        console.log('Classes:', element.className || 'None');
-        console.log('Text Content:', element.textContent.trim().substring(0, 100) || 'None');
-        console.log('Attributes:', this.getAttributes(element));
-        console.log('Computed Style:', window.getComputedStyle(element));
-        console.log('Parent Element:', element.parentElement);
-        console.log('Children:', element.children);
-        console.log('================================');
-
         // Also create a more detailed object for programmatic access
         const elementData = {
             element: element,
@@ -187,13 +307,15 @@ export class DOMInspector {
         // Log the complete data object
         console.log('Complete Element Data:', elementData);
 
-        // Make it available globally for further inspection
-        // window.lastInspectedElement = elementData;
-        console.log('Element data saved to window.lastInspectedElement');
-
+        const selector = this.guessSelector();
+        if (selector) {
+            this.predictedSelector = selector;
+            this.showSelectorHighlight(selector);
+        }
         browser.runtime.sendMessage({
             action: 'selector-elementSelected',
-            selector: element.className,
+            selector: selector,
+            pickerId: this.activePickerId,
         });
     }
 

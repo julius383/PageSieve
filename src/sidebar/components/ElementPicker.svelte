@@ -16,15 +16,18 @@
         pickingElement = $bindable(false),
     } = $props();
 
+    let pickerId: string;
+
     // This function will handle incoming messages from the content script.
     function messageListener(message) {
-        if (message.action === 'selector-elementSelected') {
+        if (message.action === 'selector-elementSelected' && message.pickerId === pickerId) {
             // Update your store with the new selector.
             cssSelector = message.selector;
         }
     }
 
     onMount(() => {
+        pickerId = crypto.randomUUID();
         browser.runtime.onMessage.addListener(messageListener);
     });
 
@@ -37,6 +40,7 @@
         if (tab?.id) {
             const response = await browser.tabs.sendMessage(tab.id, {
                 action: 'inspector-toggle',
+                pickerId: pickerId,
             });
             if (response.isActive) {
                 pickingElement = true;
@@ -49,10 +53,11 @@
         const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
         if (tab?.id) {
             const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
+                action: 'inspector-accept',
             });
 
-            if (!response.isActive) {
+            if (response.computedSelector) {
+                cssSelector = response.computedSelector;
                 pickingElement = false;
                 setStatus('idle', 'Ready');
             }
