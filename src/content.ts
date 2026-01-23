@@ -9,23 +9,22 @@ const inspector = new DOMInspector();
  * @returns Array of extracted data objects
  */
 function extractDataFromPage(selectors: SelectorGroup[]): any {
-
     type StringArrayMap = {
         [key: string]: string[];
     };
     type UnknownObject = {
-        [key: string]: unknown
-    }
+        [key: string]: unknown;
+    };
     console.log('Attempting to extract data with');
     console.dir(selectors);
-    const extractionResults: {id: number, results: UnknownObject[]}[] = []
+    const extractionResults: { id: number; results: UnknownObject[] }[] = [];
 
     selectors.forEach(({ id, container, fields }) => {
         if (container) {
             const containerItems = document.querySelectorAll(container);
-            const rows: UnknownObject[] = []
+            const rows: UnknownObject[] = [];
             containerItems.forEach((containerItem) => {
-                const fieldData = fields.map(({name, selector}) => {
+                const fieldData = fields.map(({ name, selector }) => {
                     const parts = /\?(\w+)$/gm.exec(selector);
                     let attribute = null;
                     if (parts != null) {
@@ -34,21 +33,22 @@ function extractDataFromPage(selectors: SelectorGroup[]): any {
                     }
                     // TODO: add xpath support
                     const foundItem = containerItem.querySelector(selector);
-                    const value = attribute ? foundItem?.getAttribute(attribute)?.trim() : foundItem?.textContent?.trim();
-                    return {[name]: value};
-                })
-                console.log('found the following data')
+                    const value = attribute
+                        ? foundItem?.getAttribute(attribute)?.trim()
+                        : foundItem?.textContent?.trim();
+                    return { [name]: value };
+                });
+                console.log('found the following data');
                 const row = Object.assign({}, ...fieldData);
                 console.dir(row);
                 rows.push(row);
             });
 
-            extractionResults.push({id, results: rows});
+            extractionResults.push({ id, results: rows });
         } else {
             // no container so assume no missing fields and zip
             const foundItems: StringArrayMap = {};
-            fields.forEach(({name, selector}) => {
-
+            fields.forEach(({ name, selector }) => {
                 const items: string[] = [];
                 const parts = /\?(\w+)$/gm.exec(selector);
                 let attribute: string;
@@ -75,7 +75,7 @@ function extractDataFromPage(selectors: SelectorGroup[]): any {
             });
 
             const rows = zipObjectArrays(foundItems);
-            extractionResults.push({id, results: rows})
+            extractionResults.push({ id, results: rows });
         }
     });
     return extractionResults;

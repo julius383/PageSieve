@@ -586,7 +586,6 @@ export class DomPredictionHelper {
             } else if (first === '#') {
                 expressions.push('(@id = "' + rest + '")');
             } else if (first === ',') {
-                ;
             } else {
                 out += current;
             }

@@ -79,7 +79,10 @@
     <!-- TODO: make sure setting none config works as expected -->
     <Tabs.Content value="none"></Tabs.Content>
     <Tabs.Content value="next">
-        <ElementPicker label="Next Button Selector" bind:cssSelector={paginationState.next.nextSelector} />
+        <ElementPicker
+            label="Next Button Selector"
+            bind:cssSelector={paginationState.next.nextSelector}
+        />
 
         <Field.Set>
             <Field.Group>

@@ -13,14 +13,18 @@
 
     // FIXME: handle multiple items in extractedData
     const dataColumns = $derived.by(() => {
-        return extractedData.data[0].results.length > 0 ? Object.keys(extractedData.data[0].results[0]) : [];
+        return extractedData.data[0].results.length > 0
+            ? Object.keys(extractedData.data[0].results[0])
+            : [];
     });
 </script>
 
 <div class="space-y-4">
     <hr />
     <h2 class="text-2xl font-bold">
-        Results {#if extractedData.data[0]?.results?.length > 0} ({extractedData.data[0].results.length}) {/if}
+        Results {#if extractedData.data[0]?.results?.length > 0}
+            ({extractedData.data[0].results.length})
+        {/if}
     </h2>
 </div>
 <Tabs.Root value="data" class="h-full flex flex-col">

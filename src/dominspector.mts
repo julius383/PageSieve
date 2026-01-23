@@ -1,4 +1,4 @@
-import { DomPredictionHelper } from "./selectorgadget";
+import { DomPredictionHelper } from './selectorgadget';
 
 export class DOMInspector {
     isActive: boolean;
@@ -98,7 +98,7 @@ export class DOMInspector {
         // Remove all persistent highlights from whitelisted and blacklisted elements
         this.whitelistedElements.forEach((el) => this.removePersistentHighlight(el));
         this.blacklistedElements.forEach((el) => this.removePersistentHighlight(el));
-        this.removeSelectorHighlight();;
+        this.removeSelectorHighlight();
 
         // Clear the sets
         this.whitelistedElements.clear();
@@ -149,8 +149,7 @@ export class DOMInspector {
 
             overlay.style.border = '2px solid #ffd700'; // Yellow
             overlay.style.backgroundColor = 'rgb(255, 215, 0, 0.2)';
-        })
-
+        });
     }
     removeSelectorHighlight() {
         this.selectorOverlays.forEach((overlay) => {
@@ -181,7 +180,8 @@ export class DOMInspector {
         if (type === 'whitelisted') {
             overlay.style.border = '2px solid #22C55E'; // Green
             overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.4)';
-        } else { // blacklisted
+        } else {
+            // blacklisted
             overlay.style.border = '2px solid #EF4444'; // Red
             overlay.style.backgroundColor = 'rgba(239, 68, 68, 0.4)';
         }

@@ -50,7 +50,6 @@ export const SelectorDefinition = z.object({
     description: z.string().optional(),
 });
 
-
 export const SelectorGroup = z.object({
     id: z.int().positive(),
     container: z.string().optional(),

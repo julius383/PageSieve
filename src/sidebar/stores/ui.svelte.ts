@@ -4,7 +4,9 @@ import { getAllConfigs } from '../services/storage';
 
 export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
 
-export const extractedData = $state<{data: {id: number, results: any[] }[]}>({ data: [{id: 1, results:[]}] });
+export const extractedData = $state<{ data: { id: number; results: any[] }[] }>({
+    data: [{ id: 1, results: [] }],
+});
 
 export const extensionStatus = $state<ExtensionStatus>({
     status: 'idle',
@@ -67,7 +69,7 @@ export function setStatus(status: string, message: string) {
 }
 
 export function resetExtractedData() {
-    extractedData.data = [{id: 1, results:[]}];
+    extractedData.data = [{ id: 1, results: [] }];
 }
 
 // Library of saved configs

@@ -81,10 +81,7 @@ export async function shortHash(data: object): Promise<string> {
         .join('');
 }
 
-export async function generateConfigId(
-    url: string,
-    selectors: SelectorGroup[],
-): Promise<string> {
+export async function generateConfigId(url: string, selectors: SelectorGroup[]): Promise<string> {
     // TODO: figure out whether to use shorthash of more than just selectors
     const contentHashShort = await shortHash(selectors);
 

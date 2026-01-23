@@ -21,7 +21,12 @@
                 <Tooltip.Provider>
                     <Tooltip.Root>
                         <Tooltip.Trigger>
-                            <Button onclick={deleteHandler} variant="destructive" size="icon" disabled={pickingElement}>
+                            <Button
+                                onclick={deleteHandler}
+                                variant="destructive"
+                                size="icon"
+                                disabled={pickingElement}
+                            >
                                 <Trash2 />
                             </Button>
                         </Tooltip.Trigger>
@@ -33,5 +38,5 @@
             </div>
         </div>
     </div>
-    <ElementPicker bind:cssSelector={cssSelector} bind:pickingElement={pickingElement} />
+    <ElementPicker bind:cssSelector bind:pickingElement />
 </div>
