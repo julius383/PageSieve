@@ -232,7 +232,7 @@ export class DOMInspector {
             // Cycle: Blacklisted -> Unselected
             this.blacklistedElements.delete(clickedElement);
             this.removePersistentHighlight(clickedElement);
-        } else if (this.whitelistedElements.has(clickedElement)) {
+        } else if (this.whitelistedElements.has(clickedElement) || this.selectorOverlays.has(clickedElement)) {
             // Cycle: Whitelisted -> Blacklisted
             this.whitelistedElements.delete(clickedElement);
             this.blacklistedElements.add(clickedElement);
