@@ -76,6 +76,7 @@ export class DOMInspector {
         window.addEventListener('mouseout', this.handleMouseOut, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
         window.addEventListener('click', this.handleClick, true);
+        window.addEventListener('scroll', this.updateAllHighlights.bind(this), true);
 
         console.log(
             'DOM Inspector activated. Hover over elements to highlight, click to inspect. Press ESC to exit.',
@@ -109,6 +110,7 @@ export class DOMInspector {
         window.removeEventListener('mouseout', this.handleMouseOut, true);
         window.removeEventListener('keydown', this.handleKeyDown, true);
         window.removeEventListener('click', this.handleClick, true);
+        window.removeEventListener('scroll', this.updateAllHighlights.bind(this), true);
 
         console.log('DOM Inspector deactivated.');
     }
@@ -167,12 +169,7 @@ export class DOMInspector {
             this.highlightOverlays.set(element, overlay);
         }
 
-        const rect = element.getBoundingClientRect();
-        overlay.style.display = 'block';
-        overlay.style.top = `${rect.top + window.scrollY}px`;
-        overlay.style.left = `${rect.left + window.scrollX}px`;
-        overlay.style.width = `${rect.width}px`;
-        overlay.style.height = `${rect.height}px`;
+        this.updateOverlayPosition(element, overlay);
 
         if (type === 'whitelisted') {
             overlay.style.border = '2px solid #22C55E'; // Green
@@ -326,5 +323,30 @@ export class DOMInspector {
             // attrs[attr.name] = attr.value;
         }
         return attrs;
+    }
+
+    updateAllHighlights() {
+        this.updateHighlights(this.selectorOverlays);
+        this.updateHighlights(this.highlightOverlays);
+    }
+
+    updateHighlights(overlays: Map<HTMLElement, HTMLDivElement>) {
+        for (const [element, overlay] of overlays.entries()) {
+            this.updateOverlayPosition(element, overlay);
+        }
+    }
+
+    updateOverlayPosition(element: HTMLElement, overlay: HTMLDivElement) {
+        if (!element.isConnected) {
+            overlay.remove();
+            this.selectorOverlays.delete(element);
+            this.highlightOverlays.delete(element);
+            return;
+        }
+        const rect = element.getBoundingClientRect();
+        overlay.style.top = `${rect.top + window.scrollY}px`;
+        overlay.style.left = `${rect.left + window.scrollX}px`;
+        overlay.style.width = `${rect.width}px`;
+        overlay.style.height = `${rect.height}px`;
     }
 }
