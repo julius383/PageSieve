@@ -128,7 +128,8 @@ export class DOMInspector {
     showSelectorHighlight(selector: string) {
         this.selectorOverlays.forEach((overlay) => overlay.remove());
         this.selectorOverlays.clear();
-        document.querySelectorAll(selector).forEach((element) => {
+        const elements = document.querySelectorAll(selector)
+        elements.forEach((element) => {
             let overlay = this.selectorOverlays.get(element as HTMLElement);
             if (!overlay) {
                 overlay = document.createElement('div');
@@ -140,16 +141,12 @@ export class DOMInspector {
                 this.selectorOverlays.set(element as HTMLElement, overlay);
             }
 
-            const rect = element.getBoundingClientRect();
-            overlay.style.display = 'block';
-            overlay.style.top = `${rect.top + window.scrollY}px`;
-            overlay.style.left = `${rect.left + window.scrollX}px`;
-            overlay.style.width = `${rect.width}px`;
-            overlay.style.height = `${rect.height}px`;
+            this.updateOverlayPosition(element as HTMLElement, overlay);
 
             overlay.style.border = '2px solid #ffd700'; // Yellow
             overlay.style.backgroundColor = 'rgb(255, 215, 0, 0.2)';
         });
+        return elements.length;
     }
     removeSelectorHighlight() {
         this.selectorOverlays.forEach((overlay) => {
@@ -308,13 +305,15 @@ export class DOMInspector {
         console.log('Complete Element Data:', elementData);
 
         const selector = this.guessSelector();
+        let foundElements = 0;
         if (selector) {
             this.predictedSelector = selector;
-            this.showSelectorHighlight(selector);
+            foundElements = this.showSelectorHighlight(selector);
         }
         browser.runtime.sendMessage({
             action: 'selector-elementSelected',
             selector: selector,
+            foundElements,
             pickerId: this.activePickerId,
         });
     }

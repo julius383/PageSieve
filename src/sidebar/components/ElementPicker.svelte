@@ -17,12 +17,15 @@
     } = $props();
 
     let pickerId: string;
+    let foundElements: number = $state(0);
+    let previousSelector: string = '';
 
     // This function will handle incoming messages from the content script.
     function messageListener(message) {
         if (message.action === 'selector-elementSelected' && message.pickerId === pickerId) {
             // Update your store with the new selector.
             cssSelector = message.selector;
+            foundElements = message.foundElements;
         }
     }
 
@@ -44,6 +47,7 @@
             });
             if (response.isActive) {
                 pickingElement = true;
+                previousSelector = cssSelector;
                 setStatus('inspecting', 'click html element to get CSS selector');
             }
         }
@@ -59,6 +63,7 @@
             if (response.computedSelector) {
                 cssSelector = response.computedSelector;
                 pickingElement = false;
+                foundElements = 0;
                 setStatus('idle', 'Ready');
             }
         }
@@ -74,6 +79,8 @@
 
             if (!response.isActive) {
                 pickingElement = false;
+                foundElements = 0;
+                cssSelector = previousSelector;
                 setStatus('idle', 'Ready');
             }
         }
@@ -121,4 +128,7 @@
             </Tooltip.Provider>
         {/if}
     </div>
+    {#if foundElements > 0 && pickingElement}
+        <span class="text-xs text-[##d3d3d3] italic">Matches <span class="font-bold">{foundElements}</span> elements</span>
+    {/if}
 </div>
