@@ -4,14 +4,14 @@
 
     let {
         editing = false,
-        displayValue = '',
         editValue = $bindable(),
+        displayValue,
         onSave,
         onCancel,
     }: {
         editing: boolean;
-        displayValue: string;
         editValue: string;
+        displayValue: string;
         onSave: () => void;
         onCancel: () => void;
     } = $props();
@@ -43,5 +43,7 @@
         </div>
     </div>
 {:else}
-    {displayValue}
+    <span>
+        {displayValue}
+    </span>
 {/if}

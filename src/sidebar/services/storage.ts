@@ -10,8 +10,16 @@ localforage.config({
 
 export async function getAllConfigs(): Promise<StoredConfig[]> {
     const configs: StoredConfig[] = [];
-    await localforage.iterate((value) => {
-        configs.push(value as StoredConfig);
+    await localforage.iterate((value, key) => {
+        const result = StoredConfig.safeParse(value);
+        if (result.success) {
+            if (result.data.id !== key) {
+                result.data.id = key;
+            }
+            configs.push(result.data);
+        } else {
+            console.error(`Invalid config found in storage with key "${key}":`, value);
+        }
     });
     return configs;
 }
