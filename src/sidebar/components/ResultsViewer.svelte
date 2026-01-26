@@ -13,7 +13,7 @@
 
     // FIXME: handle multiple items in extractedData
     const dataColumns = $derived.by(() => {
-        return extractedData.data[0].results.length > 0
+        return extractedData.data[0]?.results?.length > 0
             ? Object.keys(extractedData.data[0].results[0])
             : [];
     });
