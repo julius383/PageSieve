@@ -129,6 +129,8 @@
         {/if}
     </div>
     {#if foundElements > 0 && pickingElement}
-        <span class="text-xs text-[##d3d3d3] italic">Matches <span class="font-bold">{foundElements}</span> elements</span>
+        <span class="text-xs text-[##d3d3d3] italic"
+            >Matches <span class="font-bold">{foundElements}</span> elements</span
+        >
     {/if}
 </div>

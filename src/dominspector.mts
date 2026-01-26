@@ -130,7 +130,7 @@ export class DOMInspector {
     showSelectorHighlight(selector: string) {
         this.selectorOverlays.forEach((overlay) => overlay.remove());
         this.selectorOverlays.clear();
-        const elements = document.querySelectorAll(selector)
+        const elements = document.querySelectorAll(selector);
         elements.forEach((element) => {
             let overlay = this.selectorOverlays.get(element as HTMLElement);
             if (!overlay) {
@@ -232,7 +232,10 @@ export class DOMInspector {
             // Cycle: Blacklisted -> Unselected
             this.blacklistedElements.delete(clickedElement);
             this.removePersistentHighlight(clickedElement);
-        } else if (this.whitelistedElements.has(clickedElement) || this.selectorOverlays.has(clickedElement)) {
+        } else if (
+            this.whitelistedElements.has(clickedElement) ||
+            this.selectorOverlays.has(clickedElement)
+        ) {
             // Cycle: Whitelisted -> Blacklisted
             this.whitelistedElements.delete(clickedElement);
             this.blacklistedElements.add(clickedElement);

@@ -6,7 +6,7 @@
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
     import * as Collapsible from '$lib/components/ui/collapsible/index.js';
     import * as Card from '$lib/components/ui/card/index.js';
-    import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+    import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { buttonVariants } from '$lib/components/ui/button/index.js';
 
@@ -168,8 +168,14 @@
                 </AlertDialog.Description>
             </AlertDialog.Header>
             <AlertDialog.Footer>
-                <AlertDialog.Cancel onclick={() => { deletingId = ''; }}>Cancel</AlertDialog.Cancel>
-                <AlertDialog.Action onclick={() => handleDelete(deletingId)}>Delete</AlertDialog.Action>
+                <AlertDialog.Cancel
+                    onclick={() => {
+                        deletingId = '';
+                    }}>Cancel</AlertDialog.Cancel
+                >
+                <AlertDialog.Action onclick={() => handleDelete(deletingId)}
+                    >Delete</AlertDialog.Action
+                >
             </AlertDialog.Footer>
         </AlertDialog.Content>
     </AlertDialog.Root>
