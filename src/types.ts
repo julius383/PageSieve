@@ -1,5 +1,7 @@
 import * as z from 'zod';
 
+z.config({jitless: true});
+
 export const Metadata = z.object({
     id: z.string().default(''),
     description: z.string().optional(),
@@ -40,13 +42,13 @@ export const PaginationConfig = z.discriminatedUnion('mode', [
     }),
 ]);
 
-const datatypes = ['string', 'number', 'date', 'time', 'datetime', 'array', 'object'];
+const datatypes = ['array', 'item'] as const;
 
 export const SelectorDefinition = z.object({
     id: z.int().positive(),
     name: z.string(),
     selector: z.string(),
-    type: z.enum(datatypes).optional(),
+    type: z.enum(datatypes).default('item').optional(),
     description: z.string().optional(),
 });
 

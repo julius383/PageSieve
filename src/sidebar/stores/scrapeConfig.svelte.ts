@@ -7,7 +7,7 @@ export let activeGroup = 1;
 
 export const scrapeConfig = $state<ScrapeConfig>({
     metadata: Metadata.parse({}),
-    selectors: [{ id: 1, fields: [{ id: 1, name: '', selector: '' }] }],
+    selectors: [{ id: 1, fields: [{ id: 1, name: '', selector: '' , type: 'item'}] }],
     options: ExtractionOptions.parse({}),
     pagination: { mode: 'none' },
 });
@@ -19,7 +19,7 @@ export function getCurrentGroup() {
 export function addDefinition() {
     const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
     if (group) {
-        group.fields.push({ id: nextSelectorId++, name: '', selector: '' });
+        group.fields.push({ id: nextSelectorId++, name: '', selector: '' , type: 'item'});
     }
 }
 
