@@ -48,10 +48,10 @@ function xpathQuerySelector(xpath: string, context: Element | Document = documen
         .singleNodeValue;
 }
 
-function pickSelectorFunction(selector: string, type = 'item') {
+function pickSelectorFunction(selector: string, type = 'single') {
     if (selector.startsWith('./') || selector.startsWith('//')) {
         // selector is xpath
-        if (type === 'item') {
+        if (type === 'single') {
             return (ctx: Element | Document) => {
                 const foundItem = xpathQuerySelector(selector, ctx);
                 return foundItem?.nodeValue;
@@ -71,7 +71,7 @@ function pickSelectorFunction(selector: string, type = 'item') {
             attribute = parts[1];
             selector = selector.slice(0, parts.index);
         }
-        if (type === 'item') {
+        if (type === 'single') {
             return (item: Element | Document) => {
                 const foundItem = item.querySelector(selector);
                 return attribute

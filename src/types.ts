@@ -42,13 +42,13 @@ export const PaginationConfig = z.discriminatedUnion('mode', [
     }),
 ]);
 
-const datatypes = ['array', 'item'] as const;
+const datatypes = ['array', 'single'] as const;
 
 export const SelectorDefinition = z.object({
     id: z.int().positive(),
     name: z.string(),
     selector: z.string(),
-    type: z.enum(datatypes).default('item').optional(),
+    type: z.enum(datatypes).default('single').optional(),
     description: z.string().optional(),
 });
 

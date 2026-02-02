@@ -31,6 +31,7 @@
                     deleteHandler={() => removeDefinition(field.id)}
                     bind:fieldName={field.name}
                     bind:cssSelector={field.selector}
+                    bind:type={field.type}
                 />
             {/each}
         </div>
