@@ -24,6 +24,7 @@
  THE SOFTWARE.
 */
 import DiffMatchPatch from '$lib/dmp.js';
+import { finder } from '@medv/finder';
 
 export class DomPredictionHelper {
     recursiveNodes(e: Node): Node[] {
@@ -116,6 +117,10 @@ export class DomPredictionHelper {
             }
         }
         return this.cleanCss(path);
+    }
+
+    pathOf2(elem: Element): string {
+        return finder(elem, { root: document.body, timeoutMs: 1000 });
     }
 
     cssDescriptor(node: Element): string {

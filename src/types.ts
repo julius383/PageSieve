@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-z.config({jitless: true});
+z.config({ jitless: true });
 
 export const Metadata = z.object({
     id: z.string().default(''),

@@ -53,7 +53,10 @@ export async function handleExtract(selectors: SelectorGroup[]) {
 
                         // update URL in metadata
                         scrapeConfig.metadata.url = tabInfo.url;
-                        scrapeConfig.metadata.selectorCount = selectors.reduce((acc, curr) => acc + curr.fields.length, 0);
+                        scrapeConfig.metadata.selectorCount = selectors.reduce(
+                            (acc, curr) => acc + curr.fields.length,
+                            0,
+                        );
                         scrapeConfig.metadata.lastRunAt = new Date().toISOString();
                         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
 
@@ -110,7 +113,7 @@ export function handleImportConfig(event: Event) {
                         console.error(result.error); // ZodError instance
                     } else {
                         // Object.assign(scrapeConfig, result.data.config);
-                        setScrapeConfig(result.data.config)
+                        setScrapeConfig(result.data.config);
                     }
                     console.dir(configData);
                 }

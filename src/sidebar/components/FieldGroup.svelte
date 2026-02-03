@@ -3,16 +3,22 @@
     import { Button } from '$lib/components/ui/button';
     import { Trash2, SquareStack } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-    import { Toggle } from "$lib/components/ui/toggle/index.js";
+    import { Toggle } from '$lib/components/ui/toggle/index.js';
 
     import ElementPicker from './ElementPicker.svelte';
 
-    let { id, deleteHandler, fieldName = $bindable(), cssSelector = $bindable(), type = $bindable() } = $props();
+    let {
+        id,
+        deleteHandler,
+        fieldName = $bindable(),
+        cssSelector = $bindable(),
+        type = $bindable(),
+    } = $props();
 
     function toggleType() {
-        type = (type == undefined || type == 'single') ? 'array' : 'single';
+        type = type == undefined || type == 'single' ? 'array' : 'single';
     }
-    let pressed = $derived((type == undefined || type == 'single') ? false : true);
+    let pressed = $derived(type == undefined || type == 'single' ? false : true);
 
     let pickingElement = $state(false);
 </script>
@@ -53,7 +59,7 @@
                         aria-label="Extract Array"
                         size="sm"
                         variant="outline"
-                        pressed={pressed}
+                        {pressed}
                         class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
                         onclick={toggleType}
                     >
@@ -62,7 +68,6 @@
                 </Tooltip.Trigger>
                 <Tooltip.Content>
                     <p>Enable to extract multiples of this element per item.</p>
-
                 </Tooltip.Content>
             </Tooltip.Root>
         </Tooltip.Provider>

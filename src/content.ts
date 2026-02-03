@@ -94,7 +94,9 @@ function pickSelectorFunction(selector: string, type = 'single') {
  * @param selectors - Array of selector configurations
  * @returns Array of extracted data objects
  */
-function extractDataFromPage(selectors: SelectorGroup[]): {id: number; results: UnknownObject[]}[] {
+function extractDataFromPage(
+    selectors: SelectorGroup[],
+): { id: number; results: UnknownObject[] }[] {
     console.log('Attempting to extract data with');
     console.dir(selectors);
     const extractionResults: { id: number; results: UnknownObject[] }[] = [];

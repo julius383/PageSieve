@@ -7,13 +7,13 @@ export let activeGroup = 1;
 
 export const scrapeConfig = $state<ScrapeConfig>({
     metadata: Metadata.parse({}),
-    selectors: [{ id: 1, fields: [{ id: 1, name: '', selector: '' , type: 'single'}] }],
+    selectors: [{ id: 1, fields: [{ id: 1, name: '', selector: '', type: 'single' }] }],
     options: ExtractionOptions.parse({}),
     pagination: { mode: 'none' },
 });
 
 export function setScrapeConfig(config: ScrapeConfig) {
-    Object.assign(scrapeConfig, config)
+    Object.assign(scrapeConfig, config);
     updateIds();
 }
 
@@ -24,7 +24,7 @@ export function getActiveGroup() {
 export function addDefinition() {
     const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
     if (group) {
-        group.fields.push({ id: nextSelectorId++, name: '', selector: '' , type: 'single'});
+        group.fields.push({ id: nextSelectorId++, name: '', selector: '', type: 'single' });
     }
 }
 
@@ -44,15 +44,13 @@ function updateIds(group: SelectorGroup | null = null) {
             elem.id = idx + 1;
         });
         nextSelectorId = group.fields.length + 1;
-
     } else {
         scrapeConfig.selectors.forEach((group) => {
             group.fields.forEach((elem, idx) => {
                 elem.id = idx + 1;
             });
             nextSelectorId = group.fields.length + 1;
-
-        })
+        });
     }
 }
 

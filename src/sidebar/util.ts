@@ -50,9 +50,6 @@ export function sanitizeSegment(input: string): string {
 
 /**
  * Guesses a unique part of a URL
- *
- * @param {string} url - full web page URL
- * @returns {string} - substring of URL
  */
 export function createPathSlug(url: string): string {
     const path = new URL(url).pathname;
@@ -65,9 +62,6 @@ export function createPathSlug(url: string): string {
 
 /**
  * Computes SHA-256 hash of an object
- *
- * @param {object} data - object hash
- * @returns {string} - hex substring of hash
  */
 export async function shortHash(data: object): Promise<string> {
     const encoder = new TextEncoder();
