@@ -1,4 +1,4 @@
-import type { ScrapeConfig } from '../../types';
+import type { ScrapeConfig, SelectorGroup } from '../../types';
 import { ExtractionOptions, Metadata } from '../../types';
 
 let nextSelectorId = 2;
@@ -12,7 +12,12 @@ export const scrapeConfig = $state<ScrapeConfig>({
     pagination: { mode: 'none' },
 });
 
-export function getCurrentGroup() {
+export function setScrapeConfig(config: ScrapeConfig) {
+    Object.assign(scrapeConfig, config)
+    updateIds();
+}
+
+export function getActiveGroup() {
     return scrapeConfig.selectors.find((element) => element.id == activeGroup);
 }
 
@@ -29,17 +34,31 @@ export function removeDefinition(id: number) {
         const index = group.fields.findIndex((element) => element.id === id);
         group.fields.splice(index, 1);
 
-        // update ids to be in order
+        updateIds(group);
+    }
+}
+
+function updateIds(group: SelectorGroup | null = null) {
+    if (group) {
         group.fields.forEach((elem, idx) => {
             elem.id = idx + 1;
         });
-        nextSelectorId = group.fields.length;
+        nextSelectorId = group.fields.length + 1;
+
+    } else {
+        scrapeConfig.selectors.forEach((group) => {
+            group.fields.forEach((elem, idx) => {
+                elem.id = idx + 1;
+            });
+            nextSelectorId = group.fields.length + 1;
+
+        })
     }
 }
 
 export function resetDefinitions() {
     nextSelectorId = 1;
-    const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
+    const group = getActiveGroup();
     if (group) {
         group.container = '';
         group.fields.length = 0;

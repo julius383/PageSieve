@@ -7,12 +7,12 @@
     import {
         addDefinition,
         removeDefinition,
-        getCurrentGroup,
+        getActiveGroup,
         scrapeConfig,
     } from '../stores/scrapeConfig.svelte';
 
     // let group = scrapeConfig.selectors[0];
-    let group = $derived(getCurrentGroup());
+    let group = $derived(getActiveGroup());
 </script>
 
 {#if group !== undefined}
