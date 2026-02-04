@@ -22,6 +22,7 @@
     import { allConfigs, refreshConfigs } from '../stores/ui.svelte';
     import { handleLoadConfig } from '../actions';
     import { renameConfig, removeConfig } from '../services/storage';
+    import { addLog } from '../stores/logs';
 
     onMount(() => {
         refreshConfigs();
@@ -44,14 +45,8 @@
 
     async function saveRename(oldId: string) {
         if (newIdValue && oldId !== newIdValue) {
-            const success = await renameConfig(oldId, newIdValue);
+            await renameConfig(oldId, newIdValue);
             await refreshConfigs();
-            if (success) {
-                console.log(`Renamed config to ${oldId}`);
-            } else {
-                // TODO: Show an error to the user
-                console.error('Failed to rename config. New ID might already exist.');
-            }
         }
         cancelEditing();
     }

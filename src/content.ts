@@ -26,7 +26,6 @@ type InspectorAcceptRequest = {
 
 type MessageRequest = ExtractDataRequest | InspectorToggleRequest | InspectorAcceptRequest;
 
-// FIXME: show error when user
 function xpathQuerySelectorAll(xpath: string, context: Element | Document = document) {
     const result = document.evaluate(
         xpath,
@@ -97,8 +96,8 @@ function pickSelectorFunction(selector: string, type = 'single') {
 function extractDataFromPage(
     selectors: SelectorGroup[],
 ): { id: number; results: UnknownObject[] }[] {
-    console.log('Attempting to extract data with');
-    console.dir(selectors);
+    // console.log('Attempting to extract data with');
+    // console.dir(selectors);
     const extractionResults: { id: number; results: UnknownObject[] }[] = [];
 
     selectors.forEach(({ id, container, fields }) => {
@@ -111,7 +110,7 @@ function extractDataFromPage(
                     const value = fn(containerItem);
                     return { [name]: value };
                 });
-                console.log('found the following data');
+                // console.log('found the following data');
                 const row = Object.assign({}, ...fieldData);
                 console.dir(row);
                 rows.push(row);
@@ -122,15 +121,10 @@ function extractDataFromPage(
             // no container so assume no missing fields and zip
             const foundItems: StringArrayMap = {};
             fields.forEach(({ name, selector }) => {
-                try {
-                    const fn = pickSelectorFunction(selector, 'array');
-                    const found = fn(document);
-                    if (found) {
-                        foundItems[name] = found;
-                    }
-                } catch (error) {
-                    // FIXME: improve error handling here
-                    console.error(`Error with selector "${selector}":`, error);
+                const fn = pickSelectorFunction(selector, 'array');
+                const found = fn(document);
+                if (found) {
+                    foundItems[name] = found;
                 }
             });
             const rows = zipObjectArrays(foundItems);
@@ -169,7 +163,6 @@ browser.runtime.onMessage.addListener(
                     success: true,
                 });
             } catch (error) {
-                console.error('Failed to extract data:', error);
                 sendResponse({
                     result: [],
                     success: false,

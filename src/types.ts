@@ -114,3 +114,4 @@ export type ScrapeConfig = z.infer<typeof ScrapeConfig>;
 export type StoredConfig = z.infer<typeof StoredConfig>;
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
 export type SelectorGroup = z.infer<typeof SelectorGroup>;
+export type StatusLevel = z.infer<typeof StatusLevel>;

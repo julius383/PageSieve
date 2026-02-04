@@ -1,6 +1,7 @@
 <script lang="ts">
     import * as Tabs from '$lib/components/ui/tabs/index.js';
     import * as Field from '$lib/components/ui/field/index.js';
+    import * as z from 'zod';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
     import { Separator } from '$lib/components/ui/separator';
@@ -11,6 +12,7 @@
     import { PaginationConfig } from '../../types';
 
     import { Trash2, Plus } from '@lucide/svelte';
+    import { setStatus } from '../stores/ui.svelte';
 
     const stored = scrapeConfig.pagination;
 
@@ -43,8 +45,7 @@
         const snapshot = $state.snapshot(paginationState);
         const result = PaginationConfig.safeParse(snapshot[snapshot.mode]);
         if (!result.success) {
-            // TODO: improve show error in UI
-            console.error(result.error); // ZodError instance
+            setStatus('errored', z.prettifyError(result.error))
         } else {
             Object.assign(scrapeConfig.pagination, result.data);
         }

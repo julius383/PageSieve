@@ -78,13 +78,10 @@ export async function handleExtract(selectors: SelectorGroup[]) {
                 } else {
                     extractedData.data = response.result;
                 }
-
                 setStatus('idle', `Ready`);
-                console.dir(response.result);
-                console.log(scrapeConfig.options.appendData);
                 return;
             } else {
-                setStatus('errored', 'Failed to extract selectors');
+                setStatus('errored', response.error);
                 return;
             }
         } else {
@@ -92,7 +89,9 @@ export async function handleExtract(selectors: SelectorGroup[]) {
             return;
         }
     } catch (error) {
-        setStatus('errored', error.message);
+        if (error instanceof Error) {
+            setStatus('errored', `extraction failed with error ${error.message}`);
+        }
         return;
     }
 }
@@ -185,9 +184,8 @@ export async function handleSaveConfig(config: ScrapeConfig) {
         },
         async () => {
             const result = await saveConfig(filename, storedConfig);
-            // FIXME: dont throw
             if (!result) {
-                throw Error(`existing config with id ${storedConfig.id}`);
+                setStatus('errored', `conflict with existing config with id ${storedConfig.id}`);
             }
         },
     );
