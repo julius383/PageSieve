@@ -68,7 +68,7 @@
             </Tooltip.Provider>
         </div>
     </Tabs.List>
-    <Tabs.Content value="data" class="pt-4 overflow-auto flex-grow">
+    <Tabs.Content value="data" class="pt-4 overflow-auto grow">
         <div class="border rounded-md">
             <Table.Root>
                 <Table.Header class="bg-accent">
@@ -90,7 +90,7 @@
             </Table.Root>
         </div>
     </Tabs.Content>
-    <Tabs.Content value="json" class="pt-4 overflow-auto flex-grow">
+    <Tabs.Content value="json" class="pt-4 overflow-auto grow">
         <div class="p-4 rounded-md text-sm overflow-wrap">
             <JsonViewer value={extractedData.data[0]?.results} />
         </div>

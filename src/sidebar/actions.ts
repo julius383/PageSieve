@@ -65,13 +65,23 @@ export async function handleExtract(selectors: SelectorGroup[]) {
                     }
                 }
                 if (scrapeConfig.options.appendData) {
-                    extractedData.data = extractedData.data.concat(response.result);
+                    response.result.forEach(newGroup => {
+                        const existingGroup = extractedData.data.find(d => d.id === newGroup.id);
+                        if (existingGroup) {
+                            existingGroup.results = existingGroup.results.concat(newGroup.results);
+                        } else {
+                            extractedData.data.push(newGroup);
+                        }
+                    });
+                        // re-assign to trigger reactivity
+                        extractedData.data = [...extractedData.data];
                 } else {
                     extractedData.data = response.result;
                 }
 
                 setStatus('idle', `Ready`);
                 console.dir(response.result);
+                console.log(scrapeConfig.options.appendData);
                 return;
             } else {
                 setStatus('errored', 'Failed to extract selectors');
