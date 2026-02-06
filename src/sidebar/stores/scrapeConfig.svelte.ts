@@ -17,6 +17,10 @@ export function setScrapeConfig(config: ScrapeConfig) {
     updateIds();
 }
 
+export function setPaginationConfig(pagination: PaginationConfig) {
+    Object.assign(scrapeConfig.pagination, pagination);
+}
+
 export function getActiveGroup() {
     return scrapeConfig.selectors.find((element) => element.id == activeGroup);
 }
@@ -25,6 +29,7 @@ export function addDefinition() {
     const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
     if (group) {
         group.fields.push({ id: nextSelectorId++, name: '', selector: '', type: 'single' });
+
     }
 }
 

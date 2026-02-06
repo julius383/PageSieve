@@ -15,6 +15,7 @@
         loading: { label: 'Loading', style: '#8a3ffc' },
         saving: { label: 'Saving', style: '#0043ce' },
         inspecting: { label: 'Inspecting', style: '#ffd700' },
+        navigating: { label: 'Navigating', style: '#ffa500' },
     };
 </script>
 

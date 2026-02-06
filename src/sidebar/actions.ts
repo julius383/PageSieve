@@ -1,5 +1,5 @@
 import { SvelteDate, SvelteURL } from 'svelte/reactivity';
-import type { SelectorGroup } from '../types';
+import type { PaginationConfig, SelectorGroup } from '../types';
 import {
     scrapeRuns,
     extractedData,
@@ -130,6 +130,7 @@ export function handleImportConfig(event: Event) {
  *
  */
 export async function handleExportConfig(config: ScrapeConfig): Promise<string> {
+    await browser.runtime.sendMessage({ action: 'triggerCommitPagination' });
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     runWithStatus(
@@ -159,6 +160,7 @@ export async function handleExportConfig(config: ScrapeConfig): Promise<string> 
 }
 
 export async function handleSaveConfig(config: ScrapeConfig) {
+    await browser.runtime.sendMessage({ action: 'triggerCommitPagination' });
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     const storedConfig = {
@@ -194,4 +196,22 @@ export async function handleLoadConfig(stored: StoredConfig) {
             Object.assign(scrapeConfig, stored.config);
         },
     );
+}
+
+export async function navigateTo(config: PaginationConfig) {
+    await runWithStatusAsync(
+        {
+            status: 'navigating',
+            message: `Navigating to next page based on ${config.mode}`,
+            timestamp: new Date().toISOString(),
+        },
+        async () => {
+            const navRes = await browser.runtime.sendMessage({ action: 'pageNavigate', config: config });
+            // FIXME: figure out why error is being set
+            // TODO: wait the amount set in Extraction Options
+            if (navRes.previousURL === navRes.currentURL) {
+                setStatus('errored', `failed to navigate to next page with ${config.mode}`);
+            }
+        }
+    )
 }

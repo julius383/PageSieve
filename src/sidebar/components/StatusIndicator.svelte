@@ -14,6 +14,7 @@
         ['loading']: { label: 'Loading', style: 'bg-[#8a3ffc] animate-pulse' },
         ['saving']: { label: 'Saving', style: 'bg-[#8a3ffc] animate-pulse' },
         ['inspecting']: { label: 'Inspecting', style: 'bg-[#ffd700] animate-pulse' },
+        ['navigating']: { label: 'Navigating', style: 'bg-[#ffa500] animate-pulse' },
     };
     let cfg = () => STATUS_CONFIG[extensionStatus?.status] ?? STATUS_CONFIG['idle'];
 </script>

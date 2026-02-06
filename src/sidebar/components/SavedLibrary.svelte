@@ -22,7 +22,6 @@
     import { allConfigs, refreshConfigs } from '../stores/ui.svelte';
     import { handleLoadConfig } from '../actions';
     import { renameConfig, removeConfig } from '../services/storage';
-    import { addLog } from '../stores/logs';
 
     onMount(() => {
         refreshConfigs();

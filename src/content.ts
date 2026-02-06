@@ -24,7 +24,11 @@ type InspectorAcceptRequest = {
     action: 'inspector-accept';
 };
 
-type MessageRequest = ExtractDataRequest | InspectorToggleRequest | InspectorAcceptRequest;
+type ClickElementRequest = {
+    action: 'clickElement';
+}
+
+type MessageRequest = ExtractDataRequest | InspectorToggleRequest | InspectorAcceptRequest | ClickElementRequest;
 
 function xpathQuerySelectorAll(xpath: string, context: Element | Document = document) {
     const result = document.evaluate(
@@ -176,6 +180,15 @@ browser.runtime.onMessage.addListener(
             }
             inspector.toggle(request.pickerId);
             sendResponse({ isActive: inspector.isActive });
+            return true;
+        } else if (request.action === 'clickElement') {
+            const el = document.querySelector(request.selector);
+            if (!el) {
+                console.error('Element not found: ', request.selector);
+                sendResponse({ didNavigate: false });
+            }
+            el.click();
+            sendResponse({ didNavigate: true });
             return true;
         } else if (request.action === 'inspector-accept') {
             const selector = inspector.guessSelector();

@@ -26,7 +26,7 @@ export const PaginationConfig = z.discriminatedUnion('mode', [
         nextSelector: z.string(),
         maxPages: z.int().max(1000).optional(),
     }),
-    z.object({ mode: z.literal('links'), pageLinks: z.string().array() }),
+    z.object({ mode: z.literal('links'), pageLinks: z.array(z.string()) }),
     z.object({
         mode: z.literal('template'),
         urlTemplate: z
@@ -94,6 +94,7 @@ const StatusLevel = z.enum([
     'saving',
     'loading',
     'inspecting',
+    'navigating',
 ]);
 
 const ExtensionStatus = z.object({
