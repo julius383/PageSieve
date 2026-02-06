@@ -16,9 +16,9 @@
     } = $props();
 
     function toggleType() {
-        type = type == undefined || type == 'single' ? 'array' : 'single';
+        type = (type === undefined || type === 'single') ? 'array' : 'single';
     }
-    let pressed = $derived(type == undefined || type == 'single' ? false : true);
+    let pressed = $derived(type === 'array' ? true : false);
 
     let pickingElement = $state(false);
 </script>
@@ -59,7 +59,7 @@
                         aria-label="Extract Array"
                         size="sm"
                         variant="outline"
-                        {pressed}
+                        pressed={pressed}
                         class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
                         onclick={toggleType}
                     >
