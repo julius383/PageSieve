@@ -45,7 +45,6 @@ export async function handleExtract(selectors: SelectorGroup[]) {
                         // check if last run has identical config
                         if (scrapeRuns.runs[0].shortHash == runInst.shortHash) {
                             scrapeConfig.options.appendData = true;
-                            scrapeConfig.metadata.lastRunAt = new Date().toISOString();
                         }
                     } else {
                         // this is the first run with with new config
@@ -53,11 +52,6 @@ export async function handleExtract(selectors: SelectorGroup[]) {
 
                         // update URL in metadata
                         scrapeConfig.metadata.url = tabInfo.url;
-                        scrapeConfig.metadata.selectorCount = selectors.reduce(
-                            (acc, curr) => acc + curr.fields.length,
-                            0,
-                        );
-                        scrapeConfig.metadata.lastRunAt = new Date().toISOString();
                         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
 
                         // TODO: figure out how to respect user supplied config
@@ -98,7 +92,6 @@ export async function handleExtract(selectors: SelectorGroup[]) {
 
 /**
  * Imports ScrapeConfig from a file
- *
  */
 export function handleImportConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
@@ -121,7 +114,6 @@ export function handleImportConfig(event: Event) {
                     if (!result.success) {
                         console.error(result.error); // ZodError instance
                     } else {
-                        // Object.assign(scrapeConfig, result.data.config);
                         setScrapeConfig(result.data.config);
                     }
                     console.dir(configData);

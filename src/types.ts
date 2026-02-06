@@ -8,9 +8,6 @@ export const Metadata = z.object({
     url: z.url().default('https://pagesieve.xyz'),
     version: z.string().default('1.0.0'),
     author: z.string().optional(),
-
-    selectorCount: z.number().nonnegative().optional().default(0),
-    lastRunAt: z.iso.datetime({ offset: true }).optional(),
 });
 
 export const ExtractionOptions = z.object({
@@ -70,7 +67,7 @@ export const ScrapeConfig = z.object({
     selectors: z.array(SelectorGroup),
     options: ExtractionOptions,
     pagination: PaginationConfig,
-    variables: z.optional(z.array(z.record(z.string(), VariableDefinition))),
+    variables: z.record(z.string(), VariableDefinition).optional(),
 });
 
 export const StoredConfig = z.object({

@@ -3,7 +3,6 @@
     import { Input } from '$lib/components/ui/input/index.js';
     import { Textarea } from '$lib/components/ui/textarea/index.js';
     import { Button } from '$lib/components/ui/button';
-    import { Separator } from '$lib/components/ui/separator';
     import { Copy, ExternalLink } from '@lucide/svelte';
 
     import { default as dayjs } from 'dayjs';
@@ -108,24 +107,4 @@
         </div>
     </div>
 
-    <Separator />
-
-    <!-- Derived / Read-only -->
-    <div class="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
-        <Item.Root>
-            <Item.Content>
-                <Item.Title class="font-medium">Selectors</Item.Title>
-                <Item.Description>{scrapeConfig.metadata.selectorCount ?? '—'}</Item.Description>
-            </Item.Content>
-        </Item.Root>
-
-        <Item.Root>
-            <Item.Content>
-                <Item.Title class="font-medium">Last run</Item.Title>
-                <Item.Description>
-                    {dayjs(scrapeConfig.metadata.lastRunAt).format('D MMM YYYY h:mm A')}
-                </Item.Description>
-            </Item.Content>
-        </Item.Root>
-    </div>
 </div>
