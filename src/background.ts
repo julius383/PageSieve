@@ -1,27 +1,26 @@
-import type { BackgroundRequest, ScrapeStatusLevel } from "./types";
+import type { BackgroundRequest, ScrapeStatusLevel } from './types';
 
 let sidebarOpen = false;
 
 const scrapeRunPageCounters: { [runId: string]: number } = {};
 
 async function navigateAndWait(tabId: number, url: string) {
-  return new Promise((resolve, reject) => {
-    function listener(updatedTabId: number, changeInfo, tab) {
-      if (updatedTabId === tabId && changeInfo.status === "complete") {
-        browser.tabs.onUpdated.removeListener(listener);
-        resolve(tab);
-      }
-    }
+    return new Promise((resolve, reject) => {
+        function listener(updatedTabId: number, changeInfo, tab) {
+            if (updatedTabId === tabId && changeInfo.status === 'complete') {
+                browser.tabs.onUpdated.removeListener(listener);
+                resolve(tab);
+            }
+        }
 
-    browser.tabs.onUpdated.addListener(listener);
+        browser.tabs.onUpdated.addListener(listener);
 
-    browser.tabs.update(tabId, { url }).catch(err => {
-      browser.tabs.onUpdated.removeListener(listener);
-      reject(err);
+        browser.tabs.update(tabId, { url }).catch((err) => {
+            browser.tabs.onUpdated.removeListener(listener);
+            reject(err);
+        });
     });
-  });
 }
-
 
 // Listen for a click on the browser action icon.
 browser.browserAction.onClicked.addListener(() => {
@@ -51,14 +50,18 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
         });
         if (tab?.id && tab?.url) {
             const pagination = request.config.pagination;
-            const runId =  request.configHash;
+            const runId = request.configHash;
 
             // Initialize page counter for this run if not present
             if (!scrapeRunPageCounters[runId]) {
                 scrapeRunPageCounters[runId] = 1;
             }
 
-            const sendScrapeRunUpdate = async (currentPage: number | undefined, maxPages: number | undefined, status: ScrapeStatusLevel = 'in_progress') => {
+            const sendScrapeRunUpdate = async (
+                currentPage: number | undefined,
+                maxPages: number | undefined,
+                status: ScrapeStatusLevel = 'in_progress',
+            ) => {
                 await browser.runtime.sendMessage({
                     action: 'updateScrapeRun',
                     runId,
@@ -70,18 +73,21 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             };
 
             if (pagination.mode === 'links') {
-                const idx = pagination.pageLinks.findIndex((elem: string) => elem === tab.url)
-                let next_idx = 0
+                const idx = pagination.pageLinks.findIndex((elem: string) => elem === tab.url);
+                let next_idx = 0;
                 if (idx + 1 < pagination.pageLinks.length) {
-                    next_idx = idx + 1
+                    next_idx = idx + 1;
                 }
                 const nextURL = pagination.pageLinks[next_idx];
                 await sendScrapeRunUpdate(idx + 1, pagination.pageLinks.length, 'completed');
 
-                await navigateAndWait(tab.id, nextURL)
+                await navigateAndWait(tab.id, nextURL);
 
                 if (request.config.options.waitforNetworkIdle) {
-                    await browser.tabs.sendMessage(tab.id, {action: 'waitForPageLoad', timeout: request.config.options.timeoutMs});
+                    await browser.tabs.sendMessage(tab.id, {
+                        action: 'waitForPageLoad',
+                        timeout: request.config.options.timeoutMs,
+                    });
                 }
 
                 const [newTab] = await browser.tabs.query({
@@ -89,15 +95,15 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     currentWindow: true,
                 });
                 await sendScrapeRunUpdate(next_idx + 1, pagination.pageLinks.length, 'in_progress');
-                scrapeRunPageCounters[runId]++
+                scrapeRunPageCounters[runId]++;
 
-                return { previousURL: tab.url, currentURL: newTab.url};
-
-
+                return { previousURL: tab.url, currentURL: newTab.url };
             } else if (pagination.mode === 'next') {
                 const currentPage = scrapeRunPageCounters[runId];
                 const maxPages = pagination.maxPages;
-                const currentBodyHash = await browser.tabs.sendMessage(tab.id, {action: 'hashBody'});
+                const currentBodyHash = await browser.tabs.sendMessage(tab.id, {
+                    action: 'hashBody',
+                });
 
                 if (maxPages && maxPages !== 0 && currentPage > maxPages) {
                     console.log(`Reached max pages (${maxPages}). Cannot navigate further.`);
@@ -106,10 +112,16 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     return { previousURL: tab.url, currentURL: null };
                 }
 
-                await browser.tabs.sendMessage(tab.id, {action: 'clickElement', selector: pagination.nextSelector});
+                await browser.tabs.sendMessage(tab.id, {
+                    action: 'clickElement',
+                    selector: pagination.nextSelector,
+                });
 
                 if (request.config.options.waitforNetworkIdle) {
-                    await browser.tabs.sendMessage(tab.id, {action: 'waitPageLoad', timeout: request.config.options.timeoutMs});
+                    await browser.tabs.sendMessage(tab.id, {
+                        action: 'waitPageLoad',
+                        timeout: request.config.options.timeoutMs,
+                    });
                 }
 
                 const [newTab] = await browser.tabs.query({
@@ -120,9 +132,13 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 if (newTab.url === tab.url) {
                     // TODO: check if this works
                     if (newTab?.id) {
-                        const newBodyHash = await browser.tabs.sendMessage(tab.id, {action: 'hashBody'});
+                        const newBodyHash = await browser.tabs.sendMessage(tab.id, {
+                            action: 'hashBody',
+                        });
 
-                        console.log(`oldhash: ${currentBodyHash.bodyHash}, newHash: ${newBodyHash.bodyHash}`);
+                        console.log(
+                            `oldhash: ${currentBodyHash.bodyHash}, newHash: ${newBodyHash.bodyHash}`,
+                        );
                         if (currentBodyHash.bodyHash === newBodyHash.bodyHash) {
                             await sendScrapeRunUpdate(currentPage, maxPages, 'errored');
                             delete scrapeRunPageCounters[runId];
@@ -136,7 +152,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 scrapeRunPageCounters[runId]++;
                 await sendScrapeRunUpdate(scrapeRunPageCounters[runId], maxPages, 'in_progress');
 
-                return { previousURL: tab.url, currentURL: newTab.url};
+                return { previousURL: tab.url, currentURL: newTab.url };
             } else if (pagination.mode === 'template') {
                 const currentTabUrl = tab.url;
                 const { urlTemplate, startPage, increment, maxPages } = pagination;
@@ -167,10 +183,13 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 scrapeRunPageCounters[runId]++;
                 await sendScrapeRunUpdate(nextPage, maxPages, 'in_progress');
 
-                await navigateAndWait(tab.id, nextURL)
+                await navigateAndWait(tab.id, nextURL);
 
                 if (request.config.options.waitforNetworkIdle) {
-                    await browser.tabs.sendMessage(tab.id, {action: 'waitForPageLoad', timeout: request.config.options.timeoutMs});
+                    await browser.tabs.sendMessage(tab.id, {
+                        action: 'waitForPageLoad',
+                        timeout: request.config.options.timeoutMs,
+                    });
                 }
 
                 const [newTab] = await browser.tabs.query({
@@ -180,7 +199,6 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 return { previousURL: tab.url, currentURL: newTab.url };
             } else {
                 console.log('Not implemented');
-
             }
         }
     }

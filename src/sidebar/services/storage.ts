@@ -20,7 +20,7 @@ export async function getAllConfigs(): Promise<StoredConfig[]> {
             }
             configs.push(result.data);
         } else {
-            setStatus('errored', `Invalid config found in storage with key "${key}"`)
+            setStatus('errored', `Invalid config found in storage with key "${key}"`);
         }
     });
     return configs;
@@ -49,12 +49,12 @@ export async function saveConfig(id: string, config: StoredConfig): Promise<bool
 export async function renameConfig(oldId: string, newId: string): Promise<boolean> {
     const existing = await localforage.getItem(newId);
     if (existing) {
-        setStatus('errored', `Config with id "${newId}" already exists.`)
+        setStatus('errored', `Config with id "${newId}" already exists.`);
         return false;
     }
     const result = StoredConfig.safeParse(await localforage.getItem(oldId));
     if (!result.success) {
-         setStatus('errored', z.prettifyError(result.error))
+        setStatus('errored', z.prettifyError(result.error));
     } else {
         await localforage.removeItem(oldId);
         result.data.id = newId;

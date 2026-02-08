@@ -34,25 +34,27 @@ export async function handleExtract(selectors: SelectorGroup[]) {
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
                 if (response.result) {
-                    if (scrapeRuns.runs.length == 0 && scrapeConfig.metadata.url !== 'https://pagesieve.xyz') {
+                    if (
+                        scrapeRuns.runs.length == 0 &&
+                        scrapeConfig.metadata.url !== 'https://pagesieve.xyz'
+                    ) {
                         // this is the first run with with new config
 
                         scrapeConfig.metadata.url = tabInfo.url;
                         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
-
                     }
                 }
                 if (scrapeConfig.options.appendData) {
-                    response.result.forEach(newGroup => {
-                        const existingGroup = extractedData.data.find(d => d.id === newGroup.id);
+                    response.result.forEach((newGroup) => {
+                        const existingGroup = extractedData.data.find((d) => d.id === newGroup.id);
                         if (existingGroup) {
                             existingGroup.results = existingGroup.results.concat(newGroup.results);
                         } else {
                             extractedData.data.push(newGroup);
                         }
                     });
-                        // re-assign to trigger reactivity
-                        extractedData.data = [...extractedData.data];
+                    // re-assign to trigger reactivity
+                    extractedData.data = [...extractedData.data];
                 } else {
                     extractedData.data = response.result;
                 }
@@ -190,12 +192,19 @@ export async function navigateTo(config: ScrapeConfig) {
             timestamp: new Date().toISOString(),
         },
         async () => {
-            const navRes = await browser.runtime.sendMessage({ action: 'pageNavigate', config: config, configHash: await shortHash(config.selectors) });
+            const navRes = await browser.runtime.sendMessage({
+                action: 'pageNavigate',
+                config: config,
+                configHash: await shortHash(config.selectors),
+            });
             // FIXME: figure out why error is being set
             // TODO: wait the amount set in Extraction Options
             if (navRes.previousURL === navRes.currentURL) {
-                setStatus('errored', `failed to navigate to next page with ${config.pagination.mode}`);
+                setStatus(
+                    'errored',
+                    `failed to navigate to next page with ${config.pagination.mode}`,
+                );
             }
-        }
-    )
+        },
+    );
 }

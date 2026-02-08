@@ -10,7 +10,6 @@ type UnknownObject = {
     [key: string]: unknown;
 };
 
-
 /**
  * Waits for the DOM to stop changing for a specified duration
  * @param timeout - Maximum time to wait in milliseconds (default: 10000)
@@ -18,115 +17,117 @@ type UnknownObject = {
  * @returns Promise that resolves when DOM is stable or timeout is reached
  */
 async function waitForDOMStable(
-  timeout: number = 10000,
-  stabilityDuration: number = 500
+    timeout: number = 10000,
+    stabilityDuration: number = 500,
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    let lastMutationTime = Date.now();
-    let stabilityTimer: NodeJS.Timeout | null = null;
-    let timeoutTimer: NodeJS.Timeout;
+    return new Promise((resolve, reject) => {
+        let lastMutationTime = Date.now();
+        let stabilityTimer: NodeJS.Timeout | null = null;
+        let timeoutTimer: NodeJS.Timeout;
 
-    // Set up the overall timeout
-    timeoutTimer = setTimeout(() => {
-      observer.disconnect();
-      if (stabilityTimer) clearTimeout(stabilityTimer);
-      reject(new Error(`DOM did not stabilize within ${timeout}ms`));
-    }, timeout);
+        // Set up the overall timeout
+        timeoutTimer = setTimeout(() => {
+            observer.disconnect();
+            if (stabilityTimer) clearTimeout(stabilityTimer);
+            reject(new Error(`DOM did not stabilize within ${timeout}ms`));
+        }, timeout);
 
-    // Create a MutationObserver to watch for DOM changes
-    const observer = new MutationObserver(() => {
-      lastMutationTime = Date.now();
+        // Create a MutationObserver to watch for DOM changes
+        const observer = new MutationObserver(() => {
+            lastMutationTime = Date.now();
 
-      // Clear existing stability timer
-      if (stabilityTimer) {
-        clearTimeout(stabilityTimer);
-      }
+            // Clear existing stability timer
+            if (stabilityTimer) {
+                clearTimeout(stabilityTimer);
+            }
 
-      // Set a new timer to check if DOM has been stable
-      stabilityTimer = setTimeout(() => {
-        observer.disconnect();
-        clearTimeout(timeoutTimer);
-        resolve();
-      }, stabilityDuration);
+            // Set a new timer to check if DOM has been stable
+            stabilityTimer = setTimeout(() => {
+                observer.disconnect();
+                clearTimeout(timeoutTimer);
+                resolve();
+            }, stabilityDuration);
+        });
+
+        // Start observing the document
+        observer.observe(document.body, {
+            childList: true, // Watch for added/removed nodes
+            subtree: true, // Watch all descendants
+            attributes: true, // Watch for attribute changes
+            characterData: true, // Watch for text content changes
+        });
+
+        // Also set initial stability timer in case DOM is already stable
+        stabilityTimer = setTimeout(() => {
+            observer.disconnect();
+            clearTimeout(timeoutTimer);
+            resolve();
+        }, stabilityDuration);
     });
-
-    // Start observing the document
-    observer.observe(document.body, {
-      childList: true,      // Watch for added/removed nodes
-      subtree: true,        // Watch all descendants
-      attributes: true,     // Watch for attribute changes
-      characterData: true   // Watch for text content changes
-    });
-
-    // Also set initial stability timer in case DOM is already stable
-    stabilityTimer = setTimeout(() => {
-      observer.disconnect();
-      clearTimeout(timeoutTimer);
-      resolve();
-    }, stabilityDuration);
-  });
 }
 
 /**
  * Waits for the DOMContentLoaded event (DOM is parsed, before images/stylesheets load)
  */
 async function waitForDOMContentLoaded(): Promise<void> {
-  return new Promise((resolve) => {
-    if (document.readyState !== 'loading') {
-      resolve();
-      return;
-    }
-    document.addEventListener('DOMContentLoaded', () => resolve(), { once: true });
-  });
+    return new Promise((resolve) => {
+        if (document.readyState !== 'loading') {
+            resolve();
+            return;
+        }
+        document.addEventListener('DOMContentLoaded', () => resolve(), { once: true });
+    });
 }
 
 /**
  * Waits for the window load event (everything including images/stylesheets loaded)
  */
 async function waitForWindowLoad(): Promise<void> {
-  return new Promise((resolve) => {
-    if (document.readyState === 'complete') {
-      resolve();
-      return;
-    }
-    window.addEventListener('load', () => resolve(), { once: true });
-  });
+    return new Promise((resolve) => {
+        if (document.readyState === 'complete') {
+            resolve();
+            return;
+        }
+        window.addEventListener('load', () => resolve(), { once: true });
+    });
 }
 
 /**
  * Comprehensive page load waiter with multiple options
  */
-async function waitForPageReady(options: {
-  /** Wait for DOMContentLoaded */
-  domContentLoaded?: boolean;
-  /** Wait for window load event */
-  windowLoad?: boolean;
-  /** Wait for DOM to stabilize after loading */
-  domStable?: boolean;
-  /** Stability duration if domStable is true (ms) */
-  stabilityDuration?: number;
-  /** Maximum timeout for DOM stability (ms) */
-  stabilityTimeout?: number;
-} = {}): Promise<void> {
-  const {
-    domContentLoaded = true,
-    windowLoad = true,
-    domStable = false,
-    stabilityDuration = 500,
-    stabilityTimeout = 10000
-  } = options;
+async function waitForPageReady(
+    options: {
+        /** Wait for DOMContentLoaded */
+        domContentLoaded?: boolean;
+        /** Wait for window load event */
+        windowLoad?: boolean;
+        /** Wait for DOM to stabilize after loading */
+        domStable?: boolean;
+        /** Stability duration if domStable is true (ms) */
+        stabilityDuration?: number;
+        /** Maximum timeout for DOM stability (ms) */
+        stabilityTimeout?: number;
+    } = {},
+): Promise<void> {
+    const {
+        domContentLoaded = true,
+        windowLoad = true,
+        domStable = false,
+        stabilityDuration = 500,
+        stabilityTimeout = 10000,
+    } = options;
 
-  if (domContentLoaded) {
-    await waitForDOMContentLoaded();
-  }
+    if (domContentLoaded) {
+        await waitForDOMContentLoaded();
+    }
 
-  if (windowLoad) {
-    await waitForWindowLoad();
-  }
+    if (windowLoad) {
+        await waitForWindowLoad();
+    }
 
-  if (domStable) {
-    await waitForDOMStable(stabilityTimeout, stabilityDuration);
-  }
+    if (domStable) {
+        await waitForDOMStable(stabilityTimeout, stabilityDuration);
+    }
 }
 
 function xpathQuerySelectorAll(xpath: string, context: Element | Document = document) {
@@ -252,54 +253,52 @@ function zipObjectArrays<T extends Record<string, unknown[]>>(
     );
 }
 
-browser.runtime.onMessage.addListener(
-    async (request: MessageRequest): Promise<unknown> => {
-        if (request.action === 'extractData') {
-            try {
-                const result = extractDataFromPage(request.selectors);
-                return {
-                    result,
-                    success: true,
-                };
-            } catch (error) {
-                return {
-                    result: [],
-                    success: false,
-                    error: error instanceof Error ? error.message : 'Unknown error occurred',
-                };
-            }
-        } else if (request.action === 'inspector-toggle') {
-            if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
-                inspector.deactivate();
-            }
-            inspector.toggle(request.pickerId);
-            return { isActive: inspector.isActive };
-        } else if (request.action === 'clickElement') {
-            const el = document.querySelector<HTMLElement>(request.selector);
-            if (!el) {
-                console.error('Element not found: ', request.selector);
-                return { didNavigate: false };
-            }
-            el.click();
-            return { didNavigate: true };
-        } else if (request.action === 'inspector-accept') {
-            const selector = inspector.guessSelector();
-            inspector.deactivate();
-            return { computedSelector: selector };
-        } else if (request.action === 'hashBody') {
-            const text = document.body.innerText.replace(/\s+/g, ' ').trim();
-
-            const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-
-            const hash = [...new Uint8Array(buffer)]
-                .map((b) => b.toString(16).padStart(2, '0'))
-                .join('');
-            return { bodyHash: hash };
-        } else if (request.action === 'waitPageLoad') {
-            await waitForPageReady();
-            return;
+browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<unknown> => {
+    if (request.action === 'extractData') {
+        try {
+            const result = extractDataFromPage(request.selectors);
+            return {
+                result,
+                success: true,
+            };
+        } catch (error) {
+            return {
+                result: [],
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error occurred',
+            };
         }
-        // Not handling this message type
-        return false;
-    },
-);
+    } else if (request.action === 'inspector-toggle') {
+        if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
+            inspector.deactivate();
+        }
+        inspector.toggle(request.pickerId);
+        return { isActive: inspector.isActive };
+    } else if (request.action === 'clickElement') {
+        const el = document.querySelector<HTMLElement>(request.selector);
+        if (!el) {
+            console.error('Element not found: ', request.selector);
+            return { didNavigate: false };
+        }
+        el.click();
+        return { didNavigate: true };
+    } else if (request.action === 'inspector-accept') {
+        const selector = inspector.guessSelector();
+        inspector.deactivate();
+        return { computedSelector: selector };
+    } else if (request.action === 'hashBody') {
+        const text = document.body.innerText.replace(/\s+/g, ' ').trim();
+
+        const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+
+        const hash = [...new Uint8Array(buffer)]
+            .map((b) => b.toString(16).padStart(2, '0'))
+            .join('');
+        return { bodyHash: hash };
+    } else if (request.action === 'waitPageLoad') {
+        await waitForPageReady();
+        return;
+    }
+    // Not handling this message type
+    return false;
+});

@@ -1,8 +1,8 @@
 <script lang="ts">
     import * as Tabs from '$lib/components/ui/tabs/index.js';
     import * as Field from '$lib/components/ui/field/index.js';
-    import { Label } from "$lib/components/ui/label/index.js";
-    import { Textarea } from "$lib/components/ui/textarea/index.js";
+    import { Label } from '$lib/components/ui/label/index.js';
+    import { Textarea } from '$lib/components/ui/textarea/index.js';
     import * as z from 'zod';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
@@ -41,21 +41,25 @@
 
         if (config.mode === 'next') {
             newState.next.nextSelector = config.nextSelector;
-            if (config.maxPages) { newState.next.maxPages = config.maxPages; }
+            if (config.maxPages) {
+                newState.next.maxPages = config.maxPages;
+            }
         } else if (config.mode === 'links') {
             newState.links.pageLinks = config.pageLinks;
         } else if (config.mode === 'template') {
             newState.template.urlTemplate = config.urlTemplate;
             newState.template.startPage = config.startPage;
             newState.template.increment = config.increment;
-            if (config.maxPages) { newState.template.maxPages = config.maxPages; }
+            if (config.maxPages) {
+                newState.template.maxPages = config.maxPages;
+            }
         }
         return newState;
     }
 
     $effect(() => {
         const snapshot = $state.snapshot(scrapeConfig.pagination);
-        paginationState[snapshot.mode] = snapshot
+        paginationState[snapshot.mode] = snapshot;
         paginationState.mode = snapshot.mode;
     });
 
@@ -86,7 +90,7 @@
 
     function updateLinks(event: Event) {
         let text = event?.currentTarget?.value;
-        paginationState.links.pageLinks = text.split("\n");
+        paginationState.links.pageLinks = text.split('\n');
     }
 
     function goToNextPage() {
@@ -102,7 +106,6 @@
     };
     onMount(() => {
         browser.runtime.onMessage.addListener(messageHandler);
-
     });
     onDestroy(() => {
         browser.runtime.onMessage.removeListener(messageHandler);
@@ -112,8 +115,10 @@
 </script>
 
 <div>
-
-    <Tabs.Root bind:value={paginationState.mode} class="flex-1 min-h-0 flex flex-col border p-2.5 rounded-md">
+    <Tabs.Root
+        bind:value={paginationState.mode}
+        class="flex-1 min-h-0 flex flex-col border p-2.5 rounded-md"
+    >
         <Tabs.List class="grid w-full grid-cols-4">
             <Tabs.Trigger value="none">None</Tabs.Trigger>
             <Tabs.Trigger value="next">Next button</Tabs.Trigger>
@@ -153,10 +158,9 @@
                     id="message-2"
                     class="h-50"
                     oninput={updateLinks}
-                    value={paginationState.links.pageLinks.join("\n")}
+                    value={paginationState.links.pageLinks.join('\n')}
                 />
             </div>
-
         </Tabs.Content>
         <Tabs.Content value="template">
             <!-- TEMPLATE -->
@@ -233,10 +237,13 @@
         </Tabs.Content>
     </Tabs.Root>
 
-
     <div class="flex items-center justify-center">
         <!-- TODO: improve design  -->
-        <Button disabled={paginationState.mode === 'none'} onclick={goToNextPage} class="mt-4 w-10/12 bg-sky-600 text-2xl mb-6 text-white">
+        <Button
+            disabled={paginationState.mode === 'none'}
+            onclick={goToNextPage}
+            class="mt-4 w-10/12 bg-sky-600 text-2xl mb-6 text-white"
+        >
             <Navigation size={32} /> Test Navigation
         </Button>
     </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-    import { CircleSmall } from "@lucide/svelte";
+    import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+    import { CircleSmall } from '@lucide/svelte';
 
     import { fly } from 'svelte/transition';
     import { logs } from '../stores/logs';
@@ -28,19 +28,19 @@
                     class="flex items-start gap-2 rounded-lg bg-gray-100 p-2 text-sm dark:bg-gray-800"
                 >
                     <div class="flex items-center gap-2">
-                            <Tooltip.Provider>
-                                <Tooltip.Root>
-                                    <Tooltip.Trigger>
-                                        <CircleSmall
-                                            fill={STATUS_CONFIG[log.status].style}
-                                            color={STATUS_CONFIG[log.status].style}
-                                        />
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>
-                                        <span>{STATUS_CONFIG[log.status].label}</span>
-                                    </Tooltip.Content>
-                                </Tooltip.Root>
-                            </Tooltip.Provider>
+                        <Tooltip.Provider>
+                            <Tooltip.Root>
+                                <Tooltip.Trigger>
+                                    <CircleSmall
+                                        fill={STATUS_CONFIG[log.status].style}
+                                        color={STATUS_CONFIG[log.status].style}
+                                    />
+                                </Tooltip.Trigger>
+                                <Tooltip.Content>
+                                    <span>{STATUS_CONFIG[log.status].label}</span>
+                                </Tooltip.Content>
+                            </Tooltip.Root>
+                        </Tooltip.Provider>
                     </div>
                     <p class="flex-1 break-all font-mono text-gray-800 dark:text-gray-200">
                         {log.message}

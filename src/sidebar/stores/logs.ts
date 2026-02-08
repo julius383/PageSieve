@@ -1,7 +1,6 @@
 import { writable } from 'svelte/store';
 import type { StatusLevel } from '../../types';
 
-
 export interface LogEntry {
     id: number;
     timestamp: Date;

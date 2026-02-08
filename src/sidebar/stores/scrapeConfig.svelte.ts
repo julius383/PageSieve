@@ -29,7 +29,6 @@ export function addDefinition() {
     const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
     if (group) {
         group.fields.push({ id: nextSelectorId++, name: '', selector: '', type: 'single' });
-
     }
 }
 
