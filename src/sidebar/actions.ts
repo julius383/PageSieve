@@ -1,5 +1,5 @@
-import { SvelteDate, SvelteURL } from 'svelte/reactivity';
-import type { PaginationConfig, SelectorGroup } from '../types';
+import { SvelteDate } from 'svelte/reactivity';
+import type { SelectorGroup } from '../types';
 import {
     scrapeRuns,
     extractedData,
@@ -16,7 +16,7 @@ import { saveConfig } from './services/storage';
  * Extracts data from current tab using defined selector. Returns via
  * browser sendMessage
  */
-export async function handleExtract(selectors: SelectorGroup[]) {
+export async function handleExtract(selectors: SelectorGroup[]): Promise<void> {
     if (!validateSelectors(selectors)) {
         setStatus('errored', 'No valid selectors present');
         return;
@@ -143,6 +143,7 @@ export async function handleExportConfig(config: ScrapeConfig): Promise<string> 
             downloadAnchorNode.remove();
         },
     );
+    return filename;
 }
 
 export async function handleSaveConfig(config: ScrapeConfig) {

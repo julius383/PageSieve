@@ -3,7 +3,7 @@ import { parseArgs } from 'util';
 import { StoredConfig } from './types';
 import * as z from 'zod';
 
-const { values, positionals } = parseArgs({
+const { values } = parseArgs({
     args: Bun.argv,
     options: {
         file: {

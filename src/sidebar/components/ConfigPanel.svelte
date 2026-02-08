@@ -6,11 +6,11 @@
     import PaginationSection from './PaginationSection.svelte';
 </script>
 
-<Accordion.Root value={['item-1']} type="multiple">
-    <Accordion.Item value="item-1">
-        <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
+<Accordion.Root type="multiple">
+    <Accordion.Item value="item-3">
+        <Accordion.Trigger class="text-white font-bold text-xl">Pagination</Accordion.Trigger>
         <Accordion.Content>
-            <MetadataSection />
+            <PaginationSection />
         </Accordion.Content>
     </Accordion.Item>
 
@@ -23,10 +23,10 @@
         </Accordion.Content>
     </Accordion.Item>
 
-    <Accordion.Item value="item-3">
-        <Accordion.Trigger class="text-white font-bold text-xl">Pagination</Accordion.Trigger>
+    <Accordion.Item value="item-1">
+        <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
         <Accordion.Content>
-            <PaginationSection />
+            <MetadataSection />
         </Accordion.Content>
     </Accordion.Item>
 

@@ -17,16 +17,14 @@ type UnknownObject = {
  * @returns Promise that resolves when DOM is stable or timeout is reached
  */
 async function waitForDOMStable(
-    timeout: number = 10000,
+    timeout: number = 5_000,
     stabilityDuration: number = 500,
 ): Promise<void> {
     return new Promise((resolve, reject) => {
-        let lastMutationTime = Date.now();
         let stabilityTimer: NodeJS.Timeout | null = null;
-        let timeoutTimer: NodeJS.Timeout;
 
         // Set up the overall timeout
-        timeoutTimer = setTimeout(() => {
+        const timeoutTimer = setTimeout(() => {
             observer.disconnect();
             if (stabilityTimer) clearTimeout(stabilityTimer);
             reject(new Error(`DOM did not stabilize within ${timeout}ms`));
@@ -34,8 +32,6 @@ async function waitForDOMStable(
 
         // Create a MutationObserver to watch for DOM changes
         const observer = new MutationObserver(() => {
-            lastMutationTime = Date.now();
-
             // Clear existing stability timer
             if (stabilityTimer) {
                 clearTimeout(stabilityTimer);
@@ -51,13 +47,13 @@ async function waitForDOMStable(
 
         // Start observing the document
         observer.observe(document.body, {
-            childList: true, // Watch for added/removed nodes
-            subtree: true, // Watch all descendants
-            attributes: true, // Watch for attribute changes
-            characterData: true, // Watch for text content changes
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true,
         });
 
-        // Also set initial stability timer in case DOM is already stable
+        // Initial stability timer (if DOM is already stable)
         stabilityTimer = setTimeout(() => {
             observer.disconnect();
             clearTimeout(timeoutTimer);

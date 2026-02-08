@@ -1,12 +1,12 @@
 
 build:
-  npm run build
+  pnpm run build
 
 watch:
   fd -t f . src | entr -c npm run build
 
 format:
-  npx prettier src/ --write
+  pnpx prettier src/ --write
 
 tasks:
   rg 'TODO|FIXME' --glob '!src/lib/**' --glob "!justfile"

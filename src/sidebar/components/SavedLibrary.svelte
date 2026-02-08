@@ -74,7 +74,7 @@
 
 <hr />
 <div>
-    {#each allConfigs.configs as item}
+    {#each allConfigs.configs as item (item.id)}
         <div class="p-1 rounded-md mb-2 w-full">
             <Card.Root>
                 <Card.Header>

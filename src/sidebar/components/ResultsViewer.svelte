@@ -73,15 +73,15 @@
             <Table.Root>
                 <Table.Header class="bg-accent">
                     <Table.Row>
-                        {#each dataColumns as column}
+                        {#each dataColumns as column (column)}
                             <Table.Head>{formatColumnName(column)}</Table.Head>
                         {/each}
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {#each extractedData.data[0]?.results as row}
+                    {#each extractedData.data[0]?.results as row (row)}
                         <Table.Row>
-                            {#each dataColumns as column}
+                            {#each dataColumns as column (column)}
                                 <Table.Cell>{row[column]}</Table.Cell>
                             {/each}
                         </Table.Row>

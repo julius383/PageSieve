@@ -11,13 +11,17 @@
     import ElementPicker from './ElementPicker.svelte';
     import { scrapeConfig } from '../stores/scrapeConfig.svelte';
     import { PaginationConfig } from '../../types';
+    import type {
+        TriggerPaginationCommitRequest,
+        PaginationConfig as PaginationConfigT,
+    } from '../../types';
 
     import { Navigation } from '@lucide/svelte';
     import { setStatus } from '../stores/ui.svelte';
     import { navigateTo } from '../actions';
 
     // Define a helper function to transform scrapeConfig.pagination into the structure needed for paginationState
-    function mapScrapeConfigToPaginationState(config: PaginationConfig) {
+    function mapScrapeConfigToPaginationState(config: PaginationConfigT) {
         const newState = {
             mode: config.mode,
             none: { mode: 'none' },
@@ -99,7 +103,7 @@
         }
     }
 
-    const messageHandler = (message: any) => {
+    const messageHandler = (message: TriggerPaginationCommitRequest) => {
         if (message.action === 'triggerCommitPagination') {
             commitPaginationToScrapeConfig();
         }
@@ -168,6 +172,7 @@
                 <Field.Group>
                     <Field.Field>
                         <Field.Label>URL Template</Field.Label>
+                        <!-- eslint-disable-next-line svelte/no-useless-mustaches -->
                         <Input
                             placeholder="/products?page={'{{'}page{'}}'}"
                             bind:value={paginationState.template.urlTemplate}

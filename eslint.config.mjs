@@ -1,24 +1,37 @@
+// eslint.config.js
 import js from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
-import json from '@eslint/json';
-import { defineConfig } from 'eslint/config';
-
-import { fileURLToPath } from 'node:url';
-import { includeIgnoreFile } from '@eslint/compat';
+import typescript from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
-import ts from 'typescript-eslint';
+import globals from 'globals';
 
-//
-// export default defineConfig([
-//   { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
-//   tseslint.configs.recommended,
-//   { files: ["**/*.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
-// ]);
-
-const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
-
-export default defineConfig([
-    js.configs.recommended,
-    ...ts.configs.recommended,
-]);
+export default [
+  js.configs.recommended,
+  ...typescript.configs.recommended,
+  ...svelte.configs['flat/recommended'],
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.webextensions,
+      },
+    },
+    rules: {
+      // typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
+      // see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-types cript-errors
+      'no-undef': 'off'
+    }
+  },
+  {
+    files: ['**/*.svelte', '**/*.svelte.ts'],
+    languageOptions: {
+      parserOptions: {
+        parser: typescript.parser,
+        extraFileExtensions: ['.svelte'],
+        projectService: true,
+      },
+    },
+  },
+  {
+    ignores: ['dist/', 'src/lib/**', 'src/selectorgadget.ts', 'tailwind.config.js', 'vite.config.js'],
+  },
+];

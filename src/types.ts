@@ -14,7 +14,7 @@ export const ExtractionOptions = z.object({
     waitforNetworkIdle: z.boolean().default(true),
     scrollToBottom: z.boolean().optional().default(false),
     runJavaScript: z.boolean().optional().default(true),
-    delayMs: z.number().optional().default(0),
+    delayMs: z.number().optional().default(3_000),
     timeoutMs: z.number().optional().default(60_000),
     appendData: z.boolean().default(false),
 });
@@ -166,7 +166,7 @@ export type ScrapeRunStatusSetRequest = {
     status: ScrapeStatusLevel;
 };
 
-export type TriggerPaginationCommit = {
+export type TriggerPaginationCommitRequest = {
     action: 'triggerCommitPagination';
 };
 

@@ -13,7 +13,7 @@ import { addLog } from './logs';
 
 export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
 
-export const extractedData = $state<{ data: { id: number; results: any[] }[] }>({
+export const extractedData = $state<{ data: { id: number; results: unknown[] }[] }>({
     data: [{ id: 1, results: [] }],
 });
 

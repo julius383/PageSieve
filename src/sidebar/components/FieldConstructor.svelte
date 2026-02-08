@@ -4,12 +4,7 @@
     import { Button } from '$lib/components/ui/button';
     import { Plus } from '@lucide/svelte';
 
-    import {
-        addDefinition,
-        removeDefinition,
-        getActiveGroup,
-        scrapeConfig,
-    } from '../stores/scrapeConfig.svelte';
+    import { addDefinition, removeDefinition, getActiveGroup } from '../stores/scrapeConfig.svelte';
 
     // let group = scrapeConfig.selectors[0];
     let group = $derived(getActiveGroup());
