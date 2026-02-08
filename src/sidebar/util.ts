@@ -90,3 +90,4 @@ export function validateSelectors(selectors: SelectorGroup[]): boolean {
     const allFields = selectors.flatMap((item) => item.fields);
     return allFields.some((f) => f.name && f.selector);
 }
+

@@ -8,6 +8,7 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     import { setStatus } from '../stores/ui.svelte';
+    import type { SelectedElementRequest } from '../../types';
 
     let {
         label = 'Selector',
@@ -21,7 +22,7 @@
     let previousSelector: string = '';
 
     // This function will handle incoming messages from the content script.
-    function messageListener(message) {
+    function messageListener(message: SelectedElementRequest) {
         if (message.action === 'selector-elementSelected' && message.pickerId === pickerId) {
             // Update your store with the new selector.
             cssSelector = message.selector;

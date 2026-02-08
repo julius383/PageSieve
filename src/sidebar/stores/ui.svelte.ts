@@ -1,5 +1,13 @@
 import { SvelteDate } from 'svelte/reactivity';
-import type { ScrapeInstance, ExtensionStatus, StoredConfig, StatusLevel } from '../../types';
+import type {
+    ScrapeInstance,
+    ExtensionStatus,
+    StoredConfig,
+    StatusLevel,
+    ScrapeStatusLevel,
+    ScrapeRunStatusSetRequest,
+    ScrapeRunUpdateRequest,
+} from '../../types';
 import { getAllConfigs } from '../services/storage';
 import { addLog } from './logs';
 
@@ -17,7 +25,7 @@ export const extensionStatus = $state<ExtensionStatus>({
 
 export function runWithStatus<T>(status: ExtensionStatus, fn: () => T) {
     const prev = $state.snapshot(extensionStatus);
-    setStatus(status.status, status.message)
+    setStatus(status.status, status.message);
     try {
         fn();
     } catch (error) {
@@ -36,7 +44,7 @@ export function runWithStatus<T>(status: ExtensionStatus, fn: () => T) {
 
 export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => Promise<T>) {
     const prev = $state.snapshot(extensionStatus);
-    setStatus(status.status, status.message)
+    setStatus(status.status, status.message);
     try {
         return await fn();
     } catch (error) {
@@ -68,6 +76,42 @@ export function resetExtractedData() {
     extractedData.data = [{ id: 1, results: [] }];
     scrapeRuns.runs = [];
 }
+
+export function addOrUpdateScrapeRun(newRun: ScrapeInstance) {
+    const existingIndex = scrapeRuns.runs.findIndex((run) => run.runId === newRun.runId);
+    if (existingIndex !== -1) {
+        Object.assign(scrapeRuns.runs[existingIndex], newRun);
+    } else {
+        scrapeRuns.runs.push(newRun);
+    }
+}
+
+export function updateScrapeRunStatus(runId: string, status: ScrapeStatusLevel) {
+    const run = scrapeRuns.runs.find((r) => r.runId === runId);
+    if (run) {
+        run.status = status;
+    }
+}
+
+// Listener for messages from background script to update scrapeRuns
+browser.runtime.onMessage.addListener(
+    (request: ScrapeRunUpdateRequest | ScrapeRunStatusSetRequest) => {
+        if (request.action === 'updateScrapeRun') {
+            const { runId, url, currentPage, maxPages, status } = request;
+            const newRun: ScrapeInstance = {
+                runId,
+                url,
+                timestamp: new SvelteDate().toISOString(),
+                currentPage,
+                maxPages,
+                status: status || 'in_progress',
+            };
+            addOrUpdateScrapeRun(newRun);
+        } else if (request.action === 'setScrapeRunStatus') {
+            updateScrapeRunStatus(request.runId, request.status);
+        }
+    },
+);
 
 // Library of saved configs
 export const allConfigs = $state<{ configs: StoredConfig[] }>({ configs: [] });

@@ -91,7 +91,7 @@
 
     function goToNextPage() {
         if (commitPaginationToScrapeConfig()) {
-            navigateTo($state.snapshot(scrapeConfig.pagination));
+            navigateTo($state.snapshot(scrapeConfig));
         }
     }
 

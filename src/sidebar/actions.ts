@@ -33,29 +33,13 @@ export async function handleExtract(selectors: SelectorGroup[]) {
 
             if (response && response.result) {
                 const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
-                scrapeRuns.runs.length = scrapeRuns.runs.length > 4 ? 4 : scrapeRuns.runs.length;
                 if (response.result) {
-                    const contentHashShort = await shortHash(selectors);
-                    const runInst = {
-                        url: new SvelteURL(tabInfo.url).hostname,
-                        shortHash: contentHashShort,
-                        timestamp: new Date().toISOString(),
-                    };
-                    if (scrapeRuns.runs.length > 0) {
-                        // check if last run has identical config
-                        if (scrapeRuns.runs[0].shortHash == runInst.shortHash) {
-                            scrapeConfig.options.appendData = true;
-                        }
-                    } else {
+                    if (scrapeRuns.runs.length == 0 && scrapeConfig.metadata.url !== 'https://pagesieve.xyz') {
                         // this is the first run with with new config
-                        scrapeRuns.runs.unshift(runInst);
 
-                        // update URL in metadata
                         scrapeConfig.metadata.url = tabInfo.url;
                         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
 
-                        // TODO: figure out how to respect user supplied config
-                        scrapeConfig.options.appendData = false;
                     }
                 }
                 if (scrapeConfig.options.appendData) {
@@ -198,19 +182,19 @@ export async function handleLoadConfig(stored: StoredConfig) {
     );
 }
 
-export async function navigateTo(config: PaginationConfig) {
+export async function navigateTo(config: ScrapeConfig) {
     await runWithStatusAsync(
         {
             status: 'navigating',
-            message: `Navigating to next page based on ${config.mode}`,
+            message: `Navigating to next page based on ${config.pagination.mode}`,
             timestamp: new Date().toISOString(),
         },
         async () => {
-            const navRes = await browser.runtime.sendMessage({ action: 'pageNavigate', config: config });
+            const navRes = await browser.runtime.sendMessage({ action: 'pageNavigate', config: config, configHash: await shortHash(config.selectors) });
             // FIXME: figure out why error is being set
             // TODO: wait the amount set in Extraction Options
             if (navRes.previousURL === navRes.currentURL) {
-                setStatus('errored', `failed to navigate to next page with ${config.mode}`);
+                setStatus('errored', `failed to navigate to next page with ${config.pagination.mode}`);
             }
         }
     )
