@@ -72,6 +72,10 @@ export function setStatus(status: StatusLevel, message: string) {
     }
 }
 
+export function getStatus(): StatusLevel {
+    return extensionStatus.status;
+}
+
 export function resetExtractedData() {
     extractedData.data = [{ id: 1, results: [] }];
     scrapeRuns.runs = [];

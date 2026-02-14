@@ -12,8 +12,8 @@ type UnknownObject = {
 
 /**
  * Waits for the DOM to stop changing for a specified duration
- * @param timeout - Maximum time to wait in milliseconds (default: 10000)
- * @param stabilityDuration - How long the DOM must be stable in milliseconds (default: 500)
+ * @param timeout - Maximum time to wait in milliseconds
+ * @param stabilityDuration - How long the DOM must be stable in milliseconds
  * @returns Promise that resolves when DOM is stable or timeout is reached
  */
 async function waitForDOMStable(
@@ -292,7 +292,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
             .join('');
         return { bodyHash: hash };
     } else if (request.action === 'waitPageLoad') {
-        await waitForPageReady();
+        await waitForPageReady(request.options ?? {});
         return;
     }
     // Not handling this message type

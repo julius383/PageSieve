@@ -34,7 +34,7 @@ export async function getConfig(id: string): Promise<StoredConfig | null> {
     return null;
 }
 
-export async function saveConfig(id: string, config: StoredConfig): Promise<boolean> {
+export async function saveToBrowser(id: string, config: StoredConfig): Promise<boolean> {
     const existing = await getConfig(id);
     if (existing) {
         return false;

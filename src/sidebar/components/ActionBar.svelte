@@ -1,10 +1,10 @@
 <script lang="ts">
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
     import {
-        handleExtract,
-        handleImportConfig,
-        handleExportConfig,
-        handleSaveConfig,
+        runConfig,
+        importConfig,
+        exportConfig,
+        saveConfig,
     } from '../actions';
     import { refreshConfigs } from '../stores/ui.svelte';
 
@@ -19,7 +19,7 @@
     }
 
     async function handleSave() {
-        await handleSaveConfig(scrapeConfig);
+        await saveConfig(scrapeConfig);
         await refreshConfigs();
     }
 </script>
@@ -28,9 +28,10 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
+                <!-- TODO: modify behaviour so that user can stop run prematurely, including changing icon -->
                 <Button
                     size="icon"
-                    onclick={() => handleExtract(scrapeConfig.selectors)}
+                    onclick={() => runConfig($state.snapshot(scrapeConfig))}
                     class="bg-green-500 text-white font-bold hover:bg-green-600"
                 >
                     <Play class="size-4 mr-1" strokeWidth={2.5} />
@@ -60,7 +61,7 @@
                         type="file"
                         accept=".json"
                         hidden
-                        onchange={handleImportConfig}
+                        onchange={importConfig}
                     />
                     <Button size="icon" variant="ghost" onclick={triggerLoad}>
                         <Upload class="size-4" strokeWidth={2.5} color="#fff" />
@@ -77,7 +78,7 @@
                 <Button
                     size="icon"
                     variant="ghost"
-                    onclick={() => handleExportConfig(scrapeConfig)}
+                    onclick={() => exportConfig(scrapeConfig)}
                 >
                     <Download class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>

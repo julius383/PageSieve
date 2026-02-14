@@ -20,7 +20,7 @@
     import Button from '$lib/components/ui/button/button.svelte';
 
     import { allConfigs, refreshConfigs } from '../stores/ui.svelte';
-    import { handleLoadConfig } from '../actions';
+    import { loadConfig } from '../actions';
     import { renameConfig, removeConfig } from '../services/storage';
 
     onMount(() => {
@@ -144,7 +144,7 @@
                     </Collapsible.Root>
                 </Card.Content>
                 <Card.Footer>
-                    <Button class="w-full" onclick={() => handleLoadConfig(item)}>
+                    <Button class="w-full" onclick={() => loadConfig(item)}>
                         <ArrowUpToLine />
                         Load Config
                     </Button>

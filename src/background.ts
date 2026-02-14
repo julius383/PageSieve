@@ -4,21 +4,53 @@ let sidebarOpen = false;
 
 const scrapeRunPageCounters: { [runId: string]: number } = {};
 
+export enum PaginationStateStatus {
+    InProgress = 1,
+    Complete,
+    Failed,
+}
+
 async function navigateAndWait(tabId: number, url: string) {
     return new Promise((resolve, reject) => {
-        function listener(updatedTabId: number, changeInfo, tab) {
-            if (updatedTabId === tabId && changeInfo.status === 'complete') {
-                browser.tabs.onUpdated.removeListener(listener);
+        // Check if tab is already at the target URL and loaded
+        browser.tabs.get(tabId).then(tab => {
+            if (tab.url === url && tab.status === 'complete') {
                 resolve(tab);
+                return;
             }
-        }
 
-        browser.tabs.onUpdated.addListener(listener);
+            let isNavigating = false;
 
-        browser.tabs.update(tabId, { url }).catch((err) => {
-            browser.tabs.onUpdated.removeListener(listener);
-            reject(err);
-        });
+            function listener(updatedTabId: number, changeInfo, tab) {
+                // Only respond to updates for our specific tab
+                if (updatedTabId !== tabId) return;
+
+                // Track when navigation starts
+                if (changeInfo.status === 'loading') {
+                    isNavigating = true;
+                }
+
+                // Only resolve when:
+                // 1. We've seen the navigation start, AND
+                // 2. The status is complete, AND
+                // 3. The URL matches what we requested
+                if (isNavigating &&
+                    changeInfo.status === 'complete' &&
+                    tab.url === url) {
+                    browser.tabs.onUpdated.removeListener(listener);
+                    resolve(tab);
+                }
+            }
+
+            // Attach listener BEFORE initiating navigation
+            browser.tabs.onUpdated.addListener(listener);
+
+            // Now trigger the navigation
+            browser.tabs.update(tabId, { url }).catch((err) => {
+                browser.tabs.onUpdated.removeListener(listener);
+                reject(err);
+            });
+        }).catch(reject);
     });
 }
 
@@ -77,27 +109,26 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 let next_idx = 0;
                 if (idx + 1 < pagination.pageLinks.length) {
                     next_idx = idx + 1;
+                } else {
+                    console.log(`Finished processing pages`);
+                    await sendScrapeRunUpdate(idx, pagination.pageLinks.length, 'completed');
+                    delete scrapeRunPageCounters[runId];
+                    return { paginationStatus: PaginationStateStatus.Complete };
                 }
                 const nextURL = pagination.pageLinks[next_idx];
-                await sendScrapeRunUpdate(idx + 1, pagination.pageLinks.length, 'completed');
-
+                await sendScrapeRunUpdate(idx, pagination.pageLinks.length, 'completed');
+                scrapeRunPageCounters[runId]++;
+                await sendScrapeRunUpdate(next_idx, pagination.pageLinks.length, 'in_progress');
                 await navigateAndWait(tab.id, nextURL);
 
-                if (request.config.options.waitforNetworkIdle) {
-                    await browser.tabs.sendMessage(tab.id, {
-                        action: 'waitForPageLoad',
-                        timeout: request.config.options.timeoutMs,
-                    });
-                }
+                const newTab = await browser.tabs.get(tab.id);
 
-                const [newTab] = await browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
-                await sendScrapeRunUpdate(next_idx + 1, pagination.pageLinks.length, 'in_progress');
-                scrapeRunPageCounters[runId]++;
-
-                return { previousURL: tab.url, currentURL: newTab.url };
+                return {
+                    paginationStatus:
+                        tab.url === newTab?.url
+                            ? PaginationStateStatus.Failed
+                            : PaginationStateStatus.InProgress,
+                };
             } else if (pagination.mode === 'next') {
                 const currentPage = scrapeRunPageCounters[runId];
                 const maxPages = pagination.maxPages;
@@ -105,11 +136,11 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     action: 'hashBody',
                 });
 
-                if (maxPages && maxPages !== 0 && currentPage > maxPages) {
+                if (maxPages && maxPages !== 0 && currentPage >= maxPages) {
                     console.log(`Reached max pages (${maxPages}). Cannot navigate further.`);
                     await sendScrapeRunUpdate(currentPage, maxPages, 'completed');
-                    delete scrapeRunPageCounters[runId]; // End this scrape run
-                    return { previousURL: tab.url, currentURL: null };
+                    delete scrapeRunPageCounters[runId];
+                    return { paginationStatus: PaginationStateStatus.Complete };
                 }
 
                 await browser.tabs.sendMessage(tab.id, {
@@ -121,13 +152,11 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     await browser.tabs.sendMessage(tab.id, {
                         action: 'waitPageLoad',
                         timeout: request.config.options.timeoutMs,
+                        options: { domStable: true }
                     });
                 }
 
-                const [newTab] = await browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
+                const newTab = await browser.tabs.get(tab.id);
 
                 if (newTab.url === tab.url) {
                     // TODO: check if this works
@@ -142,9 +171,8 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                         if (currentBodyHash.bodyHash === newBodyHash.bodyHash) {
                             await sendScrapeRunUpdate(currentPage, maxPages, 'errored');
                             delete scrapeRunPageCounters[runId];
-                            return { previousURL: tab.url, currentURL: null };
+                            return { paginationStatus: PaginationStateStatus.Failed };
                         }
-                        console.log('Page content changed');
                     }
                 }
 
@@ -152,18 +180,17 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 scrapeRunPageCounters[runId]++;
                 await sendScrapeRunUpdate(scrapeRunPageCounters[runId], maxPages, 'in_progress');
 
-                return { previousURL: tab.url, currentURL: newTab.url };
+                return { paginationStatus: PaginationStateStatus.InProgress };
             } else if (pagination.mode === 'template') {
                 const currentTabUrl = tab.url;
                 const { urlTemplate, startPage, increment, maxPages } = pagination;
 
                 const currentIdx = scrapeRunPageCounters[runId];
-                // FIXME: centralize this method
-                if (maxPages && maxPages !== 0 && currentIdx > maxPages) {
+                if (maxPages && maxPages !== 0 && currentIdx >= maxPages) {
                     console.log(`Reached max pages (${maxPages}). Cannot navigate further.`);
                     await sendScrapeRunUpdate(currentIdx, maxPages, 'completed');
                     delete scrapeRunPageCounters[runId]; // End this scrape run
-                    return { previousURL: tab.url, currentURL: null };
+                    return { paginationStatus: PaginationStateStatus.Complete };
                 }
 
                 // Escape special regex characters, then replace '{{page}}' with a digit capture group.
@@ -185,18 +212,14 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
 
                 await navigateAndWait(tab.id, nextURL);
 
-                if (request.config.options.waitforNetworkIdle) {
-                    await browser.tabs.sendMessage(tab.id, {
-                        action: 'waitForPageLoad',
-                        timeout: request.config.options.timeoutMs,
-                    });
-                }
+                const newTab = await browser.tabs.get(tab.id);
 
-                const [newTab] = await browser.tabs.query({
-                    active: true,
-                    currentWindow: true,
-                });
-                return { previousURL: tab.url, currentURL: newTab.url };
+                return {
+                    paginationStatus:
+                        tab.url === newTab.url
+                            ? PaginationStateStatus.Failed
+                            : PaginationStateStatus.InProgress,
+                };
             } else {
                 console.log('Not implemented');
             }

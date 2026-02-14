@@ -14,9 +14,9 @@ export const ExtractionOptions = z.object({
     waitforNetworkIdle: z.boolean().default(true),
     scrollToBottom: z.boolean().optional().default(false),
     runJavaScript: z.boolean().optional().default(true),
-    delayMs: z.number().optional().default(3_000),
-    timeoutMs: z.number().optional().default(60_000),
-    appendData: z.boolean().default(false),
+    delayMs: z.number().positive().default(3_000),
+    timeoutMs: z.number().positive().optional().default(60_000),
+    appendData: z.boolean().default(true),
 });
 
 export const PaginationConfig = z.discriminatedUnion('mode', [
@@ -142,6 +142,7 @@ type BodyHashRequest = {
 type WaitPageLoadRequest = {
     action: 'waitPageLoad';
     timeout: number;
+    options: object;
 };
 
 export type SelectedElementRequest = {

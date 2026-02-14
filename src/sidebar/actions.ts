@@ -6,17 +6,26 @@ import {
     runWithStatus,
     runWithStatusAsync,
     setStatus,
+    getStatus,
 } from './stores/ui.svelte';
 import { shortHash, generateConfigId, validateSelectors } from './util';
 import { scrapeConfig, setScrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../types';
-import { saveConfig } from './services/storage';
+import { saveToBrowser } from './services/storage';
+import { commitPaginationToScrapeConfig } from './stores/pagination.svelte';
+
+
+export enum PaginationStateStatus {
+    InProgress = 1,
+    Complete,
+    Failed,
+}
 
 /**
  * Extracts data from current tab using defined selector. Returns via
  * browser sendMessage
  */
-export async function handleExtract(selectors: SelectorGroup[]): Promise<void> {
+export async function extractData(selectors: SelectorGroup[]): Promise<void> {
     if (!validateSelectors(selectors)) {
         setStatus('errored', 'No valid selectors present');
         return;
@@ -79,7 +88,7 @@ export async function handleExtract(selectors: SelectorGroup[]): Promise<void> {
 /**
  * Imports ScrapeConfig from a file
  */
-export function handleImportConfig(event: Event) {
+export function importConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
     if (!file) return;
@@ -115,8 +124,8 @@ export function handleImportConfig(event: Event) {
  * Export ScrapeConfig to JSON file for download by user
  *
  */
-export async function handleExportConfig(config: ScrapeConfig): Promise<string> {
-    await browser.runtime.sendMessage({ action: 'triggerCommitPagination' });
+export async function exportConfig(config: ScrapeConfig): Promise<string> {
+    commitPaginationToScrapeConfig();
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     runWithStatus(
@@ -146,8 +155,8 @@ export async function handleExportConfig(config: ScrapeConfig): Promise<string> 
     return filename;
 }
 
-export async function handleSaveConfig(config: ScrapeConfig) {
-    await browser.runtime.sendMessage({ action: 'triggerCommitPagination' });
+export async function saveConfig(config: ScrapeConfig) {
+    commitPaginationToScrapeConfig();
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     const storedConfig = {
@@ -164,7 +173,7 @@ export async function handleSaveConfig(config: ScrapeConfig) {
             timestamp: new SvelteDate().toISOString(),
         },
         async () => {
-            const result = await saveConfig(filename, storedConfig);
+            const result = await saveToBrowser(filename, storedConfig);
             if (!result) {
                 setStatus('errored', `conflict with existing config with id ${storedConfig.id}`);
             }
@@ -172,21 +181,21 @@ export async function handleSaveConfig(config: ScrapeConfig) {
     );
 }
 
-export async function handleLoadConfig(stored: StoredConfig) {
-    runWithStatus(
+export async function loadConfig(stored: StoredConfig) {
+    runWithStatusAsync(
         {
             status: 'loading',
             message: `Loading config ${stored.id} from browser storage`,
             timestamp: new Date().toISOString(),
         },
-        () => {
-            Object.assign(scrapeConfig, stored.config);
+        async () => {
+            await setScrapeConfig(stored.config);;
         },
     );
 }
 
 export async function navigateTo(config: ScrapeConfig) {
-    await runWithStatusAsync(
+    return await runWithStatusAsync(
         {
             status: 'navigating',
             message: `Navigating to next page based on ${config.pagination.mode}`,
@@ -198,14 +207,37 @@ export async function navigateTo(config: ScrapeConfig) {
                 config: config,
                 configHash: await shortHash(config.selectors),
             });
-            // FIXME: figure out why error is being set
             // TODO: wait the amount set in Extraction Options
-            if (navRes.previousURL === navRes.currentURL) {
+            if (navRes.paginationStatus === PaginationStateStatus.Failed) {
                 setStatus(
                     'errored',
                     `failed to navigate to next page with ${config.pagination.mode}`,
                 );
             }
-        },
-    );
+            return navRes.paginationStatus;
+        })
+}
+
+export async function runConfig(config: ScrapeConfig) {
+    commitPaginationToScrapeConfig();
+    let paginationComplete = false;
+    while (!paginationComplete) {
+        await extractData(config.selectors);
+        if (getStatus() === 'errored') {
+            paginationComplete = true;
+            break;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
+
+        const paginationStatus = await navigateTo(config);
+        if (paginationStatus === PaginationStateStatus.Complete || paginationStatus === PaginationStateStatus.Failed) {
+            paginationComplete = true;
+        }
+
+        if (!paginationComplete) {
+            await new Promise(resolve => setTimeout(resolve, config.options.delayMs));
+        }
+    }
+    return;
 }
