@@ -1,16 +1,25 @@
 <script lang="ts">
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
-    import { runConfig, importConfig, exportConfig, saveConfig } from '../actions';
-    import { refreshConfigs } from '../stores/ui.svelte';
+    import {
+        runConfig,
+        importConfig,
+        exportConfig,
+        saveConfig,
+    } from '../actions';
+    import { refreshConfigs, extensionStatus, setStatus } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-    import { Upload, Download, Play, Save, ListRestart } from '@lucide/svelte';
+    import { Upload, Download, Play, Square, Save, ListRestart } from '@lucide/svelte';
 
     function triggerLoad() {
         let fileinput = document.getElementById('import-config');
         fileinput?.click();
+    }
+
+    function interruptExecution() {
+        setStatus('idle', 'Execution interrupted by user.');
     }
 
     async function handleSave() {
@@ -23,16 +32,31 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <!-- TODO: modify behaviour so that user can stop run prematurely, including changing icon -->
-                <Button
-                    size="icon"
-                    onclick={() => runConfig($state.snapshot(scrapeConfig))}
-                    class="bg-green-500 text-white font-bold hover:bg-green-600"
-                >
-                    <Play class="size-4 mr-1" strokeWidth={2.5} />
-                </Button>
+                {#if ['running', 'extracting', 'navigating'].includes(extensionStatus.status)}
+                    <Button
+                        size="icon"
+                        onclick={interruptExecution}
+                        class="bg-red-500 text-white font-bold hover:bg-red-600"
+                    >
+                        <Square class="size-4 mr-1" strokeWidth={4} fill="white" />
+                    </Button>
+                {:else}
+                    <Button
+                        size="icon"
+                        onclick={() => runConfig($state.snapshot(scrapeConfig))}
+                        class="bg-green-500 text-white font-bold hover:bg-green-600"
+                    >
+                        <Play class="size-4 mr-1" strokeWidth={4} />
+                    </Button>
+                {/if}
             </Tooltip.Trigger>
-            <Tooltip.Content>Scrape page</Tooltip.Content>
+            <Tooltip.Content>
+                {#if ['running', 'extracting', 'navigating'].includes(extensionStatus.status)}
+                    Interrupt execution
+                {:else}
+                    Scrape page
+                {/if}
+            </Tooltip.Content>
         </Tooltip.Root>
     </Tooltip.Provider>
 

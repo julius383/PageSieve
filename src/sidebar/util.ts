@@ -1,5 +1,6 @@
 import { Parser } from '@json2csv/plainjs';
-import type { SelectorGroup } from '../types';
+import type { SelectorGroup, StatusLevel } from '../types';
+import { extensionStatus } from './stores/ui.svelte';
 
 // Helper function to capitalize column names
 export function formatColumnName(name: string): string {
@@ -89,4 +90,26 @@ export async function generateConfigId(url: string, selectors: SelectorGroup[]):
 export function validateSelectors(selectors: SelectorGroup[]): boolean {
     const allFields = selectors.flatMap((item) => item.fields);
     return allFields.some((f) => f.name && f.selector);
+}
+
+export function getIndicatorColor(status: StatusLevel): { label: string; style: string;} {
+    const capitalize = (str: string) =>  str.charAt(0).toUpperCase() + str.slice(1)
+    switch (status) {
+        case 'idle':
+            return { label: capitalize(status) ,style: '#CBD5E1'}
+        case 'running':
+        case 'extracting':
+        case 'inspecting':
+        case 'navigating':
+            return { label: capitalize(status), style: '#3B82F6'}
+        case 'saving':
+        case 'loading':
+        case 'importing':
+        case 'exporting':
+            return { label: capitalize(status), style: '#FBBF24'}
+        case 'errored':
+            return { label: capitalize(status), style: '#F87171'}
+        default:
+            return { label: capitalize(status) ,style: '#CBD5E1'}
+    }
 }

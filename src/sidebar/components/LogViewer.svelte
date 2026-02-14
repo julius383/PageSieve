@@ -4,22 +4,11 @@
 
     import { fly } from 'svelte/transition';
     import { logs } from '../stores/logs';
-    import type { LogEntry } from '../stores/logs';
+    import { getIndicatorColor } from '../util';
 
-    const STATUS_CONFIG: Record<LogEntry['status'], { label: string; style: string }> = {
-        idle: { label: 'Idle', style: '#6a7282' },
-        extracting: { label: 'Extracting', style: '#00c951' },
-        errored: { label: 'Error', style: '#fb2c36' },
-        importing: { label: 'Importing', style: '#8a3ffc' },
-        exporting: { label: 'Exporting', style: '#0043ce' },
-        loading: { label: 'Loading', style: '#8a3ffc' },
-        saving: { label: 'Saving', style: '#0043ce' },
-        inspecting: { label: 'Inspecting', style: '#ffd700' },
-        navigating: { label: 'Navigating', style: '#ffa500' },
-    };
 </script>
 
-<div class="flex h-full flex-col">
+<div class="flex h-60 flex-col">
     <div class="flex-1 overflow-y-auto p-4">
         <div class="flex flex-col gap-2">
             {#each $logs as log (log.id)}
@@ -32,12 +21,12 @@
                             <Tooltip.Root>
                                 <Tooltip.Trigger>
                                     <CircleSmall
-                                        fill={STATUS_CONFIG[log.status].style}
-                                        color={STATUS_CONFIG[log.status].style}
+                                        fill={getIndicatorColor(log.status).style}
+                                        color={getIndicatorColor(log.status).style}
                                     />
                                 </Tooltip.Trigger>
                                 <Tooltip.Content>
-                                    <span>{STATUS_CONFIG[log.status].label}</span>
+                                    <span>{getIndicatorColor(log.status).label}</span>
                                 </Tooltip.Content>
                             </Tooltip.Root>
                         </Tooltip.Provider>

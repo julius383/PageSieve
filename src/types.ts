@@ -90,6 +90,7 @@ export const ScrapeInstance = z.object({
 
 const StatusLevel = z.enum([
     'idle',
+    'running',
     'extracting',
     'errored',
     'importing',

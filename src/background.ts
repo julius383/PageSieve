@@ -133,16 +133,15 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             } else if (pagination.mode === 'next') {
                 const currentPage = scrapeRunPageCounters[runId];
                 const maxPages = pagination.maxPages;
-                const currentBodyHash = await browser.tabs.sendMessage(tab.id, {
-                    action: 'hashBody',
-                });
 
-                if (maxPages && maxPages !== 0 && currentPage >= maxPages) {
-                    console.log(`Reached max pages (${maxPages}). Cannot navigate further.`);
+                if (maxPages && maxPages !== 0 && currentPage === maxPages) {
                     await sendScrapeRunUpdate(currentPage, maxPages, 'completed');
                     delete scrapeRunPageCounters[runId];
                     return { paginationStatus: PaginationStateStatus.Complete };
                 }
+                const currentBodyHash = await browser.tabs.sendMessage(tab.id, {
+                    action: 'hashBody',
+                });
 
                 await browser.tabs.sendMessage(tab.id, {
                     action: 'clickElement',
@@ -187,7 +186,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 const { urlTemplate, startPage, increment, maxPages } = pagination;
 
                 const currentIdx = scrapeRunPageCounters[runId];
-                if (maxPages && maxPages !== 0 && currentIdx >= maxPages) {
+                if (maxPages && maxPages !== 0 && currentIdx === maxPages) {
                     console.log(`Reached max pages (${maxPages}). Cannot navigate further.`);
                     await sendScrapeRunUpdate(currentIdx, maxPages, 'completed');
                     delete scrapeRunPageCounters[runId]; // End this scrape run

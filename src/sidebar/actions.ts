@@ -66,7 +66,6 @@ export async function extractData(selectors: SelectorGroup[]): Promise<void> {
                 } else {
                     extractedData.data = response.result;
                 }
-                setStatus('idle', `Ready`);
                 return;
             } else {
                 setStatus('errored', response.error);
@@ -206,7 +205,6 @@ export async function navigateTo(config: ScrapeConfig) {
                 config: config,
                 configHash: await shortHash(config.selectors),
             });
-            // TODO: wait the amount set in Extraction Options
             if (navRes.paginationStatus === PaginationStateStatus.Failed) {
                 setStatus(
                     'errored',
@@ -221,26 +219,32 @@ export async function navigateTo(config: ScrapeConfig) {
 export async function runConfig(config: ScrapeConfig) {
     commitPaginationToScrapeConfig();
     let paginationComplete = false;
+    setStatus('running', `running config ${config.metadata.id}`);
     while (!paginationComplete) {
+        if (getStatus() === 'idle') break;
+
         await extractData(config.selectors);
-        if (getStatus() === 'errored') {
-            paginationComplete = true;
-            break;
-        }
+        if (getStatus() === 'idle') break;
 
         await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
+        if (getStatus() === 'idle') break;
 
         const paginationStatus = await navigateTo(config);
-        if (
+        if (getStatus() === 'idle') break;
+
+        await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
+        if (getStatus() === 'idle') break;
+
+        paginationComplete =
             paginationStatus === PaginationStateStatus.Complete ||
-            paginationStatus === PaginationStateStatus.Failed
-        ) {
-            paginationComplete = true;
-        }
+            paginationStatus === PaginationStateStatus.Failed;
 
         if (!paginationComplete) {
-            await new Promise((resolve) => setTimeout(resolve, config.options.delayMs));
+            await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
         }
+    }
+    if (getStatus() !== 'errored' && getStatus() !== 'idle') {
+        setStatus('idle', `done running config ${config.metadata.id}`);
     }
     return;
 }

@@ -1,29 +1,24 @@
 <script lang="ts">
-    import { cn } from '$lib/utils';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Badge } from '$lib/components/ui/badge/index.js';
+    import { CircleSmall } from '@lucide/svelte';
 
     import { extensionStatus } from '../stores/ui.svelte';
+    import { getIndicatorColor } from '../util';
 
-    const STATUS_CONFIG = {
-        ['idle']: { label: 'Idle', style: 'bg-gray-500' },
-        ['extracting']: { label: 'Extracting', style: 'bg-green-500 animate-pulse' },
-        ['errored']: { label: 'Error', style: 'bg-red-500 animate-bounce' },
-        ['importing']: { label: 'Importing', style: 'bg-[#8a3ffc] animate-pulse' },
-        ['exporting']: { label: 'Exporting', style: 'bg-[#0043ce] animate-pulse' },
-        ['loading']: { label: 'Loading', style: 'bg-[#8a3ffc] animate-pulse' },
-        ['saving']: { label: 'Saving', style: 'bg-[#8a3ffc] animate-pulse' },
-        ['inspecting']: { label: 'Inspecting', style: 'bg-[#ffd700] animate-pulse' },
-        ['navigating']: { label: 'Navigating', style: 'bg-[#ffa500] animate-pulse' },
-    };
-    let cfg = () => STATUS_CONFIG[extensionStatus?.status] ?? STATUS_CONFIG['idle'];
+    let cfg = () => getIndicatorColor(extensionStatus.status);
 </script>
 
 <Tooltip.Provider>
     <Tooltip.Root>
         <Tooltip.Trigger>
             <Badge variant="secondary" class="gap-2">
-                <span class={cn('size-2 rounded-full', cfg().style)}></span>
+                <CircleSmall
+                    fill={cfg().style}
+                    color={cfg().style}
+                    class={['idle', 'errored'].includes(extensionStatus.status) ? '' : 'animate-pulse'}
+                    size={32}
+                />
                 <span class="text-base">
                     {cfg().label}
                 </span>
