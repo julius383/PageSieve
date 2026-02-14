@@ -1,99 +1,21 @@
 <script lang="ts">
+    import { untrack } from 'svelte';
+
     import * as Tabs from '$lib/components/ui/tabs/index.js';
     import * as Field from '$lib/components/ui/field/index.js';
     import { Label } from '$lib/components/ui/label/index.js';
     import { Textarea } from '$lib/components/ui/textarea/index.js';
-    import * as z from 'zod';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { onMount, onDestroy } from 'svelte';
 
     import ElementPicker from './ElementPicker.svelte';
     import { scrapeConfig } from '../stores/scrapeConfig.svelte';
-    import { PaginationConfig } from '../../types';
-    import type {
-        TriggerPaginationCommitRequest,
-        PaginationConfig as PaginationConfigT,
-    } from '../../types';
-
+    import { paginationState, commitPaginationToScrapeConfig } from '../stores/pagination.svelte';
     import { Navigation } from '@lucide/svelte';
-    import { setStatus } from '../stores/ui.svelte';
     import { navigateTo } from '../actions';
 
-    // Define a helper function to transform scrapeConfig.pagination into the structure needed for paginationState
-    function mapScrapeConfigToPaginationState(config: PaginationConfigT) {
-        const newState = {
-            mode: config.mode,
-            none: { mode: 'none' },
-            next: {
-                mode: 'next',
-                nextSelector: '',
-                maxPages: 0,
-            },
-            links: {
-                mode: 'links',
-                pageLinks: [''],
-            },
-            template: {
-                mode: 'template',
-                urlTemplate: '',
-                startPage: 1,
-                increment: 1,
-                maxPages: 0,
-            },
-        };
-
-        if (config.mode === 'next') {
-            newState.next.nextSelector = config.nextSelector;
-            if (config.maxPages) {
-                newState.next.maxPages = config.maxPages;
-            }
-        } else if (config.mode === 'links') {
-            newState.links.pageLinks = config.pageLinks;
-        } else if (config.mode === 'template') {
-            newState.template.urlTemplate = config.urlTemplate;
-            newState.template.startPage = config.startPage;
-            newState.template.increment = config.increment;
-            if (config.maxPages) {
-                newState.template.maxPages = config.maxPages;
-            }
-        }
-        return newState;
-    }
-
-    $effect(() => {
-        const snapshot = $state.snapshot(scrapeConfig.pagination);
-        paginationState[snapshot.mode] = snapshot;
-        paginationState.mode = snapshot.mode;
-    });
-
-    let paginationState = $state(mapScrapeConfigToPaginationState(scrapeConfig.pagination));
-
-    /**
-     * Validates the current `paginationState` and, if successful,
-     * updates `scrapeConfig.pagination` with the validated data.
-     * Sets UI status based on validation result.
-     * @returns {boolean} True if the commit was successful, false otherwise.
-     */
-    function commitPaginationToScrapeConfig(): boolean {
-        const snapshot = $state.snapshot(paginationState);
-        const result = PaginationConfig.safeParse(snapshot[snapshot.mode]);
-
-        if (!result.success) {
-            setStatus('errored', z.prettifyError(result.error));
-            return false;
-        } else {
-            // Only update scrapeConfig.pagination if the data is actually different
-            if (JSON.stringify(scrapeConfig.pagination) !== JSON.stringify(result.data)) {
-                Object.assign(scrapeConfig.pagination, result.data);
-            }
-            setStatus('idle', 'Ready'); // Clear any previous error upon successful validation
-            return true;
-        }
-    }
-
     function updateLinks(event: Event) {
-        let text = event?.currentTarget?.value;
+        let text = (event?.currentTarget as HTMLTextAreaElement)?.value;
         paginationState.links.pageLinks = text.split('\n');
     }
 
@@ -103,19 +25,20 @@
         }
     }
 
-    const messageHandler = (message: TriggerPaginationCommitRequest) => {
-        if (message.action === 'triggerCommitPagination') {
-            commitPaginationToScrapeConfig();
-        }
-    };
-    onMount(() => {
-        browser.runtime.onMessage.addListener(messageHandler);
+    /**
+     * Effect to synchronize the local paginationState with the global scrapeConfig.pagination.
+     * This is crucial for when a new configuration is loaded, ensuring the UI reflects
+     * the new pagination settings.
+     */
+    $effect(() => {
+        const snapshot = $state.snapshot(scrapeConfig.pagination);
+        untrack(() => {
+            // Update the specific mode's data
+            paginationState[snapshot.mode] = snapshot;
+            // Switch the active mode
+            paginationState.mode = snapshot.mode;
+        });
     });
-    onDestroy(() => {
-        browser.runtime.onMessage.removeListener(messageHandler);
-    });
-
-    // let currentTab = $state($state.snapshot(scrapeConfig.pagination).mode);
 </script>
 
 <div>
