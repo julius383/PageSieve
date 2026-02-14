@@ -13,44 +13,45 @@ export enum PaginationStateStatus {
 async function navigateAndWait(tabId: number, url: string) {
     return new Promise((resolve, reject) => {
         // Check if tab is already at the target URL and loaded
-        browser.tabs.get(tabId).then(tab => {
-            if (tab.url === url && tab.status === 'complete') {
-                resolve(tab);
-                return;
-            }
-
-            let isNavigating = false;
-
-            function listener(updatedTabId: number, changeInfo, tab) {
-                // Only respond to updates for our specific tab
-                if (updatedTabId !== tabId) return;
-
-                // Track when navigation starts
-                if (changeInfo.status === 'loading') {
-                    isNavigating = true;
-                }
-
-                // Only resolve when:
-                // 1. We've seen the navigation start, AND
-                // 2. The status is complete, AND
-                // 3. The URL matches what we requested
-                if (isNavigating &&
-                    changeInfo.status === 'complete' &&
-                    tab.url === url) {
-                    browser.tabs.onUpdated.removeListener(listener);
+        browser.tabs
+            .get(tabId)
+            .then((tab) => {
+                if (tab.url === url && tab.status === 'complete') {
                     resolve(tab);
+                    return;
                 }
-            }
 
-            // Attach listener BEFORE initiating navigation
-            browser.tabs.onUpdated.addListener(listener);
+                let isNavigating = false;
 
-            // Now trigger the navigation
-            browser.tabs.update(tabId, { url }).catch((err) => {
-                browser.tabs.onUpdated.removeListener(listener);
-                reject(err);
-            });
-        }).catch(reject);
+                function listener(updatedTabId: number, changeInfo, tab) {
+                    // Only respond to updates for our specific tab
+                    if (updatedTabId !== tabId) return;
+
+                    // Track when navigation starts
+                    if (changeInfo.status === 'loading') {
+                        isNavigating = true;
+                    }
+
+                    // Only resolve when:
+                    // 1. We've seen the navigation start, AND
+                    // 2. The status is complete, AND
+                    // 3. The URL matches what we requested
+                    if (isNavigating && changeInfo.status === 'complete' && tab.url === url) {
+                        browser.tabs.onUpdated.removeListener(listener);
+                        resolve(tab);
+                    }
+                }
+
+                // Attach listener BEFORE initiating navigation
+                browser.tabs.onUpdated.addListener(listener);
+
+                // Now trigger the navigation
+                browser.tabs.update(tabId, { url }).catch((err) => {
+                    browser.tabs.onUpdated.removeListener(listener);
+                    reject(err);
+                });
+            })
+            .catch(reject);
     });
 }
 
@@ -152,7 +153,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     await browser.tabs.sendMessage(tab.id, {
                         action: 'waitPageLoad',
                         timeout: request.config.options.timeoutMs,
-                        options: { domStable: true }
+                        options: { domStable: true },
                     });
                 }
 

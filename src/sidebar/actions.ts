@@ -14,7 +14,6 @@ import { StoredConfig, ScrapeConfig } from '../types';
 import { saveToBrowser } from './services/storage';
 import { commitPaginationToScrapeConfig } from './stores/pagination.svelte';
 
-
 export enum PaginationStateStatus {
     InProgress = 1,
     Complete,
@@ -189,7 +188,7 @@ export async function loadConfig(stored: StoredConfig) {
             timestamp: new Date().toISOString(),
         },
         async () => {
-            await setScrapeConfig(stored.config);;
+            await setScrapeConfig(stored.config);
         },
     );
 }
@@ -215,7 +214,8 @@ export async function navigateTo(config: ScrapeConfig) {
                 );
             }
             return navRes.paginationStatus;
-        })
+        },
+    );
 }
 
 export async function runConfig(config: ScrapeConfig) {
@@ -228,15 +228,18 @@ export async function runConfig(config: ScrapeConfig) {
             break;
         }
 
-        await new Promise(resolve => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
+        await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
 
         const paginationStatus = await navigateTo(config);
-        if (paginationStatus === PaginationStateStatus.Complete || paginationStatus === PaginationStateStatus.Failed) {
+        if (
+            paginationStatus === PaginationStateStatus.Complete ||
+            paginationStatus === PaginationStateStatus.Failed
+        ) {
             paginationComplete = true;
         }
 
         if (!paginationComplete) {
-            await new Promise(resolve => setTimeout(resolve, config.options.delayMs));
+            await new Promise((resolve) => setTimeout(resolve, config.options.delayMs));
         }
     }
     return;

@@ -1,11 +1,6 @@
 <script lang="ts">
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
-    import {
-        runConfig,
-        importConfig,
-        exportConfig,
-        saveConfig,
-    } from '../actions';
+    import { runConfig, importConfig, exportConfig, saveConfig } from '../actions';
     import { refreshConfigs } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';
@@ -75,11 +70,7 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    onclick={() => exportConfig(scrapeConfig)}
-                >
+                <Button size="icon" variant="ghost" onclick={() => exportConfig(scrapeConfig)}>
                     <Download class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>

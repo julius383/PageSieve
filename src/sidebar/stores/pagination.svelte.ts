@@ -1,4 +1,3 @@
-
 import * as z from 'zod';
 
 import { PaginationConfig } from '../../types';
@@ -54,7 +53,6 @@ function createInitialPaginationState(config: PaginationConfigT) {
 
 // Create the reactive paginationState store, initialized from the main scrapeConfig.
 export let paginationState = $state(createInitialPaginationState(scrapeConfig.pagination));
-
 
 /**
  * Validates the current UI pagination state and, if successful,

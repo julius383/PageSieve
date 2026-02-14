@@ -1,3 +1,5 @@
+lint:
+  pnpm run lint
 
 build:
   pnpm run build
