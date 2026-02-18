@@ -27,6 +27,12 @@ import DiffMatchPatch from '$lib/dmp.js';
 import { finder } from '@medv/finder';
 
 export class DomPredictionHelper {
+    useAlternativeFinder: boolean;
+
+    constructor() {
+        this.useAlternativeFinder = false;
+    }
+
     recursiveNodes(e: Node): Node[] {
         let n: Node[];
         if (e.nodeName && e.parentNode && e !== document.body) {
@@ -466,16 +472,19 @@ export class DomPredictionHelper {
         for (k = 0, len = nodeset.length; k < len; k++) {
             node = nodeset[k];
             if (node && node.nodeName) {
-                out.push(this.pathOf(node));
+                out.push(!this.useAlternativeFinder ? this.pathOf(node) : this.pathOf2(node));
             }
         }
         return out;
     }
 
     // Takes wrapped
-    predictCss(whitelist: Element[], blacklist: Element[]): string {
+    predictCss(whitelist: Element[], blacklist: Element[], useAlternativeFinder: boolean | undefined = undefined): string {
+        const currentFinder = this.useAlternativeFinder;
+        this.useAlternativeFinder = useAlternativeFinder !== undefined ? useAlternativeFinder : currentFinder
         let union: string;
         if (whitelist.length === 0) {
+            this.useAlternativeFinder = currentFinder;
             return '';
         }
         const selected_paths = this.getPathsFor(whitelist);
@@ -483,14 +492,17 @@ export class DomPredictionHelper {
         const simplest = this.simplifyCss(css, whitelist, blacklist);
         if (simplest.length > 0) {
             // Do we get off easy?
+            this.useAlternativeFinder = currentFinder;
             return simplest;
         }
         // Okay, then make a union and possibly try to reduce subsets.
         union = '';
         for (const selected of whitelist) {
-            union = this.pathOf(selected) + ', ' + union;
+            // union = (this.pathOf(selected)) + ', ' + union;
+            union = (!this.useAlternativeFinder ? this.pathOf(selected) : this.pathOf2(selected)) + ', ' + union;
         }
         union = this.cleanCss(union);
+        this.useAlternativeFinder = currentFinder;
         return this.simplifyCss(union, whitelist, blacklist);
     }
 

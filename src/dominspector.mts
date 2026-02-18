@@ -29,6 +29,7 @@ export class DOMInspector {
         this.highlightOverlays = new Map();
         this.selectorOverlays = new Map();
         this.highlightOverlay = null;
+        // TODO: investigate using alternative pathOf2 function when selector detection fails
         this.helper = new DomPredictionHelper();
 
         // Bind methods to preserve 'this' context
@@ -124,10 +125,16 @@ export class DOMInspector {
             (el) => el && el.isConnected,
         );
 
-        return this.helper.predictCss(connectedWhitelisted, connectedBlacklisted);
+        const guess = this.helper.predictCss(connectedWhitelisted, connectedBlacklisted);
+        if (guess) {
+            return guess
+        } else {
+            return this.helper.predictCss(connectedWhitelisted, connectedBlacklisted, true);
+        }
     }
 
     showSelectorHighlight(selector: string) {
+        // FIXME: add max item count to avoid freezing browser
         this.selectorOverlays.forEach((overlay) => overlay.remove());
         this.selectorOverlays.clear();
         const elements = document.querySelectorAll(selector);
