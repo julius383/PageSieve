@@ -61,13 +61,13 @@ export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => P
     }
 }
 
-export function setStatus(status: StatusLevel, message: string) {
+export function setStatus(status: StatusLevel, message?: string) {
     Object.assign(extensionStatus, {
         status,
         message,
         timestamp: new SvelteDate().toISOString(),
     });
-    if (status !== 'idle') {
+    if (status !== 'idle' && message) {
         addLog(status, message);
     }
 }

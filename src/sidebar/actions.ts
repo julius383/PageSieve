@@ -40,18 +40,6 @@ export async function extractData(selectors: SelectorGroup[]): Promise<void> {
             });
 
             if (response && response.result) {
-                const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
-                if (response.result) {
-                    if (
-                        scrapeRuns.runs.length == 0 &&
-                        scrapeConfig.metadata.url !== 'https://pagesieve.xyz'
-                    ) {
-                        // this is the first run with with new config
-
-                        scrapeConfig.metadata.url = tabInfo.url;
-                        scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, selectors);
-                    }
-                }
                 if (scrapeConfig.options.appendData) {
                     response.result.forEach((newGroup) => {
                         const existingGroup = extractedData.data.find((d) => d.id === newGroup.id);
@@ -179,20 +167,20 @@ export async function saveConfig(config: ScrapeConfig) {
     );
 }
 
-export async function loadConfig(stored: StoredConfig) {
-    runWithStatusAsync(
+export function loadConfig(stored: StoredConfig) {
+    runWithStatus(
         {
             status: 'loading',
             message: `Loading config ${stored.id} from browser storage`,
             timestamp: new Date().toISOString(),
         },
-        async () => {
-            await setScrapeConfig(stored.config);
+        () => {
+            setScrapeConfig(stored.config);
         },
     );
 }
 
-export async function navigateTo(config: ScrapeConfig) {
+export async function navigateTo(config: ScrapeConfig, testing: boolean = false) {
     return await runWithStatusAsync(
         {
             status: 'navigating',
@@ -204,6 +192,7 @@ export async function navigateTo(config: ScrapeConfig) {
                 action: 'pageNavigate',
                 config: config,
                 configHash: await shortHash(config.selectors),
+                testing,
             });
             if (navRes.paginationStatus === PaginationStateStatus.Failed) {
                 setStatus(
@@ -220,26 +209,36 @@ export async function runConfig(config: ScrapeConfig) {
     commitPaginationToScrapeConfig();
     let paginationComplete = false;
     setStatus('running', `running config ${config.metadata.id}`);
+
+    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+    if (!config.metadata.id) {
+        // this is the first run with with new config
+
+        scrapeConfig.metadata.url = tabInfo.url;
+        scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, config.selectors);
+    }
     while (!paginationComplete) {
-        if (getStatus() === 'idle') break;
+        if (['idle', 'errored'].includes(getStatus())) break;
 
         await extractData(config.selectors);
-        if (getStatus() === 'idle') break;
+        if (['idle', 'errored'].includes(getStatus())) break;
+        setStatus('running');
 
         await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
-        if (getStatus() === 'idle') break;
+        if (['idle', 'errored'].includes(getStatus())) break;
 
         const paginationStatus = await navigateTo(config);
-        if (getStatus() === 'idle') break;
+        if (['idle', 'errored'].includes(getStatus())) break;
 
         await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
-        if (getStatus() === 'idle') break;
+        if (['idle', 'errored'].includes(getStatus())) break;
 
         paginationComplete =
             paginationStatus === PaginationStateStatus.Complete ||
             paginationStatus === PaginationStateStatus.Failed;
 
         if (!paginationComplete) {
+            console.log('Waiting after pagination')
             await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
         }
     }
