@@ -107,6 +107,11 @@ const ExtensionStatus = z.object({
     timestamp: z.iso.datetime(),
 });
 
+type LogMessageRequest = {
+    action: 'logMessage';
+    message: string;
+};
+
 type GetTabInfoRequest = {
     action: 'getTabUrl';
 };
@@ -115,6 +120,7 @@ type NavigatePageRequest = {
     action: 'pageNavigate';
     config: ScrapeConfig;
     configHash: string;
+    testing: boolean;
 };
 
 type ExtractDataRequest = {
@@ -134,6 +140,13 @@ type InspectorAcceptRequest = {
 type ClickElementRequest = {
     action: 'clickElement';
     selector: string;
+};
+
+type ClickAndWaitRequest = {
+    action: 'clickAndWaitForStable';
+    selector: string;
+    stabilityDuration?: number;
+    timeout?: number;
 };
 
 type BodyHashRequest = {
@@ -190,7 +203,8 @@ export type MessageRequest =
     | InspectorToggleRequest
     | InspectorAcceptRequest
     | ClickElementRequest
+    | ClickAndWaitRequest
     | BodyHashRequest
     | WaitPageLoadRequest;
 
-export type BackgroundRequest = GetTabInfoRequest | NavigatePageRequest;
+export type BackgroundRequest = GetTabInfoRequest | NavigatePageRequest | LogMessageRequest;

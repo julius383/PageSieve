@@ -10,6 +10,13 @@ type UnknownObject = {
     [key: string]: unknown;
 };
 
+async function bgLog(msg: string) {
+  await browser.runtime.sendMessage({
+    type: "LOG",
+    message: msg
+  });
+}
+
 /**
  * Waits for the DOM to stop changing for a specified duration
  * @param timeout - Maximum time to wait in milliseconds
@@ -18,16 +25,17 @@ type UnknownObject = {
  */
 async function waitForDOMStable(
     timeout: number = 5_000,
-    stabilityDuration: number = 500,
-): Promise<void> {
-    return new Promise((resolve, reject) => {
+    stabilityDuration: number = 700,    // TODO: make timer configurable
+): Promise<boolean> {
+    return new Promise((resolve) => {
         let stabilityTimer: NodeJS.Timeout | null = null;
 
         // Set up the overall timeout
         const timeoutTimer = setTimeout(() => {
             observer.disconnect();
             if (stabilityTimer) clearTimeout(stabilityTimer);
-            reject(new Error(`DOM did not stabilize within ${timeout}ms`));
+            console.log('timout timer elapsed')
+            resolve(false);
         }, timeout);
 
         // Create a MutationObserver to watch for DOM changes
@@ -41,7 +49,8 @@ async function waitForDOMStable(
             stabilityTimer = setTimeout(() => {
                 observer.disconnect();
                 clearTimeout(timeoutTimer);
-                resolve();
+                console.log('stability timer elapsed')
+                resolve(true);
             }, stabilityDuration);
         });
 
@@ -49,16 +58,8 @@ async function waitForDOMStable(
         observer.observe(document.body, {
             childList: true,
             subtree: true,
-            attributes: true,
             characterData: true,
         });
-
-        // Initial stability timer (if DOM is already stable)
-        stabilityTimer = setTimeout(() => {
-            observer.disconnect();
-            clearTimeout(timeoutTimer);
-            resolve();
-        }, stabilityDuration);
     });
 }
 
@@ -104,13 +105,13 @@ async function waitForPageReady(
         /** Maximum timeout for DOM stability (ms) */
         stabilityTimeout?: number;
     } = {},
-): Promise<void> {
+): Promise<{ success: boolean; error?: string }> {
     const {
         domContentLoaded = true,
         windowLoad = true,
         domStable = false,
-        stabilityDuration = 500,
-        stabilityTimeout = 10000,
+        stabilityDuration = 700,
+        stabilityTimeout = 5_000,
     } = options;
 
     if (domContentLoaded) {
@@ -122,8 +123,17 @@ async function waitForPageReady(
     }
 
     if (domStable) {
-        await waitForDOMStable(stabilityTimeout, stabilityDuration);
+        console.log('waiting for dom to stabilize');
+        if (!(await waitForDOMStable(stabilityTimeout, stabilityDuration))) {
+            console.log('dom stable');
+            return {
+                success: false,
+                error: `DOM did not change or stabilize within ${stabilityTimeout}ms`,
+            };
+        }
     }
+
+    return { success: true };
 }
 
 function xpathQuerySelectorAll(xpath: string, context: Element | Document = document) {
@@ -291,9 +301,35 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
             .map((b) => b.toString(16).padStart(2, '0'))
             .join('');
         return { bodyHash: hash };
-    } else if (request.action === 'waitPageLoad') {
-        await waitForPageReady(request.options ?? {});
-        return;
+    } else if (request.action === 'clickAndWaitForStable') {
+        const el = document.querySelector<HTMLElement>(request.selector);
+        if (!el) {
+            await bgLog(`Element not found for click:  ${request.selector}`);
+            return { success: false, error: `Element with selector '${request.selector}' not found.` };
+        }
+        await bgLog(`setting up dom stability`);
+
+        const stabilityDuration = request.stabilityDuration ?? 700;
+
+        // Start waiting for stability *before* the click to avoid race conditions.
+        const waitPromise = waitForDOMStable(request.timeout, stabilityDuration);
+
+        // Now, perform the click.
+        el.click();
+
+        // console.log('Click initiated, now waiting for DOM to stabilize...');
+        await bgLog('Click initiated, now waiting for DOM to stabilize...');
+        const stable = await waitPromise;
+
+        if (!stable) {
+            return {
+                success: false,
+                error: `DOM did not stabilize within ${request.timeout}ms after click.`,
+            };
+        }
+
+        await bgLog('DOM is stable after click.');
+        return { success: true };
     }
     // Not handling this message type
     return false;

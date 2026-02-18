@@ -21,7 +21,7 @@
 
     function goToNextPage() {
         if (commitPaginationToScrapeConfig()) {
-            navigateTo($state.snapshot(scrapeConfig));
+            navigateTo($state.snapshot(scrapeConfig), true);
         }
     }
 
