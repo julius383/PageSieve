@@ -1,8 +1,7 @@
 import type { ColumnDef } from '@tanstack/table-core';
 import { formatColumnName } from '../util';
 
-export const createColumns = <TData extends Record<string, unknown>>(data:
-    TData[]) => {
+export const createColumns = <TData extends Record<string, unknown>>(data: TData[]) => {
     if (data.length === 0) {
         return [];
     }
@@ -12,7 +11,7 @@ export const createColumns = <TData extends Record<string, unknown>>(data:
     const columns: ColumnDef<TData>[] = keys.map((key) => ({
         accessorKey: key,
         header: () => formatColumnName(key),
-        cell: (info) => info.getValue()
+        cell: (info) => info.getValue(),
     }));
 
     return columns;

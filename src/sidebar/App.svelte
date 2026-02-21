@@ -64,7 +64,7 @@
                 <Resizable.Handle withHandle />
 
                 <Resizable.Pane defaultSize={50}>
-                    <ResultsViewer openInNewTab={false}/>
+                    <ResultsViewer openInNewTab={false} />
                 </Resizable.Pane>
             </Resizable.PaneGroup>
         </TabsContent>

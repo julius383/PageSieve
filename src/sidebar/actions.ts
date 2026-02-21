@@ -237,7 +237,7 @@ export async function runConfig(config: ScrapeConfig) {
             paginationStatus === PaginationStateStatus.Failed;
 
         if (!paginationComplete) {
-            console.log('Waiting after pagination')
+            console.log('Waiting after pagination');
             await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
         }
     }

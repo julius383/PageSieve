@@ -1,11 +1,6 @@
 <script lang="ts">
     import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
-    import {
-        runConfig,
-        importConfig,
-        exportConfig,
-        saveConfig,
-    } from '../actions';
+    import { runConfig, importConfig, exportConfig, saveConfig } from '../actions';
     import { refreshConfigs, extensionStatus, setStatus } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';

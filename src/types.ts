@@ -115,7 +115,7 @@ type LogMessageRequest = {
 type OpenFullPageRequest = {
     action: 'openFullPage';
     makeActive?: boolean;
-}
+};
 
 type GetTabInfoRequest = {
     action: 'getTabUrl';
@@ -212,4 +212,8 @@ export type MessageRequest =
     | BodyHashRequest
     | WaitPageLoadRequest;
 
-export type BackgroundRequest = GetTabInfoRequest | NavigatePageRequest | LogMessageRequest | OpenFullPageRequest;
+export type BackgroundRequest =
+    | GetTabInfoRequest
+    | NavigatePageRequest
+    | LogMessageRequest
+    | OpenFullPageRequest;

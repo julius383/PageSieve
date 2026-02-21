@@ -23,7 +23,7 @@ function createLogStore() {
         update((entries) => [newLog, ...entries]);
     }
     function setLogs(logs: LogEntry[]) {
-        update(() => [...logs])
+        update(() => [...logs]);
     }
 
     return {

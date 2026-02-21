@@ -10,7 +10,6 @@ export enum PaginationStateStatus {
     Failed,
 }
 
-
 async function navigateAndWait(tabId: number, url: string) {
     return new Promise((resolve, reject) => {
         // Check if tab is already at the target URL and loaded
@@ -68,7 +67,10 @@ async function waitForTabLoad(tabId: number, timeout: number = 10000): Promise<b
     }
 
     return new Promise((resolve, reject) => {
-        type ListenerType = ((updatedTabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo) => void);
+        type ListenerType = (
+            updatedTabId: number,
+            changeInfo: browser.tabs._OnUpdatedChangeInfo,
+        ) => void;
         let listener: ListenerType | undefined = undefined;
 
         const timeoutId = setTimeout(() => {
@@ -113,7 +115,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             return { url: tab.url, title: tab.title };
         }
     } else if (request.action === 'openFullPage') {
-        await browser.tabs.create({url: '/fullpage.html', active: request?.makeActive ?? false })
+        await browser.tabs.create({ url: '/fullpage.html', active: request?.makeActive ?? false });
         return;
     } else if (request.action === 'logMessage') {
         console.log('[content] ' + request.message);
@@ -201,7 +203,10 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                         action: 'clickAndWaitForStable',
                         selector: pagination.nextSelector,
                         timeout: request.config.options.timeoutMs,
-                    }).then(v => { return {type: 'spa', ...v }})
+                    })
+                    .then((v) => {
+                        return { type: 'spa', ...v };
+                    })
                     .catch((e) => ({ type: 'error', error: e }));
 
                 // Promise that resolves if a traditional navigation starts.
@@ -220,8 +225,8 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 });
 
                 type NavResult =
-                    | { type: 'navigation'; }
-                    | { type: 'error'; error: Error; }
+                    | { type: 'navigation' }
+                    | { type: 'error'; error: Error }
                     | { type: 'spa'; success: boolean; error?: string };
                 // Race the two promises to see which event happens first.
                 const result: NavResult = await Promise.race([spaPromise, navPromise]);
@@ -240,7 +245,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                             return { paginationStatus: PaginationStateStatus.Failed };
                         }
                     }
-                } else if (result.type == "spa"){
+                } else if (result.type == 'spa') {
                     const waitStatus = result;
                     if (!waitStatus.success) {
                         console.log(
@@ -262,12 +267,10 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                         return { paginationStatus: PaginationStateStatus.Complete };
                     }
                 } else {
-                        console.log(
-                            `Single page pagination failed with the error ${result.error}`,
-                        );
-                        await sendScrapeRunUpdate(currentPage, maxPages, 'errored');
-                        delete scrapeRunPageCounters[runId];
-                        return { paginationStatus: PaginationStateStatus.Failed };
+                    console.log(`Single page pagination failed with the error ${result.error}`);
+                    await sendScrapeRunUpdate(currentPage, maxPages, 'errored');
+                    delete scrapeRunPageCounters[runId];
+                    return { paginationStatus: PaginationStateStatus.Failed };
                 }
 
                 await sendScrapeRunUpdate(currentPage, maxPages, 'completed');

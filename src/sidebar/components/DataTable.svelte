@@ -1,18 +1,14 @@
 <script lang="ts">
     import { Button } from '$lib/components/ui/button';
-    import { getCoreRowModel } from "@tanstack/table-core";
-    import {
-      createSvelteTable,
-      FlexRender,
-    } from "$lib/components/ui/data-table/index.js";
-    import * as Table from "$lib/components/ui/table/index.js";
+    import { getCoreRowModel } from '@tanstack/table-core';
+    import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+    import * as Table from '$lib/components/ui/table/index.js';
 
     import { extractedData } from '../stores/ui.svelte';
     import { createColumns } from './results-columns';
 
     const data = $derived(extractedData.data[0].results);
     const columns = $derived(createColumns(data as Record<string, unknown>[]));
-
 
     const table = createSvelteTable({
         get data() {
@@ -46,7 +42,7 @@
             </Table.Header>
             <Table.Body>
                 {#each table.getRowModel().rows as row (row.id)}
-                    <Table.Row data-state={row.getIsSelected() && "selected"}>
+                    <Table.Row data-state={row.getIsSelected() && 'selected'}>
                         {#each row.getVisibleCells() as cell (cell.id)}
                             <Table.Cell>
                                 <FlexRender

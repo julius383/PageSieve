@@ -479,9 +479,14 @@ export class DomPredictionHelper {
     }
 
     // Takes wrapped
-    predictCss(whitelist: Element[], blacklist: Element[], useAlternativeFinder: boolean | undefined = undefined): string {
+    predictCss(
+        whitelist: Element[],
+        blacklist: Element[],
+        useAlternativeFinder: boolean | undefined = undefined,
+    ): string {
         const currentFinder = this.useAlternativeFinder;
-        this.useAlternativeFinder = useAlternativeFinder !== undefined ? useAlternativeFinder : currentFinder
+        this.useAlternativeFinder =
+            useAlternativeFinder !== undefined ? useAlternativeFinder : currentFinder;
         let union: string;
         if (whitelist.length === 0) {
             this.useAlternativeFinder = currentFinder;
@@ -499,7 +504,10 @@ export class DomPredictionHelper {
         union = '';
         for (const selected of whitelist) {
             // union = (this.pathOf(selected)) + ', ' + union;
-            union = (!this.useAlternativeFinder ? this.pathOf(selected) : this.pathOf2(selected)) + ', ' + union;
+            union =
+                (!this.useAlternativeFinder ? this.pathOf(selected) : this.pathOf2(selected)) +
+                ', ' +
+                union;
         }
         union = this.cleanCss(union);
         this.useAlternativeFinder = currentFinder;

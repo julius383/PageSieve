@@ -127,7 +127,7 @@ export class DOMInspector {
 
         const guess = this.helper.predictCss(connectedWhitelisted, connectedBlacklisted);
         if (guess) {
-            return guess
+            return guess;
         } else {
             return this.helper.predictCss(connectedWhitelisted, connectedBlacklisted, true);
         }

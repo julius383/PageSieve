@@ -24,7 +24,7 @@ export async function saveResults(results: unknown[]): Promise<void> {
 
 export async function getLatestResults(): Promise<unknown[] | null> {
     const results = await resultsStore.getItem('latest');
-    return Array.isArray(results) ? (results) : null;
+    return Array.isArray(results) ? results : null;
 }
 
 const logsStore = localforage.createInstance({
@@ -39,10 +39,10 @@ export async function saveLogs(logs: LogEntry[]): Promise<void> {
 export async function getLatestLogs(): Promise<LogEntry[] | null> {
     const results = await logsStore.getItem('latest');
     if (Array.isArray(results)) {
-        results.forEach(element => {
+        results.forEach((element) => {
             element['timestamp'] = new Date(element['timestamp']);
         });
-        return results as LogEntry[]
+        return results as LogEntry[];
     }
     return null;
 }

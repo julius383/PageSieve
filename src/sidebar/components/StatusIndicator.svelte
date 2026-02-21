@@ -16,7 +16,9 @@
                 <CircleSmall
                     fill={cfg().style}
                     color={cfg().style}
-                    class={['idle', 'errored'].includes(extensionStatus.status) ? '' : 'animate-pulse'}
+                    class={['idle', 'errored'].includes(extensionStatus.status)
+                        ? ''
+                        : 'animate-pulse'}
                     size={32}
                 />
                 <span class="text-base">

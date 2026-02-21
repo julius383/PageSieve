@@ -36,7 +36,7 @@
     async function showInNewTab() {
         await saveLogs($logs);
         await saveResults(extractedData.data[0].results);
-        await browser.runtime.sendMessage({ action: 'openFullPage' })
+        await browser.runtime.sendMessage({ action: 'openFullPage' });
     }
 </script>
 

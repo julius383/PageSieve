@@ -10,9 +10,7 @@
     import { getLatestLogs } from '../services/storage';
     import { onMount } from 'svelte';
 
-
     let { openInNewTab = false } = $props();
-
 
     onMount(async () => {
         if (openInNewTab) {
@@ -24,7 +22,7 @@
     });
 </script>
 
-<div class={cn("flex flex-col", openInNewTab ? "h-full" : "h-60")}>
+<div class={cn('flex flex-col', openInNewTab ? 'h-full' : 'h-60')}>
     <div class="flex-1 overflow-y-auto p-4">
         <div class="flex flex-col gap-2">
             {#each $logs as log (log.id)}

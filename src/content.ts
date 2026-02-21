@@ -11,10 +11,10 @@ type UnknownObject = {
 };
 
 async function bgLog(msg: string) {
-  await browser.runtime.sendMessage({
-    type: "LOG",
-    message: msg
-  });
+    await browser.runtime.sendMessage({
+        type: 'LOG',
+        message: msg,
+    });
 }
 
 /**
@@ -25,7 +25,7 @@ async function bgLog(msg: string) {
  */
 async function waitForDOMStable(
     timeout: number = 5_000,
-    stabilityDuration: number = 700,    // TODO: make timer configurable
+    stabilityDuration: number = 700, // TODO: make timer configurable
 ): Promise<boolean> {
     return new Promise((resolve) => {
         let stabilityTimer: NodeJS.Timeout | null = null;
@@ -34,7 +34,7 @@ async function waitForDOMStable(
         const timeoutTimer = setTimeout(() => {
             observer.disconnect();
             if (stabilityTimer) clearTimeout(stabilityTimer);
-            console.log('timout timer elapsed')
+            console.log('timout timer elapsed');
             resolve(false);
         }, timeout);
 
@@ -49,7 +49,7 @@ async function waitForDOMStable(
             stabilityTimer = setTimeout(() => {
                 observer.disconnect();
                 clearTimeout(timeoutTimer);
-                console.log('stability timer elapsed')
+                console.log('stability timer elapsed');
                 resolve(true);
             }, stabilityDuration);
         });
@@ -305,7 +305,10 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         const el = document.querySelector<HTMLElement>(request.selector);
         if (!el) {
             await bgLog(`Element not found for click:  ${request.selector}`);
-            return { success: false, error: `Element with selector '${request.selector}' not found.` };
+            return {
+                success: false,
+                error: `Element with selector '${request.selector}' not found.`,
+            };
         }
         await bgLog(`setting up dom stability`);
 
