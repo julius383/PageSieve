@@ -6,6 +6,7 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Download, SquareX } from '@lucide/svelte';
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
+    import DataTable from './DataTable.svelte';
 
     import { formatColumnName, downloadCSV, downloadJSON } from '../util';
 
@@ -69,26 +70,7 @@
         </div>
     </Tabs.List>
     <Tabs.Content value="data" class="px-4 overflow-auto grow">
-        <div class="border rounded-md">
-            <Table.Root>
-                <Table.Header class="bg-accent">
-                    <Table.Row>
-                        {#each dataColumns as column (column)}
-                            <Table.Head>{formatColumnName(column)}</Table.Head>
-                        {/each}
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {#each extractedData.data[0]?.results as row (row)}
-                        <Table.Row>
-                            {#each dataColumns as column (column)}
-                                <Table.Cell>{row[column]}</Table.Cell>
-                            {/each}
-                        </Table.Row>
-                    {/each}
-                </Table.Body>
-            </Table.Root>
-        </div>
+        <DataTable />
     </Tabs.Content>
     <Tabs.Content value="json" class="px-4 overflow-auto grow">
         <div class="p-4 rounded-md text-sm overflow-wrap">
