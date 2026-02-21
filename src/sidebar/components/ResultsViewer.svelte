@@ -2,13 +2,12 @@
     import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
-    import * as Table from '$lib/components/ui/table';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-    import { Download, SquareX, ExternalLink } from '@lucide/svelte';
+    import { Download, SquareX, ExternalLink, ClipboardCopy } from '@lucide/svelte';
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
     import DataTable from './DataTable.svelte';
 
-    import { formatColumnName, downloadCSV, downloadJSON } from '../util';
+    import { downloadCSV, downloadJSON, clipboardCopy } from '../util';
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
     import { saveResults, getLatestResults, saveLogs } from '../services/storage';
@@ -64,7 +63,7 @@
                                     <Download />
                                 </Button>
                             </Tooltip.Trigger>
-                            <Tooltip.Content>Download Data</Tooltip.Content>
+                            <Tooltip.Content>Download Data to File</Tooltip.Content>
                         </Tooltip.Root>
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
@@ -74,6 +73,34 @@
                     >
                     <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data[0].results)}
                         >Download JSON</DropdownMenu.Item
+                    >
+                </DropdownMenu.Content>
+            </DropdownMenu.Root>
+            <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                    <Tooltip.Provider>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <Button variant="secondary" size="sm">
+                                    <ClipboardCopy />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>Copy Data to Clipboard</Tooltip.Content>
+                        </Tooltip.Root>
+                    </Tooltip.Provider>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'csv')}
+                        >Copy CSV</DropdownMenu.Item
+                    >
+                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'json')}
+                        >Copy JSON</DropdownMenu.Item
+                    >
+                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'html')}
+                        >Copy HTML Table</DropdownMenu.Item
+                    >
+                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'markdown')}
+                        >Copy Markdown Table</DropdownMenu.Item
                     >
                 </DropdownMenu.Content>
             </DropdownMenu.Root>

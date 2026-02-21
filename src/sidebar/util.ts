@@ -1,14 +1,43 @@
 import { Parser } from '@json2csv/plainjs';
 import type { SelectorGroup, StatusLevel } from '../types';
-import { extensionStatus } from './stores/ui.svelte';
+import htmlTemplate from './templates/htmltemplate.hbs';
+import mdTemplate from './templates/mdtemplate.hbs';
 
-// Helper function to capitalize column names
+type SupportedDataTypes = 'json' | 'csv' | 'html' | 'markdown';
+
+function convertTo(data: object[], format: SupportedDataTypes): string {
+    if (data.length == 0) {
+        return '';
+    }
+    switch (format) {
+        case 'json': {
+            return JSON.stringify(data);
+        }
+        case 'csv': {
+            const parser = new Parser();
+            const csv = parser.parse(data);
+            const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            return dataStr
+        }
+        case 'html': {
+            const columns = Object.keys(data[0]);
+            const result = htmlTemplate({columns, rows: data});
+            return result;
+        }
+        case 'markdown': {
+            const columns = Object.keys(data[0]);
+            const result = mdTemplate({columns, rows: data});
+            return result;
+        }
+    }
+}
+
 export function formatColumnName(name: string): string {
     return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-export function downloadJSON(data: object, filename: string = 'data.json') {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+export function downloadJSON(data: object[], filename: string = 'data.json') {
+    const dataStr = convertTo(data, 'json');
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
     downloadAnchorNode.setAttribute('download', filename);
@@ -17,12 +46,9 @@ export function downloadJSON(data: object, filename: string = 'data.json') {
     downloadAnchorNode.remove();
 }
 
-export function downloadCSV(data: object, filename: string = 'data.csv') {
+export function downloadCSV(data: object[], filename: string = 'data.csv') {
     try {
-        const parser = new Parser();
-        const csv = parser.parse(data);
-
-        const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        const dataStr = convertTo(data, 'csv')
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute('href', dataStr);
         downloadAnchorNode.setAttribute('download', filename);
@@ -32,6 +58,12 @@ export function downloadCSV(data: object, filename: string = 'data.csv') {
     } catch (err) {
         console.error(err);
     }
+}
+
+export async function clipboardCopy(data: object[], format: SupportedDataTypes = 'json') {
+    const converted = convertTo(data, format);
+    await navigator.clipboard.writeText(converted);
+    console.log('Wrote data to clipboard');
 }
 
 // Characters not allowed in filenames across major OSes

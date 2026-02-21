@@ -1,10 +1,17 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import handlebars from '@yoichiro/vite-plugin-handlebars';
 import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [svelte({ compilerOptions: { runes: true } })],
+    plugins: [
+        svelte({ compilerOptions: { runes: true } }),
+        handlebars({
+            // This allows you to import .hbs files in your TypeScript code
+            runtime: 'handlebars/dist/handlebars.runtime.js',
+        }),
+    ],
     resolve: {
         alias: {
             $lib: resolve(__dirname, 'src/lib'),
