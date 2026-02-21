@@ -1,7 +1,6 @@
 import { SvelteDate } from 'svelte/reactivity';
 import type { SelectorGroup } from '../types';
 import {
-    scrapeRuns,
     extractedData,
     runWithStatus,
     runWithStatusAsync,

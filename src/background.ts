@@ -112,6 +112,9 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
         if (tab?.id) {
             return { url: tab.url, title: tab.title };
         }
+    } else if (request.action === 'openFullPage') {
+        await browser.tabs.create({url: '/fullpage.html', active: request?.makeActive ?? false })
+        return;
     } else if (request.action === 'logMessage') {
         console.log('[content] ' + request.message);
         return;

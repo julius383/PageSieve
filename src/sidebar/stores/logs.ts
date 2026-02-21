@@ -22,13 +22,18 @@ function createLogStore() {
         // add new entry at the start
         update((entries) => [newLog, ...entries]);
     }
+    function setLogs(logs: LogEntry[]) {
+        update(() => [...logs])
+    }
 
     return {
         subscribe,
         addLog,
+        setLogs,
     };
 }
 
 export const logs = createLogStore();
 
 export const addLog = logs.addLog;
+export const setLogs = logs.setLogs;

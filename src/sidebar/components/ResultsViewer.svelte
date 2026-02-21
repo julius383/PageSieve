@@ -4,13 +4,27 @@
     import * as Tabs from '$lib/components/ui/tabs';
     import * as Table from '$lib/components/ui/table';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-    import { Download, SquareX } from '@lucide/svelte';
+    import { Download, SquareX, ExternalLink } from '@lucide/svelte';
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
     import DataTable from './DataTable.svelte';
 
     import { formatColumnName, downloadCSV, downloadJSON } from '../util';
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
+    import { saveResults, getLatestResults, saveLogs } from '../services/storage';
+    import { logs } from '../stores/logs';
+    import { onMount } from 'svelte';
+
+    let { openInNewTab = true } = $props();
+
+    onMount(async () => {
+        if (openInNewTab) {
+            const results = await getLatestResults();
+            if (results) {
+                extractedData.data[0].results = results;
+            }
+        }
+    });
 
     // FIXME: handle multiple items in extractedData
     const dataColumns = $derived.by(() => {
@@ -18,6 +32,12 @@
             ? Object.keys(extractedData.data[0].results[0])
             : [];
     });
+
+    async function showInNewTab() {
+        await saveLogs($logs);
+        await saveResults(extractedData.data[0].results);
+        await browser.runtime.sendMessage({ action: 'openFullPage' })
+    }
 </script>
 
 <div class="space-y-4">
@@ -57,16 +77,28 @@
                     >
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button size="icon" variant="destructive" onclick={resetExtractedData}>
-                            <SquareX class="size-4" strokeWidth={2.5} />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>Download Data</Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
+            {#if !openInNewTab}
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button size="sm" variant="secondary" onclick={showInNewTab}>
+                                <ExternalLink class="size-4" strokeWidth={2.5} />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>View Results in New Tab</Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button size="icon" variant="destructive" onclick={resetExtractedData}>
+                                <SquareX class="size-4" strokeWidth={2.5} />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Clear Data</Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+            {/if}
         </div>
     </Tabs.List>
     <Tabs.Content value="data" class="px-4 overflow-auto grow">

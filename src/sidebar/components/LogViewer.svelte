@@ -1,14 +1,30 @@
 <script lang="ts">
+    import { cn } from '$lib/utils';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { CircleSmall } from '@lucide/svelte';
 
     import { fly } from 'svelte/transition';
-    import { logs } from '../stores/logs';
+    import { logs, setLogs } from '../stores/logs';
     import { getIndicatorColor } from '../util';
 
+    import { getLatestLogs } from '../services/storage';
+    import { onMount } from 'svelte';
+
+
+    let { openInNewTab = false } = $props();
+
+
+    onMount(async () => {
+        if (openInNewTab) {
+            const results = await getLatestLogs();
+            if (results) {
+                setLogs(results);
+            }
+        }
+    });
 </script>
 
-<div class="flex h-60 flex-col">
+<div class={cn("flex flex-col", openInNewTab ? "h-full" : "h-60")}>
     <div class="flex-1 overflow-y-auto p-4">
         <div class="flex flex-col gap-2">
             {#each $logs as log (log.id)}
@@ -31,6 +47,11 @@
                             </Tooltip.Root>
                         </Tooltip.Provider>
                     </div>
+                    {#if openInNewTab}
+                        <p class="flex-1 break-all font-mono text-gray-800 dark:text-gray-200 p-2">
+                            {log.timestamp.toLocaleString()}
+                        </p>
+                    {/if}
                     <p class="flex-1 break-all font-mono text-gray-800 dark:text-gray-200">
                         {log.message}
                     </p>

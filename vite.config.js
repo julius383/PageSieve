@@ -17,6 +17,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 sidebar: resolve(__dirname, 'src/sidebar/main.ts'),
+                fullpage: resolve(__dirname, 'src/fullpage/main.ts'),
                 background: resolve(__dirname, 'src/background.ts'),
                 content: resolve(__dirname, 'src/content.ts'),
                 app: resolve(__dirname, 'src/app.css'),

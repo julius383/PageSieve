@@ -2,13 +2,50 @@ import * as z from 'zod';
 import { StoredConfig } from '../../types';
 import localforage from 'localforage';
 import { setStatus } from '../stores/ui.svelte';
+import { LogEntry } from '../stores/logs';
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
+const RESULTS_STORAGE_KEY = 'pagesieve-results';
+const LOGS_STORAGE_KEY = 'pagesieve-logs';
 
 localforage.config({
     name: CONFIG_STORAGE_KEY,
     driver: localforage.LOCALSTORAGE,
 });
+
+const resultsStore = localforage.createInstance({
+    name: RESULTS_STORAGE_KEY,
+    driver: localforage.LOCALSTORAGE,
+});
+
+export async function saveResults(results: unknown[]): Promise<void> {
+    await resultsStore.setItem('latest', results);
+}
+
+export async function getLatestResults(): Promise<unknown[] | null> {
+    const results = await resultsStore.getItem('latest');
+    return Array.isArray(results) ? (results) : null;
+}
+
+const logsStore = localforage.createInstance({
+    name: LOGS_STORAGE_KEY,
+    driver: localforage.LOCALSTORAGE,
+});
+
+export async function saveLogs(logs: LogEntry[]): Promise<void> {
+    await logsStore.setItem('latest', logs);
+}
+
+export async function getLatestLogs(): Promise<LogEntry[] | null> {
+    const results = await logsStore.getItem('latest');
+    if (Array.isArray(results)) {
+        results.forEach(element => {
+            element['timestamp'] = new Date(element['timestamp']);
+        });
+        return results as LogEntry[]
+    }
+    return null;
+}
 
 export async function getAllConfigs(): Promise<StoredConfig[]> {
     const configs: StoredConfig[] = [];
