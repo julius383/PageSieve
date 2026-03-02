@@ -1,9 +1,13 @@
-# PageSieve
+<div align="center">
+  <img align="center" src="/public/icons/icon128.png" >
+  <h1>PageSieve</h1>
+</div>
+
 
 PageSieve is a browser extension that assists with the extraction of
-structured data from any webpage they visit. Define field names, CSS 
-selectors and (optionally) pagination strategy through a sidebar which
-is used to extract data.
+structured data from any webpage you visit. Define field names, CSS 
+selectors and (optionally) pagination strategy through a sidebar and extract
+and export data in a variety of formats.
 
 ## Demo
 
