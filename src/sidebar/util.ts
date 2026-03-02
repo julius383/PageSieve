@@ -16,8 +16,7 @@ function convertTo(data: object[], format: SupportedDataTypes): string {
         case 'csv': {
             const parser = new Parser();
             const csv = parser.parse(data);
-            const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            return dataStr
+            return csv;
         }
         case 'html': {
             const columns = Object.keys(data[0]);
@@ -37,18 +36,24 @@ export function formatColumnName(name: string): string {
 }
 
 export function downloadJSON(data: object[], filename: string = 'data.json') {
-    const dataStr = convertTo(data, 'json');
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', filename);
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    try {
+        const json = convertTo(data, 'json');
+        const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute('href', dataStr);
+        downloadAnchorNode.setAttribute('download', filename);
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 export function downloadCSV(data: object[], filename: string = 'data.csv') {
     try {
-        const dataStr = convertTo(data, 'csv')
+        const csv = convertTo(data, 'csv')
+        const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute('href', dataStr);
         downloadAnchorNode.setAttribute('download', filename);
