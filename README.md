@@ -41,6 +41,16 @@ The extension is designed around a few core principles:
 - Zod
 - Selector algorithm adapted from [SelectorGadget](https://github.com/cantino/selectorgadget/)
 
+## Developing
+
+This project uses pnpm for dependency management and vite for building. To
+develop the project use:
+
+```
+pnpm install
+pnpm run build
+```
+
 ## Repository Overview
 
 
