@@ -71,7 +71,7 @@ export async function extractData(selectors: SelectorGroup[]): Promise<void> {
 }
 
 /**
- * Imports ScrapeConfig from a file
+ * Imports ScrapeConfig from a file into UI
  */
 export function importConfig(event: Event) {
     const fileInput = event.target as HTMLInputElement;
@@ -107,7 +107,6 @@ export function importConfig(event: Event) {
 
 /**
  * Export ScrapeConfig to JSON file for download by user
- *
  */
 export async function exportConfig(config: ScrapeConfig): Promise<string> {
     commitPaginationToScrapeConfig();
@@ -140,6 +139,9 @@ export async function exportConfig(config: ScrapeConfig): Promise<string> {
     return filename;
 }
 
+/**
+ * Saves ccnfig to browser local storage
+ */
 export async function saveConfig(config: ScrapeConfig) {
     commitPaginationToScrapeConfig();
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
@@ -166,6 +168,9 @@ export async function saveConfig(config: ScrapeConfig) {
     );
 }
 
+/**
+ * Load config from browser storage into UI
+ */
 export function loadConfig(stored: StoredConfig) {
     runWithStatus(
         {
@@ -179,6 +184,9 @@ export function loadConfig(stored: StoredConfig) {
     );
 }
 
+/**
+ * Navigate to next page based on defined pagination config
+ */
 export async function navigateTo(config: ScrapeConfig, testing: boolean = false) {
     return await runWithStatusAsync(
         {
@@ -204,6 +212,9 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
     );
 }
 
+/**
+ * 'main' function of extension
+ */
 export async function runConfig(config: ScrapeConfig) {
     commitPaginationToScrapeConfig();
     let paginationComplete = false;
@@ -229,8 +240,8 @@ export async function runConfig(config: ScrapeConfig) {
         const paginationStatus = await navigateTo(config);
         if (['idle', 'errored'].includes(getStatus())) break;
 
-        await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
-        if (['idle', 'errored'].includes(getStatus())) break;
+        /* await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
+        if (['idle', 'errored'].includes(getStatus())) break; */
 
         paginationComplete =
             paginationStatus === PaginationStateStatus.Complete ||

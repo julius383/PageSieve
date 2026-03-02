@@ -30,7 +30,6 @@ async function waitForDOMStable(
     return new Promise((resolve) => {
         let stabilityTimer: NodeJS.Timeout | null = null;
 
-        // Set up the overall timeout
         const timeoutTimer = setTimeout(() => {
             observer.disconnect();
             if (stabilityTimer) clearTimeout(stabilityTimer);
@@ -38,14 +37,11 @@ async function waitForDOMStable(
             resolve(false);
         }, timeout);
 
-        // Create a MutationObserver to watch for DOM changes
         const observer = new MutationObserver(() => {
-            // Clear existing stability timer
             if (stabilityTimer) {
                 clearTimeout(stabilityTimer);
             }
 
-            // Set a new timer to check if DOM has been stable
             stabilityTimer = setTimeout(() => {
                 observer.disconnect();
                 clearTimeout(timeoutTimer);
@@ -54,7 +50,6 @@ async function waitForDOMStable(
             }, stabilityDuration);
         });
 
-        // Start observing the document
         observer.observe(document.body, {
             childList: true,
             subtree: true,
@@ -94,15 +89,10 @@ async function waitForWindowLoad(): Promise<void> {
  */
 async function waitForPageReady(
     options: {
-        /** Wait for DOMContentLoaded */
         domContentLoaded?: boolean;
-        /** Wait for window load event */
         windowLoad?: boolean;
-        /** Wait for DOM to stabilize after loading */
         domStable?: boolean;
-        /** Stability duration if domStable is true (ms) */
         stabilityDuration?: number;
-        /** Maximum timeout for DOM stability (ms) */
         stabilityTimeout?: number;
     } = {},
 ): Promise<{ success: boolean; error?: string }> {
@@ -220,7 +210,6 @@ function extractDataFromPage(
                     const value = fn(containerItem);
                     return { [name]: value };
                 });
-                // console.log('found the following data');
                 const row = Object.assign({}, ...fieldData);
                 console.dir(row);
                 rows.push(row);
@@ -314,13 +303,10 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
 
         const stabilityDuration = request.stabilityDuration ?? 700;
 
-        // Start waiting for stability *before* the click to avoid race conditions.
         const waitPromise = waitForDOMStable(request.timeout, stabilityDuration);
 
-        // Now, perform the click.
         el.click();
 
-        // console.log('Click initiated, now waiting for DOM to stabilize...');
         await bgLog('Click initiated, now waiting for DOM to stabilize...');
         const stable = await waitPromise;
 
@@ -334,6 +320,5 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         await bgLog('DOM is stable after click.');
         return { success: true };
     }
-    // Not handling this message type
     return false;
 });

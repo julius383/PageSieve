@@ -90,7 +90,6 @@
             </div>
         </Tabs.Content>
         <Tabs.Content value="template">
-            <!-- TEMPLATE -->
             <Field.Set>
                 <Field.Group>
                     <Field.Field>
@@ -137,7 +136,6 @@
                 </Field.Group>
             </Field.Set>
 
-            <!-- Preview -->
             {#if paginationState.template.urlTemplate.includes('{{page}}')}
                 <div class="rounded-md border bg-muted p-3 text-sm">
                     <p class="font-medium mb-1">Preview</p>
@@ -166,7 +164,6 @@
     </Tabs.Root>
 
     <div class="flex items-center justify-center">
-        <!-- TODO: improve design  -->
         <Button
             disabled={paginationState.mode === 'none'}
             onclick={goToNextPage}

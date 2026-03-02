@@ -1,9 +1,9 @@
 {
-    "name": "page-sieve",
+    "name": "pagesieve",
     "version": "1.0.0",
-    "description": "",
+    "description": "PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit. Define field names, CSS selectors and (optionally) pagination strategy through a sidebar and extract and export data in a variety of formats.",
     "license": "MIT",
-    "author": "",
+    "author": "Julius Kibunjia",
     "type": "module",
     "main": "index.js",
     "scripts": {

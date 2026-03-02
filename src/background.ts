@@ -28,10 +28,8 @@ async function navigateAndWait(tabId: number, url: string) {
                     changeInfo: browser.tabs._OnUpdatedChangeInfo,
                     tab: browser.tabs.Tab,
                 ) {
-                    // Only respond to updates for our specific tab
                     if (updatedTabId !== tabId) return;
 
-                    // Track when navigation starts
                     if (changeInfo.status === 'loading') {
                         isNavigating = true;
                     }
@@ -46,10 +44,8 @@ async function navigateAndWait(tabId: number, url: string) {
                     }
                 }
 
-                // Attach listener BEFORE initiating navigation
                 browser.tabs.onUpdated.addListener(listener);
 
-                // Now trigger the navigation
                 browser.tabs.update(tabId, { url }).catch((err) => {
                     browser.tabs.onUpdated.removeListener(listener);
                     reject(err);
@@ -60,7 +56,6 @@ async function navigateAndWait(tabId: number, url: string) {
 }
 
 async function waitForTabLoad(tabId: number, timeout: number = 10000): Promise<browser.tabs.Tab> {
-    // First, check if the tab is already loaded.
     const tab = await browser.tabs.get(tabId);
     if (tab.status === 'complete') {
         return tab;
@@ -84,7 +79,6 @@ async function waitForTabLoad(tabId: number, timeout: number = 10000): Promise<b
             if (updatedTabId === tabId && changeInfo.status === 'complete') {
                 clearTimeout(timeoutId);
                 browser.tabs.onUpdated.removeListener(listener as ListenerType);
-                // The 'tab' object from the listener might be incomplete, so we get it again.
                 browser.tabs.get(tabId).then(resolve);
             }
         };
@@ -93,15 +87,12 @@ async function waitForTabLoad(tabId: number, timeout: number = 10000): Promise<b
     });
 }
 
-// Listen for a click on the browser action icon.
 browser.browserAction.onClicked.addListener(() => {
-    // Toggle the sidebar's open state.
     if (sidebarOpen) {
         browser.sidebarAction.close();
     } else {
         browser.sidebarAction.open();
     }
-    // Update the state variable.
     sidebarOpen = !sidebarOpen;
 });
 
@@ -130,7 +121,6 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             const runId = request.configHash;
             const testing = request.testing;
 
-            // Initialize page counter for this run if not present
             if (!scrapeRunPageCounters[runId]) {
                 scrapeRunPageCounters[runId] = 1;
             }
@@ -294,7 +284,6 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     return { paginationStatus: PaginationStateStatus.Complete };
                 }
 
-                // Escape special regex characters, then replace '{{page}}' with a digit capture group.
                 const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const escapedTemplate = escapeRegExp(urlTemplate);
                 const pageRegex = new RegExp(escapedTemplate.replace('\\{\\{page\\}\\}', '(\\d+)'));

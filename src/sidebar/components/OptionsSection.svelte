@@ -14,8 +14,6 @@
     }
 </script>
 
-<!-- Load / Page Behavior -->
-
 <Field.Set>
     <Field.Group>
         <Field.Field orientation="horizontal">

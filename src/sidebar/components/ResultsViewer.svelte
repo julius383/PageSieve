@@ -90,16 +90,20 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'csv')}
+                    <DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0].results, 'csv')}
                         >Copy CSV</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'json')}
+                    <DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0].results, 'json')}
                         >Copy JSON</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'html')}
+                    <DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0].results, 'html')}
                         >Copy HTML Table</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data[0].results, 'markdown')}
+                    <DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0].results, 'markdown')}
                         >Copy Markdown Table</DropdownMenu.Item
                     >
                 </DropdownMenu.Content>

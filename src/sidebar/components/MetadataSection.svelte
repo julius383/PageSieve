@@ -22,7 +22,6 @@
 </script>
 
 <div class="space-y-4">
-    <!-- ID -->
     <Item.Root variant="outline">
         <Item.Content>
             <Item.Title>ID</Item.Title>
@@ -41,7 +40,6 @@
         </Item.Actions>
     </Item.Root>
 
-    <!-- Description -->
     <Item.Root>
         <Item.Content>
             <Item.Title>Description</Item.Title>
@@ -56,7 +54,6 @@
         </Item.Content>
     </Item.Root>
 
-    <!-- URL -->
     <Item.Root>
         <Item.Content>
             <Item.Title>Target URL</Item.Title>
@@ -75,7 +72,6 @@
         </Item.Actions>
     </Item.Root>
 
-    <!-- Version + Author -->
     <div class="grid grid-cols-2">
         <div class="space-y-1">
             <Item.Root>

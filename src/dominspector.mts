@@ -29,7 +29,6 @@ export class DOMInspector {
         this.highlightOverlays = new Map();
         this.selectorOverlays = new Map();
         this.highlightOverlay = null;
-        // TODO: investigate using alternative pathOf2 function when selector detection fails
         this.helper = new DomPredictionHelper();
 
         // Bind methods to preserve 'this' context
@@ -50,7 +49,7 @@ export class DOMInspector {
             document.body.appendChild(this.highlightOverlay);
         }
 
-        console.log('Inspector instance created');
+        // console.log('Inspector instance created');
     }
 
     toggle(pickerId?: string) {
@@ -62,26 +61,24 @@ export class DOMInspector {
     }
 
     activate(pickerId: string) {
-        console.log(`Activating DOM inspector for ${pickerId}`);
+        // console.log(`Activating DOM inspector for ${pickerId}`);
         if (this.isActive) return;
 
         this.activePickerId = pickerId;
         this.isActive = true;
 
         this.originalCursor = document.body.style.cursor;
-        // Change cursor to indicate inspection mode
         document.body.style.cursor = 'crosshair';
 
-        // Add event listeners
         window.addEventListener('mouseover', this.handleMouseOver, true);
         window.addEventListener('mouseout', this.handleMouseOut, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
         window.addEventListener('click', this.handleClick, true);
         window.addEventListener('scroll', this.updateAllHighlights.bind(this), true);
 
-        console.log(
+        /* console.log(
             'DOM Inspector activated. Hover over elements to highlight, click to inspect. Press ESC to exit.',
-        );
+        ); */
     }
 
     deactivate() {
@@ -91,29 +88,24 @@ export class DOMInspector {
         this.isActive = false;
         this.activePickerId = null;
 
-        // Restore original cursor
         document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
 
-        // Remove highlight from current element
         this.removeHighlight();
 
-        // Remove all persistent highlights from whitelisted and blacklisted elements
         this.whitelistedElements.forEach((el) => this.removePersistentHighlight(el));
         this.blacklistedElements.forEach((el) => this.removePersistentHighlight(el));
         this.removeSelectorHighlight();
 
-        // Clear the sets
         this.whitelistedElements.clear();
         this.blacklistedElements.clear();
 
-        // Remove event listeners
         window.removeEventListener('mouseover', this.handleMouseOver, true);
         window.removeEventListener('mouseout', this.handleMouseOut, true);
         window.removeEventListener('keydown', this.handleKeyDown, true);
         window.removeEventListener('click', this.handleClick, true);
         window.removeEventListener('scroll', this.updateAllHighlights.bind(this), true);
 
-        console.log('DOM Inspector deactivated.');
+        // console.log('DOM Inspector deactivated.');
     }
 
     guessSelector() {
@@ -169,7 +161,7 @@ export class DOMInspector {
         if (!overlay) {
             overlay = document.createElement('div');
             overlay.style.position = 'absolute';
-            overlay.style.zIndex = '999998'; // Just below hover highlight
+            overlay.style.zIndex = '999998';
             overlay.style.boxSizing = 'border-box';
             overlay.style.pointerEvents = 'none';
             document.body.appendChild(overlay);
@@ -258,7 +250,6 @@ export class DOMInspector {
     handleKeyDown(event: KeyboardEvent) {
         if (!this.isActive) return;
 
-        // ESC key to exit inspection mode
         if (event.key === 'Escape') {
             event.preventDefault();
             this.deactivate();
@@ -294,7 +285,6 @@ export class DOMInspector {
     }
 
     inspectElement(element: HTMLElement) {
-        // Also create a more detailed object for programmatic access
         const elementData = {
             element: element,
             tagName: element.tagName,
@@ -308,8 +298,7 @@ export class DOMInspector {
             boundingRect: element.getBoundingClientRect(),
         };
 
-        // Log the complete data object
-        console.log('Complete Element Data:', elementData);
+        // console.log('Complete Element Data:', elementData);
 
         const selector = this.guessSelector();
         let foundElements = 0;

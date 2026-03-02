@@ -39,6 +39,3 @@
         <span>Error with Field Group</span>
     </div>
 {/if}
-
-<style>
-</style>

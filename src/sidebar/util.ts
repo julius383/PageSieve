@@ -20,12 +20,12 @@ function convertTo(data: object[], format: SupportedDataTypes): string {
         }
         case 'html': {
             const columns = Object.keys(data[0]);
-            const result = htmlTemplate({columns, rows: data});
+            const result = htmlTemplate({ columns, rows: data });
             return result;
         }
         case 'markdown': {
             const columns = Object.keys(data[0]);
-            const result = mdTemplate({columns, rows: data});
+            const result = mdTemplate({ columns, rows: data });
             return result;
         }
     }
@@ -52,7 +52,7 @@ export function downloadJSON(data: object[], filename: string = 'data.json') {
 
 export function downloadCSV(data: object[], filename: string = 'data.csv') {
     try {
-        const csv = convertTo(data, 'csv')
+        const csv = convertTo(data, 'csv');
         const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute('href', dataStr);

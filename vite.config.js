@@ -20,7 +20,7 @@ export default defineConfig({
     build: {
         outDir: 'dist',
         sourcemap: true,
-        emptyOutDir: true, // Clean the output directory before building
+        emptyOutDir: true,
         rollupOptions: {
             input: {
                 sidebar: resolve(__dirname, 'src/sidebar/main.ts'),
@@ -30,7 +30,6 @@ export default defineConfig({
                 app: resolve(__dirname, 'src/app.css'),
             },
             output: {
-                // Ensure the output filenames are predictable
                 entryFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
             },
