@@ -15,7 +15,7 @@ https://github.com/user-attachments/assets/db9b9f9c-8928-442e-887e-5759e1069366
 
 ## Installation
 
-Install through the [Mozilla Addon Store](https://addons.mozilla.org/pagesieve) or download a release from GitHub.
+Install through the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/) or download a release from GitHub.
 
 
 ## Goals
