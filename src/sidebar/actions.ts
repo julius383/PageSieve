@@ -237,6 +237,9 @@ export async function runConfig(config: ScrapeConfig) {
         await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
         if (['idle', 'errored'].includes(getStatus())) break;
 
+        if (config.pagination.mode === 'none') {
+            break;
+        }
         const paginationStatus = await navigateTo(config);
         if (['idle', 'errored'].includes(getStatus())) break;
 
