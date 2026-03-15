@@ -202,7 +202,15 @@ function extractDataFromPage(
 
     selectors.forEach(({ id, container, fields }) => {
         if (container) {
-            const containerItems = document.querySelectorAll(container);
+            let containerItems;
+            if (container.startsWith('./') || container.startsWith('//')) {
+                containerItems = xpathQuerySelectorAll(container);
+            } else {
+                containerItems = document.querySelectorAll(container);
+            }
+            if (!containerItems) {
+                return;
+            }
             const rows: UnknownObject[] = [];
             containerItems.forEach((containerItem) => {
                 const fieldData = fields.map(({ name, selector, type }) => {
