@@ -1,0 +1,198 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome to PageSieve",
+    "section": "",
+    "text": "PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS/XPath selectors to extract structured data from any website you visit."
+  },
+  {
+    "objectID": "index.html#a-web-browser-web-extension",
+    "href": "index.html#a-web-browser-web-extension",
+    "title": "Welcome to PageSieve",
+    "section": "",
+    "text": "PageSieve is a browser extension for declarative web scraping, define field names and CSS/XPath selectors and extract data from websites"
+  },
+  {
+    "objectID": "reference/configuration.html",
+    "href": "reference/configuration.html",
+    "title": "Scrape Configuration Reference",
+    "section": "",
+    "text": "The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in src/types.ts."
+  },
+  {
+    "objectID": "reference/configuration.html#metadata",
+    "href": "reference/configuration.html#metadata",
+    "title": "Scrape Configuration Reference",
+    "section": "Metadata",
+    "text": "Metadata\nThe metadata section provides information about the configuration itself:\n\nid: Unique identifier for the configuration.\ndescription: Optional description of what the configuration does.\nurl: The target URL for this configuration.\nversion: Version number for the configuration.\nauthor: Optional author name."
+  },
+  {
+    "objectID": "reference/configuration.html#extraction-options",
+    "href": "reference/configuration.html#extraction-options",
+    "title": "Scrape Configuration Reference",
+    "section": "Extraction Options",
+    "text": "Extraction Options\nCustomize how the extraction process behaves:\n\nwaitforNetworkIdle: Whether to wait for network activity to stop before starting extraction.\nscrollToBottom: Whether to scroll to the bottom of the page before extraction.\nrunJavaScript: Whether to execute JavaScript on the page.\ndelayMs: Delay in milliseconds before extraction starts.\ntimeoutMs: Maximum time in milliseconds to wait for extraction to finish.\nappendData: Whether to append new data to existing results or start fresh."
+  },
+  {
+    "objectID": "reference/configuration.html#selectors",
+    "href": "reference/configuration.html#selectors",
+    "title": "Scrape Configuration Reference",
+    "section": "Selectors",
+    "text": "Selectors\nSelectors define the data fields to extract:\n\nid: Unique ID for the selector.\nname: The field name used in the exported data.\nselector: The CSS or XPath selector for the element.\ntype: Either single or array for multiple matches.\ndescription: Optional field description.\n\nSelectors can be grouped using SelectorGroup, which can also specify a container selector to scope its fields."
+  },
+  {
+    "objectID": "reference/configuration.html#pagination",
+    "href": "reference/configuration.html#pagination",
+    "title": "Scrape Configuration Reference",
+    "section": "Pagination",
+    "text": "Pagination\nConfigure how PageSieve navigates between pages:\n\nnone: No pagination.\nnext: Navigate using a “Next” button selector.\nlinks: Extract data from a pre-defined list of links.\ntemplate: Generate page URLs based on a template (e.g., page={{page}})."
+  },
+  {
+    "objectID": "examples/index.html",
+    "href": "examples/index.html",
+    "title": "Examples",
+    "section": "",
+    "text": "This section contains practical examples of using PageSieve to extract data from different websites.\n\nScraping Fortune 500 Companies executive team"
+  },
+  {
+    "objectID": "getting-started.html",
+    "href": "getting-started.html",
+    "title": "Getting Started",
+    "section": "",
+    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: pnpm install\nBuild the project: pnpm run build\nLoad the dist/ folder as a temporary extension in your browser."
+  },
+  {
+    "objectID": "getting-started.html#installation",
+    "href": "getting-started.html#installation",
+    "title": "Getting Started",
+    "section": "",
+    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: pnpm install\nBuild the project: pnpm run build\nLoad the dist/ folder as a temporary extension in your browser."
+  },
+  {
+    "objectID": "getting-started.html#basic-usage",
+    "href": "getting-started.html#basic-usage",
+    "title": "Getting Started",
+    "section": "Basic Usage",
+    "text": "Basic Usage\n\nOpen the PageSieve sidebar from your browser’s extension menu.\nDefine Fields: Add field names for the data you want to extract.\nSelect Elements: Use the point-and-click selector to identify the elements on the page.\nPagination: Configure how the extension should navigate to the next page (optional).\nExtract: Click the “Scrape” button to start the process.\nExport: Download your results in JSON, CSV, or other supported formats."
+  },
+  {
+    "objectID": "architecture.html",
+    "href": "architecture.html",
+    "title": "Architecture",
+    "section": "",
+    "text": "PageSieve is designed to be local-first, ergonomic, and reusable. This page provides a high-level overview of the project’s architecture and its core components."
+  },
+  {
+    "objectID": "architecture.html#tech-stack",
+    "href": "architecture.html#tech-stack",
+    "title": "Architecture",
+    "section": "Tech Stack",
+    "text": "Tech Stack\nThe extension is built using:\n\nTypeScript: Ensuring type safety across the codebase.\nSvelte: Used for the sidebar and full-page dashboards.\nVite: The build tool and development server.\nShadcn UI: For building consistent and accessible UI components.\nZod: Defining and validating scrape configurations and other schemas."
+  },
+  {
+    "objectID": "architecture.html#core-components",
+    "href": "architecture.html#core-components",
+    "title": "Architecture",
+    "section": "Core Components",
+    "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration."
+  },
+  {
+    "objectID": "contributing.html",
+    "href": "contributing.html",
+    "title": "Contributing",
+    "section": "",
+    "text": "Contributions are welcome! This page provides information on how to set up the development environment and contribute to PageSieve."
+  },
+  {
+    "objectID": "contributing.html#development-setup",
+    "href": "contributing.html#development-setup",
+    "title": "Contributing",
+    "section": "Development Setup",
+    "text": "Development Setup\n\nClone the repository: git clone https://github.com/julius383/PageSieve.git\nInstall dependencies: pnpm install\nStart the build process: pnpm run dev (for development) or pnpm run build (for production)"
+  },
+  {
+    "objectID": "contributing.html#build-commands",
+    "href": "contributing.html#build-commands",
+    "title": "Contributing",
+    "section": "Build Commands",
+    "text": "Build Commands\n\npnpm run build: Generates the production extension in the dist/ folder.\npnpm run lint: Runs ESLint to check for code quality issues.\npnpm run format: Formats the codebase using Prettier."
+  },
+  {
+    "objectID": "contributing.html#submitting-changes",
+    "href": "contributing.html#submitting-changes",
+    "title": "Contributing",
+    "section": "Submitting Changes",
+    "text": "Submitting Changes\n\nFork the repository.\nCreate a new branch for your changes.\nCommit your changes and push them to your fork.\nSubmit a pull request with a clear description of your changes."
+  },
+  {
+    "objectID": "index.html#key-features",
+    "href": "index.html#key-features",
+    "title": "Welcome to PageSieve",
+    "section": "Key Features",
+    "text": "Key Features\n\nPoint-and-click selection: Easily discover CSS selectors for any element.\nMinimal Sidebar UI: No need to leave your current tab.\nLocal-first: All scraping is performed entirely within your browser.\nReusable Recipes: Save and share your scrape configurations as JSON files."
+  },
+  {
+    "objectID": "index.html#explore-the-docs",
+    "href": "index.html#explore-the-docs",
+    "title": "Welcome to PageSieve",
+    "section": "Explore the Docs",
+    "text": "Explore the Docs\n\nGetting Started\nUI Overview\nArchitecture\nScrape Configuration Reference\nExamples"
+  },
+  {
+    "objectID": "index.html#demo",
+    "href": "index.html#demo",
+    "title": "Welcome to PageSieve",
+    "section": "Demo",
+    "text": "Demo"
+  },
+  {
+    "objectID": "reference/ui.html",
+    "href": "reference/ui.html",
+    "title": "UI Overview",
+    "section": "",
+    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nSelector for container for individual items.\nStart interactive element picker.\nDelete field.\nStart interactive element picker.\nSwitch to array selection for this field.\nResults section.\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nShow results as JSON"
+  },
+  {
+    "objectID": "reference/ui.html#main-view",
+    "href": "reference/ui.html#main-view",
+    "title": "UI Overview",
+    "section": "",
+    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nSelector for container for individual items.\nStart interactive element picker.\nDelete field.\nStart interactive element picker.\nSwitch to array selection for this field.\nResults section.\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nShow results as JSON"
+  },
+  {
+    "objectID": "reference/ui.html#config-view",
+    "href": "reference/ui.html#config-view",
+    "title": "UI Overview",
+    "section": "Config View",
+    "text": "Config View\n\n\n\n\n\n\nScreenshot of Config Tab\n\n\n\n\n\nPagination section. See src/types:PaginationConfig for definition.\nExtraction options section. See src/types:ExtractionOptions for definition.\nMetadata section. See src/types:Metadata for definition.\nVariables section. Not implemented\n\n\n\n\n\nPagination Section\nNone pagination. This is the default.\n\n\n\nScreenshot of none tab of pagination section\n\n\nNext button pagination. Element is triggered with .click() during navigation.\n\n\n\n\n\n\nScreenshot of next button tab of pagination section\n\n\n\n\n\nSelector for next button.\nMaximum number of pages to navigate.\nTest navigation by moving to the next page.\n\n\n\n\nPage links pagination.\n\n\n\n\n\n\nScreenshot of page links tab of pagination section\n\n\n\n\n\nInput for links to navigate to. One per line\nTest navigation by moving to the next page.\n\n\n\n\nURL template pagination.\n\n\n\n\n\n\nScreenshot of URL template tab of pagination section\n\n\n\n\n\nInput for URL template. The template is used to create the URL for the next page.\nStart page number\nIncrement\nMaximum number of pages to scrape"
+  },
+  {
+    "objectID": "reference/ui.html#library-view",
+    "href": "reference/ui.html#library-view",
+    "title": "UI Overview",
+    "section": "Library View",
+    "text": "Library View\n\n\n\n\n\n\nScreenshot of Library Tab\n\n\n\n\n\nRename saved configuration.\nDelete saved configuration.\nShow JSON configuration\nLoad configuration into sidebar"
+  },
+  {
+    "objectID": "reference/ui.html#fullpage-results",
+    "href": "reference/ui.html#fullpage-results",
+    "title": "UI Overview",
+    "section": "Fullpage Results",
+    "text": "Fullpage Results\n\n\n\n\n\n\nScreenshot of Fullpage results\n\n\n\n\n\nResults tab\nLogs tab\nJSON data tab\nDownload results data in different formats\nCopy results data in different formats"
+  },
+  {
+    "objectID": "examples/scraping-fortune-500-companies.html",
+    "href": "examples/scraping-fortune-500-companies.html",
+    "title": "Scraping Fortune 500 companies executive team",
+    "section": "",
+    "text": "In this example we’ll be scraping data for Fortune 500 companies from 50Pros. More specifically we’ll be scraping the executive teams for all the companies.\n\n\n\n50Pros Fortune 500\n\n\nThe first step is taking a look at the website to figure out the layout and identifying the information we want to obtain.\nFor this website the executive team for each company is revealed when the company row is clicked. We can do this by running the following snippet in the browser console\ndocument.querySelectorAll('.group').forEach((el) =&gt; {el.click();})\nThe final config is the following:\n{\n  id: \"50pros.com__fortune500__ad270a6e\",\n  createdAt: \"2026-03-21T13:19:22.112Z\",\n  updatedAt: \"2026-03-21T13:19:22.112Z\",\n  config: {\n    metadata: {\n      id: \"50pros.com__fortune500__ad270a6e\",\n      url: \"https://www.50pros.com/fortune500\",\n      version: \"1.0.0\",\n    },\n    selectors: [\n      {\n        id: 1,\n        container: \"td[colspan=\\\"9\\\"] .grid &gt; div\",\n        fields: [\n          {\n            id: 1,\n            name: \"Role\",\n            selector: \".font-bold\",\n            type: \"single\",\n          }, {\n            id: 2,\n            name: \"Person Name\",\n            selector: \" div .text-sm\",\n            type: \"single\",\n          }, {\n            id: 3,\n            name: \"Position Name\",\n            selector: \" div .text-xs\",\n            type: \"single\",\n          }, {\n            id: 4,\n            name: \"Company Name\",\n            selector: \"../../../../preceding-sibling::tr[1]/td[2]/a/text()\",\n            type: \"single\",\n          }\n        ],\n      }\n    ],\n    options: {\n      waitforNetworkIdle: true,\n      scrollToBottom: false,\n      runJavaScript: true,\n      delayMs: 3000,\n      timeoutMs: 60000,\n      appendData: true,\n    },\n    pagination: {\n      mode: \"none\",\n    },\n  },\n}\nWe define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.\nThe “Company Name” (lines 32-35) field requires special attention. Since We have defined a container element, we need to figure out how to reference the Company which is not within the container we defined. To do this we use an XPath selector instead of a CSS selector due to it allowing for referring to elements in a different part of the document tree.\nWe use a relative axis to go ‘up’ in the tree before using preceding-sibling which selects siblings of the current node withing the same parent. In our particular case we find the first tr element that before the current node after navigating up in the tree.\nThe first 20 items of the resulting data are:\n\n\n\n\n\n\n\n\n\nRole\nPerson Name\nPosition Name\nCompany Name\n\n\n\n\nCEO\nAndrew Jassy\nChief Executive Officer\nAmazon\n\n\nCFO\nBrian T. Olsavsky\nChief Financial Officer\nAmazon\n\n\nCMO\nAllie Oosta\nChief Marketing Officer, Amazon Fashion\nAmazon\n\n\nCIO\nKen Macfarlane\nCIO, Project Kuiper\nAmazon\n\n\nHR\nBeth Galetti\nSVP, People experience and Technology\nAmazon\n\n\nBusiness Dev\nSean Harris\nDirector, Business Development\nAmazon\n\n\nCommunications\nDrew Herdener\nSenior Vice President, Global Communications & Community Impact\nAmazon\n\n\nCEO\nJohn Furner\nPresident & CEO\nWalmart\n\n\nCFO\nBrett Biggs\nExecutive Vice President and Chief Financial Officer\nWalmart\n\n\nCMO\nWilliam White\nChief Marketing Officer\nWalmart\n\n\nCIO\nJerry R. Geisler Iii\nSenior Vice President and Chief Information Security Officer\nWalmart\n\n\nHR\nDonna Morris\nExecutive Vice President, Chief People Officer\nWalmart\n\n\nBusiness Dev\nAmit Patel\nVice President of Business Development and Strategic Partnerships\nWalmart\n\n\nCommunications\nAllyson Park\nChief Communications Officer\nWalmart\n\n\nCEO\nStephen Hemsley\n–\nUnitedHealth\n\n\nCFO\nJohn Rex\nExecutive Vice President and Chief Financial Officer\nUnitedHealth\n\n\nCMO\nTerry M. Clark\nChief Marketing Officer\nUnitedHealth\n\n\nCIO\nTed Bredikin\nCIO\nUnitedHealth\n\n\nHR\nErin Mcsweeney\nExecutive Vice President and Chief People Officer\nUnitedHealth\n\n\nBusiness Dev\nYasmin Dharamsi\nVice President Of Business Development\nUnitedHealth"
+  }
+]

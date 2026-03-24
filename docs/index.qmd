@@ -1,0 +1,25 @@
+---
+title: "Welcome to PageSieve"
+---
+
+PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS/XPath selectors to extract structured data from any website you visit.
+
+
+## Demo
+
+{{< video /assets/PageSieve-DemoVideo1.mp4  >}}
+
+## Key Features
+
+- **Point-and-click selection**: Easily discover CSS selectors for any element.
+- **Minimal Sidebar UI**: No need to leave your current tab.
+- **Local-first**: All scraping is performed entirely within your browser.
+- **Reusable Recipes**: Save and share your scrape configurations as JSON files.
+
+## Explore the Docs
+
+- [Getting Started](getting-started.qmd)
+- [UI Overview](reference/ui.md)
+- [Architecture](architecture.qmd)
+- [Scrape Configuration Reference](reference/configuration.qmd)
+- [Examples](examples/index.qmd)

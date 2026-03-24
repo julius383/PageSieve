@@ -1,0 +1,7 @@
+---
+title: "Examples"
+---
+
+This section contains practical examples of using PageSieve to extract data from different websites.
+
+- [Scraping Fortune 500 Companies executive team](scraping-fortune-500-companies.qmd)

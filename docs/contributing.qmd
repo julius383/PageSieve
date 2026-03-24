@@ -1,0 +1,24 @@
+---
+title: "Contributing"
+---
+
+Contributions are welcome! This page provides information on how to set up the development environment and contribute to PageSieve.
+
+## Development Setup
+
+1. Clone the repository: `git clone https://github.com/julius383/PageSieve.git`
+2. Install dependencies: `pnpm install`
+3. Start the build process: `pnpm run dev` (for development) or `pnpm run build` (for production)
+
+## Build Commands
+
+- `pnpm run build`: Generates the production extension in the `dist/` folder.
+- `pnpm run lint`: Runs ESLint to check for code quality issues.
+- `pnpm run format`: Formats the codebase using Prettier.
+
+## Submitting Changes
+
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Commit your changes and push them to your fork.
+4. Submit a pull request with a clear description of your changes.

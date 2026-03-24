@@ -1,0 +1,52 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "PageSieve"
+  favicon: "assets/logo.png"
+  twitter-card: true
+  open-graph:
+    title: "PageSieve Documentation"
+    description: "Documentation website for PageSieve a web scraping browser extension."
+  site-url: https://github.com/julius383/PageSieve
+  repo-url: https://github.com/julius383/PageSieve
+  repo-actions: [edit, source, issue]
+  navbar:
+    tools:
+        - icon: github
+          menu:
+            - text: Source Code
+              href:  https://github.com/julius383/PageSieve
+            - text: Report a Bug
+              href:  https://github.com/julius383/PageSieve/issues
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: getting-started.qmd
+        text: Getting Started
+      - href: architecture.qmd
+        text: Architecture
+      - text: Reference
+        menu:
+          - href: reference/configuration.qmd
+            text: Scrape Configuration
+          - href: reference/ui.qmd
+            text: UI Overview
+      - text: Examples
+        menu:
+          - href: examples/index.qmd
+            text: All Examples
+          - href: examples/scraping-fortune-500-companies.qmd
+            text: Fortune 500
+      - href: contributing.qmd
+        text: Contributing
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    respect-user-color-scheme: true
+    css: styles.css
+    toc: true

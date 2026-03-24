@@ -1,0 +1,25 @@
+---
+title: "Getting Started"
+---
+
+## Installation
+
+You can install PageSieve from the [Mozilla Add-on Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/) or by downloading the latest release from [GitHub](https://github.com/julius383/PageSieve/releases).
+
+### Development Build
+
+To build the extension from source:
+
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Build the project: `pnpm run build`
+4. Load the `dist/` folder as a temporary extension in your browser.
+
+## Basic Usage
+
+1. Open the PageSieve sidebar from your browser's extension menu.
+2. **Define Fields**: Add field names for the data you want to extract.
+3. **Select Elements**: Use the point-and-click selector to identify the elements on the page.
+4. **Pagination**: Configure how the extension should navigate to the next page (optional).
+5. **Extract**: Click the "Scrape" button to start the process.
+6. **Export**: Download your results in JSON, CSV, or other supported formats.

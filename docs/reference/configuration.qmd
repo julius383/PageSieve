@@ -1,0 +1,47 @@
+---
+title: "Scrape Configuration Reference"
+---
+
+The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in `src/types.ts`.
+
+## Metadata
+
+The metadata section provides information about the configuration itself:
+
+- `id`: Unique identifier for the configuration.
+- `description`: Optional description of what the configuration does.
+- `url`: The target URL for this configuration.
+- `version`: Version number for the configuration.
+- `author`: Optional author name.
+
+## Extraction Options
+
+Customize how the extraction process behaves:
+
+- `waitforNetworkIdle`: Whether to wait for network activity to stop before starting extraction.
+- `scrollToBottom`: Whether to scroll to the bottom of the page before extraction.
+- `runJavaScript`: Whether to execute JavaScript on the page.
+- `delayMs`: Delay in milliseconds before extraction starts.
+- `timeoutMs`: Maximum time in milliseconds to wait for extraction to finish.
+- `appendData`: Whether to append new data to existing results or start fresh.
+
+## Selectors
+
+Selectors define the data fields to extract:
+
+- `id`: Unique ID for the selector.
+- `name`: The field name used in the exported data.
+- `selector`: The CSS or XPath selector for the element.
+- `type`: Either `single` or `array` for multiple matches.
+- `description`: Optional field description.
+
+Selectors can be grouped using `SelectorGroup`, which can also specify a `container` selector to scope its fields.
+
+## Pagination
+
+Configure how PageSieve navigates between pages:
+
+- **`none`**: No pagination.
+- **`next`**: Navigate using a "Next" button selector.
+- **`links`**: Extract data from a pre-defined list of links.
+- **`template`**: Generate page URLs based on a template (e.g., `page={{page}}`).
