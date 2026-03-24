@@ -147,8 +147,12 @@ function xpathQuerySelector(xpath: string, context: Element | Document = documen
         .singleNodeValue;
 }
 
+function isXPath(selector: string): boolean {
+    return selector.startsWith('./') || selector.startsWith('//') || selector.startsWith('../');
+}
+
 function pickSelectorFunction(selector: string, type = 'single') {
-    if (selector.startsWith('./') || selector.startsWith('//')) {
+    if (isXPath(selector)) {
         // selector is xpath
         if (type === 'single') {
             return (ctx: Element | Document) => {
@@ -203,7 +207,7 @@ function extractDataFromPage(
     selectors.forEach(({ id, container, fields }) => {
         if (container) {
             let containerItems;
-            if (container.startsWith('./') || container.startsWith('//')) {
+            if (isXPath(container)) {
                 containerItems = xpathQuerySelectorAll(container);
             } else {
                 containerItems = document.querySelectorAll(container);
