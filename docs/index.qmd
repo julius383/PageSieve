@@ -7,7 +7,7 @@ PageSieve is a browser extension for declarative web scraping. It allows you to 
 
 ## Demo
 
-{{< video /assets/PageSieve-DemoVideo1.mp4  >}}
+{{< video /assets/PageSieve-DemoVideo1.mp4  width="400" height="300" >}}
 
 ## Key Features
 
