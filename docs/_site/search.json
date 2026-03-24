@@ -1,26 +1,5 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Welcome to PageSieve",
-    "section": "",
-    "text": "PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS/XPath selectors to extract structured data from any website you visit."
-  },
-  {
-    "objectID": "index.html#a-web-browser-web-extension",
-    "href": "index.html#a-web-browser-web-extension",
-    "title": "Welcome to PageSieve",
-    "section": "",
-    "text": "PageSieve is a browser extension for declarative web scraping, define field names and CSS/XPath selectors and extract data from websites"
-  },
-  {
     "objectID": "reference/configuration.html",
     "href": "reference/configuration.html",
     "title": "Scrape Configuration Reference",
@@ -56,11 +35,32 @@
     "text": "Pagination\nConfigure how PageSieve navigates between pages:\n\nnone: No pagination.\nnext: Navigate using a “Next” button selector.\nlinks: Extract data from a pre-defined list of links.\ntemplate: Generate page URLs based on a template (e.g., page={{page}})."
   },
   {
-    "objectID": "examples/index.html",
-    "href": "examples/index.html",
-    "title": "Examples",
+    "objectID": "examples/scraping-fortune-500-companies.html",
+    "href": "examples/scraping-fortune-500-companies.html",
+    "title": "Scraping Fortune 500 companies executive team",
     "section": "",
-    "text": "This section contains practical examples of using PageSieve to extract data from different websites.\n\nScraping Fortune 500 Companies executive team"
+    "text": "In this example we’ll be scraping data for Fortune 500 companies from 50Pros. More specifically we’ll be scraping the executive teams for all the companies.\n\n\n\n50Pros Fortune 500\n\n\nThe first step is taking a look at the website to figure out the layout and identifying the information we want to obtain.\nFor this website the executive team for each company is revealed when the company row is clicked. We can do this by running the following snippet in the browser console\ndocument.querySelectorAll('.group').forEach((el) =&gt; {el.click();})\nThe final config is the following:\n{\n  id: \"50pros.com__fortune500__ad270a6e\",\n  createdAt: \"2026-03-21T13:19:22.112Z\",\n  updatedAt: \"2026-03-21T13:19:22.112Z\",\n  config: {\n    metadata: {\n      id: \"50pros.com__fortune500__ad270a6e\",\n      url: \"https://www.50pros.com/fortune500\",\n      version: \"1.0.0\",\n    },\n    selectors: [\n      {\n        id: 1,\n        container: \"td[colspan=\\\"9\\\"] .grid &gt; div\",\n        fields: [\n          {\n            id: 1,\n            name: \"Role\",\n            selector: \".font-bold\",\n            type: \"single\",\n          }, {\n            id: 2,\n            name: \"Person Name\",\n            selector: \" div .text-sm\",\n            type: \"single\",\n          }, {\n            id: 3,\n            name: \"Position Name\",\n            selector: \" div .text-xs\",\n            type: \"single\",\n          }, {\n            id: 4,\n            name: \"Company Name\",\n            selector: \"../../../../preceding-sibling::tr[1]/td[2]/a/text()\",\n            type: \"single\",\n          }\n        ],\n      }\n    ],\n    options: {\n      waitforNetworkIdle: true,\n      scrollToBottom: false,\n      runJavaScript: true,\n      delayMs: 3000,\n      timeoutMs: 60000,\n      appendData: true,\n    },\n    pagination: {\n      mode: \"none\",\n    },\n  },\n}\nWe define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.\nThe “Company Name” (lines 32-35) field requires special attention. Since We have defined a container element, we need to figure out how to reference the Company which is not within the container we defined. To do this we use an XPath selector instead of a CSS selector due to it allowing for referring to elements in a different part of the document tree.\nWe use a relative axis to go ‘up’ in the tree before using preceding-sibling which selects siblings of the current node withing the same parent. In our particular case we find the first tr element that before the current node after navigating up in the tree.\nThe first 20 items of the resulting data are:\n\n\n\n\n\n\n\n\n\nRole\nPerson Name\nPosition Name\nCompany Name\n\n\n\n\nCEO\nAndrew Jassy\nChief Executive Officer\nAmazon\n\n\nCFO\nBrian T. Olsavsky\nChief Financial Officer\nAmazon\n\n\nCMO\nAllie Oosta\nChief Marketing Officer, Amazon Fashion\nAmazon\n\n\nCIO\nKen Macfarlane\nCIO, Project Kuiper\nAmazon\n\n\nHR\nBeth Galetti\nSVP, People experience and Technology\nAmazon\n\n\nBusiness Dev\nSean Harris\nDirector, Business Development\nAmazon\n\n\nCommunications\nDrew Herdener\nSenior Vice President, Global Communications & Community Impact\nAmazon\n\n\nCEO\nJohn Furner\nPresident & CEO\nWalmart\n\n\nCFO\nBrett Biggs\nExecutive Vice President and Chief Financial Officer\nWalmart\n\n\nCMO\nWilliam White\nChief Marketing Officer\nWalmart\n\n\nCIO\nJerry R. Geisler Iii\nSenior Vice President and Chief Information Security Officer\nWalmart\n\n\nHR\nDonna Morris\nExecutive Vice President, Chief People Officer\nWalmart\n\n\nBusiness Dev\nAmit Patel\nVice President of Business Development and Strategic Partnerships\nWalmart\n\n\nCommunications\nAllyson Park\nChief Communications Officer\nWalmart\n\n\nCEO\nStephen Hemsley\n–\nUnitedHealth\n\n\nCFO\nJohn Rex\nExecutive Vice President and Chief Financial Officer\nUnitedHealth\n\n\nCMO\nTerry M. Clark\nChief Marketing Officer\nUnitedHealth\n\n\nCIO\nTed Bredikin\nCIO\nUnitedHealth\n\n\nHR\nErin Mcsweeney\nExecutive Vice President and Chief People Officer\nUnitedHealth\n\n\nBusiness Dev\nYasmin Dharamsi\nVice President Of Business Development\nUnitedHealth"
+  },
+  {
+    "objectID": "architecture.html",
+    "href": "architecture.html",
+    "title": "Architecture",
+    "section": "",
+    "text": "PageSieve is designed to be local-first, ergonomic, and reusable. This page provides a high-level overview of the project’s architecture and its core components."
+  },
+  {
+    "objectID": "architecture.html#tech-stack",
+    "href": "architecture.html#tech-stack",
+    "title": "Architecture",
+    "section": "Tech Stack",
+    "text": "Tech Stack\nThe extension is built using:\n\nTypeScript: Ensuring type safety across the codebase.\nSvelte: Used for the sidebar and full-page dashboards.\nVite: The build tool and development server.\nShadcn UI: For building consistent and accessible UI components.\nZod: Defining and validating scrape configurations and other schemas."
+  },
+  {
+    "objectID": "architecture.html#core-components",
+    "href": "architecture.html#core-components",
+    "title": "Architecture",
+    "section": "Core Components",
+    "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration."
   },
   {
     "objectID": "getting-started.html",
@@ -84,25 +84,32 @@
     "text": "Basic Usage\n\nOpen the PageSieve sidebar from your browser’s extension menu.\nDefine Fields: Add field names for the data you want to extract.\nSelect Elements: Use the point-and-click selector to identify the elements on the page.\nPagination: Configure how the extension should navigate to the next page (optional).\nExtract: Click the “Scrape” button to start the process.\nExport: Download your results in JSON, CSV, or other supported formats."
   },
   {
-    "objectID": "architecture.html",
-    "href": "architecture.html",
-    "title": "Architecture",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome to PageSieve",
     "section": "",
-    "text": "PageSieve is designed to be local-first, ergonomic, and reusable. This page provides a high-level overview of the project’s architecture and its core components."
+    "text": "PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS/XPath selectors to extract structured data from any website you visit."
   },
   {
-    "objectID": "architecture.html#tech-stack",
-    "href": "architecture.html#tech-stack",
-    "title": "Architecture",
-    "section": "Tech Stack",
-    "text": "Tech Stack\nThe extension is built using:\n\nTypeScript: Ensuring type safety across the codebase.\nSvelte: Used for the sidebar and full-page dashboards.\nVite: The build tool and development server.\nShadcn UI: For building consistent and accessible UI components.\nZod: Defining and validating scrape configurations and other schemas."
+    "objectID": "index.html#demo",
+    "href": "index.html#demo",
+    "title": "Welcome to PageSieve",
+    "section": "Demo",
+    "text": "Demo"
   },
   {
-    "objectID": "architecture.html#core-components",
-    "href": "architecture.html#core-components",
-    "title": "Architecture",
-    "section": "Core Components",
-    "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration."
+    "objectID": "index.html#key-features",
+    "href": "index.html#key-features",
+    "title": "Welcome to PageSieve",
+    "section": "Key Features",
+    "text": "Key Features\n\nPoint-and-click selection: Easily discover CSS selectors for any element.\nMinimal Sidebar UI: No need to leave your current tab.\nLocal-first: All scraping is performed entirely within your browser.\nReusable Recipes: Save and share your scrape configurations as JSON files."
+  },
+  {
+    "objectID": "index.html#explore-the-docs",
+    "href": "index.html#explore-the-docs",
+    "title": "Welcome to PageSieve",
+    "section": "Explore the Docs",
+    "text": "Explore the Docs\n\nGetting Started\nUI Overview\nArchitecture\nScrape Configuration Reference\nExamples"
   },
   {
     "objectID": "contributing.html",
@@ -133,25 +140,11 @@
     "text": "Submitting Changes\n\nFork the repository.\nCreate a new branch for your changes.\nCommit your changes and push them to your fork.\nSubmit a pull request with a clear description of your changes."
   },
   {
-    "objectID": "index.html#key-features",
-    "href": "index.html#key-features",
-    "title": "Welcome to PageSieve",
-    "section": "Key Features",
-    "text": "Key Features\n\nPoint-and-click selection: Easily discover CSS selectors for any element.\nMinimal Sidebar UI: No need to leave your current tab.\nLocal-first: All scraping is performed entirely within your browser.\nReusable Recipes: Save and share your scrape configurations as JSON files."
-  },
-  {
-    "objectID": "index.html#explore-the-docs",
-    "href": "index.html#explore-the-docs",
-    "title": "Welcome to PageSieve",
-    "section": "Explore the Docs",
-    "text": "Explore the Docs\n\nGetting Started\nUI Overview\nArchitecture\nScrape Configuration Reference\nExamples"
-  },
-  {
-    "objectID": "index.html#demo",
-    "href": "index.html#demo",
-    "title": "Welcome to PageSieve",
-    "section": "Demo",
-    "text": "Demo"
+    "objectID": "examples/index.html",
+    "href": "examples/index.html",
+    "title": "Examples",
+    "section": "",
+    "text": "This section contains practical examples of using PageSieve to extract data from different websites.\n\nScraping Fortune 500 Companies executive team"
   },
   {
     "objectID": "reference/ui.html",
@@ -187,12 +180,5 @@
     "title": "UI Overview",
     "section": "Fullpage Results",
     "text": "Fullpage Results\n\n\n\n\n\n\nScreenshot of Fullpage results\n\n\n\n\n\nResults tab\nLogs tab\nJSON data tab\nDownload results data in different formats\nCopy results data in different formats"
-  },
-  {
-    "objectID": "examples/scraping-fortune-500-companies.html",
-    "href": "examples/scraping-fortune-500-companies.html",
-    "title": "Scraping Fortune 500 companies executive team",
-    "section": "",
-    "text": "In this example we’ll be scraping data for Fortune 500 companies from 50Pros. More specifically we’ll be scraping the executive teams for all the companies.\n\n\n\n50Pros Fortune 500\n\n\nThe first step is taking a look at the website to figure out the layout and identifying the information we want to obtain.\nFor this website the executive team for each company is revealed when the company row is clicked. We can do this by running the following snippet in the browser console\ndocument.querySelectorAll('.group').forEach((el) =&gt; {el.click();})\nThe final config is the following:\n{\n  id: \"50pros.com__fortune500__ad270a6e\",\n  createdAt: \"2026-03-21T13:19:22.112Z\",\n  updatedAt: \"2026-03-21T13:19:22.112Z\",\n  config: {\n    metadata: {\n      id: \"50pros.com__fortune500__ad270a6e\",\n      url: \"https://www.50pros.com/fortune500\",\n      version: \"1.0.0\",\n    },\n    selectors: [\n      {\n        id: 1,\n        container: \"td[colspan=\\\"9\\\"] .grid &gt; div\",\n        fields: [\n          {\n            id: 1,\n            name: \"Role\",\n            selector: \".font-bold\",\n            type: \"single\",\n          }, {\n            id: 2,\n            name: \"Person Name\",\n            selector: \" div .text-sm\",\n            type: \"single\",\n          }, {\n            id: 3,\n            name: \"Position Name\",\n            selector: \" div .text-xs\",\n            type: \"single\",\n          }, {\n            id: 4,\n            name: \"Company Name\",\n            selector: \"../../../../preceding-sibling::tr[1]/td[2]/a/text()\",\n            type: \"single\",\n          }\n        ],\n      }\n    ],\n    options: {\n      waitforNetworkIdle: true,\n      scrollToBottom: false,\n      runJavaScript: true,\n      delayMs: 3000,\n      timeoutMs: 60000,\n      appendData: true,\n    },\n    pagination: {\n      mode: \"none\",\n    },\n  },\n}\nWe define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.\nThe “Company Name” (lines 32-35) field requires special attention. Since We have defined a container element, we need to figure out how to reference the Company which is not within the container we defined. To do this we use an XPath selector instead of a CSS selector due to it allowing for referring to elements in a different part of the document tree.\nWe use a relative axis to go ‘up’ in the tree before using preceding-sibling which selects siblings of the current node withing the same parent. In our particular case we find the first tr element that before the current node after navigating up in the tree.\nThe first 20 items of the resulting data are:\n\n\n\n\n\n\n\n\n\nRole\nPerson Name\nPosition Name\nCompany Name\n\n\n\n\nCEO\nAndrew Jassy\nChief Executive Officer\nAmazon\n\n\nCFO\nBrian T. Olsavsky\nChief Financial Officer\nAmazon\n\n\nCMO\nAllie Oosta\nChief Marketing Officer, Amazon Fashion\nAmazon\n\n\nCIO\nKen Macfarlane\nCIO, Project Kuiper\nAmazon\n\n\nHR\nBeth Galetti\nSVP, People experience and Technology\nAmazon\n\n\nBusiness Dev\nSean Harris\nDirector, Business Development\nAmazon\n\n\nCommunications\nDrew Herdener\nSenior Vice President, Global Communications & Community Impact\nAmazon\n\n\nCEO\nJohn Furner\nPresident & CEO\nWalmart\n\n\nCFO\nBrett Biggs\nExecutive Vice President and Chief Financial Officer\nWalmart\n\n\nCMO\nWilliam White\nChief Marketing Officer\nWalmart\n\n\nCIO\nJerry R. Geisler Iii\nSenior Vice President and Chief Information Security Officer\nWalmart\n\n\nHR\nDonna Morris\nExecutive Vice President, Chief People Officer\nWalmart\n\n\nBusiness Dev\nAmit Patel\nVice President of Business Development and Strategic Partnerships\nWalmart\n\n\nCommunications\nAllyson Park\nChief Communications Officer\nWalmart\n\n\nCEO\nStephen Hemsley\n–\nUnitedHealth\n\n\nCFO\nJohn Rex\nExecutive Vice President and Chief Financial Officer\nUnitedHealth\n\n\nCMO\nTerry M. Clark\nChief Marketing Officer\nUnitedHealth\n\n\nCIO\nTed Bredikin\nCIO\nUnitedHealth\n\n\nHR\nErin Mcsweeney\nExecutive Vice President and Chief People Officer\nUnitedHealth\n\n\nBusiness Dev\nYasmin Dharamsi\nVice President Of Business Development\nUnitedHealth"
   }
 ]

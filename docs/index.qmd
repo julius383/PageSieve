@@ -19,7 +19,7 @@ PageSieve is a browser extension for declarative web scraping. It allows you to 
 ## Explore the Docs
 
 - [Getting Started](getting-started.qmd)
-- [UI Overview](reference/ui.md)
+- [UI Overview](reference/ui.qmd)
 - [Architecture](architecture.qmd)
 - [Scrape Configuration Reference](reference/configuration.qmd)
 - [Examples](examples/index.qmd)

@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/julius383/PageSieve/index.html</loc>
-    <lastmod>2026-03-24T10:36:12.348Z</lastmod>
+    <loc>https://github.com/julius383/PageSieve/reference/configuration.html</loc>
+    <lastmod>2026-03-24T09:02:34.897Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/getting-started.html</loc>
-    <lastmod>2026-03-24T08:46:09.090Z</lastmod>
+    <loc>https://github.com/julius383/PageSieve/examples/scraping-fortune-500-companies.html</loc>
+    <lastmod>2026-03-24T16:20:52.088Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/julius383/PageSieve/architecture.html</loc>
     <lastmod>2026-03-24T12:26:38.392Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/reference/configuration.html</loc>
-    <lastmod>2026-03-24T09:02:34.897Z</lastmod>
+    <loc>https://github.com/julius383/PageSieve/getting-started.html</loc>
+    <lastmod>2026-03-24T08:46:09.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/julius383/PageSieve/index.html</loc>
+    <lastmod>2026-03-24T16:43:17.223Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/julius383/PageSieve/contributing.html</loc>
+    <lastmod>2026-03-24T08:52:20.363Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/julius383/PageSieve/examples/index.html</loc>
+    <lastmod>2026-03-24T16:18:31.911Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/julius383/PageSieve/reference/ui.html</loc>
