@@ -1,6 +1,6 @@
 <div align="center">
   <img align="center" src="/public/icons/icon128.png" >
-  <h1>PageSieve</h1>
+  <h1><a href="https://julius383.github.io/PageSieve/">PageSieve</a></h1>
 </div>
 
 
