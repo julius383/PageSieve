@@ -26,17 +26,33 @@ export function getActiveGroup() {
     return scrapeConfig.selectors.find((element) => element.id == activeGroup);
 }
 
-export function addDefinition() {
-    const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
+export function addGroup() {
+    const lastID = scrapeConfig.selectors[scrapeConfig.selectors.length - 1].id;
+    const newGroup = {
+        id: lastID + 1,
+        fields: [{ id: 1, name: '', selector: '', type: 'single' }],
+    };
+    scrapeConfig.selectors.push(newGroup as SelectorGroup);
+}
+
+export function removeGroup(groupID: number) {
+    const groupIdx = scrapeConfig.selectors.findIndex((element) => element.id == groupID);
+    if (groupIdx != -1) {
+        scrapeConfig.selectors.splice(groupIdx, 1);
+    }
+}
+
+export function addDefinition(groupID: number = activeGroup) {
+    const group = scrapeConfig.selectors.find((element) => element.id == groupID);
     if (group) {
         group.fields.push({ id: nextSelectorId++, name: '', selector: '', type: 'single' });
     }
 }
 
-export function removeDefinition(id: number) {
-    const group = scrapeConfig.selectors.find((element) => element.id == activeGroup);
+export function removeDefinition(selectorId: number, groupId: number = activeGroup) {
+    const group = scrapeConfig.selectors.find((element) => element.id == groupId);
     if (group) {
-        const index = group.fields.findIndex((element) => element.id === id);
+        const index = group.fields.findIndex((element) => element.id === selectorId);
         group.fields.splice(index, 1);
 
         updateIds(group);

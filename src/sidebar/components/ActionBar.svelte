@@ -1,12 +1,13 @@
 <script lang="ts">
-    import { scrapeConfig, resetDefinitions } from '../stores/scrapeConfig.svelte';
+    import { scrapeConfig, resetDefinitions, addGroup } from '../stores/scrapeConfig.svelte';
     import { runConfig, importConfig, exportConfig, saveConfig } from '../actions';
     import { refreshConfigs, extensionStatus, setStatus } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 
-    import { Upload, Download, Play, Square, Save, ListRestart } from '@lucide/svelte';
+    import { Upload, Download, Play, Square, Save, ListRestart, SquarePlus, EllipsisVertical } from '@lucide/svelte';
 
     function triggerLoad() {
         let fileinput = document.getElementById('import-config');
@@ -58,7 +59,7 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={handleSave}>
+                <Button size="icon" variant="ghost" onclick={handleSave} class="hover:bg-gray-100">
                     <Save class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>
@@ -77,7 +78,7 @@
                         hidden
                         onchange={importConfig}
                     />
-                    <Button size="icon" variant="ghost" onclick={triggerLoad}>
+                    <Button size="icon" variant="ghost" onclick={triggerLoad} class="hover:bg-gray-100">
                         <Upload class="size-4" strokeWidth={2.5} color="#fff" />
                     </Button>
                 </div>
@@ -89,7 +90,7 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
-                <Button size="icon" variant="ghost" onclick={() => exportConfig(scrapeConfig)}>
+                <Button size="icon" variant="ghost" onclick={() => exportConfig(scrapeConfig)} class="hover:bg-gray-100">
                     <Download class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
             </Tooltip.Trigger>
@@ -100,6 +101,40 @@
     <Tooltip.Provider>
         <Tooltip.Root>
             <Tooltip.Trigger>
+                <Button size="icon" variant="ghost" onclick={addGroup} class="hover:bg-gray-100">
+                    <SquarePlus class="size-4" strokeWidth={2.5} color="#fff" />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>Add Selector Group</Tooltip.Content>
+        </Tooltip.Root>
+    </Tooltip.Provider>
+
+    <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+            <Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button size="icon" variant="ghost" onclick={() => true} class="hover:bg-gray-100">
+                            <EllipsisVertical class="size-4" strokeWidth={2.5} color="#fff" />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>More actions</Tooltip.Content>
+                </Tooltip.Root>
+            </Tooltip.Provider>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content class="w-56" align="start">
+            <div class="bg-background">
+                <DropdownMenu.Item onclick={resetDefinitions}>
+                    Reset selectors
+                </DropdownMenu.Item>
+            </div>
+        </DropdownMenu.Content>
+    </DropdownMenu.Root>
+
+    <!--
+    <Tooltip.Provider>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
                 <Button size="icon" variant="destructive" onclick={resetDefinitions}>
                     <ListRestart class="size-4" strokeWidth={2.5} color="#fff" />
                 </Button>
@@ -107,4 +142,5 @@
             <Tooltip.Content>Reset selectors</Tooltip.Content>
         </Tooltip.Root>
     </Tooltip.Provider>
+     -->
 </div>
