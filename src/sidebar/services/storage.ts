@@ -22,7 +22,7 @@ export async function saveResults(results: unknown[]): Promise<void> {
     await resultsStore.setItem('latest', results);
 }
 
-export async function getLatestResults(): Promise<unknown[] | null> {
+export async function getLatestResults(): Promise<{ id: number; results: unknown[] }[] | null> {
     const results = await resultsStore.getItem('latest');
     return Array.isArray(results) ? results : null;
 }

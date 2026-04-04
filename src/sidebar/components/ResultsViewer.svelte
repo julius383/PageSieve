@@ -3,8 +3,16 @@
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-    import { Download, SquareX, ExternalLink, ClipboardCopy } from '@lucide/svelte';
+    import {
+        Download,
+        SquareX,
+        ExternalLink,
+        ClipboardCopy,
+        ChevronDown,
+        ChevronUp,
+    } from '@lucide/svelte';
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
+    import * as Accordion from '$lib/components/ui/accordion/index.js';
     import DataTable from './DataTable.svelte';
 
     import { downloadCSV, downloadJSON, clipboardCopy } from '../util';
@@ -20,21 +28,30 @@
         if (openInNewTab) {
             const results = await getLatestResults();
             if (results) {
-                extractedData.data[0].results = results;
+                extractedData.data = results;
             }
         }
     });
 
-    // FIXME: handle multiple items in extractedData
-    const dataColumns = $derived.by(() => {
-        return extractedData.data[0]?.results?.length > 0
-            ? Object.keys(extractedData.data[0].results[0])
-            : [];
-    });
+    const totalResults = $derived(
+        extractedData.data.reduce((sum, group) => sum + group.results.length, 0),
+    );
+
+    let openGroups = $state<string[]>(extractedData.data.map((g) => g.id.toString()));
+
+    function toggleGroup(id: string) {
+        if (openGroups.includes(id)) {
+            openGroups = openGroups.filter((g) => g !== id);
+        } else {
+            openGroups = [...openGroups, id];
+        }
+    }
 
     async function showInNewTab() {
         await saveLogs($logs);
-        await saveResults(extractedData.data[0].results);
+        // For simplicity, we save the first group's results or combine them if needed
+        // For now, let's just save the first one to match existing behavior
+        await saveResults(extractedData.data || []);
         await browser.runtime.sendMessage({ action: 'openFullPage' });
     }
 </script>
@@ -42,8 +59,8 @@
 <div class="space-y-4">
     <hr />
     <h2 class="text-2xl font-bold">
-        Results {#if extractedData.data[0]?.results?.length > 0}
-            ({extractedData.data[0].results.length})
+        Results {#if totalResults > 0}
+            ({totalResults})
         {/if}
     </h2>
 </div>
@@ -68,11 +85,11 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0].results)}
-                        >Download CSV</DropdownMenu.Item
+                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0]?.results)}
+                        >Download CSV (Group 1)</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data[0].results)}
-                        >Download JSON</DropdownMenu.Item
+                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
+                        >Download JSON (All)</DropdownMenu.Item
                     >
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -91,20 +108,19 @@
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
                     <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0].results, 'csv')}
-                        >Copy CSV</DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'csv')}
+                        >Copy CSV (Group 1)</DropdownMenu.Item
+                    >
+                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
+                        >Copy JSON (All)</DropdownMenu.Item
                     >
                     <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0].results, 'json')}
-                        >Copy JSON</DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'html')}
+                        >Copy HTML Table (Group 1)</DropdownMenu.Item
                     >
                     <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0].results, 'html')}
-                        >Copy HTML Table</DropdownMenu.Item
-                    >
-                    <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0].results, 'markdown')}
-                        >Copy Markdown Table</DropdownMenu.Item
+                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'markdown')}
+                        >Copy Markdown Table (Group 1)</DropdownMenu.Item
                     >
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -133,11 +149,38 @@
         </div>
     </Tabs.List>
     <Tabs.Content value="data" class="px-4 overflow-auto grow">
-        <DataTable />
+        <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-4">
+            {#each extractedData.data as groupData (groupData.id)}
+                <div class="relative border rounded-lg px-5 pt-5 pb-4">
+                    <div class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1">
+                        <Button
+                            size="icon"
+                            variant="secondary"
+                            class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
+                            onclick={() => toggleGroup(groupData.id.toString())}
+                        >
+                            {#if openGroups.includes(groupData.id.toString())}
+                                <ChevronUp class="size-4 transition-transform" />
+                            {:else}
+                                <ChevronDown class="size-4 transition-transform" />
+                            {/if}
+                        </Button>
+                        <span class="text-[11px] text-gray-400 select-none mx-2">
+                            Group {groupData.id} ({groupData.results.length})
+                        </span>
+                    </div>
+                    <Accordion.Item value={groupData.id.toString()} class="border-none">
+                        <Accordion.Content>
+                            <DataTable data={groupData.results} />
+                        </Accordion.Content>
+                    </Accordion.Item>
+                </div>
+            {/each}
+        </Accordion.Root>
     </Tabs.Content>
     <Tabs.Content value="json" class="px-4 overflow-auto grow">
         <div class="p-4 rounded-md text-sm overflow-wrap">
-            <JsonViewer value={extractedData.data[0]?.results} />
+            <JsonViewer value={extractedData.data} />
         </div>
     </Tabs.Content>
 </Tabs.Root>

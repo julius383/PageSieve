@@ -1,13 +1,11 @@
 <script lang="ts">
-    import { Button } from '$lib/components/ui/button';
     import { getCoreRowModel } from '@tanstack/table-core';
     import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
     import * as Table from '$lib/components/ui/table/index.js';
 
-    import { extractedData } from '../stores/ui.svelte';
     import { createColumns } from './results-columns';
 
-    const data = $derived(extractedData.data[0].results);
+    let { data = [] } = $props<{ data: unknown[] }>();
     const columns = $derived(createColumns(data as Record<string, unknown>[]));
 
     const table = createSvelteTable({
