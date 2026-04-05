@@ -15,7 +15,9 @@
     import * as Accordion from '$lib/components/ui/accordion/index.js';
     import DataTable from './DataTable.svelte';
 
-    import { downloadCSV, downloadJSON, clipboardCopy } from '../util';
+    import type { SupportedExportDataTypes } from '../../types';
+
+    import { downloadCSV, downloadJSON, downloadBundle, clipboardCopy } from '../util';
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
     import { saveResults, getLatestResults, saveLogs } from '../services/storage';
@@ -49,8 +51,6 @@
 
     async function showInNewTab() {
         await saveLogs($logs);
-        // For simplicity, we save the first group's results or combine them if needed
-        // For now, let's just save the first one to match existing behavior
         await saveResults(extractedData.data || []);
         await browser.runtime.sendMessage({ action: 'openFullPage' });
     }
@@ -85,12 +85,26 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0]?.results)}
-                        >Download CSV (Group 1)</DropdownMenu.Item
-                    >
                     <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
-                        >Download JSON (All)</DropdownMenu.Item
+                        >Download JSON </DropdownMenu.Item
                     >
+                    {#if extractedData.data.length > 1}
+                            <DropdownMenu.Sub>
+                                <DropdownMenu.SubTrigger>Download CSV</DropdownMenu.SubTrigger>
+                                <DropdownMenu.SubContent>
+                                    <DropdownMenu.Item onclick={() => downloadBundle(extractedData.data, 'csv')}
+                                    >Download CSV (All)</DropdownMenu.Item>
+                                    {#each extractedData.data as group_data (group_data.id)}
+                                        <DropdownMenu.Item onclick={() => downloadCSV(group_data.results)}
+                                            >Download CSV (Group {group_data.id})</DropdownMenu.Item
+                                        >
+                                    {/each}
+                                </DropdownMenu.SubContent>
+                            </DropdownMenu.Sub>
+                    {:else }
+                        <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0]?.results)}
+                        >Download CSV</DropdownMenu.Item>
+                    {/if}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             <DropdownMenu.Root>
@@ -107,21 +121,34 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'csv')}
-                        >Copy CSV (Group 1)</DropdownMenu.Item
-                    >
+                    {#snippet CopyOption(label: string, format: SupportedExportDataTypes)}
+                        {#if extractedData.data.length > 1}
+                            <DropdownMenu.Sub>
+                                <DropdownMenu.SubTrigger>Copy {label}</DropdownMenu.SubTrigger>
+                                <DropdownMenu.SubContent>
+                                    {#each extractedData.data as group_data (group_data.id)}
+                                        <DropdownMenu.Item
+                                            onclick={() => clipboardCopy(group_data.results, format)}
+                                            >Copy {label} (Group {group_data.id})</DropdownMenu.Item
+                                        >
+                                    {/each}
+                                </DropdownMenu.SubContent>
+                            </DropdownMenu.Sub>
+                        {:else}
+                            <DropdownMenu.Item
+                                onclick={() => clipboardCopy(extractedData.data[0]?.results, format)}
+                                >Copy {label}</DropdownMenu.Item
+                            >
+                        {/if}
+                    {/snippet}
+
                     <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
-                        >Copy JSON (All)</DropdownMenu.Item
+                    >Copy JSON</DropdownMenu.Item
                     >
-                    <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'html')}
-                        >Copy HTML Table (Group 1)</DropdownMenu.Item
-                    >
-                    <DropdownMenu.Item
-                        onclick={() => clipboardCopy(extractedData.data[0]?.results, 'markdown')}
-                        >Copy Markdown Table (Group 1)</DropdownMenu.Item
-                    >
+
+                    {@render CopyOption('CSV', 'csv')}
+                    {@render CopyOption('HTML Table', 'html')}
+                    {@render CopyOption('Markdown Table', 'markdown')}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             {#if !openInNewTab}

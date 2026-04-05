@@ -1,11 +1,11 @@
 import { Parser } from '@json2csv/plainjs';
-import type { SelectorGroup, StatusLevel } from '../types';
+import JSZip from 'jszip';
+import type { ExtractedGroup, SelectorGroup, StatusLevel, SupportedExportDataTypes } from '../types';
 import htmlTemplate from './templates/htmltemplate.hbs';
 import mdTemplate from './templates/mdtemplate.hbs';
 
-type SupportedDataTypes = 'json' | 'csv' | 'html' | 'markdown';
 
-function convertTo(data: object[], format: SupportedDataTypes): string {
+function convertTo(data: object[], format: SupportedExportDataTypes): string {
     if (data.length == 0) {
         return '';
     }
@@ -38,13 +38,17 @@ export function formatColumnName(name: string): string {
 export function downloadJSON(data: object[], filename: string = 'data.json') {
     try {
         const json = convertTo(data, 'json');
-        const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+        const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
         const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', dataStr);
+        downloadAnchorNode.setAttribute('href', url);
         downloadAnchorNode.setAttribute('download', filename);
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
+
+        URL.revokeObjectURL(url);
     } catch (err) {
         console.error(err);
     }
@@ -53,19 +57,53 @@ export function downloadJSON(data: object[], filename: string = 'data.json') {
 export function downloadCSV(data: object[], filename: string = 'data.csv') {
     try {
         const csv = convertTo(data, 'csv');
-        const dataStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
         const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', dataStr);
+        downloadAnchorNode.setAttribute('href', url);
         downloadAnchorNode.setAttribute('download', filename);
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
+
+        URL.revokeObjectURL(url);
     } catch (err) {
         console.error(err);
     }
 }
 
-export async function clipboardCopy(data: object[], format: SupportedDataTypes = 'json') {
+export async function downloadBundle(
+    data: ExtractedGroup[],
+    format: SupportedExportDataTypes = 'csv',
+    filename: string = 'data.zip',
+) {
+    try {
+        const zip = new JSZip();
+
+        for (const group of data) {
+            const convertedData = convertTo(group.results, format);
+            const fname = sanitizeSegment(`group_${group.id}`);
+            zip.file(`${fname}.${format}`, convertedData);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(zipBlob);
+
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute('href', url);
+        downloadAnchorNode.setAttribute('download', filename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export async function clipboardCopy(data: object[], format: SupportedExportDataTypes = 'json') {
     const converted = convertTo(data, format);
     await navigator.clipboard.writeText(converted);
     console.log('Wrote data to clipboard');
