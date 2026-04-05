@@ -6,7 +6,6 @@
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
     import * as Collapsible from '$lib/components/ui/collapsible/index.js';
     import * as Card from '$lib/components/ui/card/index.js';
-    import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { buttonVariants } from '$lib/components/ui/button/index.js';
 
@@ -23,11 +22,14 @@
     import { loadConfig } from '../actions';
     import { renameConfig, removeConfig } from '../services/storage';
 
+    import ConfirmDialog from './ConfirmDialog.svelte';
+
     onMount(() => {
         refreshConfigs();
     });
 
     let deletingId = $state('');
+    let isConfirmOpen = $state(false);
 
     let editingId = $state(null);
     let newIdValue = $state('');
@@ -52,13 +54,13 @@
 
     function openDeleteConfirmation(id: string) {
         deletingId = id;
+        isConfirmOpen = true;
     }
 
     async function handleDelete(id: string): Promise<void> {
         // Proceed with destructive operation
         await removeConfig(id);
         await refreshConfigs();
-        deletingId = '';
     }
 </script>
 
@@ -152,25 +154,16 @@
             </Card.Root>
         </div>
     {/each}
-    <AlertDialog.Root open={deletingId !== ''}>
-        <AlertDialog.Content class="w-[calc(100% - 2rem)] bg-background text-foreground ">
-            <AlertDialog.Header>
-                <AlertDialog.Title>Are you sure?</AlertDialog.Title>
-                <AlertDialog.Description class="text-wrap">
-                    This action cannot be undone. This will permanently delete config with id
-                    <pre>{deletingId}</pre>
-                </AlertDialog.Description>
-            </AlertDialog.Header>
-            <AlertDialog.Footer>
-                <AlertDialog.Cancel
-                    onclick={() => {
-                        deletingId = '';
-                    }}>Cancel</AlertDialog.Cancel
-                >
-                <AlertDialog.Action onclick={() => handleDelete(deletingId)}
-                    >Delete</AlertDialog.Action
-                >
-            </AlertDialog.Footer>
-        </AlertDialog.Content>
-    </AlertDialog.Root>
+    <ConfirmDialog
+        bind:open={isConfirmOpen}
+        onConfirm={() => handleDelete(deletingId)}
+        onCancel={() => {
+            deletingId = '';
+        }}
+    >
+        {#snippet description()}
+            This action cannot be undone. This will permanently delete config with id
+            <pre class="mt-2 p-2 bg-secondary rounded border">{deletingId}</pre>
+        {/snippet}
+    </ConfirmDialog>
 </div>
