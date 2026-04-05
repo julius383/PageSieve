@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { StoredConfig } from '../../types';
+import { StoredConfig, ExtractedGroup } from '../../types';
 import localforage from 'localforage';
 import { setStatus } from '../stores/ui.svelte';
 import { LogEntry } from '../stores/logs';
@@ -18,11 +18,11 @@ const resultsStore = localforage.createInstance({
     driver: localforage.LOCALSTORAGE,
 });
 
-export async function saveResults(results: unknown[]): Promise<void> {
+export async function saveResults(results: ExtractedGroup[]): Promise<void> {
     await resultsStore.setItem('latest', results);
 }
 
-export async function getLatestResults(): Promise<{ id: number; results: unknown[] }[] | null> {
+export async function getLatestResults(): Promise<ExtractedGroup[] | null> {
     const results = await resultsStore.getItem('latest');
     return Array.isArray(results) ? results : null;
 }

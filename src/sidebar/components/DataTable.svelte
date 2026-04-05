@@ -4,9 +4,10 @@
     import * as Table from '$lib/components/ui/table/index.js';
 
     import { createColumns } from './results-columns';
+    import type { ExtractedRow } from '../../types';
 
-    let { data = [] } = $props<{ data: unknown[] }>();
-    const columns = $derived(createColumns(data as Record<string, unknown>[]));
+    let { data = [] } = $props<{ data: ExtractedRow[] }>();
+    const columns = $derived(createColumns(data));
 
     const table = createSvelteTable({
         get data() {

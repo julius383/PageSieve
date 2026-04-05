@@ -7,13 +7,14 @@ import type {
     ScrapeStatusLevel,
     ScrapeRunStatusSetRequest,
     ScrapeRunUpdateRequest,
+    ExtractedGroup,
 } from '../../types';
 import { getAllConfigs } from '../services/storage';
 import { addLog } from './logs';
 
 export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
 
-export const extractedData = $state<{ data: { id: number; results: unknown[] }[] }>({
+export const extractedData = $state<{ data: ExtractedGroup[] }>({
     data: [{ id: 1, results: [] }],
 });
 

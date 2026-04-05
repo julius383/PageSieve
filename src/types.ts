@@ -203,6 +203,22 @@ export type StatusLevel = z.infer<typeof StatusLevel>;
 export type ScrapeStatusLevel = z.infer<typeof ScrapeStatusLevel>;
 export type ScrapeInstance = z.infer<typeof ScrapeInstance>;
 
+/**
+ * Represents a single row of extracted data.
+ */
+export type ExtractedRow = Record<
+    string,
+    string | number | boolean | null | undefined | (string | number | boolean | null | undefined)[]
+>;
+
+/**
+ * Represents a group of extracted data, typically corresponding to a SelectorGroup.
+ */
+export interface ExtractedGroup {
+    id: number;
+    results: ExtractedRow[];
+}
+
 export type MessageRequest =
     | ExtractDataRequest
     | InspectorToggleRequest

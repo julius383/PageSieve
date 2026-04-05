@@ -1,13 +1,10 @@
-import type { SelectorGroup, MessageRequest } from './types';
+import type { SelectorGroup, MessageRequest, ExtractedGroup, ExtractedRow } from './types';
 import { DOMInspector } from './dominspector.mjs';
 
 const inspector = new DOMInspector();
 
 type StringArrayMap = {
     [key: string]: (string | null | undefined)[];
-};
-type UnknownObject = {
-    [key: string]: unknown;
 };
 
 async function bgLog(msg: string) {
@@ -197,12 +194,10 @@ function pickSelectorFunction(selector: string, type = 'single') {
  * @param selectors - Array of selector configurations
  * @returns Array of extracted data objects
  */
-function extractDataFromPage(
-    selectors: SelectorGroup[],
-): { id: number; results: UnknownObject[] }[] {
+function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
     // console.log('Attempting to extract data with');
     // console.dir(selectors);
-    const extractionResults: { id: number; results: UnknownObject[] }[] = [];
+    const extractionResults: ExtractedGroup[] = [];
 
     selectors.forEach(({ id, container, fields }) => {
         if (container) {
@@ -215,7 +210,7 @@ function extractDataFromPage(
             if (!containerItems) {
                 return;
             }
-            const rows: UnknownObject[] = [];
+            const rows: ExtractedRow[] = [];
             containerItems.forEach((containerItem) => {
                 const fieldData = fields.map(({ name, selector, type }) => {
                     const fn = pickSelectorFunction(selector, type);
@@ -238,7 +233,7 @@ function extractDataFromPage(
                     foundItems[name] = found;
                 }
             });
-            const rows = zipObjectArrays(foundItems);
+            const rows = zipObjectArrays(foundItems) as ExtractedRow[];
             extractionResults.push({ id, results: rows });
         }
     });
