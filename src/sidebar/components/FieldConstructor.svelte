@@ -12,11 +12,15 @@
         scrapeConfig,
     } from '../stores/scrapeConfig.svelte';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
+    import ConfirmDialog from './ConfirmDialog.svelte';
 
     // let group = scrapeConfig.selectors[0];
     let showLabels = $derived(scrapeConfig.selectors.length > 1);
 
     let openGroups = $state<string[]>(scrapeConfig.selectors.map((g) => g.id.toString()));
+
+    let deletingGroupId = $state<number | null>(null);
+    let isConfirmOpen = $state(false);
 
     $effect(() => {
         if (
@@ -32,6 +36,18 @@
             openGroups = openGroups.filter((g) => g !== id);
         } else {
             openGroups = [...openGroups, id];
+        }
+    }
+
+    function openDeleteConfirmation(id: number) {
+        deletingGroupId = id;
+        isConfirmOpen = true;
+    }
+
+    function confirmDelete() {
+        if (deletingGroupId !== null) {
+            removeGroup(deletingGroupId);
+            deletingGroupId = null;
         }
     }
 </script>
@@ -75,7 +91,7 @@
                                             size="icon"
                                             variant="secondary"
                                             class="flex items-center justify-center size-6 rounded hover:text-red-400 hover:bg-white/10"
-                                            onclick={() => removeGroup(group.id)}
+                                            onclick={() => openDeleteConfirmation(group.id)}
                                         >
                                             <X class="size-3" />
                                         </Button>
@@ -114,6 +130,17 @@
             {/each}
         </Accordion.Root>
     </section>
+
+    <ConfirmDialog
+        bind:open={isConfirmOpen}
+        onConfirm={confirmDelete}
+        onCancel={() => (deletingGroupId = null)}
+    >
+        {#snippet description()}
+            This will permanently delete <strong>Group {deletingGroupId}</strong> and all its fields.
+            This action cannot be undone.
+        {/snippet}
+    </ConfirmDialog>
 {:else}
     <div>
         <span>Error with Field Group</span>
