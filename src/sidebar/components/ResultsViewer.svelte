@@ -86,24 +86,29 @@
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
                     <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
-                        >Download JSON </DropdownMenu.Item
-                    >
+                        >Download JSON
+                    </DropdownMenu.Item>
                     {#if extractedData.data.length > 1}
-                            <DropdownMenu.Sub>
-                                <DropdownMenu.SubTrigger>Download CSV</DropdownMenu.SubTrigger>
-                                <DropdownMenu.SubContent>
-                                    <DropdownMenu.Item onclick={() => downloadBundle(extractedData.data, 'csv')}
-                                    >Download CSV (All)</DropdownMenu.Item>
-                                    {#each extractedData.data as group_data (group_data.id)}
-                                        <DropdownMenu.Item onclick={() => downloadCSV(group_data.results)}
-                                            >Download CSV (Group {group_data.id})</DropdownMenu.Item
-                                        >
-                                    {/each}
-                                </DropdownMenu.SubContent>
-                            </DropdownMenu.Sub>
-                    {:else }
-                        <DropdownMenu.Item onclick={() => downloadCSV(extractedData.data[0]?.results)}
-                        >Download CSV</DropdownMenu.Item>
+                        <DropdownMenu.Sub>
+                            <DropdownMenu.SubTrigger>Download CSV</DropdownMenu.SubTrigger>
+                            <DropdownMenu.SubContent>
+                                <DropdownMenu.Item
+                                    onclick={() => downloadBundle(extractedData.data, 'csv')}
+                                    >Download CSV (All)</DropdownMenu.Item
+                                >
+                                {#each extractedData.data as group_data (group_data.id)}
+                                    <DropdownMenu.Item
+                                        onclick={() => downloadCSV(group_data.results)}
+                                        >Download CSV (Group {group_data.id})</DropdownMenu.Item
+                                    >
+                                {/each}
+                            </DropdownMenu.SubContent>
+                        </DropdownMenu.Sub>
+                    {:else}
+                        <DropdownMenu.Item
+                            onclick={() => downloadCSV(extractedData.data[0]?.results)}
+                            >Download CSV</DropdownMenu.Item
+                        >
                     {/if}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -128,7 +133,8 @@
                                 <DropdownMenu.SubContent>
                                     {#each extractedData.data as group_data (group_data.id)}
                                         <DropdownMenu.Item
-                                            onclick={() => clipboardCopy(group_data.results, format)}
+                                            onclick={() =>
+                                                clipboardCopy(group_data.results, format)}
                                             >Copy {label} (Group {group_data.id})</DropdownMenu.Item
                                         >
                                     {/each}
@@ -136,14 +142,15 @@
                             </DropdownMenu.Sub>
                         {:else}
                             <DropdownMenu.Item
-                                onclick={() => clipboardCopy(extractedData.data[0]?.results, format)}
+                                onclick={() =>
+                                    clipboardCopy(extractedData.data[0]?.results, format)}
                                 >Copy {label}</DropdownMenu.Item
                             >
                         {/if}
                     {/snippet}
 
                     <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
-                    >Copy JSON</DropdownMenu.Item
+                        >Copy JSON</DropdownMenu.Item
                     >
 
                     {@render CopyOption('CSV', 'csv')}
@@ -179,7 +186,9 @@
         <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-4">
             {#each extractedData.data as groupData (groupData.id)}
                 <div class="relative border rounded-lg px-5 pt-5 pb-4">
-                    <div class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1">
+                    <div
+                        class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1"
+                    >
                         <Button
                             size="icon"
                             variant="secondary"

@@ -219,7 +219,6 @@ export interface ExtractedGroup {
     results: ExtractedRow[];
 }
 
-
 export type SupportedExportDataTypes = 'json' | 'csv' | 'html' | 'markdown';
 
 export type MessageRequest =

@@ -1,9 +1,13 @@
 import { Parser } from '@json2csv/plainjs';
 import JSZip from 'jszip';
-import type { ExtractedGroup, SelectorGroup, StatusLevel, SupportedExportDataTypes } from '../types';
+import type {
+    ExtractedGroup,
+    SelectorGroup,
+    StatusLevel,
+    SupportedExportDataTypes,
+} from '../types';
 import htmlTemplate from './templates/htmltemplate.hbs';
 import mdTemplate from './templates/mdtemplate.hbs';
-
 
 function convertTo(data: object[], format: SupportedExportDataTypes): string {
     if (data.length == 0) {

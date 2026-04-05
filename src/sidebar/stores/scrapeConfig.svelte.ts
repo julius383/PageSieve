@@ -2,7 +2,6 @@ import type { ScrapeConfig, SelectorGroup, PaginationConfig } from '../../types'
 import { ExtractionOptions, Metadata } from '../../types';
 
 let nextSelectorId = 2;
-// TODO: add function to increase number of groups
 // eslint-disable-next-line prefer-const
 let activeGroup = 1;
 
