@@ -21,7 +21,7 @@
 </script>
 
 <div>
-    <div class="rounded-md border">
+    <div class="rounded-md">
         <Table.Root>
             <Table.Header class="bg-accent">
                 {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
