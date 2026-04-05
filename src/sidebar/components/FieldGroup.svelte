@@ -15,11 +15,6 @@
         type = $bindable(),
     } = $props();
 
-    function toggleType() {
-        type = type === undefined || type === 'single' ? 'array' : 'single';
-    }
-    let pressed = $derived(type === 'array' ? true : false);
-
     let pickingElement = $state(false);
 </script>
 
@@ -59,9 +54,9 @@
                         aria-label="Extract Array"
                         size="sm"
                         variant="outline"
-                        {pressed}
+                        pressed={type === 'array'}
+                        onPressedChange={(v) => (type = v ? 'array' : 'single')}
                         class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
-                        onclick={toggleType}
                     >
                         <SquareStack />
                     </Toggle>
