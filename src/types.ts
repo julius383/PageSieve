@@ -51,6 +51,7 @@ export const SelectorDefinition = z.object({
 
 export const SelectorGroup = z.object({
     id: z.int().positive(),
+    name: z.string().default('New Group'),
     container: z.string().optional(),
     fields: z.array(SelectorDefinition),
 });
