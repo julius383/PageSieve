@@ -33,6 +33,7 @@
                                 variant="destructive"
                                 size="icon"
                                 disabled={pickingElement}
+                                class="bg-red-500 text-white font-bold hover:bg-red-800"
                             >
                                 <Trash2 />
                             </Button>

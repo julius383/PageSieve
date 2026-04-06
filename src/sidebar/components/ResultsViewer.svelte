@@ -76,7 +76,7 @@
                     <Tooltip.Provider>
                         <Tooltip.Root>
                             <Tooltip.Trigger>
-                                <Button variant="secondary" size="sm">
+                                <Button variant="secondary" size="sm" class="hover:text-gray-400 hover:bg-white/10">
                                     <Download />
                                 </Button>
                             </Tooltip.Trigger>
@@ -117,7 +117,7 @@
                     <Tooltip.Provider>
                         <Tooltip.Root>
                             <Tooltip.Trigger>
-                                <Button variant="secondary" size="sm">
+                                <Button variant="secondary" size="sm" class="hover:text-gray-400 hover:bg-white/10">
                                     <ClipboardCopy />
                                 </Button>
                             </Tooltip.Trigger>
@@ -163,7 +163,7 @@
                     <Tooltip.Root>
                         <Tooltip.Trigger>
                             <Button size="sm" variant="secondary" onclick={showInNewTab}>
-                                <ExternalLink class="size-4" strokeWidth={2.5} />
+                                <ExternalLink strokeWidth={2.5}  class="hover:text-gray-400 hover:bg-white/10"/>
                             </Button>
                         </Tooltip.Trigger>
                         <Tooltip.Content>View Results in New Tab</Tooltip.Content>
@@ -172,7 +172,7 @@
                 <Tooltip.Provider>
                     <Tooltip.Root>
                         <Tooltip.Trigger>
-                            <Button size="icon" variant="destructive" onclick={resetExtractedData}>
+                            <Button size="icon" variant="destructive" onclick={resetExtractedData} class="bg-red-500 text-white font-bold hover:bg-red-600">
                                 <SquareX class="size-4" strokeWidth={2.5} />
                             </Button>
                         </Tooltip.Trigger>
@@ -192,13 +192,13 @@
                         <Button
                             size="icon"
                             variant="secondary"
-                            class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
+                            class="flex items-center justify-center size-6 rounded hover:text-gray-400 hover:bg-white/10"
                             onclick={() => toggleGroup(groupData.id.toString())}
                         >
                             {#if openGroups.includes(groupData.id.toString())}
-                                <ChevronUp class="size-4 transition-transform" />
+                                <ChevronUp class="transition-transform" />
                             {:else}
-                                <ChevronDown class="size-4 transition-transform" />
+                                <ChevronDown class="transition-transform" />
                             {/if}
                         </Button>
                         <span class="text-[11px] text-gray-400 select-none mx-2">
