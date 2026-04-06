@@ -32,7 +32,7 @@ export default defineConfig({
             output: {
                 entryFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
-                manualChunks(id) {
+                /* manualChunks(id) {
                     if (id.includes('node_modules')) {
                         if (id.includes('jszip')) {
                             return 'vendor-jszip';
@@ -54,7 +54,7 @@ export default defineConfig({
                         }
                         return 'vendor';
                     }
-                },
+                }, */
             },
         },
     },
