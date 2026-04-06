@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Check, X } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
+    import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
 
     let {
         editing = false,
@@ -8,12 +9,14 @@
         displayValue,
         onSave,
         onCancel,
+        iconSize = 'icon',
     }: {
         editing: boolean;
         editValue: string;
         displayValue: string;
         onSave: () => void;
         onCancel: () => void;
+        iconSize?: 'icon' | 'icon-sm' | 'icon-lg';
     } = $props();
 
     async function handleInputKeydown(event: KeyboardEvent) {
@@ -34,12 +37,14 @@
             class="bg-transparent border-b border-current w-full focus:outline-none"
         />
         <div class="flex items-end gap-x-1 flex-start">
-            <Button onclick={onSave} variant="outline" size="icon">
-                <Check />
-            </Button>
-            <Button onclick={onCancel} variant="destructive" size="icon">
-                <X />
-            </Button>
+            <ButtonGroup.Root>
+                <Button onclick={onSave} variant="outline" size={iconSize}>
+                    <Check size={iconSize} />
+                </Button>
+                <Button onclick={onCancel} variant="destructive" size={iconSize}>
+                    <X size={iconSize} />
+                </Button>
+            </ButtonGroup.Root>
         </div>
     </div>
 {:else}
