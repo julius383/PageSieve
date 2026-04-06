@@ -32,6 +32,29 @@ export default defineConfig({
             output: {
                 entryFileNames: '[name].js',
                 assetFileNames: '[name].[ext]',
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('jszip')) {
+                            return 'vendor-jszip';
+                        }
+                        if (id.includes('zod')) {
+                            return 'vendor-zod';
+                        }
+                        if (id.includes('handlebars')) {
+                            return 'vendor-handlebars';
+                        }
+                        if (id.includes('@tanstack')) {
+                            return 'vendor-tanstack';
+                        }
+                        if (id.includes('localforage')) {
+                            return 'vendor-localforage';
+                        }
+                        if (id.includes('bits-ui')) {
+                            return 'vendor-bits-ui';
+                        }
+                        return 'vendor';
+                    }
+                },
             },
         },
     },
