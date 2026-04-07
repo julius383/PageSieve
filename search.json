@@ -151,14 +151,14 @@
     "href": "reference/ui.html",
     "title": "UI Overview",
     "section": "",
-    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nSelector for container for individual items.\nStart interactive element picker.\nDelete field.\nStart interactive element picker.\nSwitch to array selection for this field.\nResults section.\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nShow results as JSON"
+    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nAdd selector group. Useful for extracting different data from same page.\nMenu with more actions\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nCollapse selector group\nSelector group name user editable\nRename selector group\nDelete selector group\nSelector for container for individual items.\nStart interactive element picker for element container.\nDelete field.\nStart interactive element picker.\nSwitch to array extraction for this field.\nResults section.\nShow results as JSON\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nCollapse results for a selector group"
   },
   {
     "objectID": "reference/ui.html#main-view",
     "href": "reference/ui.html#main-view",
     "title": "UI Overview",
     "section": "",
-    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nSelector for container for individual items.\nStart interactive element picker.\nDelete field.\nStart interactive element picker.\nSwitch to array selection for this field.\nResults section.\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nShow results as JSON"
+    "text": "Screenshot of Main View\n\n\n\n\n\nRun config\nSave config to browser storage\nLoad config to from a file\nSave config to a file.\nAdd selector group. Useful for extracting different data from same page.\nMenu with more actions\nReset defined fields.\nStatus indicator. Statuses are defined in src/types.ts\nShow logs.\nCollapse selector group\nSelector group name user editable\nRename selector group\nDelete selector group\nSelector for container for individual items.\nStart interactive element picker for element container.\nDelete field.\nStart interactive element picker.\nSwitch to array extraction for this field.\nResults section.\nShow results as JSON\nDownload extracted data\nCopy extracted data\nShow results in a fullpage\nClear results\nCollapse results for a selector group"
   },
   {
     "objectID": "reference/ui.html#config-view",
