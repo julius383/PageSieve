@@ -12,20 +12,27 @@ lightbox: true
 2. Save config to browser storage
 3. Load config to from a file
 4. Save config to a file.
-5. Reset defined fields.
-6. Status indicator. Statuses are defined in `src/types.ts`
-7. Show logs.
-8. Selector for container for individual items.
-9. Start interactive element picker.
-10. Delete field.
-11. Start interactive element picker.
-12. Switch to array selection for this field.
-13. Results section.
-14. Download extracted data
-15. Copy extracted data
-16. Show results in a fullpage
-17. Clear results
-18. Show results as JSON
+5. Add selector group. Useful for extracting different data from same page.
+6. Menu with more actions
+7. Reset defined fields.
+8. Status indicator. Statuses are defined in `src/types.ts`
+9. Show logs.
+10. Collapse selector group
+11. Selector group name user editable
+12. Rename selector group
+13. Delete selector group
+14. Selector for container for individual items.
+15. Start interactive element picker for element container.
+16. Delete field.
+17. Start interactive element picker.
+18. Switch to array extraction for this field.
+19. Results section.
+20. Show results as JSON
+21. Download extracted data
+22. Copy extracted data
+22. Show results in a fullpage
+23. Clear results
+24. Collapse results for a selector group
 
 :::
 
