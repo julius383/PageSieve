@@ -21,7 +21,7 @@
     let logViewerAccordionValue = $state<string | undefined>(undefined);
 </script>
 
-<main class="p-4 flex flex-col gap-4 bg-background text-foreground h-screen">
+<main class="p-4 flex flex-col gap-2 bg-background text-foreground h-screen">
     <div class="flex items-center justify-between border-b bg-background py-1.5">
         <ActionBar />
         <Separator orientation="vertical" class="mx-2 h-4" />
