@@ -1,14 +1,14 @@
 lint:
-  pnpm run lint
+  bun run lint
 
 build:
-  pnpm run build
+  bun run build
 
 watch:
-  fd -t f . src | entr -c npm run build
+  fd -t f . src | entr -c bun run build
 
 format:
-  pnpx prettier src/ --write
+  bunx prettier src/ --write
 
 tasks:
   rg 'TODO|FIXME' --glob '!src/lib/**' --glob "!justfile"
