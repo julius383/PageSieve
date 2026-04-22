@@ -1,3 +1,33 @@
+## [1.2.0] - 2026-04-22
+
+### 🚀 Features
+
+- Add editable names for selector groups
+- Improve button style in Editable Input
+- Add search and sort in library component
+
+### 🐛 Bug Fixes
+
+- Change how selector array type is toggled
+- Change button style to be more visible
+- Switching to none pagination now works
+
+### 💼 Other
+
+- Move to bun for package management
+- Update deps
+- Increment version
+
+### 🚜 Refactor
+
+- Move scrapeConfig to separate file
+- Use dark colorscheme as default
+- Swap jszip with client-zip
+
+### 📚 Documentation
+
+- Update ui docs with selector group changes
+
 ## [1.1.0] - 2026-04-05
 
 ### 🚀 Features
