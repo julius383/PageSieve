@@ -143,3 +143,4 @@ dist/*
 **/*.quarto_ipynb
 /.quarto/
 /_site/
+stats.html
