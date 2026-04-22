@@ -1,5 +1,5 @@
 import { SvelteDate } from 'svelte/reactivity';
-import type { SelectorGroup } from '../types';
+import type { SelectorGroup } from  '../schema';
 import {
     extractedData,
     runWithStatus,
@@ -9,7 +9,7 @@ import {
 } from './stores/ui.svelte';
 import { shortHash, generateConfigId, validateSelectors } from './util';
 import { scrapeConfig, setScrapeConfig } from './stores/scrapeConfig.svelte';
-import { StoredConfig, ScrapeConfig } from '../types';
+import { StoredConfig, ScrapeConfig } from  '../schema';
 import { saveToBrowser } from './services/storage';
 import { commitPaginationToScrapeConfig } from './stores/pagination.svelte';
 

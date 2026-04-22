@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { parseArgs } from 'util';
-import { StoredConfig } from './types';
+import { StoredConfig } from  './schema';
 import * as z from 'zod';
 
 const { values } = parseArgs({

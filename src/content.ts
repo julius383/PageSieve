@@ -1,4 +1,5 @@
-import type { SelectorGroup, MessageRequest, ExtractedGroup, ExtractedRow } from './types';
+import type { MessageRequest, ExtractedGroup, ExtractedRow } from './types';
+import type { SelectorGroup, } from './schema';
 import { DOMInspector } from './dominspector.mjs';
 
 const inspector = new DOMInspector();
