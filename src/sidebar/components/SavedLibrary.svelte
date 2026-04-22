@@ -1,8 +1,10 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { SvelteDate } from 'svelte/reactivity';
 
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
 
+    import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
     import * as Collapsible from '$lib/components/ui/collapsible/index.js';
     import * as Card from '$lib/components/ui/card/index.js';
@@ -15,7 +17,15 @@
 
     import EditableInput from './EditableInput.svelte';
 
-    import { Search, Pencil, Trash2, ChevronsUpDownIcon, ArrowUpToLine } from '@lucide/svelte';
+    import {
+        Search,
+        Pencil,
+        Trash2,
+        ChevronsUpDownIcon,
+        ArrowUpToLine,
+        ArrowDownWideNarrow,
+        Check,
+    } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
 
     import { allConfigs, refreshConfigs } from '../stores/ui.svelte';
@@ -23,9 +33,11 @@
     import { renameConfig, removeConfig } from '../services/storage';
 
     import ConfirmDialog from './ConfirmDialog.svelte';
+    import type { StoredConfig } from '../../schema';
 
     onMount(() => {
         refreshConfigs();
+        allConfigs.configs.sort(getSortFunction('Date Created', false));
     });
 
     let deletingId = $state('');
@@ -33,6 +45,60 @@
 
     let editingId = $state(null);
     let newIdValue = $state('');
+
+    let searchQuery = $state('');
+
+    let sortModes = ['Date Created', 'Date Updated', 'ID', 'URL'];
+    let sortBy = $state({ mode: sortModes[0], reverse: false });
+    function getSortFunction(mode: string, reverse: boolean) {
+        switch (mode) {
+            case 'Date Created':
+                return (a: StoredConfig, b: StoredConfig): number => {
+                    if (reverse) {
+                        return  new SvelteDate(a.createdAt) - new SvelteDate(b.createdAt)
+                    } else {
+                        return  new SvelteDate(b.createdAt) - new SvelteDate(a.createdAt)
+                    }
+                }
+            case 'Date Updated':
+                return (a: StoredConfig, b: StoredConfig): number => {
+                    if (reverse) {
+                        return  new SvelteDate(a.updatedAt) - new SvelteDate(b.updatedAt)
+                    } else {
+                        return  new SvelteDate(b.updatedAt) - new SvelteDate(a.updatedAt)
+                    }
+                }
+            case 'ID':
+                return (a: StoredConfig, b: StoredConfig): number => {
+                    if (reverse) {
+                        return  -a.config.metadata.id.localeCompare(b.config.metadata.id)
+                    } else {
+                        return  a.config.metadata.id.localeCompare(b.config.metadata.id)
+                    }
+                }
+            case 'URL':
+                return (a: StoredConfig, b: StoredConfig): number => {
+                    if (reverse) {
+                        return -a.config.metadata.id.localeCompare(b.config.metadata.id)
+                    } else {
+                        return  a.config.metadata.id.localeCompare(b.config.metadata.id)
+                    }
+                }
+            default:
+                break;
+        }
+    }
+    $effect(() => {
+        allConfigs.configs.sort(getSortFunction(sortBy.mode, sortBy.reverse))
+    });
+    let filteredConfigs = $derived(
+        allConfigs.configs.filter((item) => {
+            const query = searchQuery.toLowerCase();
+            const idMatches = item.id.toLowerCase().includes(query);
+            const urlMatches = item.config.metadata.url?.toLowerCase().includes(query) ?? false;
+            return idMatches || urlMatches;
+        }),
+    );
 
     function startEditing(item) {
         editingId = item.id;
@@ -64,19 +130,67 @@
     }
 </script>
 
-<InputGroup.Root>
-    <InputGroup.Input placeholder="Search..." />
-    <InputGroup.Addon>
-        <Search />
-    </InputGroup.Addon>
-    <InputGroup.Addon align="inline-end">
-        <InputGroup.Button>Search</InputGroup.Button>
-    </InputGroup.Addon>
-</InputGroup.Root>
+<div class="flex">
+    <InputGroup.Root>
+        <InputGroup.Input placeholder="Type to search..." bind:value={searchQuery} />
+        <InputGroup.Addon align="inline-start">
+            <Search />
+        </InputGroup.Addon>
+        <InputGroup.Addon align="inline-end">
+            <InputGroup.Button variant="secondary" onclick={() => (searchQuery = '')}
+                >Clear</InputGroup.Button
+            >
+        </InputGroup.Addon>
+    </InputGroup.Root>
+
+    <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+            <Button size="icon" class="ml-2">
+                <ArrowDownWideNarrow />
+            </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content class="w-60">
+            {#each sortModes as item (item)}
+                <DropdownMenu.Group>
+                    <DropdownMenu.Item
+                        onSelect={() => {
+                            sortBy.mode = item;
+                            sortBy.reverse = false;
+                        }}
+                    >
+                        {item} ({#if item.startsWith('Date')}
+                            newest on top
+                        {:else}
+                            A on top{/if})
+                        {#if sortBy.mode == item && sortBy.reverse == false}
+                            <Check class="accent-secondary-foreground" />
+                        {/if}
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item
+                        onSelect={() => {
+                            sortBy.mode = item;
+                            sortBy.reverse = true;
+                        }}
+                    >
+                        {item} ({#if item.startsWith('Date')}
+                            oldest on top
+                        {:else}
+                            Z on top{/if})
+                        {#if sortBy.mode == item && sortBy.reverse == true}
+                            <Check class="accent-accent" />
+                        {/if}
+                    </DropdownMenu.Item>
+                </DropdownMenu.Group>
+                <DropdownMenu.Separator />
+            {/each}
+            <DropdownMenu.Item disabled>Apply sorting to configs</DropdownMenu.Item>
+        </DropdownMenu.Content>
+    </DropdownMenu.Root>
+</div>
 
 <hr />
 <div>
-    {#each allConfigs.configs as item (item.id)}
+    {#each filteredConfigs as item (item.id)}
         <div class="p-1 rounded-md mb-2 w-full">
             <Card.Root>
                 <Card.Header>

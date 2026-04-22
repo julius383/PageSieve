@@ -2,13 +2,14 @@ import { SvelteDate } from 'svelte/reactivity';
 import type {
     ScrapeInstance,
     ExtensionStatus,
-    StoredConfig,
     StatusLevel,
     ScrapeStatusLevel,
     ScrapeRunStatusSetRequest,
     ScrapeRunUpdateRequest,
     ExtractedGroup,
 } from '../../types';
+
+import type { StoredConfig } from '../../schema';
 import { getAllConfigs } from '../services/storage';
 import { addLog } from './logs';
 
