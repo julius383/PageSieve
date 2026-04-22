@@ -39,6 +39,24 @@
             paginationState.mode = snapshot.mode;
         });
     });
+
+    /**
+     * Effect to sync the local mode change back to the global config.
+     * This ensures that switching tabs in the UI immediately updates
+     * the scrapeConfig, which is important for actions like 'Run'
+     * that might take a snapshot of the config.
+     */
+    $effect(() => {
+        // Track paginationState.mode
+        const mode = paginationState.mode;
+        untrack(() => {
+            // Only commit if the mode actually differs from the global config
+            // to avoid unnecessary validation errors when just viewing tabs.
+            if (mode !== scrapeConfig.pagination.mode) {
+                commitPaginationToScrapeConfig();
+            }
+        });
+    });
 </script>
 
 <div>

@@ -108,8 +108,9 @@ export function importConfig(event: Event) {
 /**
  * Export ScrapeConfig to JSON file for download by user
  */
-export async function exportConfig(config: ScrapeConfig): Promise<string> {
+export async function exportConfig(): Promise<string> {
     commitPaginationToScrapeConfig();
+    const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     runWithStatus(
@@ -142,8 +143,9 @@ export async function exportConfig(config: ScrapeConfig): Promise<string> {
 /**
  * Saves ccnfig to browser local storage
  */
-export async function saveConfig(config: ScrapeConfig) {
+export async function saveConfig() {
     commitPaginationToScrapeConfig();
+    const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
     const storedConfig = {
@@ -215,8 +217,9 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
 /**
  * 'main' function of extension
  */
-export async function runConfig(config: ScrapeConfig) {
+export async function runConfig() {
     commitPaginationToScrapeConfig();
+    const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
     let paginationComplete = false;
     setStatus('running', `running config ${config.metadata.id}`);
 
@@ -226,6 +229,7 @@ export async function runConfig(config: ScrapeConfig) {
 
         scrapeConfig.metadata.url = tabInfo.url;
         scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, config.selectors);
+        // Note: we continue with the original config snapshot for this run
     }
     while (!paginationComplete) {
         if (['idle', 'errored'].includes(getStatus())) break;

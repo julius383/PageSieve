@@ -28,7 +28,7 @@
     }
 
     async function handleSave() {
-        await saveConfig(scrapeConfig);
+        await saveConfig();
         await refreshConfigs();
     }
 </script>
@@ -50,7 +50,7 @@
                         {:else}
                             <Button
                                 size="icon"
-                                onclick={() => runConfig($state.snapshot(scrapeConfig))}
+                                onclick={() => runConfig()}
                                 class="bg-green-500 text-white font-bold hover:bg-green-600"
                             >
                                 <Play class="size-4 mr-1" strokeWidth={4} />
@@ -111,7 +111,7 @@
                         <Button
                             size="icon"
                             variant="ghost"
-                            onclick={() => exportConfig(scrapeConfig)}
+                            onclick={() => exportConfig()}
                             class="hover:text-gray-400 hover:bg-white/10"
                         >
                             <Download class="size-4" strokeWidth={2.5}  />

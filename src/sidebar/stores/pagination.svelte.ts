@@ -13,7 +13,7 @@ import { setStatus } from './ui.svelte';
 function createInitialPaginationState(config: PaginationConfigT) {
     const newState = {
         mode: config.mode,
-        none: { mode: 'none' },
+        none: { mode: 'none' as const, },
         next: {
             mode: 'next' as const,
             nextSelector: '',
@@ -71,7 +71,7 @@ export function commitPaginationToScrapeConfig(): boolean {
     } else {
         // Only update scrapeConfig.pagination if the data has actually changed
         if (JSON.stringify(scrapeConfig.pagination) !== JSON.stringify(result.data)) {
-            Object.assign(scrapeConfig.pagination, result.data);
+            scrapeConfig.pagination = result.data;
         }
         setStatus('idle', 'Ready'); // Clear any previous error upon successful validation
         return true;
