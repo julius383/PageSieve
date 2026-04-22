@@ -144,3 +144,4 @@ dist/*
 /.quarto/
 /_site/
 stats.html
+docs/_site/
