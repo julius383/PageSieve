@@ -55,41 +55,41 @@
             case 'Date Created':
                 return (a: StoredConfig, b: StoredConfig): number => {
                     if (reverse) {
-                        return  new SvelteDate(a.createdAt) - new SvelteDate(b.createdAt)
+                        return new SvelteDate(a.createdAt) - new SvelteDate(b.createdAt);
                     } else {
-                        return  new SvelteDate(b.createdAt) - new SvelteDate(a.createdAt)
+                        return new SvelteDate(b.createdAt) - new SvelteDate(a.createdAt);
                     }
-                }
+                };
             case 'Date Updated':
                 return (a: StoredConfig, b: StoredConfig): number => {
                     if (reverse) {
-                        return  new SvelteDate(a.updatedAt) - new SvelteDate(b.updatedAt)
+                        return new SvelteDate(a.updatedAt) - new SvelteDate(b.updatedAt);
                     } else {
-                        return  new SvelteDate(b.updatedAt) - new SvelteDate(a.updatedAt)
+                        return new SvelteDate(b.updatedAt) - new SvelteDate(a.updatedAt);
                     }
-                }
+                };
             case 'ID':
                 return (a: StoredConfig, b: StoredConfig): number => {
                     if (reverse) {
-                        return  -a.config.metadata.id.localeCompare(b.config.metadata.id)
+                        return -a.config.metadata.id.localeCompare(b.config.metadata.id);
                     } else {
-                        return  a.config.metadata.id.localeCompare(b.config.metadata.id)
+                        return a.config.metadata.id.localeCompare(b.config.metadata.id);
                     }
-                }
+                };
             case 'URL':
                 return (a: StoredConfig, b: StoredConfig): number => {
                     if (reverse) {
-                        return -a.config.metadata.id.localeCompare(b.config.metadata.id)
+                        return -a.config.metadata.id.localeCompare(b.config.metadata.id);
                     } else {
-                        return  a.config.metadata.id.localeCompare(b.config.metadata.id)
+                        return a.config.metadata.id.localeCompare(b.config.metadata.id);
                     }
-                }
+                };
             default:
                 break;
         }
     }
     $effect(() => {
-        allConfigs.configs.sort(getSortFunction(sortBy.mode, sortBy.reverse))
+        allConfigs.configs.sort(getSortFunction(sortBy.mode, sortBy.reverse));
     });
     let filteredConfigs = $derived(
         allConfigs.configs.filter((item) => {

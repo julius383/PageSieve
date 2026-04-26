@@ -13,7 +13,7 @@ import { setStatus } from './ui.svelte';
 function createInitialPaginationState(config: PaginationConfigT) {
     const newState = {
         mode: config.mode,
-        none: { mode: 'none' as const, },
+        none: { mode: 'none' as const },
         next: {
             mode: 'next' as const,
             nextSelector: '',

@@ -10,7 +10,7 @@
     dayjs.extend(advancedFormat);
 
     import { scrapeConfig } from '../stores/scrapeConfig.svelte';
-    import type { Metadata } from  '../../schema';
+    import type { Metadata } from '../../schema';
 
     function copyId() {
         navigator.clipboard.writeText(scrapeConfig.metadata.id);

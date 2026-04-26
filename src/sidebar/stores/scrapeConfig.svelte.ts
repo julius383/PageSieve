@@ -1,6 +1,5 @@
-import type { ScrapeConfig, SelectorGroup, PaginationConfig } from  '../../schema';
-import { ExtractionOptions, Metadata } from  '../../schema';
-
+import type { ScrapeConfig, SelectorGroup, PaginationConfig } from '../../schema';
+import { ExtractionOptions, Metadata } from '../../schema';
 
 export const scrapeConfig = $state<ScrapeConfig>({
     metadata: Metadata.parse({}),
@@ -51,8 +50,7 @@ export function removeGroup(groupID: number) {
 export function addDefinition(groupID: number) {
     const group = scrapeConfig.selectors.find((element) => element.id == groupID);
     if (group) {
-        const nextId =
-            group.fields.length > 0 ? Math.max(...group.fields.map((f) => f.id)) + 1 : 1;
+        const nextId = group.fields.length > 0 ? Math.max(...group.fields.map((f) => f.id)) + 1 : 1;
         group.fields.push({ id: nextId, name: '', selector: '', type: 'single' });
         updateIds(group);
     }

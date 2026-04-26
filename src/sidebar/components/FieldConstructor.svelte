@@ -103,7 +103,9 @@
                                 </Tooltip.Root>
                             </Tooltip.Provider>
 
-                            <div class="text-[11px] text-gray-400 select-none mx-2 flex items-center h-6">
+                            <div
+                                class="text-[11px] text-gray-400 select-none mx-2 flex items-center h-6"
+                            >
                                 <EditableInput
                                     editing={editingGroupId === group.id}
                                     bind:editValue

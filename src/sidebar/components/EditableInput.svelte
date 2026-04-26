@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Check, X } from '@lucide/svelte';
     import Button from '$lib/components/ui/button/button.svelte';
-    import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
+    import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 
     let {
         editing = false,

@@ -1,10 +1,6 @@
 import { Parser } from '@json2csv/plainjs';
 import { downloadZip } from 'client-zip';
-import type {
-    ExtractedGroup,
-    StatusLevel,
-    SupportedExportDataTypes,
-} from '../types';
+import type { ExtractedGroup, StatusLevel, SupportedExportDataTypes } from '../types';
 import type { SelectorGroup } from '../schema';
 import htmlTemplate from './templates/htmltemplate.hbs';
 import mdTemplate from './templates/mdtemplate.hbs';
@@ -86,9 +82,8 @@ export async function downloadBundle(
         const files = data.map((group) => {
             const convertedData = convertTo(group.results, format);
             const fname = sanitizeSegment(`group_${group.id}`);
-            return { name: `${fname}.${format}`, lastModified: new Date(), input: convertedData }
-        })
-
+            return { name: `${fname}.${format}`, lastModified: new Date(), input: convertedData };
+        });
 
         const zipBlob = await downloadZip(files).blob();
         const url = URL.createObjectURL(zipBlob);

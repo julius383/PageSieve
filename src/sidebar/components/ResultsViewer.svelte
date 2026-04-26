@@ -76,7 +76,11 @@
                     <Tooltip.Provider>
                         <Tooltip.Root>
                             <Tooltip.Trigger>
-                                <Button variant="secondary" size="sm" class="hover:text-gray-400 hover:bg-white/10">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                >
                                     <Download />
                                 </Button>
                             </Tooltip.Trigger>
@@ -117,7 +121,11 @@
                     <Tooltip.Provider>
                         <Tooltip.Root>
                             <Tooltip.Trigger>
-                                <Button variant="secondary" size="sm" class="hover:text-gray-400 hover:bg-white/10">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                >
                                     <ClipboardCopy />
                                 </Button>
                             </Tooltip.Trigger>
@@ -163,7 +171,10 @@
                     <Tooltip.Root>
                         <Tooltip.Trigger>
                             <Button size="sm" variant="secondary" onclick={showInNewTab}>
-                                <ExternalLink strokeWidth={2.5}  class="hover:text-gray-400 hover:bg-white/10"/>
+                                <ExternalLink
+                                    strokeWidth={2.5}
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                />
                             </Button>
                         </Tooltip.Trigger>
                         <Tooltip.Content>View Results in New Tab</Tooltip.Content>
@@ -172,7 +183,12 @@
                 <Tooltip.Provider>
                     <Tooltip.Root>
                         <Tooltip.Trigger>
-                            <Button size="icon" variant="destructive" onclick={resetExtractedData} class="bg-red-500 text-white font-bold hover:bg-red-600">
+                            <Button
+                                size="icon"
+                                variant="destructive"
+                                onclick={resetExtractedData}
+                                class="bg-red-500 text-white font-bold hover:bg-red-600"
+                            >
                                 <SquareX class="size-4" strokeWidth={2.5} />
                             </Button>
                         </Tooltip.Trigger>
