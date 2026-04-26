@@ -19,4 +19,4 @@ zip-dist:
 
 zip-source:
   rm pagesieve_source.zip || true
-  fd -t f -0 | xargs -0 zip pagesieve_source.zip
+  git ls-files -z | xargs -0 zip pagesieve_source.zip
