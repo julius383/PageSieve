@@ -5,13 +5,13 @@ import {
     runWithStatus,
     runWithStatusAsync,
     setStatus,
-    getStatus,
 } from './stores/ui.svelte';
 import { shortHash, generateConfigId, validateSelectors } from './util';
 import { scrapeConfig, setScrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../schema';
 import { saveToBrowser } from './services/storage';
 import { commitPaginationToScrapeConfig } from './stores/pagination.svelte';
+import { ExtractedGroup } from '../types';
 
 export enum PaginationStateStatus {
     InProgress = 1,
@@ -40,7 +40,7 @@ export async function extractData(selectors: SelectorGroup[]): Promise<void> {
 
             if (response && response.result) {
                 if (scrapeConfig.options.appendData) {
-                    response.result.forEach((newGroup) => {
+                    response.result.forEach((newGroup: ExtractedGroup) => {
                         const existingGroup = extractedData.data.find((d) => d.id === newGroup.id);
                         if (existingGroup) {
                             existingGroup.results = existingGroup.results.concat(newGroup.results);
@@ -220,47 +220,31 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
 export async function runConfig() {
     commitPaginationToScrapeConfig();
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
-    let paginationComplete = false;
-    setStatus('running', `running config ${config.metadata.id}`);
 
-    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    if (!tabs[0]?.id) {
+        setStatus('errored', 'Failed to find active tab');
+        return;
+    }
+
     if (!config.metadata.id) {
-        // this is the first run with with new config
-
-        scrapeConfig.metadata.url = tabInfo.url;
-        scrapeConfig.metadata.id = await generateConfigId(tabInfo.url, config.selectors);
-        // Note: we continue with the original config snapshot for this run
+        scrapeConfig.metadata.url = tabs[0].url || '';
+        scrapeConfig.metadata.id = await generateConfigId(tabs[0].url || '', config.selectors);
+        config.metadata = JSON.parse(JSON.stringify(scrapeConfig.metadata));
     }
-    while (!paginationComplete) {
-        if (['idle', 'errored'].includes(getStatus())) break;
 
-        await extractData(config.selectors);
-        if (['idle', 'errored'].includes(getStatus())) break;
-        setStatus('running');
-
-        await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay before navigation
-        if (['idle', 'errored'].includes(getStatus())) break;
-
-        if (config.pagination.mode === 'none') {
-            break;
-        }
-        const paginationStatus = await navigateTo(config);
-        if (['idle', 'errored'].includes(getStatus())) break;
-
-        /* await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
-        if (['idle', 'errored'].includes(getStatus())) break; */
-
-        paginationComplete =
-            paginationStatus === PaginationStateStatus.Complete ||
-            paginationStatus === PaginationStateStatus.Failed;
-
-        if (!paginationComplete) {
-            console.log('Waiting after pagination');
-            await new Promise((resolve) => setTimeout(resolve, config.options.delayMs)); // Delay after navigation
-        }
-    }
-    if (getStatus() !== 'errored' && getStatus() !== 'idle') {
-        setStatus('idle', `done running config ${config.metadata.id}`);
-    }
-    return;
+    // Trigger the background machine
+    browser.runtime.sendMessage({
+        action: 'runMain',
+        config,
+        tabId: tabs[0].id
+    });
 }
+
+export async function stopRun() {
+    // Trigger the background machine
+    browser.runtime.sendMessage({
+        action: 'stopMain',
+    });
+}
+

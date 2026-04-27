@@ -2,7 +2,9 @@ import { Parser } from '@json2csv/plainjs';
 import { downloadZip } from 'client-zip';
 import type { ExtractedGroup, StatusLevel, SupportedExportDataTypes } from '../types';
 import type { SelectorGroup } from '../schema';
+// @ts-expect-error: handlebars integration through vite plugin
 import htmlTemplate from './templates/htmltemplate.hbs';
+// @ts-expect-error: handlebars integration through vite plugin
 import mdTemplate from './templates/mdtemplate.hbs';
 
 function convertTo(data: object[], format: SupportedExportDataTypes): string {
@@ -173,8 +175,11 @@ export function getIndicatorColor(status: StatusLevel): { label: string; style: 
         case 'running':
         case 'extracting':
         case 'inspecting':
+        case 'waiting':
         case 'navigating':
             return { label: capitalize(status), style: '#3B82F6' };
+        case 'completed':
+            return { label: capitalize(status), style: '#228b22' };
         case 'saving':
         case 'loading':
         case 'importing':
@@ -185,4 +190,65 @@ export function getIndicatorColor(status: StatusLevel): { label: string; style: 
         default:
             return { label: capitalize(status), style: '#CBD5E1' };
     }
+}
+
+// navigation helpers
+export async function navigateAndWait(tabId: number, url: string) {
+    return new Promise((resolve, reject) => {
+        browser.tabs
+            .get(tabId)
+            .then((tab) => {
+                if (tab.url === url && tab.status === 'complete') {
+                    resolve(tab);
+                    return;
+                }
+
+                let isNavigating = false;
+                function listener(
+                    updatedTabId: number,
+                    changeInfo: browser.tabs._OnUpdatedChangeInfo,
+                    tab: browser.tabs.Tab,
+                ) {
+                    if (updatedTabId !== tabId) return;
+                    if (changeInfo.status === 'loading') isNavigating = true;
+                    if (isNavigating && changeInfo.status === 'complete' && tab.url === url) {
+                        browser.tabs.onUpdated.removeListener(listener);
+                        resolve(tab);
+                    }
+                }
+                browser.tabs.onUpdated.addListener(listener);
+                browser.tabs.update(tabId, { url }).catch((err) => {
+                    browser.tabs.onUpdated.removeListener(listener);
+                    reject(err);
+                });
+            })
+            .catch(reject);
+    });
+}
+
+export async function waitForTabLoad(
+    tabId: number,
+    timeout: number = 10000,
+): Promise<browser.tabs.Tab> {
+    const tab = await browser.tabs.get(tabId);
+    if (tab.status === 'complete') return tab;
+
+    return new Promise((resolve, reject) => {
+        let listener:
+            | ((updatedTabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo) => void)
+            | undefined = undefined;
+        const timeoutId = setTimeout(() => {
+            if (listener) browser.tabs.onUpdated.removeListener(listener);
+            reject(new Error(`Tab ${tabId} did not load within ${timeout}ms.`));
+        }, timeout);
+
+        listener = (updatedTabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo) => {
+            if (updatedTabId === tabId && changeInfo.status === 'complete') {
+                clearTimeout(timeoutId);
+                if (listener) browser.tabs.onUpdated.removeListener(listener);
+                browser.tabs.get(tabId).then(resolve);
+            }
+        };
+        browser.tabs.onUpdated.addListener(listener);
+    });
 }

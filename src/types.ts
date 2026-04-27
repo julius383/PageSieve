@@ -3,28 +3,23 @@ import type { ScrapeConfig, SelectorGroup } from './schema';
 
 z.config({ jitless: true });
 
-const ScrapeStatusLevel = z.enum(['idle', 'in_progress', 'completed', 'errored']);
-
-export const ScrapeInstance = z.object({
-    runId: z.string().regex(/[a-f0-9]{6}/), // Hash of the scrape configuration
-    url: z.url(),
-    timestamp: z.iso.datetime(),
-    currentPage: z.number().optional(),
-    maxPages: z.number().optional(),
-    status: ScrapeStatusLevel.default('in_progress'),
-});
-
 const StatusLevel = z.enum([
     'idle',
+
+    'inspecting',
+
     'running',
     'extracting',
+    'waiting',
+    'navigating',
+    'completed',
+
     'errored',
+
     'importing',
     'exporting',
     'saving',
     'loading',
-    'inspecting',
-    'navigating',
 ]);
 
 const ExtensionStatus = z.object({
@@ -57,6 +52,15 @@ type NavigatePageRequest = {
 type ExtractDataRequest = {
     action: 'extractData';
     selectors: SelectorGroup[];
+};
+
+type RunMainRequest = {
+    action: 'runMain';
+    config: ScrapeConfig;
+};
+
+type StopMainRequest = {
+    action: 'stopMain';
 };
 
 type InspectorToggleRequest = {
@@ -97,29 +101,19 @@ export type SelectedElementRequest = {
     foundElements: number;
 };
 
-export type ScrapeRunUpdateRequest = {
-    action: 'updateScrapeRun';
-    runId: string;
-    url: string;
-    currentPage: number | undefined;
-    maxPages: number | undefined;
-    status: ScrapeStatusLevel;
-};
-
-export type ScrapeRunStatusSetRequest = {
-    action: 'setScrapeRunStatus';
-    runId: string;
-    status: ScrapeStatusLevel;
-};
-
-export type TriggerPaginationCommitRequest = {
-    action: 'triggerCommitPagination';
+export type ScrapeStatusUpdateRequest = {
+    action: 'updateScrapeStatus';
+    status: StatusLevel;
+    results: ExtractedGroup[];
 };
 
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
 export type StatusLevel = z.infer<typeof StatusLevel>;
-export type ScrapeStatusLevel = z.infer<typeof ScrapeStatusLevel>;
-export type ScrapeInstance = z.infer<typeof ScrapeInstance>;
+export enum PaginationStateStatus {
+    InProgress = 1,
+    Complete,
+    Failed,
+}
 
 /**
  * Represents a single row of extracted data.
@@ -150,6 +144,8 @@ export type MessageRequest =
 
 export type BackgroundRequest =
     | GetTabInfoRequest
+    | RunMainRequest
+    | StopMainRequest
     | NavigatePageRequest
     | LogMessageRequest
     | OpenFullPageRequest;

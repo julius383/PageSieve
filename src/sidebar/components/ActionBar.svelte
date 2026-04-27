@@ -1,7 +1,7 @@
 <script lang="ts">
     import { resetDefinitions, addGroup } from '../stores/scrapeConfig.svelte';
-    import { runConfig, importConfig, exportConfig, saveConfig } from '../actions';
-    import { refreshConfigs, extensionStatus, setStatus } from '../stores/ui.svelte';
+    import { runConfig, importConfig, exportConfig, saveConfig, stopRun } from '../actions';
+    import { refreshConfigs, extensionStatus } from '../stores/ui.svelte';
 
     import { Button } from '$lib/components/ui/button';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
@@ -23,14 +23,11 @@
         fileinput?.click();
     }
 
-    function interruptExecution() {
-        setStatus('idle', 'Execution interrupted by user.');
-    }
-
     async function handleSave() {
         await saveConfig();
         await refreshConfigs();
     }
+    const runninStates = ['running', 'extracting', 'navigating', 'waiting'];
 </script>
 
 <div class="flex items-center gap-2">
@@ -38,10 +35,10 @@
         <Tooltip.Provider>
             <Tooltip.Root>
                 <Tooltip.Trigger>
-                    {#if ['running', 'extracting', 'navigating'].includes(extensionStatus.status)}
+                    {#if runninStates.includes(extensionStatus.status)}
                         <Button
                             size="icon"
-                            onclick={interruptExecution}
+                            onclick={stopRun}
                             class="bg-red-500 text-white font-bold hover:bg-red-600"
                         >
                             <Square class="size-4 mr-1" strokeWidth={4} fill="white" />
@@ -57,7 +54,7 @@
                     {/if}
                 </Tooltip.Trigger>
                 <Tooltip.Content>
-                    {#if ['running', 'extracting', 'navigating'].includes(extensionStatus.status)}
+                    {#if runninStates.includes(extensionStatus.status)}
                         Interrupt execution
                     {:else}
                         Scrape page

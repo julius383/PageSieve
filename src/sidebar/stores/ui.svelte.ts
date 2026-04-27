@@ -1,19 +1,14 @@
 import { SvelteDate } from 'svelte/reactivity';
 import type {
-    ScrapeInstance,
     ExtensionStatus,
     StatusLevel,
-    ScrapeStatusLevel,
-    ScrapeRunStatusSetRequest,
-    ScrapeRunUpdateRequest,
+    ScrapeStatusUpdateRequest,
     ExtractedGroup,
 } from '../../types';
 
 import type { StoredConfig } from '../../schema';
 import { getAllConfigs } from '../services/storage';
 import { addLog } from './logs';
-
-export const scrapeRuns = $state<{ runs: ScrapeInstance[] }>({ runs: [] });
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({
     data: [{ id: 1, results: [] }],
@@ -66,7 +61,7 @@ export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => P
 export function setStatus(status: StatusLevel, message?: string) {
     Object.assign(extensionStatus, {
         status,
-        message,
+        message: message ? message :  status,
         timestamp: new SvelteDate().toISOString(),
     });
     if (status !== 'idle' && message) {
@@ -80,41 +75,16 @@ export function getStatus(): StatusLevel {
 
 export function resetExtractedData() {
     extractedData.data = [{ id: 1, results: [] }];
-    scrapeRuns.runs = [];
 }
 
-export function addOrUpdateScrapeRun(newRun: ScrapeInstance) {
-    const existingIndex = scrapeRuns.runs.findIndex((run) => run.runId === newRun.runId);
-    if (existingIndex !== -1) {
-        Object.assign(scrapeRuns.runs[existingIndex], newRun);
-    } else {
-        scrapeRuns.runs.push(newRun);
-    }
-}
-
-export function updateScrapeRunStatus(runId: string, status: ScrapeStatusLevel) {
-    const run = scrapeRuns.runs.find((r) => r.runId === runId);
-    if (run) {
-        run.status = status;
-    }
-}
-
-// Listener for messages from background script to update scrapeRuns
+// Listener for messages from background script to status
 browser.runtime.onMessage.addListener(
-    (request: ScrapeRunUpdateRequest | ScrapeRunStatusSetRequest) => {
-        if (request.action === 'updateScrapeRun') {
-            const { runId, url, currentPage, maxPages, status } = request;
-            const newRun: ScrapeInstance = {
-                runId,
-                url,
-                timestamp: new SvelteDate().toISOString(),
-                currentPage,
-                maxPages,
-                status: status || 'in_progress',
-            };
-            addOrUpdateScrapeRun(newRun);
-        } else if (request.action === 'setScrapeRunStatus') {
-            updateScrapeRunStatus(request.runId, request.status);
+    (request: ScrapeStatusUpdateRequest) => {
+        if (request.action === 'updateScrapeStatus') {
+            if (request.results.length > 0) {
+                extractedData.data = [...request.results];
+            }
+            setStatus(request.status);
         }
     },
 );
