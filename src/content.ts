@@ -4,8 +4,12 @@ import { DOMInspector } from './dominspector.mjs';
 
 const inspector = new DOMInspector();
 
+type SelectorSingleReturn = string | null | undefined;
+type SelectorReturns = SelectorSingleReturn | SelectorSingleReturn[];
+type ContextType = Element | Node | null;
+type SelectorFunType = (ctx: ContextType) => SelectorReturns;
 type StringArrayMap = {
-    [key: string]: (string | null | undefined)[];
+    [key: string]: SelectorReturns;
 };
 
 async function bgLog(msg: string) {
@@ -56,75 +60,7 @@ async function waitForDOMStable(
     });
 }
 
-/**
- * Waits for the DOMContentLoaded event (DOM is parsed, before images/stylesheets load)
- */
-async function waitForDOMContentLoaded(): Promise<void> {
-    return new Promise((resolve) => {
-        if (document.readyState !== 'loading') {
-            resolve();
-            return;
-        }
-        document.addEventListener('DOMContentLoaded', () => resolve(), { once: true });
-    });
-}
-
-/**
- * Waits for the window load event (everything including images/stylesheets loaded)
- */
-async function waitForWindowLoad(): Promise<void> {
-    return new Promise((resolve) => {
-        if (document.readyState === 'complete') {
-            resolve();
-            return;
-        }
-        window.addEventListener('load', () => resolve(), { once: true });
-    });
-}
-
-/**
- * Comprehensive page load waiter with multiple options
- */
-async function waitForPageReady(
-    options: {
-        domContentLoaded?: boolean;
-        windowLoad?: boolean;
-        domStable?: boolean;
-        stabilityDuration?: number;
-        stabilityTimeout?: number;
-    } = {},
-): Promise<{ success: boolean; error?: string }> {
-    const {
-        domContentLoaded = true,
-        windowLoad = true,
-        domStable = false,
-        stabilityDuration = 700,
-        stabilityTimeout = 5_000,
-    } = options;
-
-    if (domContentLoaded) {
-        await waitForDOMContentLoaded();
-    }
-
-    if (windowLoad) {
-        await waitForWindowLoad();
-    }
-
-    if (domStable) {
-        console.log('waiting for dom to stabilize');
-        if (!(await waitForDOMStable(stabilityTimeout, stabilityDuration))) {
-            console.log('dom stable');
-            return {
-                success: false,
-                error: `DOM did not change or stabilize within ${stabilityTimeout}ms`,
-            };
-        }
-    }
-
-    return { success: true };
-}
-
-function xpathQuerySelectorAll(xpath: string, context: Element | Document = document) {
+function xpathQuerySelectorAll(xpath: string, context: Element | Node = document.body) {
     const result = document.evaluate(
         xpath,
         context,
@@ -140,7 +76,7 @@ function xpathQuerySelectorAll(xpath: string, context: Element | Document = docu
     return nodes;
 }
 
-function xpathQuerySelector(xpath: string, context: Element | Document = document) {
+function xpathQuerySelector(xpath: string, context: Element | Node = document.body) {
     return document.evaluate(xpath, context, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
         .singleNodeValue;
 }
@@ -149,17 +85,20 @@ function isXPath(selector: string): boolean {
     return selector.startsWith('./') || selector.startsWith('//') || selector.startsWith('../');
 }
 
-function pickSelectorFunction(selector: string, type = 'single') {
+function pickSelectorFunction(selector: string, type = 'single'): SelectorFunType {
     if (isXPath(selector)) {
         // selector is xpath
         if (type === 'single') {
-            return (ctx: Element | Document) => {
-                const foundItem = xpathQuerySelector(selector, ctx);
+            return (ctx) => {
+                const foundItem = xpathQuerySelector(selector, ctx === null ? document.body : ctx);
                 return foundItem?.nodeValue;
             };
         } else {
-            return (ctx: Element | Document) => {
-                const foundItems = xpathQuerySelectorAll(selector, ctx);
+            return (ctx) => {
+                const foundItems = xpathQuerySelectorAll(
+                    selector,
+                    ctx === null ? document.body : ctx,
+                );
                 return foundItems.map((i) => i?.nodeValue);
             };
         }
@@ -173,15 +112,15 @@ function pickSelectorFunction(selector: string, type = 'single') {
             selector = selector.slice(0, parts.index);
         }
         if (type === 'single') {
-            return (item: Element | Document) => {
-                const foundItem = item.querySelector(selector);
+            return (ctx) => {
+                const foundItem = (ctx as HTMLElement).querySelector(selector);
                 return attribute
                     ? foundItem?.getAttribute(attribute)?.trim()
                     : foundItem?.textContent?.trim();
             };
         } else {
-            return (item: Element | Document) => {
-                const foundItems = item.querySelectorAll(selector);
+            return (ctx) => {
+                const foundItems = (ctx as HTMLElement).querySelectorAll(selector);
                 return Array.from(foundItems).map((i) => {
                     return attribute ? i?.getAttribute(attribute)?.trim() : i?.textContent?.trim();
                 });
@@ -196,8 +135,6 @@ function pickSelectorFunction(selector: string, type = 'single') {
  * @returns Array of extracted data objects
  */
 function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
-    // console.log('Attempting to extract data with');
-    // console.dir(selectors);
     const extractionResults: ExtractedGroup[] = [];
 
     selectors.forEach(({ id, container, fields }) => {
@@ -234,7 +171,7 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
                     foundItems[name] = found;
                 }
             });
-            const rows = zipObjectArrays(foundItems) as ExtractedRow[];
+            const rows = zipObjectArrays(foundItems as Record<string, unknown[]>) as ExtractedRow[];
             extractionResults.push({ id, results: rows });
         }
     });
