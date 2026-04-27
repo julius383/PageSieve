@@ -104,6 +104,7 @@ export type SelectedElementRequest = {
 export type ScrapeStatusUpdateRequest = {
     action: 'updateScrapeStatus';
     status: StatusLevel;
+    message: string;
     results: ExtractedGroup[];
 };
 

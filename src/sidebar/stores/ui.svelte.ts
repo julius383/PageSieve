@@ -84,7 +84,11 @@ browser.runtime.onMessage.addListener(
             if (request.results.length > 0) {
                 extractedData.data = [...request.results];
             }
-            setStatus(request.status);
+            if (request.message) {
+                setStatus(request.status, request.message);
+            } else {
+                setStatus(request.status);
+            }
         }
     },
 );

@@ -36,13 +36,25 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
 
             // Broadcast state and context changes to the Sidebar UI
             scrapeActor.subscribe((state) => {
-                console.log(`State: `);
-                console.dir(state.value);
+                const currentState = state.value instanceof Object ? Object.keys(state.value)[0] : state.value;
+                console.log(`State: ${currentState}`);
                 console.dir(state.context)
                 console.log('---');
+                let message: string = '';
+                if (currentState == 'errored') {
+                    message = state.context.error
+                } else if (currentState == 'extracting') {
+                    message = `extracting data from ${state.context.currentURL}`
+                } else if (currentState == 'navigating') {
+                    message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`
+                }else if (currentState == 'waiting') {
+                    message = `waiting for ${state.context.config.options.delayMs} milliseconds`
+                }
+
                 browser.runtime.sendMessage({
                     action: 'updateScrapeStatus',
                     status: state.value instanceof Object ? Object.keys(state.value)[0] : state.value,
+                    message: message,
                     results: state.context.results,
                 });
             });

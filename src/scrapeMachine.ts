@@ -57,20 +57,20 @@ export const scrapeMachine = setup({
             });
         }),
         navigateLinks: fromPromise<
-            { status: PaginationStateStatus },
-            { tabId: number; config: ScrapeConfig }
+            { status: PaginationStateStatus; url: string },
+            { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config } = input;
+            const { tabId, config, currentURL } = input;
             const tab = await browser.tabs.get(tabId);
             const pagination = config.pagination;
             if (pagination.mode == 'links') {
                 const idx = pagination.pageLinks.findIndex((url: string) => url === tab.url);
                 if (idx === -1 || idx + 1 >= pagination.pageLinks.length) {
-                    return { status: PaginationStateStatus.Complete };
+                    return { status: PaginationStateStatus.Complete,  url: currentURL };
                 }
                 const nextURL = pagination.pageLinks[idx + 1];
                 await navigateAndWait(tabId, nextURL);
-                return { status: PaginationStateStatus.InProgress };
+                return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
                     `Unable to navigate to Next Link using pagination: ${pagination.mode}`,
@@ -78,7 +78,7 @@ export const scrapeMachine = setup({
             }
         }),
         navigateTemplate: fromPromise<
-            { status: PaginationStateStatus },
+            { status: PaginationStateStatus, url: string },
             { tabId: number; config: ScrapeConfig }
         >(async ({ input }) => {
             const { tabId, config } = input;
@@ -99,7 +99,7 @@ export const scrapeMachine = setup({
                     (currentPageNum + increment).toString(),
                 );
                 await navigateAndWait(tabId, nextURL);
-                return { status: PaginationStateStatus.InProgress };
+                return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
                     `Unable to navigate with template using pagination: ${pagination.mode}`,
@@ -108,9 +108,9 @@ export const scrapeMachine = setup({
         }),
         navigateNext: fromPromise<
             { type: 'spa' | 'navigation' },
-            { tabId: number; config: ScrapeConfig }
+            { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config } = input;
+            const { tabId, config, currentURL } = input;
 
             const pagination = config.pagination;
             if (pagination.mode == 'next') {
@@ -126,7 +126,7 @@ export const scrapeMachine = setup({
                     const listener = (tid: number, info: browser.tabs._OnUpdatedChangeInfo) => {
                         if (tid === tabId && info.status === 'loading') {
                             browser.tabs.onUpdated.removeListener(listener);
-                            resolve({ type: 'navigation' });
+                            resolve({ type: 'navigation', url: info.url });
                         }
                     };
                     browser.tabs.onUpdated.addListener(listener);
@@ -136,10 +136,10 @@ export const scrapeMachine = setup({
 
                 if (result.type === 'navigation') {
                     await waitForTabLoad(tabId, config.options.timeoutMs);
-                    return { type: 'navigation' };
+                    return { type: 'navigation', url: result.url };
                 } else {
                     if (!result.success) throw new Error(result.error || 'SPA click failed');
-                    return { type: 'spa' };
+                    return { type: 'spa' , url: currentURL };
                 }
             } else {
                 throw new Error(
@@ -169,6 +169,9 @@ export const scrapeMachine = setup({
         incrementPage: assign({
             currentPage: ({ context }) => context.currentPage + 1,
         }),
+        updateURL: assign({
+            currentURL: ({ event }) => (event as unknown as {output: { url: string; }}).output.url
+        })
     },
 }).createMachine({
     id: 'scraper',
@@ -251,7 +254,7 @@ export const scrapeMachine = setup({
                                     event.output.status === PaginationStateStatus.Complete,
                                 target: '#scraper.completed',
                             },
-                            { target: '#scraper.extracting', actions: 'incrementPage' },
+                            { target: '#scraper.extracting', actions: [ 'incrementPage', 'updateURL' ] },
                         ],
                         onError: '#scraper.error',
                     },
@@ -260,7 +263,7 @@ export const scrapeMachine = setup({
                     invoke: {
                         src: 'navigateTemplate',
                         input: ({ context }) => ({ tabId: context.tabId, config: context.config }),
-                        onDone: { target: '#scraper.extracting', actions: 'incrementPage' },
+                        onDone: { target: '#scraper.extracting', actions: [ 'incrementPage', 'updateURL' ] },
                         onError: '#scraper.error',
                     },
                 },
@@ -293,7 +296,7 @@ export const scrapeMachine = setup({
                                     {
                                         guard: ({ event }) => event.output.type === 'navigation',
                                         target: '#scraper.extracting',
-                                        actions: 'incrementPage',
+                                        actions: [ 'incrementPage', 'updateURL' ],
                                     },
                                     { target: 'hashingAfter' },
                                 ],
