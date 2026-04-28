@@ -186,6 +186,9 @@ export const scrapeMachine = setup({
         maxPages:
             'maxPages' in input.config.pagination ? input.config.pagination.maxPages : undefined,
     }),
+    on: {
+        STOP: { target: '.idle' }
+    },
     states: {
         idle: {
             on: { START: 'extracting' },

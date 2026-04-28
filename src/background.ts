@@ -64,8 +64,11 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
         }
     } else if (request.action === 'stopMain') {
         // Handle stop request from Sidebar
-        scrapeActor?.stop();
-        scrapeActor = null;
+        if (scrapeActor) {
+            scrapeActor.send({type: 'STOP'})
+            scrapeActor?.stop();
+            scrapeActor = null;
+        }
         return Promise.resolve({ success: true });
     } else if (request.action === 'getTabUrl') {
         const [tab] = await browser.tabs.query({
