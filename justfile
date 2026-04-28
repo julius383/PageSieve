@@ -20,3 +20,9 @@ zip-dist:
 zip-source:
   rm pagesieve_source.zip || true
   git ls-files -z | xargs -0 zip pagesieve_source.zip
+
+[working-directory: 'docs']
+generate-state-viz:
+  bun run ../src/scripts/create-dot.ts
+  dot -Tsvg machine.dot -o machine.svg
+  -rm machine.dot
