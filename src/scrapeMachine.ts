@@ -79,10 +79,9 @@ export const scrapeMachine = setup({
         }),
         navigateTemplate: fromPromise<
             { status: PaginationStateStatus, url: string },
-            { tabId: number; config: ScrapeConfig }
+            { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config } = input;
-            const tab = await browser.tabs.get(tabId);
+            const { tabId, config, currentURL } = input;
             const pagination = config.pagination;
             if (pagination.mode == 'template') {
                 const { urlTemplate, startPage, increment } = pagination;
@@ -91,7 +90,7 @@ export const scrapeMachine = setup({
                 const pageRegex = new RegExp(escapedTemplate.replace('\\{\\{page\\}\\}', '(\\d+)'));
 
                 let currentPageNum = startPage;
-                const match = (tab.url || '').match(pageRegex);
+                const match = (currentURL || '').match(pageRegex);
                 if (match && match[1]) currentPageNum = parseInt(match[1], 10);
 
                 const nextURL = urlTemplate.replace(
@@ -250,7 +249,7 @@ export const scrapeMachine = setup({
                 links: {
                     invoke: {
                         src: 'navigateLinks',
-                        input: ({ context }) => ({ tabId: context.tabId, config: context.config }),
+                        input: ({ context }) => ({ tabId: context.tabId, config: context.config, currentURL: context.currentURL }),
                         onDone: [
                             {
                                 guard: ({ event }) =>
@@ -265,7 +264,7 @@ export const scrapeMachine = setup({
                 template: {
                     invoke: {
                         src: 'navigateTemplate',
-                        input: ({ context }) => ({ tabId: context.tabId, config: context.config }),
+                        input: ({ context }) => ({ tabId: context.tabId, config: context.config, currentURL: context.currentURL, }),
                         onDone: { target: '#scraper.extracting', actions: [ 'incrementPage', 'updateURL' ] },
                         onError: '#scraper.error',
                     },
@@ -294,6 +293,7 @@ export const scrapeMachine = setup({
                                 input: ({ context }) => ({
                                     tabId: context.tabId,
                                     config: context.config,
+                                    currentURL: context.currentURL,
                                 }),
                                 onDone: [
                                     {
