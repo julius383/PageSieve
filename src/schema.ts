@@ -16,6 +16,7 @@ export const ExtractionOptions = z.object({
     runJavaScript: z.boolean().optional().default(true),
     delayMs: z.number().positive().default(3_000),
     timeoutMs: z.number().positive().optional().default(60_000),
+    maxRetries: z.number().nonnegative().optional().default(2),
     appendData: z.boolean().default(true),
 });
 

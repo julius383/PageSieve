@@ -12,6 +12,7 @@ interface ScrapeContext {
     currentPage: number;
     maxPages: number | undefined;
     bodyHash?: string;
+    retries: number;
 }
 
 type ScrapeEvent = { type: 'START' } | { type: 'STOP' } | { type: 'RETRY' };
@@ -38,6 +39,7 @@ export const scrapeMachine = setup({
                 'maxPages' in context.config.pagination ? context.config.pagination.maxPages : 0;
             return !!(maxPages && maxPages !== 0 && context.currentPage >= maxPages);
         },
+        canRetry: ({ context }) => context.retries < (context.config.options.maxRetries ?? 2),
     },
     actors: {
         triggerExtraction: fromPromise<
@@ -61,15 +63,14 @@ export const scrapeMachine = setup({
             { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
             const { tabId, config, currentURL } = input;
-            const tab = await browser.tabs.get(tabId);
             const pagination = config.pagination;
             if (pagination.mode == 'links') {
-                const idx = pagination.pageLinks.findIndex((url: string) => url === tab.url);
+                const idx = pagination.pageLinks.findIndex((url: string) => url === currentURL);
                 if (idx === -1 || idx + 1 >= pagination.pageLinks.length) {
-                    return { status: PaginationStateStatus.Complete,  url: currentURL };
+                    return { status: PaginationStateStatus.Complete, url: currentURL };
                 }
                 const nextURL = pagination.pageLinks[idx + 1];
-                await navigateAndWait(tabId, nextURL);
+                await navigateAndWait(tabId, nextURL, config.options.timeoutMs);
                 return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
@@ -78,7 +79,7 @@ export const scrapeMachine = setup({
             }
         }),
         navigateTemplate: fromPromise<
-            { status: PaginationStateStatus, url: string },
+            { status: PaginationStateStatus; url: string },
             { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
             const { tabId, config, currentURL } = input;
@@ -97,7 +98,7 @@ export const scrapeMachine = setup({
                     '{{page}}',
                     (currentPageNum + increment).toString(),
                 );
-                await navigateAndWait(tabId, nextURL);
+                await navigateAndWait(tabId, nextURL, config.options.timeoutMs);
                 return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
@@ -106,39 +107,49 @@ export const scrapeMachine = setup({
             }
         }),
         navigateNext: fromPromise<
-            { type: 'spa' | 'navigation' },
+            { type: 'spa' | 'navigation'; url: string },
             { tabId: number; config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
             const { tabId, config, currentURL } = input;
 
             const pagination = config.pagination;
             if (pagination.mode == 'next') {
+                let listener:
+                    | ((tid: number, info: browser.tabs._OnUpdatedChangeInfo) => void)
+                    | undefined;
+
+                const navPromise = new Promise<{ type: 'navigation'; url: string }>((resolve) => {
+                    listener = (tid: number, info: browser.tabs._OnUpdatedChangeInfo) => {
+                        if (tid === tabId && info.status === 'loading') {
+                            resolve({ type: 'navigation', url: info.url || '' });
+                        }
+                    };
+                    browser.tabs.onUpdated.addListener(listener);
+                });
+
                 const spaPromise = browser.tabs
                     .sendMessage(tabId, {
                         action: 'clickAndWaitForStable',
                         selector: pagination.nextSelector,
                         timeout: config.options.timeoutMs,
                     })
-                    .then((v) => ({ type: 'spa', ...v }));
+                    .then((v) => ({ type: 'spa' as const, ...v }));
 
-                const navPromise = new Promise((resolve) => {
-                    const listener = (tid: number, info: browser.tabs._OnUpdatedChangeInfo) => {
-                        if (tid === tabId && info.status === 'loading') {
-                            browser.tabs.onUpdated.removeListener(listener);
-                            resolve({ type: 'navigation', url: info.url });
-                        }
-                    };
-                    browser.tabs.onUpdated.addListener(listener);
-                });
+                try {
+                    const result = await Promise.race([spaPromise, navPromise]);
 
-                const result = await Promise.race([spaPromise, navPromise]);
-
-                if (result.type === 'navigation') {
-                    await waitForTabLoad(tabId, config.options.timeoutMs);
-                    return { type: 'navigation', url: result.url };
-                } else {
-                    if (!result.success) throw new Error(result.error || 'SPA click failed');
-                    return { type: 'spa' , url: currentURL };
+                    if (result.type === 'navigation') {
+                        const tab = await waitForTabLoad(tabId, config.options.timeoutMs);
+                        return { type: 'navigation', url: tab.url || result.url };
+                    } else {
+                        const res = result as { success: boolean; error?: string };
+                        if (!res.success) throw new Error(res.error || 'SPA click failed');
+                        return { type: 'spa', url: currentURL };
+                    }
+                } finally {
+                    if (listener) {
+                        browser.tabs.onUpdated.removeListener(listener);
+                    }
                 }
             } else {
                 throw new Error(
@@ -169,8 +180,14 @@ export const scrapeMachine = setup({
             currentPage: ({ context }) => context.currentPage + 1,
         }),
         updateURL: assign({
-            currentURL: ({ event }) => (event as unknown as {output: { url: string; }}).output.url
-        })
+            currentURL: ({ event }) => (event as unknown as { output: { url: string } }).output.url,
+        }),
+        incrementRetry: assign({
+            retries: ({ context }) => context.retries + 1,
+        }),
+        resetRetries: assign({
+            retries: 0,
+        }),
     },
 }).createMachine({
     id: 'scraper',
@@ -182,11 +199,12 @@ export const scrapeMachine = setup({
         results: [] as ExtractedGroup[],
         error: null,
         currentPage: 1,
+        retries: 0,
         maxPages:
             'maxPages' in input.config.pagination ? input.config.pagination.maxPages : undefined,
     }),
     on: {
-        STOP: { target: '.idle' }
+        STOP: { target: '.idle' },
     },
     states: {
         idle: {
@@ -203,19 +221,31 @@ export const scrapeMachine = setup({
                     {
                         guard: 'hasPagination',
                         target: 'waiting',
-                        actions: 'saveResults',
+                        actions: ['saveResults', 'resetRetries'],
                     },
                     {
                         target: 'idle',
-                        actions: 'saveResults',
+                        actions: ['saveResults', 'resetRetries'],
                     },
                 ],
-                onError: {
-                    target: 'error',
-                    actions: assign({
-                        error: ({ event }) => (event.error as Error).message,
-                    }),
-                },
+                onError: [
+                    {
+                        guard: 'canRetry',
+                        target: 'retrying',
+                        actions: 'incrementRetry',
+                    },
+                    {
+                        target: 'error',
+                        actions: assign({
+                            error: ({ event }) => (event.error as Error).message,
+                        }),
+                    },
+                ],
+            },
+        },
+        retrying: {
+            after: {
+                DELAY_MS: 'extracting',
             },
         },
         waiting: {
@@ -249,24 +279,52 @@ export const scrapeMachine = setup({
                 links: {
                     invoke: {
                         src: 'navigateLinks',
-                        input: ({ context }) => ({ tabId: context.tabId, config: context.config, currentURL: context.currentURL }),
+                        input: ({ context }) => ({
+                            tabId: context.tabId,
+                            config: context.config,
+                            currentURL: context.currentURL,
+                        }),
                         onDone: [
                             {
                                 guard: ({ event }) =>
                                     event.output.status === PaginationStateStatus.Complete,
                                 target: '#scraper.completed',
                             },
-                            { target: '#scraper.extracting', actions: [ 'incrementPage', 'updateURL' ] },
+                            {
+                                target: '#scraper.extracting',
+                                actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                            },
                         ],
-                        onError: '#scraper.error',
+                        onError: [
+                            {
+                                guard: 'canRetry',
+                                target: '#scraper.navigating.retryingNav',
+                                actions: 'incrementRetry',
+                            },
+                            { target: '#scraper.error' },
+                        ],
                     },
                 },
                 template: {
                     invoke: {
                         src: 'navigateTemplate',
-                        input: ({ context }) => ({ tabId: context.tabId, config: context.config, currentURL: context.currentURL, }),
-                        onDone: { target: '#scraper.extracting', actions: [ 'incrementPage', 'updateURL' ] },
-                        onError: '#scraper.error',
+                        input: ({ context }) => ({
+                            tabId: context.tabId,
+                            config: context.config,
+                            currentURL: context.currentURL,
+                        }),
+                        onDone: {
+                            target: '#scraper.extracting',
+                            actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                        },
+                        onError: [
+                            {
+                                guard: 'canRetry',
+                                target: '#scraper.navigating.retryingNav',
+                                actions: 'incrementRetry',
+                            },
+                            { target: '#scraper.error' },
+                        ],
                     },
                 },
                 next: {
@@ -299,11 +357,18 @@ export const scrapeMachine = setup({
                                     {
                                         guard: ({ event }) => event.output.type === 'navigation',
                                         target: '#scraper.extracting',
-                                        actions: [ 'incrementPage', 'updateURL' ],
+                                        actions: ['incrementPage', 'updateURL', 'resetRetries'],
                                     },
                                     { target: 'hashingAfter' },
                                 ],
-                                onError: '#scraper.error',
+                                onError: [
+                                    {
+                                        guard: 'canRetry',
+                                        target: '#scraper.navigating.retryingNav',
+                                        actions: 'incrementRetry',
+                                    },
+                                    { target: '#scraper.error' },
+                                ],
                             },
                         },
                         hashingAfter: {
@@ -318,11 +383,19 @@ export const scrapeMachine = setup({
                                                 .output.bodyHash,
                                         target: '#scraper.completed',
                                     },
-                                    { target: '#scraper.extracting', actions: 'incrementPage' },
+                                    {
+                                        target: '#scraper.extracting',
+                                        actions: ['incrementPage', 'resetRetries'],
+                                    },
                                 ],
                                 onError: '#scraper.error',
                             },
                         },
+                    },
+                },
+                retryingNav: {
+                    after: {
+                        DELAY_MS: 'deciding',
                     },
                 },
             },

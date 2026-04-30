@@ -46,6 +46,17 @@
                 <Field.Description>Allow page JavaScript execution</Field.Description>
             </Field.Content>
         </Field.Field>
+        <Field.Field>
+            <Field.Label>Max Retries</Field.Label>
+            <Input
+                type="number"
+                min="0"
+                step="1"
+                placeholder="e.g. 3"
+                bind:value={scrapeConfig.options.maxRetries}
+            />
+            <Field.Description>Abort extraction if the amount is exceeded</Field.Description>
+        </Field.Field>
     </Field.Group>
 </Field.Set>
 
