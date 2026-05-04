@@ -5,12 +5,26 @@ import { DOMInspector } from './dominspector.mjs';
 const inspector = new DOMInspector();
 
 type SelectorSingleReturn = string | null | undefined;
-type SelectorReturns = SelectorSingleReturn | SelectorSingleReturn[];
+type SelectorReturns =
+    | SelectorSingleReturn
+    | SelectorSingleReturn[]
+    | Element
+    | NodeListOf<Element>;
 type ContextType = Element | Node | null;
 type SelectorFunType = (ctx: ContextType) => SelectorReturns;
 type StringArrayMap = {
     [key: string]: SelectorReturns;
 };
+
+interface QueryOptions {
+    context?: Element | Node;
+    extractContent?: boolean;
+}
+
+interface PickSelectorOptions {
+    type?: 'single' | 'array';
+    extractContent?: boolean;
+}
 
 async function bgLog(msg: string) {
     await browser.runtime.sendMessage({
@@ -60,70 +74,152 @@ async function waitForDOMStable(
     });
 }
 
-function xpathQuerySelectorAll(xpath: string, context: Element | Node = document.body) {
-    const result = document.evaluate(
-        xpath,
-        context,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null,
-    );
+function extractXpathResult(result: XPathResult) {
+    switch (result.resultType) {
+        case XPathResult.STRING_TYPE: // text() or @attr expressions
+            return result.stringValue;
+        case XPathResult.NUMBER_TYPE:
+            return result.numberValue;
+        case XPathResult.BOOLEAN_TYPE:
+            return result.booleanValue;
+        default: // UNORDERED_NODE_ITERATOR_TYPE or ORDERED_NODE_ITERATOR_TYPE
+            return null; // it's a node result, handle separately
+    }
+}
+
+function xpathQuerySelectorAll(
+    xpath: string,
+    { context = document.body, extractContent = true }: QueryOptions = {},
+) {
+    if (!extractContent) {
+        const result = document.evaluate(
+            xpath,
+            context,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null,
+        );
+
+        const nodes = [];
+        for (let i = 0; i < result.snapshotLength; i++) {
+            nodes.push(result.snapshotItem(i));
+        }
+        return nodes;
+    }
+    const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
+    console.debug(`Found data of type ${result.resultType} for query ${xpath} in qsa`);
+    const scalar = extractXpathResult(result);
+    if (scalar !== null) return [scalar];
 
     const nodes = [];
-    for (let i = 0; i < result.snapshotLength; i++) {
-        nodes.push(result.snapshotItem(i));
+    let node;
+    while ((node = result.iterateNext())) {
+        nodes.push(node.textContent?.trim());
     }
     return nodes;
 }
 
-function xpathQuerySelector(xpath: string, context: Element | Node = document.body) {
-    return document.evaluate(xpath, context, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-        .singleNodeValue;
+function xpathQuerySelector(
+    xpath: string,
+    { context = document.body, extractContent = true }: QueryOptions = {},
+) {
+    if (!extractContent) {
+        return document.evaluate(xpath, context, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue;
+    }
+    const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
+
+    console.debug(`Found data of type ${result.resultType} for query ${xpath} in s`);
+    const scalar = extractXpathResult(result);
+    if (scalar !== null) return scalar;
+
+    // Otherwise grab the first node
+    const node = result.iterateNext();
+    return node ? node.textContent?.trim() : null;
+}
+
+function parseCSS(expr: string): [string | null, string] {
+    // expr is css
+    // img?src - extracts the src attribute from img tag
+    const parts = /\?([-a-zA-Z]+)$/gm.exec(expr);
+    let attribute = null;
+    if (parts != null) {
+        attribute = parts[1];
+        expr = expr.slice(0, parts.index);
+    }
+    return [attribute, expr];
+}
+
+function cssQuerySelector(
+    css: string,
+    { context = document.body, extractContent = true }: QueryOptions = {},
+) {
+    const [attribute, selector] = parseCSS(css);
+
+    const foundItem = (context as HTMLElement).querySelector(selector);
+    if (!extractContent) return foundItem;
+
+    return attribute ? foundItem?.getAttribute(attribute)?.trim() : foundItem?.textContent?.trim();
+}
+
+function cssQuerySelectorAll(
+    css: string,
+    { context = document.body, extractContent = true }: QueryOptions = {},
+) {
+    const [attribute, selector] = parseCSS(css);
+
+    const foundItems = (context as HTMLElement).querySelectorAll(selector);
+
+    if (!extractContent) return foundItems;
+
+    return Array.from(foundItems).map((i) => {
+        return attribute ? i?.getAttribute(attribute)?.trim() : i?.textContent?.trim();
+    });
 }
 
 function isXPath(selector: string): boolean {
     return selector.startsWith('./') || selector.startsWith('//') || selector.startsWith('../');
 }
 
-function pickSelectorFunction(selector: string, type = 'single'): SelectorFunType {
+function pickSelectorFunction(
+    selector: string,
+    { type = 'single', extractContent = true }: PickSelectorOptions = {},
+): SelectorFunType {
     if (isXPath(selector)) {
         // selector is xpath
         if (type === 'single') {
             return (ctx) => {
-                const foundItem = xpathQuerySelector(selector, ctx === null ? document.body : ctx);
-                return foundItem?.nodeValue;
+                const foundItem = xpathQuerySelector(selector, {
+                    context: ctx === null ? document.body : ctx,
+                    extractContent,
+                });
+                return foundItem;
             };
         } else {
             return (ctx) => {
-                const foundItems = xpathQuerySelectorAll(
-                    selector,
-                    ctx === null ? document.body : ctx,
-                );
-                return foundItems.map((i) => i?.nodeValue);
+                const foundItems = xpathQuerySelectorAll(selector, {
+                    context: ctx === null ? document.body : ctx,
+                    extractContent,
+                });
+                return foundItems;
             };
         }
     } else {
-        // selector is css
-        // img?src - extracts the src attribute from img tag
-        const parts = /\?([-a-zA-Z]+)$/gm.exec(selector);
-        let attribute = null;
-        if (parts != null) {
-            attribute = parts[1];
-            selector = selector.slice(0, parts.index);
-        }
         if (type === 'single') {
             return (ctx) => {
-                const foundItem = (ctx as HTMLElement).querySelector(selector);
-                return attribute
-                    ? foundItem?.getAttribute(attribute)?.trim()
-                    : foundItem?.textContent?.trim();
+                const foundItem = cssQuerySelector(selector, {
+                    context: ctx as HTMLElement,
+                    extractContent,
+                });
+                return foundItem;
             };
         } else {
             return (ctx) => {
-                const foundItems = (ctx as HTMLElement).querySelectorAll(selector);
-                return Array.from(foundItems).map((i) => {
-                    return attribute ? i?.getAttribute(attribute)?.trim() : i?.textContent?.trim();
+                const foundItems = cssQuerySelectorAll(selector, {
+                    context: ctx as HTMLElement,
+                    extractContent,
                 });
+                return foundItems;
             };
         }
     }
@@ -141,9 +237,15 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
         if (container) {
             let containerItems;
             if (isXPath(container)) {
-                containerItems = xpathQuerySelectorAll(container);
+                containerItems = xpathQuerySelectorAll(container, {
+                    context: document.body,
+                    extractContent: false,
+                });
             } else {
-                containerItems = document.querySelectorAll(container);
+                containerItems = cssQuerySelectorAll(container, {
+                    context: document.body,
+                    extractContent: false,
+                });
             }
             if (!containerItems) {
                 return;
@@ -151,7 +253,7 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
             const rows: ExtractedRow[] = [];
             containerItems.forEach((containerItem) => {
                 const fieldData = fields.map(({ name, selector, type }) => {
-                    const fn = pickSelectorFunction(selector, type);
+                    const fn = pickSelectorFunction(selector, { type });
                     const value = fn(containerItem);
                     return { [name]: value };
                 });
@@ -165,7 +267,7 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
             // no container so assume no missing fields and zip
             const foundItems: StringArrayMap = {};
             fields.forEach(({ name, selector }) => {
-                const fn = pickSelectorFunction(selector, 'array');
+                const fn = pickSelectorFunction(selector, { type: 'array' });
                 const found = fn(document);
                 if (found) {
                     foundItems[name] = found;
