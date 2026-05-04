@@ -338,7 +338,11 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
             .join('');
         return { bodyHash: hash };
     } else if (request.action === 'clickAndWaitForStable') {
-        const el = document.querySelector<HTMLElement>(request.selector);
+        const fn = pickSelectorFunction(request.selector, {
+            type: 'single',
+            extractContent: false,
+        });
+        const el = fn(document.body);
         if (!el) {
             await bgLog(`Element not found for click:  ${request.selector}`);
             return {
@@ -352,7 +356,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
 
         const waitPromise = waitForDOMStable(request.timeout, stabilityDuration);
 
-        el.click();
+        (el as HTMLElement).click();
 
         await bgLog('Click initiated, now waiting for DOM to stabilize...');
         const stable = await waitPromise;
