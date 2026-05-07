@@ -13,9 +13,14 @@ interface ScrapeContext {
     maxPages: number | undefined;
     bodyHash?: string;
     retries: number;
+    isTesting: boolean;
 }
 
-type ScrapeEvent = { type: 'START' } | { type: 'STOP' } | { type: 'RETRY' };
+type ScrapeEvent =
+    | { type: 'START' }
+    | { type: 'STOP' }
+    | { type: 'RETRY' }
+    | { type: 'TEST_PAGINATION' };
 
 interface InputType {
     config: ScrapeConfig;
@@ -200,6 +205,7 @@ export const scrapeMachine = setup({
         error: null,
         currentPage: 1,
         retries: 0,
+        isTesting: false,
         maxPages:
             'maxPages' in input.config.pagination ? input.config.pagination.maxPages : undefined,
     }),
@@ -208,7 +214,13 @@ export const scrapeMachine = setup({
     },
     states: {
         idle: {
-            on: { START: 'extracting' },
+            on: {
+                START: 'extracting',
+                TEST_PAGINATION: {
+                    target: 'navigating',
+                    actions: assign({ isTesting: true })
+                }
+            },
         },
         extracting: {
             invoke: {
@@ -235,7 +247,7 @@ export const scrapeMachine = setup({
                         actions: 'incrementRetry',
                     },
                     {
-                        target: 'error',
+                        target: 'errored',
                         actions: assign({
                             error: ({ event }) => (event.error as Error).message,
                         }),
@@ -286,6 +298,11 @@ export const scrapeMachine = setup({
                         }),
                         onDone: [
                             {
+                                guard: ({ context }) => context.isTesting,
+                                target: '#scraper.completed',
+                                actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                            },
+                            {
                                 guard: ({ event }) =>
                                     event.output.status === PaginationStateStatus.Complete,
                                 target: '#scraper.completed',
@@ -301,7 +318,7 @@ export const scrapeMachine = setup({
                                 target: '#scraper.navigating.retryingNav',
                                 actions: 'incrementRetry',
                             },
-                            { target: '#scraper.error' },
+                            { target: '#scraper.errored' },
                         ],
                     },
                 },
@@ -313,17 +330,24 @@ export const scrapeMachine = setup({
                             config: context.config,
                             currentURL: context.currentURL,
                         }),
-                        onDone: {
-                            target: '#scraper.extracting',
-                            actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                        },
+                        onDone: [
+                            {
+                                guard: ({ context }) => context.isTesting,
+                                target: '#scraper.completed',
+                                actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                            },
+                            {
+                                target: '#scraper.extracting',
+                                actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                            },
+                        ],
                         onError: [
                             {
                                 guard: 'canRetry',
                                 target: '#scraper.navigating.retryingNav',
                                 actions: 'incrementRetry',
                             },
-                            { target: '#scraper.error' },
+                            { target: '#scraper.errored' },
                         ],
                     },
                 },
@@ -342,7 +366,7 @@ export const scrapeMachine = setup({
                                                 .output.bodyHash,
                                     }),
                                 },
-                                onError: '#scraper.error',
+                                onError: '#scraper.errored',
                             },
                         },
                         clicking: {
@@ -354,6 +378,12 @@ export const scrapeMachine = setup({
                                     currentURL: context.currentURL,
                                 }),
                                 onDone: [
+                                    {
+                                        guard: ({ context, event }) =>
+                                            event.output.type === 'navigation' && context.isTesting,
+                                        target: '#scraper.completed',
+                                        actions: ['incrementPage', 'updateURL', 'resetRetries'],
+                                    },
                                     {
                                         guard: ({ event }) => event.output.type === 'navigation',
                                         target: '#scraper.extracting',
@@ -367,7 +397,7 @@ export const scrapeMachine = setup({
                                         target: '#scraper.navigating.retryingNav',
                                         actions: 'incrementRetry',
                                     },
-                                    { target: '#scraper.error' },
+                                    { target: '#scraper.errored' },
                                 ],
                             },
                         },
@@ -384,11 +414,16 @@ export const scrapeMachine = setup({
                                         target: '#scraper.completed',
                                     },
                                     {
+                                        guard: ({ context }) => context.isTesting,
+                                        target: '#scraper.completed',
+                                        actions: ['incrementPage', 'resetRetries'],
+                                    },
+                                    {
                                         target: '#scraper.extracting',
                                         actions: ['incrementPage', 'resetRetries'],
                                     },
                                 ],
-                                onError: '#scraper.error',
+                                onError: '#scraper.errored',
                             },
                         },
                     },
@@ -403,7 +438,7 @@ export const scrapeMachine = setup({
         completed: {
             type: 'final',
         },
-        error: {
+        errored: {
             on: {
                 RETRY: 'extracting',
                 STOP: 'idle',

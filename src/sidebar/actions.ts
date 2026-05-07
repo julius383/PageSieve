@@ -11,13 +11,7 @@ import { scrapeConfig, setScrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../schema';
 import { saveToBrowser } from './services/storage';
 import { commitPaginationToScrapeConfig } from './stores/pagination.svelte';
-import { ExtractedGroup } from '../types';
-
-export enum PaginationStateStatus {
-    InProgress = 1,
-    Complete,
-    Failed,
-}
+import { type ExtractedGroup, PaginationStateStatus } from '../types';
 
 /**
  * Extracts data from current tab using defined selector. Returns via
@@ -198,7 +192,7 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
         },
         async () => {
             const navRes = await browser.runtime.sendMessage({
-                action: 'pageNavigate',
+                action: 'testNavigate',
                 config: config,
                 configHash: await shortHash(config.selectors),
                 testing,

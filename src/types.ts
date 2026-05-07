@@ -42,8 +42,8 @@ type GetTabInfoRequest = {
     action: 'getTabUrl';
 };
 
-type NavigatePageRequest = {
-    action: 'pageNavigate';
+type TestNavigateRequest = {
+    action: 'testNavigate';
     config: ScrapeConfig;
     configHash: string;
     testing: boolean;
@@ -147,6 +147,6 @@ export type BackgroundRequest =
     | GetTabInfoRequest
     | RunMainRequest
     | StopMainRequest
-    | NavigatePageRequest
+    | TestNavigateRequest
     | LogMessageRequest
     | OpenFullPageRequest;
