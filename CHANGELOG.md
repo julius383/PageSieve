@@ -1,3 +1,34 @@
+## [1.3.0] - 2026-05-07
+
+### 🚀 Features
+
+- Add diagram generation for state machine
+- Add initial failure retry
+
+### 🐛 Bug Fixes
+
+- Add better log messages
+- Add global stop event for user interrupt
+- Pass currentURL context to functions
+- Support use of xpath for 'next' navigation
+- Add event for testing navigation
+
+### 💼 Other
+
+- Update source build recipe
+- Update svelte
+- Bump package version
+
+### 🚜 Refactor
+
+- Use state machine for main loop
+- Update types
+- Cleanup handling of selectors
+
+### 📚 Documentation
+
+- Add state machine diagram
+
 ## [1.2.0] - 2026-04-22
 
 ### 🚀 Features
@@ -14,6 +45,8 @@
 
 ### 💼 Other
 
+- Use manual chunk splitting
+- Remove manual chunking that breaks app
 - Move to bun for package management
 - Update deps
 - Increment version
@@ -26,8 +59,8 @@
 
 ### 📚 Documentation
 
+- Add changelog
 - Update ui docs with selector group changes
-
 ## [1.1.0] - 2026-04-05
 
 ### 🚀 Features
