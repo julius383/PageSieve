@@ -218,8 +218,8 @@ export const scrapeMachine = setup({
                 START: 'extracting',
                 TEST_PAGINATION: {
                     target: 'navigating',
-                    actions: assign({ isTesting: true })
-                }
+                    actions: assign({ isTesting: true }),
+                },
             },
         },
         extracting: {

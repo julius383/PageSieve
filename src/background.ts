@@ -16,7 +16,7 @@ browser.browserAction.onClicked.addListener(() => {
 let scrapeActor: ReturnType<typeof createActor> | null = null;
 
 browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
-  // Handle start request from Sidebar
+    // Handle start request from Sidebar
     if (request.action === 'runMain') {
         if (scrapeActor) scrapeActor.stop();
 
@@ -25,30 +25,31 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             currentWindow: true,
         });
         if (tab?.id && tab?.url) {
-
             scrapeActor = createActor(scrapeMachine, {
                 input: {
                     config: request.config,
                     tabId: tab.id,
                     tabURL: tab.url,
-                }
+                },
             });
 
             // Broadcast state and context changes to the Sidebar UI
             scrapeActor.subscribe((state) => {
-                const currentState = (state.value instanceof Object ? Object.keys(state.value)[0] : state.value) as StatusLevel;
+                const currentState = (
+                    state.value instanceof Object ? Object.keys(state.value)[0] : state.value
+                ) as StatusLevel;
                 console.log(`State: ${currentState}`);
-                console.dir(state.context)
+                console.dir(state.context);
                 console.log('---');
                 let message: string = '';
                 if (currentState === 'errored') {
-                    message = state.context.error || 'Unknown error'
+                    message = state.context.error || 'Unknown error';
                 } else if (currentState === 'extracting') {
-                    message = `extracting data from ${state.context.currentURL}`
+                    message = `extracting data from ${state.context.currentURL}`;
                 } else if (currentState === 'navigating') {
-                    message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`
-                }else if (currentState === 'waiting') {
-                    message = `waiting for ${state.context.config.options.delayMs} milliseconds`
+                    message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`;
+                } else if (currentState === 'waiting') {
+                    message = `waiting for ${state.context.config.options.delayMs} milliseconds`;
                 }
 
                 browser.runtime.sendMessage({
@@ -60,12 +61,12 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             });
 
             scrapeActor.start();
-            scrapeActor.send({type: 'START'})
+            scrapeActor.send({ type: 'START' });
         }
     } else if (request.action === 'stopMain') {
         // Handle stop request from Sidebar
         if (scrapeActor) {
-            scrapeActor.send({type: 'STOP'})
+            scrapeActor.send({ type: 'STOP' });
             scrapeActor?.stop();
             scrapeActor = null;
         }
@@ -97,18 +98,20 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                     config: request.config,
                     tabId: tab.id,
                     tabURL: tab.url,
-                }
+                },
             });
 
             return new Promise((resolve) => {
                 scrapeActor!.subscribe((state) => {
-                    const currentState = (state.value instanceof Object ? Object.keys(state.value)[0] : state.value) as StatusLevel;
-                    
+                    const currentState = (
+                        state.value instanceof Object ? Object.keys(state.value)[0] : state.value
+                    ) as StatusLevel;
+
                     let message: string = '';
                     if (currentState === 'errored') {
                         message = state.context.error || 'Unknown error';
                     } else if (currentState === 'navigating') {
-                        message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`
+                        message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`;
                     }
 
                     browser.runtime.sendMessage({

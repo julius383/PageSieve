@@ -79,7 +79,9 @@ function directedGraphToDot(digraph: any) {
                 const initialNode = node.children.find((c: any) => c.stateNode.key === initialKey);
                 if (initialNode) {
                     const startNodeId = `start_${clusterId}`;
-                    lines.push(`${indent}  "${startNodeId}" [shape=circle label="" width=0.1 height=0.1 fillcolor=black];`);
+                    lines.push(
+                        `${indent}  "${startNodeId}" [shape=circle label="" width=0.1 height=0.1 fillcolor=black];`,
+                    );
                     lines.push(`${indent}  "${startNodeId}" -> "${initialNode.id}" [weight=2];`);
                 }
             }
@@ -105,7 +107,7 @@ function directedGraphToDot(digraph: any) {
                     const guard = getGuardLabel(t.guard);
                     const edgeKey = `${id}->${target}::${guard}`;
                     if (!processedEdges.has(edgeKey)) {
-                        let label = guard ? `[${guard}]` : "";
+                        let label = guard ? `[${guard}]` : '';
                         lines.push(`  "${id}" -> "${target}" [label="${label}" style=dashed];`);
                         processedEdges.add(edgeKey);
                     }
@@ -159,7 +161,7 @@ function directedGraphToDot(digraph: any) {
 console.log('Generating machine diagrams...');
 try {
     const digraph = toDirectedGraph(scrapeMachine);
-   const dot = directedGraphToDot(digraph);
+    const dot = directedGraphToDot(digraph);
     fs.writeFileSync('machine.dot', dot);
     console.log('Successfully saved machine.dot');
 } catch (e) {

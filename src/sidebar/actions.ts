@@ -1,11 +1,6 @@
 import { SvelteDate } from 'svelte/reactivity';
 import type { SelectorGroup } from '../schema';
-import {
-    extractedData,
-    runWithStatus,
-    runWithStatusAsync,
-    setStatus,
-} from './stores/ui.svelte';
+import { extractedData, runWithStatus, runWithStatusAsync, setStatus } from './stores/ui.svelte';
 import { shortHash, generateConfigId, validateSelectors } from './util';
 import { scrapeConfig, setScrapeConfig } from './stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '../schema';
@@ -231,7 +226,7 @@ export async function runConfig() {
     browser.runtime.sendMessage({
         action: 'runMain',
         config,
-        tabId: tabs[0].id
+        tabId: tabs[0].id,
     });
 }
 
@@ -241,4 +236,3 @@ export async function stopRun() {
         action: 'stopMain',
     });
 }
-

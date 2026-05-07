@@ -61,7 +61,7 @@ export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => P
 export function setStatus(status: StatusLevel, message?: string) {
     Object.assign(extensionStatus, {
         status,
-        message: message ? message :  status,
+        message: message ? message : status,
         timestamp: new SvelteDate().toISOString(),
     });
     if (status !== 'idle' && message) {
@@ -78,20 +78,18 @@ export function resetExtractedData() {
 }
 
 // Listener for messages from background script to status
-browser.runtime.onMessage.addListener(
-    (request: ScrapeStatusUpdateRequest) => {
-        if (request.action === 'updateScrapeStatus') {
-            if (request.results.length > 0) {
-                extractedData.data = [...request.results];
-            }
-            if (request.message) {
-                setStatus(request.status, request.message);
-            } else {
-                setStatus(request.status);
-            }
+browser.runtime.onMessage.addListener((request: ScrapeStatusUpdateRequest) => {
+    if (request.action === 'updateScrapeStatus') {
+        if (request.results.length > 0) {
+            extractedData.data = [...request.results];
         }
-    },
-);
+        if (request.message) {
+            setStatus(request.status, request.message);
+        } else {
+            setStatus(request.status);
+        }
+    }
+});
 
 // Library of saved configs
 export const allConfigs = $state<{ configs: StoredConfig[] }>({ configs: [] });
