@@ -24,6 +24,7 @@ Customize how the extraction process behaves:
 - `delayMs`: Delay in milliseconds before extraction starts.
 - `timeoutMs`: Maximum time in milliseconds to wait for extraction to finish.
 - `appendData`: Whether to append new data to existing results or start fresh.
+- `maxRetries`: How many times to retry when a recoverable error is encountered.
 
 ## Selectors
 
@@ -43,5 +44,12 @@ Configure how PageSieve navigates between pages:
 
 - **`none`**: No pagination.
 - **`next`**: Navigate using a "Next" button selector.
+    - `nextSelector`: CSS or XPath selector for the next button.
+    - `maxPages`: Optional limit for the number of pages to navigate.
 - **`links`**: Extract data from a pre-defined list of links.
-- **`template`**: Generate page URLs based on a template (e.g., `page={{page}}`).
+    - `pageLinks`: A list of URLs to visit sequentially.
+- **`template`**: Generate page URLs based on a template.
+    - `urlTemplate`: URL containing `{{page}}` placeholder.
+    - `startPage`: The starting page number (default: 1).
+    - `increment`: The amount to increment the page number (default: 1).
+    - `maxPages`: Maximum number of pages to scrape.

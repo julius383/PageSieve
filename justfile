@@ -21,8 +21,8 @@ zip-source:
   rm pagesieve_source.zip || true
   git ls-files -z | xargs -0 zip pagesieve_source.zip
 
-[working-directory: 'docs']
+[working-directory: 'docs/assets']
 generate-state-viz:
-  bun run ../src/scripts/create-dot.ts
+  bun run ../../src/scripts/create-dot.ts
   dot -Tsvg machine.dot -o machine.svg
   -rm machine.dot

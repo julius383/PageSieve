@@ -11,8 +11,8 @@ You can install PageSieve from the [Mozilla Add-on Store](https://addons.mozilla
 To build the extension from source:
 
 1. Clone the repository
-2. Install dependencies: `pnpm install`
-3. Build the project: `pnpm run build`
+2. Install dependencies: `bun install`
+3. Build the project: `bun run build`
 4. Load the `dist/` folder as a temporary extension in your browser.
 
 ## Basic Usage
