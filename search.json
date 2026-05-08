@@ -18,7 +18,7 @@
     "href": "reference/configuration.html#extraction-options",
     "title": "Scrape Configuration Reference",
     "section": "Extraction Options",
-    "text": "Extraction Options\nCustomize how the extraction process behaves:\n\nwaitforNetworkIdle: Whether to wait for network activity to stop before starting extraction.\nscrollToBottom: Whether to scroll to the bottom of the page before extraction.\nrunJavaScript: Whether to execute JavaScript on the page.\ndelayMs: Delay in milliseconds before extraction starts.\ntimeoutMs: Maximum time in milliseconds to wait for extraction to finish.\nappendData: Whether to append new data to existing results or start fresh."
+    "text": "Extraction Options\nCustomize how the extraction process behaves:\n\nwaitforNetworkIdle: Whether to wait for network activity to stop before starting extraction.\nscrollToBottom: Whether to scroll to the bottom of the page before extraction.\nrunJavaScript: Whether to execute JavaScript on the page.\ndelayMs: Delay in milliseconds before extraction starts.\ntimeoutMs: Maximum time in milliseconds to wait for extraction to finish.\nappendData: Whether to append new data to existing results or start fresh.\nmaxRetries: How many times to retry when a recoverable error is encountered."
   },
   {
     "objectID": "reference/configuration.html#selectors",
@@ -32,7 +32,7 @@
     "href": "reference/configuration.html#pagination",
     "title": "Scrape Configuration Reference",
     "section": "Pagination",
-    "text": "Pagination\nConfigure how PageSieve navigates between pages:\n\nnone: No pagination.\nnext: Navigate using a “Next” button selector.\nlinks: Extract data from a pre-defined list of links.\ntemplate: Generate page URLs based on a template (e.g., page={{page}})."
+    "text": "Pagination\nConfigure how PageSieve navigates between pages:\n\nnone: No pagination.\nnext: Navigate using a “Next” button selector.\n\nnextSelector: CSS or XPath selector for the next button.\nmaxPages: Optional limit for the number of pages to navigate.\n\nlinks: Extract data from a pre-defined list of links.\n\npageLinks: A list of URLs to visit sequentially.\n\ntemplate: Generate page URLs based on a template.\n\nurlTemplate: URL containing {page} placeholder.\nstartPage: The starting page number (default: 1).\nincrement: The amount to increment the page number (default: 1).\nmaxPages: Maximum number of pages to scrape."
   },
   {
     "objectID": "examples/scraping-fortune-500-companies.html",
@@ -53,28 +53,35 @@
     "href": "architecture.html#tech-stack",
     "title": "Architecture",
     "section": "Tech Stack",
-    "text": "Tech Stack\nThe extension is built using:\n\nTypeScript: Ensuring type safety across the codebase.\nSvelte: Used for the sidebar and full-page dashboards.\nVite: The build tool and development server.\nShadcn UI: For building consistent and accessible UI components.\nZod: Defining and validating scrape configurations and other schemas."
+    "text": "Tech Stack\nThe extension is built using:\n\nTypeScript: Ensuring type safety across the codebase.\nSvelte: Used for the sidebar and full-page dashboards.\nVite: The build tool and development server.\nShadcn UI: For building consistent and accessible UI components.\nXState: For implementing main loop of extension.\nZod: Defining and validating scrape configurations and other schemas."
   },
   {
     "objectID": "architecture.html#core-components",
     "href": "architecture.html#core-components",
     "title": "Architecture",
     "section": "Core Components",
-    "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration."
+    "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nScraping State Machine (src/scrapeMachine.ts): state machine controlling main loop of the extension\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration.\nLogging System (src/logger.ts): Structured logging using LogTape, supporting relay to local environments."
+  },
+  {
+    "objectID": "architecture.html#scrape-machine-diagram",
+    "href": "architecture.html#scrape-machine-diagram",
+    "title": "Architecture",
+    "section": "Scrape Machine Diagram",
+    "text": "Scrape Machine Diagram\n\n\n\nScrape Machine Diagram"
   },
   {
     "objectID": "getting-started.html",
     "href": "getting-started.html",
     "title": "Getting Started",
     "section": "",
-    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: pnpm install\nBuild the project: pnpm run build\nLoad the dist/ folder as a temporary extension in your browser."
+    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: bun install\nBuild the project: bun run build\nLoad the dist/ folder as a temporary extension in your browser."
   },
   {
     "objectID": "getting-started.html#installation",
     "href": "getting-started.html#installation",
     "title": "Getting Started",
     "section": "",
-    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: pnpm install\nBuild the project: pnpm run build\nLoad the dist/ folder as a temporary extension in your browser."
+    "text": "You can install PageSieve from the Mozilla Add-on Store or by downloading the latest release from GitHub.\n\n\nTo build the extension from source:\n\nClone the repository\nInstall dependencies: bun install\nBuild the project: bun run build\nLoad the dist/ folder as a temporary extension in your browser."
   },
   {
     "objectID": "getting-started.html#basic-usage",
@@ -109,7 +116,7 @@
     "href": "index.html#explore-the-docs",
     "title": "Welcome to PageSieve",
     "section": "Explore the Docs",
-    "text": "Explore the Docs\n\nGetting Started\nUI Overview\nArchitecture\nScrape Configuration Reference\nExamples"
+    "text": "Explore the Docs\n\nGetting Started\nUI Overview\nArchitecture\nContributing\nScrape Configuration Reference\nExamples"
   },
   {
     "objectID": "contributing.html",
@@ -123,14 +130,21 @@
     "href": "contributing.html#development-setup",
     "title": "Contributing",
     "section": "Development Setup",
-    "text": "Development Setup\n\nClone the repository: git clone https://github.com/julius383/PageSieve.git\nInstall dependencies: pnpm install\nStart the build process: pnpm run dev (for development) or pnpm run build (for production)"
+    "text": "Development Setup\n\nClone the repository: git clone https://github.com/julius383/PageSieve.git\nInstall dependencies: bun install\nStart the build process: bun run build (for production)"
   },
   {
     "objectID": "contributing.html#build-commands",
     "href": "contributing.html#build-commands",
     "title": "Contributing",
     "section": "Build Commands",
-    "text": "Build Commands\n\npnpm run build: Generates the production extension in the dist/ folder.\npnpm run lint: Runs ESLint to check for code quality issues.\npnpm run format: Formats the codebase using Prettier."
+    "text": "Build Commands\n\nbun run build: Generates the production extension in the dist/ folder.\nbun run lint: Runs ESLint to check for code quality issues.\nbun run format: Formats the codebase using Prettier."
+  },
+  {
+    "objectID": "contributing.html#just-tasks",
+    "href": "contributing.html#just-tasks",
+    "title": "Contributing",
+    "section": "Just Tasks",
+    "text": "Just Tasks\nIf you have just installed, you can use the following commands:\n\njust build: Build the extension.\njust watch: Start file watcher to trigger rebuild extension\njust lint: Lint the codebase.\njust format: Format the codebase."
   },
   {
     "objectID": "contributing.html#submitting-changes",

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -40,9 +40,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-f418161beb48e0141c760e455f12af2c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-1d3c76d7457d11c9ac00a8b2999c4868.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -354,6 +354,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#development-setup" id="toc-development-setup" class="nav-link active" data-scroll-target="#development-setup">Development Setup</a></li>
   <li><a href="#build-commands" id="toc-build-commands" class="nav-link" data-scroll-target="#build-commands">Build Commands</a></li>
+  <li><a href="#just-tasks" id="toc-just-tasks" class="nav-link" data-scroll-target="#just-tasks">Just Tasks</a></li>
   <li><a href="#submitting-changes" id="toc-submitting-changes" class="nav-link" data-scroll-target="#submitting-changes">Submitting Changes</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/contributing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/contributing.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -386,16 +387,26 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="development-setup">Development Setup</h2>
 <ol type="1">
 <li>Clone the repository: <code>git clone https://github.com/julius383/PageSieve.git</code></li>
-<li>Install dependencies: <code>pnpm install</code></li>
-<li>Start the build process: <code>pnpm run dev</code> (for development) or <code>pnpm run build</code> (for production)</li>
+<li>Install dependencies: <code>bun install</code></li>
+<li>Start the build process: <code>bun run build</code> (for production)</li>
 </ol>
 </section>
 <section id="build-commands" class="level2">
 <h2 class="anchored" data-anchor-id="build-commands">Build Commands</h2>
 <ul>
-<li><code>pnpm run build</code>: Generates the production extension in the <code>dist/</code> folder.</li>
-<li><code>pnpm run lint</code>: Runs ESLint to check for code quality issues.</li>
-<li><code>pnpm run format</code>: Formats the codebase using Prettier.</li>
+<li><code>bun run build</code>: Generates the production extension in the <code>dist/</code> folder.</li>
+<li><code>bun run lint</code>: Runs ESLint to check for code quality issues.</li>
+<li><code>bun run format</code>: Formats the codebase using Prettier.</li>
+</ul>
+</section>
+<section id="just-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="just-tasks">Just Tasks</h2>
+<p>If you have <a href="https://github.com/casey/just">just</a> installed, you can use the following commands:</p>
+<ul>
+<li><code>just build</code>: Build the extension.</li>
+<li><code>just watch</code>: Start file watcher to trigger rebuild extension</li>
+<li><code>just lint</code>: Lint the codebase.</li>
+<li><code>just format</code>: Format the codebase.</li>
 </ul>
 </section>
 <section id="submitting-changes" class="level2">

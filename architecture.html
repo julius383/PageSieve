@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.36">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -40,9 +40,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-f418161beb48e0141c760e455f12af2c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-1d3c76d7457d11c9ac00a8b2999c4868.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -80,10 +80,12 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="PageSieve Documentation">
 <meta property="og:description" content="Documentation website for PageSieve a web scraping browser extension.">
+<meta property="og:image" content="https://github.com/julius383/PageSieve/assets/machine.svg">
 <meta property="og:site_name" content="PageSieve">
 <meta name="twitter:title" content="Architecture – PageSieve">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/julius383/PageSieve/assets/machine.svg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -354,6 +356,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#tech-stack" id="toc-tech-stack" class="nav-link active" data-scroll-target="#tech-stack">Tech Stack</a></li>
   <li><a href="#core-components" id="toc-core-components" class="nav-link" data-scroll-target="#core-components">Core Components</a></li>
+  <li><a href="#scrape-machine-diagram" id="toc-scrape-machine-diagram" class="nav-link" data-scroll-target="#scrape-machine-diagram">Scrape Machine Diagram</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/architecture.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/architecture.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -389,6 +392,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Svelte</strong>: Used for the sidebar and full-page dashboards.</li>
 <li><strong>Vite</strong>: The build tool and development server.</li>
 <li><strong>Shadcn UI</strong>: For building consistent and accessible UI components.</li>
+<li><strong>XState</strong>: For implementing main loop of extension.</li>
 <li><strong>Zod</strong>: Defining and validating scrape configurations and other schemas.</li>
 </ul>
 </section>
@@ -398,10 +402,21 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Sidebar UI (<code>src/sidebar/</code>)</strong>: The main interface for defining scrape configurations.</li>
 <li><strong>Content Script (<code>src/content.ts</code>)</strong>: Injected into the webpage to interact with the DOM.</li>
 <li><strong>Background Script (<code>src/background.ts</code>)</strong>: Manages messaging between different parts of the extension.</li>
+<li><strong>Scraping State Machine (<code>src/scrapeMachine.ts</code>)</strong>: state machine controlling main loop of the extension</li>
 <li><strong>DOM Inspector (<code>src/dominspector.mts</code>)</strong>: Handles the click-based selection of elements.</li>
 <li><strong>Selector Engine (<code>src/selectorgadget.ts</code>)</strong>: Implements the CSS selector guessing algorithm.</li>
 <li><strong>Data Types (<code>src/types.ts</code>)</strong>: Central location for Zod schemas defining the scrape configuration.</li>
+<li><strong>Logging System (<code>src/logger.ts</code>)</strong>: Structured logging using LogTape, supporting relay to local environments.</li>
 </ul>
+</section>
+<section id="scrape-machine-diagram" class="level2">
+<h2 class="anchored" data-anchor-id="scrape-machine-diagram">Scrape Machine Diagram</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./assets/machine.svg" class="img-fluid figure-img"></p>
+<figcaption>Scrape Machine Diagram</figcaption>
+</figure>
+</div>
 
 
 </section>
