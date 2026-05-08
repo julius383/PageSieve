@@ -30,7 +30,13 @@ const ExtensionStatus = z.object({
 
 type LogMessageRequest = {
     action: 'logMessage';
-    message: string;
+    payload: {
+        level: string;
+        logger: string;
+        message: string;
+        properties: Record<string, any>;
+        ts: number;
+    };
 };
 
 type OpenFullPageRequest = {

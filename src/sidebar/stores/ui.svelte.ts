@@ -8,7 +8,6 @@ import type {
 
 import type { StoredConfig } from '../../schema';
 import { getAllConfigs } from '../services/storage';
-import { addLog } from './logs';
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({
     data: [{ id: 1, results: [] }],
@@ -64,9 +63,6 @@ export function setStatus(status: StatusLevel, message?: string) {
         message: message ? message : status,
         timestamp: new SvelteDate().toISOString(),
     });
-    if (status !== 'idle' && message) {
-        addLog(status, message);
-    }
 }
 
 export function getStatus(): StatusLevel {

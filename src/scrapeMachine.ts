@@ -3,7 +3,7 @@ import type { ScrapeConfig, SelectorGroup } from './schema';
 import { PaginationStateStatus, type ExtractedGroup } from './types';
 import { navigateAndWait, waitForTabLoad } from './sidebar/util';
 
-interface ScrapeContext {
+export interface ScrapeContext {
     config: ScrapeConfig;
     tabId: number;
     currentURL: string;

@@ -1,6 +1,9 @@
 import { createActor } from 'xstate';
-import { scrapeMachine } from './scrapeMachine';
+import { omit } from 'es-toolkit/object';
+import { ScrapeContext, scrapeMachine } from './scrapeMachine';
 import { type BackgroundRequest, PaginationStateStatus, type StatusLevel } from './types';
+import { getLogger } from "./logger";
+const logger = getLogger(["ext", "background"]);
 
 let sidebarOpen = false;
 
@@ -33,30 +36,40 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 },
             });
 
-            // Broadcast state and context changes to the Sidebar UI
+            logger.debug('Created actor with {config}', {config: request.config});
             scrapeActor.subscribe((state) => {
+                const context: ScrapeContext = state.context;
                 const currentState = (
                     state.value instanceof Object ? Object.keys(state.value)[0] : state.value
                 ) as StatusLevel;
-                console.log(`State: ${currentState}`);
-                console.dir(state.context);
-                console.log('---');
-                let message: string = '';
+                logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
                 if (currentState === 'errored') {
-                    message = state.context.error || 'Unknown error';
+                    logger.error("An error occurred: {error}", {
+                        status: currentState,
+                        error: context.error || 'Unknown error',
+                    });
                 } else if (currentState === 'extracting') {
-                    message = `extracting data from ${state.context.currentURL}`;
+                    logger.info("Extracting data from {currentURL}", {
+                        status: currentState,
+                        currentURL: context.currentURL,
+                    });
                 } else if (currentState === 'navigating') {
-                    message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`;
+                    logger.info("Navigating from {currentURL} using {pagination}", {
+                        status: currentState,
+                        currentURL: context.currentURL,
+                        pagination: context.config.pagination.mode,
+                    });
                 } else if (currentState === 'waiting') {
-                    message = `waiting for ${state.context.config.options.delayMs} milliseconds`;
+                    logger.info("Waiting for {delay} milliseconds", {
+                        status: currentState,
+                        delay: context.config.options.delayMs,
+                    });
                 }
 
                 browser.runtime.sendMessage({
                     action: 'updateScrapeStatus',
                     status: currentState,
-                    message: message,
-                    results: state.context.results,
+                    results: context.results,
                 });
             });
 
@@ -81,9 +94,6 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
         }
     } else if (request.action === 'openFullPage') {
         await browser.tabs.create({ url: '/fullpage.html', active: request?.makeActive ?? false });
-        return;
-    } else if (request.action === 'logMessage') {
-        console.log('[content] ' + request.message);
         return;
     } else if (request.action === 'testNavigate') {
         if (scrapeActor) scrapeActor.stop();

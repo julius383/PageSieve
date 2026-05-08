@@ -1,39 +1,63 @@
-import { writable } from 'svelte/store';
-import type { StatusLevel } from '../../types';
+import { writable, derived } from 'svelte/store';
+
+const MAX = 100;
 
 export interface LogEntry {
-    id: number;
-    timestamp: Date;
-    message: string;
-    status: StatusLevel;
+  id: string;
+  level: string;
+  category: string;
+  message: unknown[];
+  properties: Record<string, unknown>;
+  timestamp: number | Date;
 }
 
 function createLogStore() {
-    const { subscribe, update } = writable<LogEntry[]>([]);
-    let id = 0;
+  const { subscribe, update } = writable<LogEntry[]>([]);
 
-    function addLog(status: StatusLevel = 'idle', message: string) {
-        const newLog: LogEntry = {
-            id: id++,
-            timestamp: new Date(),
-            message,
-            status,
+  return {
+    subscribe,
+
+    /**
+     * LogTape sink function
+     */
+    sink(record: any) {
+      update((logs) => {
+        const entry: LogEntry = {
+          id: crypto.randomUUID(),
+          level: record.level,
+          category: record.category.join("/"),
+          message: [...record.message],
+          properties: record.properties,
+          timestamp: Number(record.timestamp),
         };
-        // add new entry at the start
-        update((entries) => [newLog, ...entries]);
-    }
-    function setLogs(logs: LogEntry[]) {
-        update(() => [...logs]);
-    }
+        const next = [entry, ...logs];
+        console.dir(entry);
+        return next.length > MAX ? next.slice(0, MAX) : next;
+      });
+    },
 
-    return {
-        subscribe,
-        addLog,
-        setLogs,
-    };
+    setLogs(newLogs: LogEntry[]) {
+      update(() => newLogs.slice(0, MAX));
+    },
+
+    clear() {
+      update(() => []);
+    },
+  };
 }
 
-export const logs = createLogStore();
+export const logStore = createLogStore();
 
-export const addLog = logs.addLog;
-export const setLogs = logs.setLogs;
+// Listen for logs from other contexts (e.g., background script)
+if (typeof browser !== 'undefined' && browser.runtime?.onMessage) {
+  browser.runtime.onMessage.addListener((message) => {
+    if (message.action === 'log' && message.record) {
+      logStore.sink(message.record);
+    }
+  });
+}
+
+// Only display logs with a status in LogViewer component
+export const displayLogs = derived(logStore, ($logs) =>
+  $logs.filter((e) => 'status' in e.properties)
+);

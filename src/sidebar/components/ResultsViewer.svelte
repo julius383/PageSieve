@@ -21,7 +21,7 @@
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
     import { saveResults, getLatestResults, saveLogs } from '../services/storage';
-    import { logs } from '../stores/logs';
+    import { logStore } from '../stores/logs';
     import { onMount } from 'svelte';
 
     let { openInNewTab = true } = $props();
@@ -50,7 +50,7 @@
     }
 
     async function showInNewTab() {
-        await saveLogs($logs);
+        await saveLogs($logStore);
         await saveResults(extractedData.data || []);
         await browser.runtime.sendMessage({ action: 'openFullPage' });
     }
