@@ -1,3 +1,4 @@
+import { zipObject } from 'es-toolkit';
 import { Parser } from '@json2csv/plainjs';
 import { downloadZip } from 'client-zip';
 import type { ExtractedGroup, StatusLevel, SupportedExportDataTypes } from '../types';
@@ -6,6 +7,16 @@ import type { SelectorGroup } from '../schema';
 import htmlTemplate from './templates/htmltemplate.hbs';
 // @ts-expect-error: handlebars integration through vite plugin
 import mdTemplate from './templates/mdtemplate.hbs';
+
+// import { getLogger } from '../logger';
+// const logger = getLogger(["ext", "util"]);
+
+function escapeCell(value: unknown) {
+    return String(value ?? '')
+        .replace(/\\/g, '\\\\') // backslashes first (must be before other escapes)
+        .replace(/\|/g, '\\|') // pipes
+        .replace(/\n/g, '&#10;'); // newlines
+}
 
 function convertTo(data: object[], format: SupportedExportDataTypes): string {
     if (data.length == 0) {
@@ -26,9 +37,18 @@ function convertTo(data: object[], format: SupportedExportDataTypes): string {
             return result;
         }
         case 'markdown': {
-            const columns = Object.keys(data[0]);
-            const result = mdTemplate({ columns, rows: data });
-            return result;
+            const columns = Object.keys(data[0]) as string[];
+            // eslint-disable-next-line
+            const escaped = data.map((row: Record<string, any>) => {
+                const newVals = columns.map((col) => escapeCell(row[col]));
+                return zipObject(columns, newVals);
+            });
+            const result = mdTemplate({
+                columns,
+                rows: escaped,
+            });
+            // restore newline escape
+            return result.replace(/&amp;#10;/g, '&#10;');
         }
     }
 }
