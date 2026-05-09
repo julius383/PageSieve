@@ -1,3 +1,21 @@
+## [1.4.0] - 2026-05-09
+
+### 🚀 Features
+
+- *(logging)* Add logtape based logging
+
+### 🐛 Bug Fixes
+
+- Improve markdown table handling
+
+### 🚜 Refactor
+
+- Centralize handling of data download
+
+### 📚 Documentation
+
+- Update documentation
+
 ## [1.3.0] - 2026-05-07
 
 ### 🚀 Features
@@ -27,8 +45,13 @@
 
 ### 📚 Documentation
 
+- Update changelog
 - Add state machine diagram
 
+### 🎨 Styling
+
+- Format files
+- Format code
 ## [1.2.0] - 2026-04-22
 
 ### 🚀 Features
