@@ -17,7 +17,7 @@
 
     import type { SupportedExportDataTypes } from '../../types';
 
-    import { downloadCSV, downloadJSON, downloadBundle, clipboardCopy } from '../util';
+    import { downloadBundle, clipboardCopy, downloadFormat } from '../util';
 
     import { extractedData, resetExtractedData } from '../stores/ui.svelte';
     import { saveResults, getLatestResults, saveLogs } from '../services/storage';
@@ -89,31 +89,35 @@
                     </Tooltip.Provider>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
-                    <DropdownMenu.Item onclick={() => downloadJSON(extractedData.data)}
-                        >Download JSON
-                    </DropdownMenu.Item>
-                    {#if extractedData.data.length > 1}
-                        <DropdownMenu.Sub>
-                            <DropdownMenu.SubTrigger>Download CSV</DropdownMenu.SubTrigger>
-                            <DropdownMenu.SubContent>
-                                <DropdownMenu.Item
-                                    onclick={() => downloadBundle(extractedData.data, 'csv')}
-                                    >Download CSV (All)</DropdownMenu.Item
-                                >
-                                {#each extractedData.data as group_data (group_data.id)}
+                    {#snippet DownloadOption(label: string, type: SupportedExportDataTypes)}
+                        {#if extractedData.data.length > 1}
+                            <DropdownMenu.Sub>
+                                <DropdownMenu.SubTrigger>Download {label}</DropdownMenu.SubTrigger>
+                                <DropdownMenu.SubContent>
                                     <DropdownMenu.Item
-                                        onclick={() => downloadCSV(group_data.results)}
-                                        >Download CSV (Group {group_data.id})</DropdownMenu.Item
+                                        onclick={() => downloadBundle(extractedData.data, type)}
+                                        >Download {label} (All)</DropdownMenu.Item
                                     >
-                                {/each}
-                            </DropdownMenu.SubContent>
-                        </DropdownMenu.Sub>
-                    {:else}
-                        <DropdownMenu.Item
-                            onclick={() => downloadCSV(extractedData.data[0]?.results)}
-                            >Download CSV</DropdownMenu.Item
-                        >
-                    {/if}
+                                    {#each extractedData.data as group_data (group_data.id)}
+                                        <DropdownMenu.Item
+                                            onclick={() => downloadFormat(group_data.results, type)}
+                                            >Download {label} (Group {group_data.id})</DropdownMenu.Item
+                                        >
+                                    {/each}
+                                </DropdownMenu.SubContent>
+                            </DropdownMenu.Sub>
+                        {:else}
+                            <DropdownMenu.Item
+                                onclick={() => downloadFormat(extractedData.data[0]?.results, type)}
+                                >Download {label}</DropdownMenu.Item
+                            >
+                        {/if}
+                    {/snippet}
+                    {@render DownloadOption('JSON', 'json')}
+                    {@render DownloadOption('NDJSON', 'ndjson')}
+                    {@render DownloadOption('CSV', 'csv')}
+                    {@render DownloadOption('HTML', 'html')}
+                    {@render DownloadOption('Markdown', 'markdown')}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             <DropdownMenu.Root>
@@ -161,9 +165,11 @@
                         >Copy JSON</DropdownMenu.Item
                     >
 
-                    {@render CopyOption('CSV', 'csv')}
                     {@render CopyOption('HTML Table', 'html')}
                     {@render CopyOption('Markdown Table', 'markdown')}
+                    {@render CopyOption('JSON', 'json')}
+                    {@render CopyOption('NDJSON', 'ndjson')}
+                    {@render CopyOption('CSV', 'csv')}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             {#if !openInNewTab}

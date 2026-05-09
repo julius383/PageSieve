@@ -26,6 +26,10 @@ function convertTo(data: object[], format: SupportedExportDataTypes): string {
         case 'json': {
             return JSON.stringify(data);
         }
+        case 'ndjson': {
+            const items = data.map((x) => JSON.stringify(x));
+            return items.join('\n');
+        }
         case 'csv': {
             const parser = new Parser();
             const csv = parser.parse(data);
@@ -53,46 +57,23 @@ function convertTo(data: object[], format: SupportedExportDataTypes): string {
     }
 }
 
+function getMimeType(type: SupportedExportDataTypes) {
+    switch (type) {
+        case 'json':
+            return 'application/json';
+        case 'ndjson':
+            return 'application/x-ndjson';
+        case 'csv':
+            return 'text/csv';
+        case 'html':
+            return 'application/html';
+        case 'markdown':
+            return 'text/markdown';
+    }
+}
+
 export function formatColumnName(name: string): string {
     return name.charAt(0).toUpperCase() + name.slice(1);
-}
-
-export function downloadJSON(data: object[], filename: string = 'data.json') {
-    try {
-        const json = convertTo(data, 'json');
-        const blob = new Blob([json], { type: 'application/json;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', url);
-        downloadAnchorNode.setAttribute('download', filename);
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-
-        URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-export function downloadCSV(data: object[], filename: string = 'data.csv') {
-    try {
-        const csv = convertTo(data, 'csv');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute('href', url);
-        downloadAnchorNode.setAttribute('download', filename);
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-
-        URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error(err);
-    }
 }
 
 export async function downloadBundle(
@@ -127,6 +108,25 @@ export async function clipboardCopy(data: object[], format: SupportedExportDataT
     const converted = convertTo(data, format);
     await navigator.clipboard.writeText(converted);
     console.log('Wrote data to clipboard');
+}
+
+export async function downloadFormat(data: object[], format: SupportedExportDataTypes = 'json') {
+    try {
+        const converted = convertTo(data, format);
+        const blob = new Blob([converted], { type: `${getMimeType(format)};charset=utf-8;` });
+        const url = URL.createObjectURL(blob);
+
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute('href', url);
+        downloadAnchorNode.setAttribute('download', `data.${format}`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 // Characters not allowed in filenames across major OSes
