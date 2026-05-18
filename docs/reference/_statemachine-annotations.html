@@ -1,0 +1,207 @@
+
+  <section id="scrapemachine" class="level-2">
+    <h2 class="anchored" data-anchor-id="scrapemachine">
+      Scraping Engine Workflow    </h2>
+
+          <div class="quarto-figure quarto-figure-center">
+        <div id="scrapemachine" style="position:relative;display:inline-block;line-height:0;max-width:100%">
+          <figure class="figure" >
+            <img src="../assets/scrapeMachine.png" class="img-fluid figure-img">
+            <div class="fig-markers">
+                              <div class="tippy-marker" 
+                     data-tippy-content="`START` event"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:11.104%; top:10.015%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >1</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="No pagination, complete."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:54.806%; top:8.647%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >2</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Dispatch pagination"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:81.672%; top:15.258%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >3</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Max pages reached, wait for `DELAY_MS` and move to completed."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:88.299%; top:42.612%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >4</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination not complete, wait and move to next page"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:77.552%; top:44.436%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >5</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Dispatch to correct pagination handler"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:66.269%; top:30.303%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >6</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Template URL base pagination."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:42.627%; top:37.141%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >7</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination succeeded, move to extraction."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:33.134%; top:25.516%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >8</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Navigation is in test mode or has completed."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:39.761%; top:21.641%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >9</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Failed to paginate, retry."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:37.97%; top:72.474%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >10</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination failed completely."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:29.373%; top:89.343%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >11</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Link list based pagination"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:54.806%; top:46.26%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >12</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Navigation is in test mode or has completed."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:49.433%; top:24.376%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >13</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination succeeded, move to extraction."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:44.418%; top:43.98%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >14</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Failed to paginate, retry."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:49.075%; top:54.01%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >15</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination failed completely."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:34.925%; top:84.556%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >16</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Next button based pagination"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:65.015%; top:40.333%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >17</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Compute hash of current page"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:71.284%; top:49.451%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >18</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Try and click next selector element to trigger navigation."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:63.045%; top:54.694%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >19</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Next page is in Single Page Application (SPA) mode, so compute hash of page to compare."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:80.239%; top:73.386%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >20</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination succeeded, move to extraction."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:24.896%; top:76.35%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >21</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Navigation is in test mode or has completed."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:96%; top:77.261%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >22</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Failed to paginate, retry."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:65.731%; top:72.93%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >23</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination failed completely."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:71.821%; top:86.608%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >24</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Navigation is in test mode or has completed."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:90.09%; top:58.797%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >25</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination succeeded, move to extraction."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:25.97%; top:58.797%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >26</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Pagination failed completely."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:85.254%; top:90.939%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >27</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Retry pagination"
+                     data-tippy-placement="top"
+                     style="position:absolute; left:57.851%; top:69.283%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >28</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Extraction failed, retry."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:5.552%; top:20.045%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >29</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Try extraction after waiting for delay."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:12.358%; top:31.671%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >30</div>
+                              <div class="tippy-marker" 
+                     data-tippy-content="Extraction failed completely."
+                     data-tippy-placement="top"
+                     style="position:absolute; left:20.776%; top:93.218%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:#a52a2a; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                >31</div>
+                        </div>
+          <figcaption> Scraping Engine Workflow </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <ol type="1">
+                  <li>`START` event</li>
+                  <li>No pagination, complete.</li>
+                  <li>Dispatch pagination</li>
+                  <li>Max pages reached, wait for `DELAY_MS` and move to completed.</li>
+                  <li>Pagination not complete, wait and move to next page</li>
+                  <li>Dispatch to correct pagination handler</li>
+                  <li>Template URL base pagination.</li>
+                  <li>Pagination succeeded, move to extraction.</li>
+                  <li>Navigation is in test mode or has completed.</li>
+                  <li>Failed to paginate, retry.</li>
+                  <li>Pagination failed completely.</li>
+                  <li>Link list based pagination</li>
+                  <li>Navigation is in test mode or has completed.</li>
+                  <li>Pagination succeeded, move to extraction.</li>
+                  <li>Failed to paginate, retry.</li>
+                  <li>Pagination failed completely.</li>
+                  <li>Next button based pagination</li>
+                  <li>Compute hash of current page</li>
+                  <li>Try and click next selector element to trigger navigation.</li>
+                  <li>Next page is in Single Page Application (SPA) mode, so compute hash of page to compare.</li>
+                  <li>Pagination succeeded, move to extraction.</li>
+                  <li>Navigation is in test mode or has completed.</li>
+                  <li>Failed to paginate, retry.</li>
+                  <li>Pagination failed completely.</li>
+                  <li>Navigation is in test mode or has completed.</li>
+                  <li>Pagination succeeded, move to extraction.</li>
+                  <li>Pagination failed completely.</li>
+                  <li>Retry pagination</li>
+                  <li>Extraction failed, retry.</li>
+                  <li>Try extraction after waiting for delay.</li>
+                  <li>Extraction failed completely.</li>
+              </ol>
+    
+  </section>
+

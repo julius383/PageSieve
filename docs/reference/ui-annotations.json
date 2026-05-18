@@ -1,0 +1,648 @@
+[
+  {
+    "image": "PageSieve-MainView.png",
+    "id": "pagesieve-mainview",
+    "caption": "Screenshot of Main View",
+    "naturalWidth": 366,
+    "naturalHeight": 915,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 7.11,
+        "y_pct": 1.954,
+        "x_px": 26,
+        "y_px": 18,
+        "title": "Annotation 2",
+        "content": "Run config",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 20.636,
+        "y_pct": 2.092,
+        "x_px": 76,
+        "y_px": 19,
+        "title": "Annotation 3",
+        "content": "Save config to browser storage",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 30.694,
+        "y_pct": 2.231,
+        "x_px": 112,
+        "y_px": 20,
+        "title": "Annotation 4",
+        "content": "Load config to from a file",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 40.405,
+        "y_pct": 2.092,
+        "x_px": 148,
+        "y_px": 19,
+        "title": "Annotation 5",
+        "content": "Save config to a file.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 5,
+        "x_pct": 50.116,
+        "y_pct": 1.815,
+        "x_px": 183,
+        "y_px": 17,
+        "title": "Annotation 7",
+        "content": "Add selector group. Useful for extracting different data from same page.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 6,
+        "x_pct": 60.867,
+        "y_pct": 2.37,
+        "x_px": 223,
+        "y_px": 22,
+        "title": "Annotation 8",
+        "content": "Menu with more actions",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 7,
+        "x_pct": 79.249,
+        "y_pct": 1.954,
+        "x_px": 290,
+        "y_px": 18,
+        "title": "Annotation 9",
+        "content": "Status indicator. Statuses are defined in `src/types.ts`",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 8,
+        "x_pct": 91.734,
+        "y_pct": 1.954,
+        "x_px": 336,
+        "y_px": 18,
+        "title": "Annotation 10",
+        "content": "Show logs.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 9,
+        "x_pct": 5.029,
+        "y_pct": 10,
+        "x_px": 18,
+        "y_px": 92,
+        "title": "Annotation 11",
+        "content": "Selector definition tab",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 10,
+        "x_pct": 60.173,
+        "y_pct": 10.139,
+        "x_px": 220,
+        "y_px": 93,
+        "title": "Annotation 12",
+        "content": "Scrape configuration tab.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 11,
+        "x_pct": 90.347,
+        "y_pct": 10.416,
+        "x_px": 331,
+        "y_px": 95,
+        "title": "Annotation 13",
+        "content": "Browser storage library tab.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 12,
+        "x_pct": 5.029,
+        "y_pct": 14.855,
+        "x_px": 18,
+        "y_px": 136,
+        "title": "Annotation 14",
+        "content": "Collapse selector group.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 13,
+        "x_pct": 36.59,
+        "y_pct": 13.468,
+        "x_px": 134,
+        "y_px": 123,
+        "title": "Annotation 16",
+        "content": "Rename selector group. ",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 15,
+        "x_pct": 48.382,
+        "y_pct": 13.884,
+        "x_px": 177,
+        "y_px": 127,
+        "title": "Annotation 18",
+        "content": "Delete selector group.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 16,
+        "x_pct": 5.376,
+        "y_pct": 20.543,
+        "x_px": 20,
+        "y_px": 188,
+        "title": "Annotation 19",
+        "content": "Selector (CSS or XPath) for element containing individual items (optional).",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 17,
+        "x_pct": 88.266,
+        "y_pct": 18.046,
+        "x_px": 323,
+        "y_px": 165,
+        "title": "Annotation 20",
+        "content": "Start interactive element picker.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 18,
+        "x_pct": 11.272,
+        "y_pct": 30.809,
+        "x_px": 41,
+        "y_px": 282,
+        "title": "Annotation 21",
+        "content": "Field name input",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 19,
+        "x_pct": 91.04,
+        "y_pct": 31.225,
+        "x_px": 333,
+        "y_px": 286,
+        "title": "Annotation 22",
+        "content": "Delete field.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 20,
+        "x_pct": 10.578,
+        "y_pct": 38.439,
+        "x_px": 39,
+        "y_px": 352,
+        "title": "Annotation 23",
+        "content": "Field selector input (CSS or XPath).",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 21,
+        "x_pct": 73.353,
+        "y_pct": 40.659,
+        "x_px": 268,
+        "y_px": 372,
+        "title": "Annotation 24",
+        "content": "",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 22,
+        "x_pct": 84.451,
+        "y_pct": 40.52,
+        "x_px": 309,
+        "y_px": 371,
+        "title": "Annotation 25",
+        "content": "Treat selector as list for this field. ",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 23,
+        "x_pct": 41.792,
+        "y_pct": 59.11,
+        "x_px": 153,
+        "y_px": 541,
+        "title": "Annotation 26",
+        "content": "Results section.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 24,
+        "x_pct": 32.081,
+        "y_pct": 63.688,
+        "x_px": 117,
+        "y_px": 583,
+        "title": "Annotation 27",
+        "content": "Show results as JSON.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 25,
+        "x_pct": 60.867,
+        "y_pct": 61.052,
+        "x_px": 223,
+        "y_px": 559,
+        "title": "Annotation 28",
+        "content": "Download extracted data.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 26,
+        "x_pct": 71.272,
+        "y_pct": 61.052,
+        "x_px": 261,
+        "y_px": 559,
+        "title": "Annotation 29",
+        "content": "Copy extracted data to clipboard.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 27,
+        "x_pct": 80.289,
+        "y_pct": 61.052,
+        "x_px": 294,
+        "y_px": 559,
+        "title": "Annotation 30",
+        "content": "Show results in a new tab.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 28,
+        "x_pct": 90.694,
+        "y_pct": 60.497,
+        "x_px": 332,
+        "y_px": 554,
+        "title": "Annotation 31",
+        "content": "Clear extracted results.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 29,
+        "x_pct": 9.884,
+        "y_pct": 67.295,
+        "x_px": 36,
+        "y_px": 616,
+        "title": "Annotation 32",
+        "content": "Collapse results for a selector group.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-ConfigView.png",
+    "id": "pagesieve-configview",
+    "caption": "Screenshot of Config Tab view",
+    "naturalWidth": 366,
+    "naturalHeight": 915,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 37.442,
+        "y_pct": 17.075,
+        "x_px": 137,
+        "y_px": 156,
+        "title": "Annotation 1",
+        "content": "Pagination section. See `src/types:PaginationConfig` for definition.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 55.624,
+        "y_pct": 23.228,
+        "x_px": 204,
+        "y_px": 213,
+        "title": "Annotation 2",
+        "content": "Extraction options section. See `src/types:ExtractionOptions` for definition.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 32.547,
+        "y_pct": 30.082,
+        "x_px": 119,
+        "y_px": 275,
+        "title": "Annotation 3",
+        "content": "Metadata section. See `src/types:Metadata` for definition.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 36.393,
+        "y_pct": 35.676,
+        "x_px": 133,
+        "y_px": 326,
+        "title": "Annotation 4",
+        "content": "Variables section. Not implemented",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-ConfigView-Pagination-3.png",
+    "id": "pagesieve-configview-pagination-3",
+    "caption": "Next pagination config",
+    "naturalWidth": 337,
+    "naturalHeight": 344,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 54.476,
+        "y_pct": 40.867,
+        "x_px": 184,
+        "y_px": 141,
+        "title": "Annotation 1",
+        "content": "Selector (CSS or XPath) for next button.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 51.805,
+        "y_pct": 58.6,
+        "x_px": 175,
+        "y_px": 202,
+        "title": "Annotation 3",
+        "content": "Maximum number of pages to navigate. Zero means unlimited",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 84.149,
+        "y_pct": 85.925,
+        "x_px": 284,
+        "y_px": 296,
+        "title": "Annotation 4",
+        "content": "Test navigation by moving to the next page.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-ConfigView-Pagination-4.png",
+    "id": "pagesieve-configview-pagination-4",
+    "caption": "Links pagination config",
+    "naturalWidth": 337,
+    "naturalHeight": 403,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 12.933,
+        "y_pct": 42.204,
+        "x_px": 44,
+        "y_px": 170,
+        "title": "Annotation 1",
+        "content": "Input for links to navigate to. One per line.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 83.259,
+        "y_pct": 86.869,
+        "x_px": 281,
+        "y_px": 350,
+        "title": "Annotation 2",
+        "content": "Test navigation by moving to the next page.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-ConfigView-Pagination-5.png",
+    "id": "pagesieve-configview-pagination-5",
+    "caption": "Template pagination config",
+    "naturalWidth": 337,
+    "naturalHeight": 401,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 69.906,
+        "y_pct": 37.926,
+        "x_px": 236,
+        "y_px": 152,
+        "title": "Annotation 1",
+        "content": "Input for URL template. The template is used to create the URL for the next page.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 24.802,
+        "y_pct": 59.123,
+        "x_px": 84,
+        "y_px": 237,
+        "title": "Annotation 2",
+        "content": "Start page number.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 56.85,
+        "y_pct": 58.874,
+        "x_px": 192,
+        "y_px": 236,
+        "title": "Annotation 3",
+        "content": "Number to add to previous to get next page",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 89.787,
+        "y_pct": 59.372,
+        "x_px": 303,
+        "y_px": 238,
+        "title": "Annotation 4",
+        "content": "Maximum number of pages to scrape. Zero means unlimited",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 5,
+        "x_pct": 84.149,
+        "y_pct": 87.552,
+        "x_px": 284,
+        "y_px": 351,
+        "title": "Annotation 5",
+        "content": "Test navigation by going to next page using defined values.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-LibraryView.png",
+    "id": "pagesieve-libraryview",
+    "caption": "Screenshot of Config Library",
+    "naturalWidth": 366,
+    "naturalHeight": 915,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 50.029,
+        "y_pct": 15.816,
+        "x_px": 183,
+        "y_px": 145,
+        "title": "Annotation 2",
+        "content": "Type to search in id or url fields of configs",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 95.134,
+        "y_pct": 13.019,
+        "x_px": 348,
+        "y_px": 119,
+        "title": "Annotation 3",
+        "content": "Change config sort",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 71.008,
+        "y_pct": 25.606,
+        "x_px": 260,
+        "y_px": 234,
+        "title": "Annotation 4",
+        "content": "Rename saved configuration.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 84.994,
+        "y_pct": 25.886,
+        "x_px": 311,
+        "y_px": 237,
+        "title": "Annotation 5",
+        "content": "Delete saved configuration.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 5,
+        "x_pct": 73.805,
+        "y_pct": 32.459,
+        "x_px": 270,
+        "y_px": 297,
+        "title": "Annotation 6",
+        "content": "Show configuration definition.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 6,
+        "x_pct": 78.001,
+        "y_pct": 38.893,
+        "x_px": 285,
+        "y_px": 356,
+        "title": "Annotation 7",
+        "content": "Load configuration into sidebar",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  },
+  {
+    "image": "PageSieve-Fullpage.png",
+    "id": "pagesieve-fullpage",
+    "caption": "Screenshot of Results New Tab",
+    "naturalWidth": 1875,
+    "naturalHeight": 961,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 34.87,
+        "y_pct": 5.701,
+        "x_px": 654,
+        "y_px": 55,
+        "title": "Annotation 1",
+        "content": "View Results",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 83.447,
+        "y_pct": 6.17,
+        "x_px": 1565,
+        "y_px": 59,
+        "title": "Annotation 2",
+        "content": "View Logs.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 10.184,
+        "y_pct": 20.214,
+        "x_px": 191,
+        "y_px": 194,
+        "title": "Annotation 3",
+        "content": "View results as JSON",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 93.62,
+        "y_pct": 16.383,
+        "x_px": 1755,
+        "y_px": 157,
+        "title": "Annotation 4",
+        "content": "Download results data in different formats.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 5,
+        "x_pct": 96.442,
+        "y_pct": 16.144,
+        "x_px": 1808,
+        "y_px": 155,
+        "title": "Annotation 5",
+        "content": "Copy results data in different formats.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  }
+]

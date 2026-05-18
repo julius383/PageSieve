@@ -236,7 +236,7 @@ export const scrapeMachine = setup({
                         actions: ['saveResults', 'resetRetries'],
                     },
                     {
-                        target: 'idle',
+                        target: 'completed',
                         actions: ['saveResults', 'resetRetries'],
                     },
                 ],
@@ -285,7 +285,6 @@ export const scrapeMachine = setup({
                             guard: ({ context }) => context.config.pagination.mode === 'next',
                             target: 'next',
                         },
-                        { target: '#scraper.completed' },
                     ],
                 },
                 links: {

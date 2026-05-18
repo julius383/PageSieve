@@ -1,0 +1,23 @@
+---
+title: "Scraping Engine"
+format:
+  html:
+    include-in-header:
+      - text: |
+          <script src="https://unpkg.com/@popperjs/core@2"></script>
+          <script src="https://unpkg.com/tippy.js@6"></script>
+          <link href="https://unpkg.com/tippy.js@6/dist/tippy.css" rel="stylesheet">
+    include-after-body: _tippy_init.html
+---
+
+The main workflow of the web extension is controlled by a state machine implemented
+in `src/scrapeMachine.ts`. Below is a diagram of the states and transitions of
+the state machine created with [Excalidraw][1]. View SVG
+
+
+```{=html}
+{{< include _statemachine-annotations.html >}}
+```
+
+
+[1]: https://excalidraw.com/ 

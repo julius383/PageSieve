@@ -1,0 +1,32 @@
+---
+title: "Extension UI Overview"
+format:
+  html:
+    other-links:
+      - text: Screenshot of Main View
+        href: '#pagesieve-mainview'
+      - text: Screenshot of Config Tab view
+        href: '#pagesieve-configview'
+      - text: Next pagination config
+        href: '#pagesieve-configview-pagination-3'
+      - text: Links pagination config
+        href: '#pagesieve-configview-pagination-4'
+      - text: Template pagination config
+        href: '#pagesieve-configview-pagination-5'
+      - text: Screenshot of Config Library
+        href: '#pagesieve-libraryview'
+      - text: Screenshot of Results New Tab
+        href: '#pagesieve-fullpage'
+    include-in-header:
+      - text: |
+          <script src="https://unpkg.com/@popperjs/core@2"></script>
+          <script src="https://unpkg.com/tippy.js@6"></script>
+          <link href="https://unpkg.com/tippy.js@6/dist/tippy.css" rel="stylesheet">
+    include-after-body: _tippy_init.html
+---
+
+This page contains annotated diagrams of the browser extension User Interface.
+
+```{=html}
+{{< include _ui-annotations.html >}}
+```

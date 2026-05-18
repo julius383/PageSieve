@@ -1,0 +1,352 @@
+[
+  {
+    "image": "scrapeMachine.png",
+    "caption": "Scraping Engine Workflow",
+    "id": "scrapemachine",
+    "naturalWidth": 5040,
+    "naturalHeight": 3960,
+    "markers": [
+      {
+        "id": 1,
+        "x_pct": 11.104,
+        "y_pct": 10.015,
+        "x_px": 560,
+        "y_px": 397,
+        "title": "Annotation 1",
+        "content": "`START` event",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 2,
+        "x_pct": 54.806,
+        "y_pct": 8.647,
+        "x_px": 2762,
+        "y_px": 342,
+        "title": "Annotation 2",
+        "content": "No pagination, complete.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 3,
+        "x_pct": 81.672,
+        "y_pct": 15.258,
+        "x_px": 4116,
+        "y_px": 604,
+        "title": "Annotation 3",
+        "content": "Dispatch pagination",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 4,
+        "x_pct": 88.299,
+        "y_pct": 42.612,
+        "x_px": 4450,
+        "y_px": 1687,
+        "title": "Annotation 4",
+        "content": "Max pages reached, wait for `DELAY_MS` and move to completed.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 5,
+        "x_pct": 77.552,
+        "y_pct": 44.436,
+        "x_px": 3909,
+        "y_px": 1760,
+        "title": "Annotation 5",
+        "content": "Pagination not complete, wait and move to next page",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 6,
+        "x_pct": 66.269,
+        "y_pct": 30.303,
+        "x_px": 3340,
+        "y_px": 1200,
+        "title": "Annotation 6",
+        "content": "Dispatch to correct pagination handler",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 7,
+        "x_pct": 42.627,
+        "y_pct": 37.141,
+        "x_px": 2148,
+        "y_px": 1471,
+        "title": "Annotation 7",
+        "content": "Template URL base pagination.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 8,
+        "x_pct": 33.134,
+        "y_pct": 25.516,
+        "x_px": 1670,
+        "y_px": 1010,
+        "title": "Annotation 8",
+        "content": "Pagination succeeded, move to extraction.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 9,
+        "x_pct": 39.761,
+        "y_pct": 21.641,
+        "x_px": 2004,
+        "y_px": 857,
+        "title": "Annotation 9",
+        "content": "Navigation is in test mode or has completed.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 10,
+        "x_pct": 37.97,
+        "y_pct": 72.474,
+        "x_px": 1914,
+        "y_px": 2870,
+        "title": "Annotation 10",
+        "content": "Failed to paginate, retry.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 11,
+        "x_pct": 29.373,
+        "y_pct": 89.343,
+        "x_px": 1480,
+        "y_px": 3538,
+        "title": "Annotation 11",
+        "content": "Pagination failed completely.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 12,
+        "x_pct": 54.806,
+        "y_pct": 46.26,
+        "x_px": 2762,
+        "y_px": 1832,
+        "title": "Annotation 12",
+        "content": "Link list based pagination",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 13,
+        "x_pct": 49.433,
+        "y_pct": 24.376,
+        "x_px": 2491,
+        "y_px": 965,
+        "title": "Annotation 13",
+        "content": "Navigation is in test mode or has completed.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 14,
+        "x_pct": 44.418,
+        "y_pct": 43.98,
+        "x_px": 2239,
+        "y_px": 1742,
+        "title": "Annotation 14",
+        "content": "Pagination succeeded, move to extraction.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 15,
+        "x_pct": 49.075,
+        "y_pct": 54.01,
+        "x_px": 2473,
+        "y_px": 2139,
+        "title": "Annotation 15",
+        "content": "Failed to paginate, retry.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 16,
+        "x_pct": 34.925,
+        "y_pct": 84.556,
+        "x_px": 1760,
+        "y_px": 3348,
+        "title": "Annotation 16",
+        "content": "Pagination failed completely.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 17,
+        "x_pct": 65.015,
+        "y_pct": 40.333,
+        "x_px": 3277,
+        "y_px": 1597,
+        "title": "Annotation 17",
+        "content": "Next button based pagination",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 18,
+        "x_pct": 71.284,
+        "y_pct": 49.451,
+        "x_px": 3593,
+        "y_px": 1958,
+        "title": "Annotation 18",
+        "content": "Compute hash of current page",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 19,
+        "x_pct": 63.045,
+        "y_pct": 54.694,
+        "x_px": 3177,
+        "y_px": 2166,
+        "title": "Annotation 19",
+        "content": "Try and click next selector element to trigger navigation.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 20,
+        "x_pct": 80.239,
+        "y_pct": 73.386,
+        "x_px": 4044,
+        "y_px": 2906,
+        "title": "Annotation 20",
+        "content": "Next page is in Single Page Application (SPA) mode, so compute hash of page to compare.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 21,
+        "x_pct": 24.896,
+        "y_pct": 76.35,
+        "x_px": 1255,
+        "y_px": 3023,
+        "title": "Annotation 21",
+        "content": "Pagination succeeded, move to extraction.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 22,
+        "x_pct": 96,
+        "y_pct": 77.261,
+        "x_px": 4838,
+        "y_px": 3060,
+        "title": "Annotation 22",
+        "content": "Navigation is in test mode or has completed.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 23,
+        "x_pct": 65.731,
+        "y_pct": 72.93,
+        "x_px": 3313,
+        "y_px": 2888,
+        "title": "Annotation 23",
+        "content": "Failed to paginate, retry.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 24,
+        "x_pct": 71.821,
+        "y_pct": 86.608,
+        "x_px": 3620,
+        "y_px": 3430,
+        "title": "Annotation 24",
+        "content": "Pagination failed completely.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 25,
+        "x_pct": 90.09,
+        "y_pct": 58.797,
+        "x_px": 4541,
+        "y_px": 2328,
+        "title": "Annotation 25",
+        "content": "Navigation is in test mode or has completed.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 26,
+        "x_pct": 25.97,
+        "y_pct": 58.797,
+        "x_px": 1309,
+        "y_px": 2328,
+        "title": "Annotation 26",
+        "content": "Pagination succeeded, move to extraction.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 27,
+        "x_pct": 85.254,
+        "y_pct": 90.939,
+        "x_px": 4297,
+        "y_px": 3601,
+        "title": "Annotation 27",
+        "content": "Pagination failed completely.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 28,
+        "x_pct": 57.851,
+        "y_pct": 69.283,
+        "x_px": 2916,
+        "y_px": 2744,
+        "title": "Annotation 28",
+        "content": "Retry pagination",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 29,
+        "x_pct": 5.552,
+        "y_pct": 20.045,
+        "x_px": 280,
+        "y_px": 794,
+        "title": "Annotation 29",
+        "content": "Extraction failed, retry.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 30,
+        "x_pct": 12.358,
+        "y_pct": 31.671,
+        "x_px": 623,
+        "y_px": 1254,
+        "title": "Annotation 30",
+        "content": "Try extraction after waiting for delay.",
+        "placement": "top",
+        "color": "#a52a2a"
+      },
+      {
+        "id": 31,
+        "x_pct": 20.776,
+        "y_pct": 93.218,
+        "x_px": 1047,
+        "y_px": 3691,
+        "title": "Annotation 31",
+        "content": "Extraction failed completely.",
+        "placement": "top",
+        "color": "#a52a2a"
+      }
+    ]
+  }
+]

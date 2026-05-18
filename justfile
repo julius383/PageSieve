@@ -21,8 +21,6 @@ zip-source:
   rm pagesieve_source.zip || true
   git ls-files -z | xargs -0 zip pagesieve_source.zip
 
-[working-directory: 'docs/assets']
-generate-state-viz:
-  bun run ../../src/scripts/create-dot.ts
-  dot -Tsvg machine.dot -o machine.svg
-  -rm machine.dot
+render-annotations:
+  bun src/scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html
+  bun src/scripts/render-annotations.ts --json docs/reference/statemachine-annotations.json --out docs/reference/_statemachine-annotations.html

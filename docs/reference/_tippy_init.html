@@ -1,0 +1,24 @@
+<script type="text/javascript">
+window.document.addEventListener('DOMContentLoaded', (event) => {
+    const figures = document.querySelectorAll('.fig-markers').forEach((container) => {
+        var markers = container.querySelectorAll(".tippy-marker");
+        markers.forEach(function (dot) {
+            dot.addEventListener("mouseenter", function () {
+                dot.style.transform = "translate(-50%,-50%) scale(1.25)";
+            });
+            dot.addEventListener("mouseleave", function () {
+                dot.style.transform = "translate(-50%,-50%) scale(1)";
+            });
+
+            tippy(dot, {
+                allowHTML: true,
+                theme: "light-border",
+                arrow: true,
+                placement: dot.getAttribute("data-tippy-placement") || "top",
+            });
+        });
+
+    })
+
+})
+</script>

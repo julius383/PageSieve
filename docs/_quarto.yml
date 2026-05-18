@@ -31,8 +31,10 @@ website:
         menu:
           - href: reference/configuration.qmd
             text: Scrape Configuration
-          - href: reference/ui.qmd
-            text: UI Overview
+          - href: reference/extension-ui.qmd
+            text: Extension UI Overview
+          - href: reference/scraping-engine.qmd
+            text: Scraping Engine Workflow
       - text: Examples
         menu:
           - href: examples/index.qmd
