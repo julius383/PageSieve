@@ -57,6 +57,7 @@ pnpm run build
 
 ## Repository Overview
 
+Generated with `broot --cmd ":pt" --height 75 --sort-by-type-dirs-first > tree.txt`
 
 ```
 /PageSieve
@@ -66,22 +67,27 @@ pnpm run build
  │  ├──sidebar.html                 # html entry point for sidebar
  │  ├──manifest.json                # extension manifest copied on build
  │  └──icons  … 
- ├──src 
+ ├──src
  │  ├──app.css 
  │  ├──dominspector.mts             # contains class that controls click based element selection
  │  ├──background.ts
+ │  ├──logger.ts                    # logging config including native_relay
+ │  ├──schema.ts                    # Zod schema for Scrape Config
+ │  ├──scrapeMachine.ts 
  │  ├──content.ts 
  │  ├──selectorgadget.ts            # CSS guessing algorithm adapted from cantino/selectorgadget
- │  ├──types.ts                     # Zod schema for Scrape configuration and other types
+ │  ├──types.ts                     # Other types including for browser messaging
  │  ├──verifyConfig.ts              # simple bun script for detecting error in scrape config from json file
- │  ├──fullpage                     # component which displays data + logs in a separate tab
- │  │  ├──App.svelte 
- │  │  └──main.ts 
+ │  ├──fullpage …                   # component which displays data + logs in a separate tab
  │  ├──lib 
  │  │  ├──dmp.js                    # vendored version google/diff-match-patch required by selectorgadget.ts
  │  │  ├──utils.ts 
  │  │  ├──components …              # shadcn components
  │  │  └──hooks … 
+ │  ├──scripts 
+ │  │  ├──relay.py                  # native_relay for advanced debugging
+ │  │  ├──render-annotations.ts     # script for rendering tippy.js annotations for docs/reference/{extension-ui.qmd,scraping-engine.qmd}
+ │  │  └──verifyConfig.ts           # script for verifying JSON Scrape Configs
  │  └──sidebar 
  │     ├──App.svelte
  │     ├──actions.ts                # functions implementing main behaviour
@@ -97,15 +103,15 @@ pnpm run build
  │     │  └──ui.svelte.ts           # state required by UI elements
  │     └──templates …               # handlebar templates for data export to various formats
  ├──components.json                 # managed by shadcn
- ├──package.json 
- ├──tsconfig.json 
- ├──tailwind.config.js 
- ├──vite.config.js 
- ├──justfile 
- ├──LICENSE 
- ├──README.md 
- ├──eslint.config.mjs 
- ├──postcss.config.mjs 
- └──pnpm-lock.yaml 
-
+ ├──package.json
+ ├──tsconfig.json
+ ├──tailwind.config.js
+ ├──vite.config.js
+ ├──justfile
+ ├──LICENSE
+ ├──bun.lock
+ ├──CHANGELOG.md
+ ├──README.md
+ ├──eslint.config.mjs
+ └──postcss.config.mjs
 ```

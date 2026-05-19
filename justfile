@@ -24,3 +24,15 @@ zip-source:
 render-annotations:
   bun src/scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html
   bun src/scripts/render-annotations.ts --json docs/reference/statemachine-annotations.json --out docs/reference/_statemachine-annotations.html
+
+[working-directory: 'docs']
+docs-build:
+  quarto render
+
+[working-directory: 'docs']
+docs-preview:
+  quarto preview --port 4668 --no-browser
+
+[working-directory: 'docs']
+docs-publish:
+  quarto publish gh-pages

@@ -26,7 +26,3 @@ The extension is built using:
 - **Data Types (`src/types.ts`)**: Central location for Zod schemas defining the scrape configuration.
 - **Logging System (`src/logger.ts`)**: Structured logging using LogTape, supporting relay to local environments.
 
-
-## Scrape Machine Diagram
-
-![Scrape Machine Diagram](/assets/machine.svg)
