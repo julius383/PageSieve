@@ -80,12 +80,10 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="PageSieve Documentation">
 <meta property="og:description" content="Documentation website for PageSieve a web scraping browser extension.">
-<meta property="og:image" content="https://github.com/julius383/PageSieve/assets/machine.svg">
 <meta property="og:site_name" content="PageSieve">
 <meta name="twitter:title" content="Architecture – PageSieve">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://github.com/julius383/PageSieve/assets/machine.svg">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -360,7 +358,6 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#tech-stack" id="toc-tech-stack" class="nav-link active" data-scroll-target="#tech-stack">Tech Stack</a></li>
   <li><a href="#core-components" id="toc-core-components" class="nav-link" data-scroll-target="#core-components">Core Components</a></li>
-  <li><a href="#scrape-machine-diagram" id="toc-scrape-machine-diagram" class="nav-link" data-scroll-target="#scrape-machine-diagram">Scrape Machine Diagram</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/architecture.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/architecture.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -412,15 +409,6 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Data Types (<code>src/types.ts</code>)</strong>: Central location for Zod schemas defining the scrape configuration.</li>
 <li><strong>Logging System (<code>src/logger.ts</code>)</strong>: Structured logging using LogTape, supporting relay to local environments.</li>
 </ul>
-</section>
-<section id="scrape-machine-diagram" class="level2">
-<h2 class="anchored" data-anchor-id="scrape-machine-diagram">Scrape Machine Diagram</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="./assets/machine.svg" class="img-fluid figure-img"></p>
-<figcaption>Scrape Machine Diagram</figcaption>
-</figure>
-</div>
 
 
 </section>

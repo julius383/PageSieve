@@ -126,13 +126,6 @@
     "text": "Core Components\n\nSidebar UI (src/sidebar/): The main interface for defining scrape configurations.\nContent Script (src/content.ts): Injected into the webpage to interact with the DOM.\nBackground Script (src/background.ts): Manages messaging between different parts of the extension.\nScraping State Machine (src/scrapeMachine.ts): state machine controlling main loop of the extension\nDOM Inspector (src/dominspector.mts): Handles the click-based selection of elements.\nSelector Engine (src/selectorgadget.ts): Implements the CSS selector guessing algorithm.\nData Types (src/types.ts): Central location for Zod schemas defining the scrape configuration.\nLogging System (src/logger.ts): Structured logging using LogTape, supporting relay to local environments."
   },
   {
-    "objectID": "architecture.html#scrape-machine-diagram",
-    "href": "architecture.html#scrape-machine-diagram",
-    "title": "Architecture",
-    "section": "Scrape Machine Diagram",
-    "text": "Scrape Machine Diagram\n\n\n\nScrape Machine Diagram"
-  },
-  {
     "objectID": "examples/scraping-fortune-500-companies.html",
     "href": "examples/scraping-fortune-500-companies.html",
     "title": "Scraping Fortune 500 companies executive team",
