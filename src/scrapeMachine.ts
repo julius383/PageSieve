@@ -1,7 +1,7 @@
 import { setup, assign, fromPromise } from 'xstate';
-import type { ScrapeConfig, SelectorGroup } from './schema';
-import { PaginationStateStatus, type ExtractedGroup } from './types';
-import { navigateAndWait, waitForTabLoad } from './sidebar/util';
+import type { ScrapeConfig, SelectorGroup } from '@/core/schema';
+import { PaginationStateStatus, type ExtractedGroup } from '@/types';
+import { navigateAndWait, waitForTabLoad } from '@/sidebar/util';
 
 export interface ScrapeContext {
     config: ScrapeConfig;
@@ -25,7 +25,7 @@ type ScrapeEvent =
 interface InputType {
     config: ScrapeConfig;
     tabId: number;
-    tabURL: string;
+    startURL: string;
 }
 
 export const scrapeMachine = setup({
@@ -58,9 +58,10 @@ export const scrapeMachine = setup({
             if (!response.success) throw new Error(response.error);
             return response.result as ExtractedGroup[];
         }),
-        triggerHashBody: fromPromise<{ bodyHash: string }, { tabId: number }>(async ({ input }) => {
+        triggerHashBody: fromPromise<{ bodyHash: string }, { tabId: number, selectors: SelectorGroup[] }>(async ({ input }) => {
             return await browser.tabs.sendMessage(input.tabId, {
                 action: 'hashBody',
+                selectors: input.selectors,
             });
         }),
         navigateLinks: fromPromise<
@@ -193,6 +194,7 @@ export const scrapeMachine = setup({
         resetRetries: assign({
             retries: 0,
         }),
+        setError: assign({ error: ({ event }) => (event.error as Error).message, }),
     },
 }).createMachine({
     id: 'scraper',
@@ -200,7 +202,7 @@ export const scrapeMachine = setup({
     context: ({ input }) => ({
         config: input.config,
         tabId: input.tabId,
-        currentURL: input.tabURL,
+        currentURL: input.startURL,
         results: [] as ExtractedGroup[],
         error: null,
         currentPage: 1,
@@ -244,13 +246,14 @@ export const scrapeMachine = setup({
                     {
                         guard: 'canRetry',
                         target: 'retrying',
-                        actions: 'incrementRetry',
+                        actions: [
+                            'incrementRetry',
+                            'setError',
+                        ],
                     },
                     {
                         target: 'errored',
-                        actions: assign({
-                            error: ({ event }) => (event.error as Error).message,
-                        }),
+                        actions: 'setError',
                     },
                 ],
             },
@@ -317,7 +320,7 @@ export const scrapeMachine = setup({
                                 target: '#scraper.navigating.retryingNav',
                                 actions: 'incrementRetry',
                             },
-                            { target: '#scraper.errored' },
+                            { target: '#scraper.errored', actions: ['setError'] },
                         ],
                     },
                 },
@@ -344,9 +347,9 @@ export const scrapeMachine = setup({
                             {
                                 guard: 'canRetry',
                                 target: '#scraper.navigating.retryingNav',
-                                actions: 'incrementRetry',
+                                actions: ['incrementRetry', 'setError'],
                             },
-                            { target: '#scraper.errored' },
+                            { target: '#scraper.errored', actions: ['setError'] },
                         ],
                     },
                 },
@@ -356,7 +359,10 @@ export const scrapeMachine = setup({
                         hashingBefore: {
                             invoke: {
                                 src: 'triggerHashBody',
-                                input: ({ context }) => ({ tabId: context.tabId }),
+                                input: ({ context }) => ({
+                                    tabId: context.tabId,
+                                    selectors: context.config.selectors,
+                                }),
                                 onDone: {
                                     target: 'clicking',
                                     actions: assign({
@@ -365,7 +371,7 @@ export const scrapeMachine = setup({
                                                 .output.bodyHash,
                                     }),
                                 },
-                                onError: '#scraper.errored',
+                                onError: {target: '#scraper.errored', actions: 'setError'},
                             },
                         },
                         clicking: {
@@ -396,14 +402,20 @@ export const scrapeMachine = setup({
                                         target: '#scraper.navigating.retryingNav',
                                         actions: 'incrementRetry',
                                     },
-                                    { target: '#scraper.errored' },
+                                    {
+                                        target: '#scraper.errored',
+                                        actions: 'setError',
+                                    },
                                 ],
                             },
                         },
                         hashingAfter: {
                             invoke: {
                                 src: 'triggerHashBody',
-                                input: ({ context }) => ({ tabId: context.tabId }),
+                                input: ({ context }) => ({
+                                    tabId: context.tabId,
+                                    selectors: context.config.selectors,
+                                }),
                                 onDone: [
                                     {
                                         guard: ({ context, event }) =>
@@ -422,7 +434,7 @@ export const scrapeMachine = setup({
                                         actions: ['incrementPage', 'resetRetries'],
                                     },
                                 ],
-                                onError: '#scraper.errored',
+                                onError: {target: '#scraper.errored', actions: 'setError'},
                             },
                         },
                     },
@@ -441,6 +453,10 @@ export const scrapeMachine = setup({
             on: {
                 RETRY: 'extracting',
                 STOP: 'idle',
+                TEST_PAGINATION: {
+                    target: 'navigating',
+                    actions: assign({ isTesting: true }),
+                },
             },
         },
     },
