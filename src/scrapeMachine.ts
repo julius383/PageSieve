@@ -5,7 +5,6 @@ import { navigateAndWait, waitForTabLoad } from '@/sidebar/util';
 
 export interface ScrapeContext {
     config: ScrapeConfig;
-    tabId: number;
     currentURL: string;
     results: ExtractedGroup[];
     error: string | null;
@@ -24,7 +23,6 @@ type ScrapeEvent =
 
 interface InputType {
     config: ScrapeConfig;
-    tabId: number;
     startURL: string;
 }
 
@@ -49,26 +47,41 @@ export const scrapeMachine = setup({
     actors: {
         triggerExtraction: fromPromise<
             ExtractedGroup[],
-            { tabId: number; selectors: SelectorGroup[] }
+            { selectors: SelectorGroup[] }
         >(async ({ input }) => {
-            const response = await browser.tabs.sendMessage(input.tabId, {
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!(tab?.id && tab?.url)) throw new Error("Cannot access tab");
+            const response = await browser.tabs.sendMessage(tab.id, {
                 action: 'extractData',
                 selectors: input.selectors,
             });
             if (!response.success) throw new Error(response.error);
             return response.result as ExtractedGroup[];
         }),
-        triggerHashBody: fromPromise<{ bodyHash: string }, { tabId: number, selectors: SelectorGroup[] }>(async ({ input }) => {
-            return await browser.tabs.sendMessage(input.tabId, {
+        triggerHashBody: fromPromise<{ bodyHash: string }, { selectors: SelectorGroup[] }>(async ({ input }) => {
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!(tab?.id && tab?.url)) throw new Error("Cannot access tab");
+            return await browser.tabs.sendMessage(tab.id, {
                 action: 'hashBody',
                 selectors: input.selectors,
             });
         }),
         navigateLinks: fromPromise<
             { status: PaginationStateStatus; url: string },
-            { tabId: number; config: ScrapeConfig; currentURL: string }
+            { config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config, currentURL } = input;
+            const { config, currentURL } = input;
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!(tab?.id && tab?.url)) throw new Error("Cannot access tab");
             const pagination = config.pagination;
             if (pagination.mode == 'links') {
                 const idx = pagination.pageLinks.findIndex((url: string) => url === currentURL);
@@ -76,7 +89,7 @@ export const scrapeMachine = setup({
                     return { status: PaginationStateStatus.Complete, url: currentURL };
                 }
                 const nextURL = pagination.pageLinks[idx + 1];
-                await navigateAndWait(tabId, nextURL, config.options.timeoutMs);
+                await navigateAndWait(tab.id, nextURL, config.options.timeoutMs);
                 return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
@@ -86,9 +99,14 @@ export const scrapeMachine = setup({
         }),
         navigateTemplate: fromPromise<
             { status: PaginationStateStatus; url: string },
-            { tabId: number; config: ScrapeConfig; currentURL: string }
+            { config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config, currentURL } = input;
+            const { config, currentURL } = input;
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!(tab?.id && tab?.url)) throw new Error("Cannot access tab");
             const pagination = config.pagination;
             if (pagination.mode == 'template') {
                 const { urlTemplate, startPage, increment } = pagination;
@@ -104,7 +122,7 @@ export const scrapeMachine = setup({
                     '{{page}}',
                     (currentPageNum + increment).toString(),
                 );
-                await navigateAndWait(tabId, nextURL, config.options.timeoutMs);
+                await navigateAndWait(tab.id, nextURL, config.options.timeoutMs);
                 return { status: PaginationStateStatus.InProgress, url: nextURL };
             } else {
                 throw new Error(
@@ -114,9 +132,14 @@ export const scrapeMachine = setup({
         }),
         navigateNext: fromPromise<
             { type: 'spa' | 'navigation'; url: string },
-            { tabId: number; config: ScrapeConfig; currentURL: string }
+            { config: ScrapeConfig; currentURL: string }
         >(async ({ input }) => {
-            const { tabId, config, currentURL } = input;
+            const { config, currentURL } = input;
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+            if (!(tab?.id && tab?.url)) throw new Error("Cannot access tab");
 
             const pagination = config.pagination;
             console.debug('Attempting next pagination')
@@ -127,7 +150,7 @@ export const scrapeMachine = setup({
 
                 const navPromise = new Promise<{ type: 'navigation'; url: string }>((resolve) => {
                     listener = (tid: number, info: browser.tabs._OnUpdatedChangeInfo) => {
-                        if (tid === tabId && info.status === 'loading') {
+                        if (tid === tab.id && info.status === 'loading') {
                             resolve({ type: 'navigation', url: info.url || '' });
                         }
                     };
@@ -135,7 +158,7 @@ export const scrapeMachine = setup({
                 });
 
                 const spaPromise = browser.tabs
-                    .sendMessage(tabId, {
+                    .sendMessage(tab.id, {
                         action: 'clickAndWaitForStable',
                         selector: pagination.nextSelector,
                         timeout: config.options.timeoutMs,
@@ -147,7 +170,7 @@ export const scrapeMachine = setup({
 
                     if (result.type === 'navigation') {
                         console.debug('Using navigation for next pagination')
-                        const tab = await waitForTabLoad(tabId, config.options.timeoutMs);
+                        const tab = await waitForTabLoad(tab.id, config.options.timeoutMs);
                         return { type: 'navigation', url: tab.url || result.url };
                     } else {
                         console.debug('Using SPA for next pagination')
@@ -198,14 +221,15 @@ export const scrapeMachine = setup({
         resetRetries: assign({
             retries: 0,
         }),
-        setError: assign({ error: ({ event }) => (event.error as Error).message, }),
+        setError: assign({
+            error: ({ event }) =>  event.error instanceof Error ? event.error.message : String(event.error),
+        }),
     },
 }).createMachine({
     id: 'scraper',
     initial: 'idle',
     context: ({ input }) => ({
         config: input.config,
-        tabId: input.tabId,
         currentURL: input.startURL,
         results: [] as ExtractedGroup[],
         error: null,
@@ -232,7 +256,6 @@ export const scrapeMachine = setup({
             invoke: {
                 src: 'triggerExtraction',
                 input: ({ context }) => ({
-                    tabId: context.tabId,
                     selectors: context.config.selectors,
                 }),
                 onDone: [
@@ -298,7 +321,6 @@ export const scrapeMachine = setup({
                     invoke: {
                         src: 'navigateLinks',
                         input: ({ context }) => ({
-                            tabId: context.tabId,
                             config: context.config,
                             currentURL: context.currentURL,
                         }),
@@ -332,7 +354,6 @@ export const scrapeMachine = setup({
                     invoke: {
                         src: 'navigateTemplate',
                         input: ({ context }) => ({
-                            tabId: context.tabId,
                             config: context.config,
                             currentURL: context.currentURL,
                         }),
@@ -364,7 +385,6 @@ export const scrapeMachine = setup({
                             invoke: {
                                 src: 'triggerHashBody',
                                 input: ({ context }) => ({
-                                    tabId: context.tabId,
                                     selectors: context.config.selectors,
                                 }),
                                 onDone: {
@@ -382,7 +402,6 @@ export const scrapeMachine = setup({
                             invoke: {
                                 src: 'navigateNext',
                                 input: ({ context }) => ({
-                                    tabId: context.tabId,
                                     config: context.config,
                                     currentURL: context.currentURL,
                                 }),
@@ -417,7 +436,6 @@ export const scrapeMachine = setup({
                             invoke: {
                                 src: 'triggerHashBody',
                                 input: ({ context }) => ({
-                                    tabId: context.tabId,
                                     selectors: context.config.selectors,
                                 }),
                                 onDone: [

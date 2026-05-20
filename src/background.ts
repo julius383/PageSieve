@@ -18,13 +18,14 @@ browser.browserAction.onClicked.addListener(() => {
 
 let scrapeActor: ReturnType<typeof createActor> | null = null;
 
-function actorSubscriber(state) {
-    const context: ScrapeContext = state.context;
+function actorSubscriber(snapshot: any) {
+    const context: ScrapeContext = snapshot.context;
     const currentState = (
-        state.value instanceof Object ? Object.keys(state.value)[0] : state.value
+        snapshot.value instanceof Object ? Object.keys(snapshot.value)[0] : snapshot.value
     ) as StatusLevel;
     // logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
     logger.debug('Current state is {status} with context {context}', {
+        status: currentState,
         context: omit(context, ['config', 'results']),
     });
     if (currentState === 'errored') {
@@ -70,7 +71,6 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             scrapeActor = createActor(scrapeMachine, {
                 input: {
                     config: request.config,
-                    tabId: tab.id,
                     startURL: tab.url,
                 },
             });
@@ -79,6 +79,8 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             scrapeActor.subscribe(actorSubscriber);
             scrapeActor.start();
             scrapeActor.send({ type: 'START' });
+        } else {
+            logger.error('Failed to start in current tab');
         }
     } else if (request.action === 'stopMain') {
         // Handle stop request from Sidebar
@@ -110,18 +112,19 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             scrapeActor = createActor(scrapeMachine, {
                 input: {
                     config: request.config,
-                    tabId: tab.id,
                     startURL: tab.url,
                 },
             });
 
             return new Promise((resolve) => {
-                scrapeActor!.subscribe((state) => {
-                    actorSubscriber(state);
-
-                    if (state.value === 'completed') {
+                scrapeActor!.subscribe((snapshot) => {
+                    actorSubscriber(snapshot);
+                    const currentState = (
+                        snapshot.value instanceof Object ? Object.keys(snapshot.value)[0] : snapshot.value
+                    ) as StatusLevel;
+                    if (currentState === 'completed') {
                         resolve({ paginationStatus: PaginationStateStatus.InProgress });
-                    } else if (state.value === 'errored') {
+                    } else if (currentState === 'errored') {
                         resolve({ paginationStatus: PaginationStateStatus.Failed });
                     }
                 });
