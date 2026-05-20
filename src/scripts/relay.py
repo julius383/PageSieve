@@ -16,7 +16,7 @@ def read_message():
 
 def main():
     import os
-    debug_path = os.path.expanduser("~/relay_debug.log")
+    debug_path = os.path.expanduser("~/relay_debug.json.log")
     
     # Simple way to clear the log on start or just keep it small
     # with open(debug_path, "w") as f:

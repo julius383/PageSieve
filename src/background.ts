@@ -2,8 +2,8 @@ import { createActor } from 'xstate';
 import { omit } from 'es-toolkit/object';
 import { ScrapeContext, scrapeMachine } from './scrapeMachine';
 import { type BackgroundRequest, PaginationStateStatus, type StatusLevel } from './types';
-import { getLogger } from "./logger";
-const logger = getLogger(["ext", "background"]);
+import { getLogger } from '@/logger';
+const logger = getLogger(['ext', 'background']);
 
 let sidebarOpen = false;
 
@@ -17,6 +17,45 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 let scrapeActor: ReturnType<typeof createActor> | null = null;
+
+function actorSubscriber(state) {
+    const context: ScrapeContext = state.context;
+    const currentState = (
+        state.value instanceof Object ? Object.keys(state.value)[0] : state.value
+    ) as StatusLevel;
+    // logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
+    logger.debug('Current state is {status} with context {context}', {
+        context: omit(context, ['config', 'results']),
+    });
+    if (currentState === 'errored') {
+        logger.error('An error occurred: {error}', {
+            status: currentState,
+            error: context.error || 'Unknown error',
+        });
+    } else if (currentState === 'extracting') {
+        logger.info("Extracting data from {currentURL}", {
+            status: currentState,
+            currentURL: context.currentURL,
+        });
+    } else if (currentState === 'navigating') {
+        logger.info("Navigating from {currentURL} using {pagination}", {
+            status: currentState,
+            currentURL: context.currentURL,
+            pagination: context.config.pagination.mode,
+        });
+    } else if (currentState === 'waiting') {
+        logger.info("Waiting for {delay} milliseconds", {
+            status: currentState,
+            delay: context.config.options.delayMs,
+        });
+    }
+
+    browser.runtime.sendMessage({
+        action: 'updateScrapeStatus',
+        status: currentState,
+        results: context.results,
+    });
+}
 
 browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
     // Handle start request from Sidebar
@@ -32,47 +71,12 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 input: {
                     config: request.config,
                     tabId: tab.id,
-                    tabURL: tab.url,
+                    startURL: tab.url,
                 },
             });
 
-            logger.debug('Created actor with {config}', {config: request.config});
-            scrapeActor.subscribe((state) => {
-                const context: ScrapeContext = state.context;
-                const currentState = (
-                    state.value instanceof Object ? Object.keys(state.value)[0] : state.value
-                ) as StatusLevel;
-                logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
-                if (currentState === 'errored') {
-                    logger.error("An error occurred: {error}", {
-                        status: currentState,
-                        error: context.error || 'Unknown error',
-                    });
-                } else if (currentState === 'extracting') {
-                    logger.info("Extracting data from {currentURL}", {
-                        status: currentState,
-                        currentURL: context.currentURL,
-                    });
-                } else if (currentState === 'navigating') {
-                    logger.info("Navigating from {currentURL} using {pagination}", {
-                        status: currentState,
-                        currentURL: context.currentURL,
-                        pagination: context.config.pagination.mode,
-                    });
-                } else if (currentState === 'waiting') {
-                    logger.info("Waiting for {delay} milliseconds", {
-                        status: currentState,
-                        delay: context.config.options.delayMs,
-                    });
-                }
-
-                browser.runtime.sendMessage({
-                    action: 'updateScrapeStatus',
-                    status: currentState,
-                    results: context.results,
-                });
-            });
-
+            logger.debug('Created actor with {config}', { config: request.config });
+            scrapeActor.subscribe(actorSubscriber);
             scrapeActor.start();
             scrapeActor.send({ type: 'START' });
         }
@@ -107,29 +111,13 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                 input: {
                     config: request.config,
                     tabId: tab.id,
-                    tabURL: tab.url,
+                    startURL: tab.url,
                 },
             });
 
             return new Promise((resolve) => {
                 scrapeActor!.subscribe((state) => {
-                    const currentState = (
-                        state.value instanceof Object ? Object.keys(state.value)[0] : state.value
-                    ) as StatusLevel;
-
-                    let message: string = '';
-                    if (currentState === 'errored') {
-                        message = state.context.error || 'Unknown error';
-                    } else if (currentState === 'navigating') {
-                        message = `navigating from ${state.context.currentURL} using ${state.context.config.pagination.mode}`;
-                    }
-
-                    browser.runtime.sendMessage({
-                        action: 'updateScrapeStatus',
-                        status: currentState,
-                        message: message,
-                        results: state.context.results,
-                    });
+                    actorSubscriber(state);
 
                     if (state.value === 'completed') {
                         resolve({ paginationStatus: PaginationStateStatus.InProgress });

@@ -1,7 +1,9 @@
-import type { MessageRequest, ExtractedGroup, ExtractedRow } from './types';
-import type { SelectorGroup } from './schema';
-import { DOMInspector } from './dominspector.mjs';
+import type { MessageRequest, ExtractedGroup, ExtractedRow } from '@/types';
+import type { SelectorGroup } from '@/core/schema';
+import { DOMInspector } from '@/dominspector.mjs';
+import { getLogger } from '@/logger';
 
+const logger = getLogger(['ext', 'content']);
 const inspector = new DOMInspector();
 
 type SelectorSingleReturn = string | null | undefined;
@@ -26,13 +28,6 @@ interface PickSelectorOptions {
     extractContent?: boolean;
 }
 
-async function bgLog(msg: string) {
-    await browser.runtime.sendMessage({
-        type: 'LOG',
-        message: msg,
-    });
-}
-
 /**
  * Waits for the DOM to stop changing for a specified duration
  * @param timeout - Maximum time to wait in milliseconds
@@ -49,7 +44,7 @@ async function waitForDOMStable(
         const timeoutTimer = setTimeout(() => {
             observer.disconnect();
             if (stabilityTimer) clearTimeout(stabilityTimer);
-            console.log('timout timer elapsed');
+            logger.debug('timeout timer elapsed');
             resolve(false);
         }, timeout);
 
@@ -61,7 +56,7 @@ async function waitForDOMStable(
             stabilityTimer = setTimeout(() => {
                 observer.disconnect();
                 clearTimeout(timeoutTimer);
-                console.log('stability timer elapsed');
+                logger.debug('stability timer elapsed');
                 resolve(true);
             }, stabilityDuration);
         });
@@ -107,7 +102,10 @@ function xpathQuerySelectorAll(
         return nodes;
     }
     const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
-    console.debug(`Found data of type ${result.resultType} for query ${xpath} in qsa`);
+    logger.debug('Found data of type {resultType} for query {xpath} in qsa', {
+        resultType: result.resultType,
+        xpath,
+    });
     const scalar = extractXpathResult(result);
     if (scalar !== null) return [scalar];
 
@@ -129,7 +127,10 @@ function xpathQuerySelector(
     }
     const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
 
-    console.debug(`Found data of type ${result.resultType} for query ${xpath} in s`);
+    logger.debug('Found data of type {resultType} for query {xpath} in s', {
+        resultType: result.resultType,
+        xpath,
+    });
     const scalar = extractXpathResult(result);
     if (scalar !== null) return scalar;
 
@@ -258,7 +259,7 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
                     return { [name]: value };
                 });
                 const row = Object.assign({}, ...fieldData);
-                console.dir(row);
+                // console.dir(row);
                 rows.push(row);
             });
 
@@ -329,7 +330,32 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         inspector.deactivate();
         return { computedSelector: selector };
     } else if (request.action === 'hashBody') {
-        const text = document.body.innerText.replace(/\s+/g, ' ').trim();
+        let text: string = '';
+
+        // use selectors for more accurate hashing
+        request.selectors.forEach((elem) => {
+            if (elem.container !== undefined && elem.container !== '') {
+
+                const fn = pickSelectorFunction(elem.container, {
+                    type: 'array',
+                    extractContent: false,
+                });
+                const containers = fn(document.body) as NodeListOf<HTMLElement>;
+                logger.debug('Found {count} container elements', { count: containers.length });
+                const containerTexts: string[] = [];
+                if (containers && containers instanceof NodeList) {
+                    containers.forEach((i) => {
+                        containerTexts.push(i.innerText)
+                    })
+                    text += containerTexts.join();
+                }
+            }
+
+        })
+
+        if (text.trim() !== '') {
+            text = document.body.innerText.replace(/\s+/g, ' ').trim();
+        }
 
         const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
 
@@ -344,13 +370,15 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         });
         const el = fn(document.body);
         if (!el) {
-            await bgLog(`Element not found for click:  ${request.selector}`);
+            logger.error('Element not found for click: {selector}', {
+                selector: request.selector,
+            });
             return {
                 success: false,
                 error: `Element with selector '${request.selector}' not found.`,
             };
         }
-        await bgLog(`setting up dom stability`);
+        logger.debug('setting up dom stability');
 
         const stabilityDuration = request.stabilityDuration ?? 700;
 
@@ -358,7 +386,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
 
         (el as HTMLElement).click();
 
-        await bgLog('Click initiated, now waiting for DOM to stabilize...');
+        logger.debug('Click initiated, now waiting for DOM to stabilize...');
         const stable = await waitPromise;
 
         if (!stable) {
@@ -368,7 +396,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
             };
         }
 
-        await bgLog('DOM is stable after click.');
+        logger.debug('DOM is stable after click.');
         return { success: true };
     }
     return false;

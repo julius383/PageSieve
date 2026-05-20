@@ -31,7 +31,7 @@ function createLogStore() {
           timestamp: Number(record.timestamp),
         };
         const next = [entry, ...logs];
-        console.dir(entry);
+        // console.dir(entry);
         return next.length > MAX ? next.slice(0, MAX) : next;
       });
     },

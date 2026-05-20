@@ -119,6 +119,7 @@ export const scrapeMachine = setup({
             const { tabId, config, currentURL } = input;
 
             const pagination = config.pagination;
+            console.debug('Attempting next pagination')
             if (pagination.mode == 'next') {
                 let listener:
                     | ((tid: number, info: browser.tabs._OnUpdatedChangeInfo) => void)
@@ -145,9 +146,11 @@ export const scrapeMachine = setup({
                     const result = await Promise.race([spaPromise, navPromise]);
 
                     if (result.type === 'navigation') {
+                        console.debug('Using navigation for next pagination')
                         const tab = await waitForTabLoad(tabId, config.options.timeoutMs);
                         return { type: 'navigation', url: tab.url || result.url };
                     } else {
+                        console.debug('Using SPA for next pagination')
                         const res = result as { success: boolean; error?: string };
                         if (!res.success) throw new Error(res.error || 'SPA click failed');
                         return { type: 'spa', url: currentURL };
@@ -158,6 +161,7 @@ export const scrapeMachine = setup({
                     }
                 }
             } else {
+                console.debug(`Unable to navigate with next using pagination: ${pagination.mode}`);
                 throw new Error(
                     `Unable to navigate with next using pagination: ${pagination.mode}`,
                 );
