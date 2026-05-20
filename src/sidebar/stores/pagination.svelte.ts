@@ -1,7 +1,7 @@
 import * as z from 'zod';
 
-import { PaginationConfig } from '../../schema';
-import type { PaginationConfig as PaginationConfigT } from '../../schema';
+import { PaginationConfig } from '@/core/schema';
+import type { PaginationConfig as PaginationConfigT } from '@/core/schema';
 import { scrapeConfig } from './scrapeConfig.svelte';
 import { setStatus } from './ui.svelte';
 

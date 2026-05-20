@@ -6,7 +6,7 @@ import type {
     ExtractedGroup,
 } from '../../types';
 
-import type { StoredConfig } from '../../schema';
+import type { StoredConfig } from '@/core/schema';
 import { getAllConfigs } from '../services/storage';
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({

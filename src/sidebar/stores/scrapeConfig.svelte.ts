@@ -1,5 +1,5 @@
-import type { ScrapeConfig, SelectorGroup, PaginationConfig } from '../../schema';
-import { ExtractionOptions, Metadata } from '../../schema';
+import type { ScrapeConfig, SelectorGroup, PaginationConfig } from '@/core/schema';
+import { ExtractionOptions, Metadata } from '@/core/schema';
 
 export const scrapeConfig = $state<ScrapeConfig>({
     metadata: Metadata.parse({}),

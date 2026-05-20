@@ -33,7 +33,7 @@
     import { renameConfig, removeConfig } from '../services/storage';
 
     import ConfirmDialog from './ConfirmDialog.svelte';
-    import type { StoredConfig } from '../../schema';
+    import type { StoredConfig } from '@/core/schema';
 
     onMount(() => {
         refreshConfigs();

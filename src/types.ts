@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import type { ScrapeConfig, SelectorGroup } from './schema';
+import type { ScrapeConfig, SelectorGroup } from '@/core/schema';
 
 z.config({ jitless: true });
 
@@ -92,6 +92,7 @@ type ClickAndWaitRequest = {
 
 type BodyHashRequest = {
     action: 'hashBody';
+    selectors: SelectorGroup[],
 };
 
 type WaitPageLoadRequest = {

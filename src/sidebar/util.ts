@@ -2,7 +2,7 @@ import { zipObject } from 'es-toolkit';
 import { Parser } from '@json2csv/plainjs';
 import { downloadZip } from 'client-zip';
 import type { ExtractedGroup, StatusLevel, SupportedExportDataTypes } from '../types';
-import type { SelectorGroup } from '../schema';
+import type { SelectorGroup } from '@/core/schema';
 // @ts-expect-error: handlebars integration through vite plugin
 import htmlTemplate from './templates/htmltemplate.hbs';
 // @ts-expect-error: handlebars integration through vite plugin

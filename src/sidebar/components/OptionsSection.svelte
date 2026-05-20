@@ -5,7 +5,7 @@
     import { Separator } from '$lib/components/ui/separator';
     import * as Field from '$lib/components/ui/field/index.js';
 
-    import type { ExtractionOptions } from '../../schema';
+    import type { ExtractionOptions } from '@/core/schema';
 
     import { scrapeConfig } from '../stores/scrapeConfig.svelte';
 

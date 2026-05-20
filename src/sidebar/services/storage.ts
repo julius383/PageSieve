@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { ExtractedGroup } from '../../types';
-import { StoredConfig } from '../../schema';
+import { StoredConfig } from '@/core/schema';
 import localforage from 'localforage';
 import { setStatus } from '../stores/ui.svelte';
 import { LogEntry } from '../stores/logs';

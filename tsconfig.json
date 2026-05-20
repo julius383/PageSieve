@@ -18,6 +18,7 @@
         "verbatimModuleSyntax": false,
         "baseUrl": ".",
         "paths": {
+            "@/*": ["src/*"],
             "$lib": ["src/lib"],
             "$lib/*": ["src/lib/*"]
         }
