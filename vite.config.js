@@ -26,10 +26,10 @@ const mainConfig = defineConfig({
         modulePreload: false,
         rollupOptions: {
             input: {
-                sidebar:    resolve(__dirname, 'src/sidebar/main.ts'),
-                fullpage:   resolve(__dirname, 'src/fullpage/main.ts'),
-                background: resolve(__dirname, 'src/background.ts'),
-                app:        resolve(__dirname, 'src/app.css'),
+                sidebar:    resolve(__dirname, 'src/extension/ui/sidebar/main.ts'),
+                fullpage:   resolve(__dirname, 'src/extension/ui/fullpage/main.ts'),
+                background: resolve(__dirname, 'src/extension/background.ts'),
+                app:        resolve(__dirname, 'src/extension/ui/app.css'),
             },
             output: {
                 entryFileNames: '[name].js',
@@ -48,7 +48,7 @@ const contentConfig = defineConfig({
         sourcemap: true,
         emptyOutDir: false, // Don't clear dist, as the main build already did
         lib: {
-            entry: resolve(__dirname, 'src/content.ts'),
+            entry: resolve(__dirname, 'src/extension/content.ts'),
             formats: ['iife'],
             name: 'content',
             fileName: () => 'content.js',
