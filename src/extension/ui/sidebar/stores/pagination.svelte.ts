@@ -52,7 +52,7 @@ function createInitialPaginationState(config: PaginationConfigT) {
 }
 
 // Create the reactive paginationState store, initialized from the main scrapeConfig.
-export let paginationState = $state(createInitialPaginationState(scrapeConfig.pagination));
+export const paginationState = $state(createInitialPaginationState(scrapeConfig.pagination));
 
 /**
  * Validates the current UI pagination state and, if successful,

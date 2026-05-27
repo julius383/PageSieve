@@ -4,9 +4,9 @@
     import { CircleSmall } from '@lucide/svelte';
 
     import { fly } from 'svelte/transition';
-    import { displayLogs, logStore } from '@/extension/ui/sidebar/stores/logs';
+    import { displayLogs, logStore, type LogEntry } from '@/extension/ui/sidebar/stores/logs';
     import { getIndicatorColor } from '@/extension/ui/sidebar/util';
-    import type { StatusLevel } from '@/core/types';
+    import type { StatusLevel } from '@/extension/types';
 
     import { getLatestLogs } from '@/extension/ui/sidebar/services/storage';
     import { onMount } from 'svelte';
@@ -22,7 +22,7 @@
         }
     });
 
-    function getStatus(log: any): StatusLevel {
+    function getStatus(log: LogEntry): StatusLevel | undefined {
         if (log.properties?.status) return log.properties.status as StatusLevel;
     }
 

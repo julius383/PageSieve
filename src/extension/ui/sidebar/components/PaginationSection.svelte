@@ -112,9 +112,8 @@
                 <Field.Group>
                     <Field.Field>
                         <Field.Label>URL Template</Field.Label>
-                        <!-- eslint-disable-next-line svelte/no-useless-mustaches -->
                         <Input
-                            placeholder="/products?page={'{{'}page{'}}'}"
+                            placeholder="/products?page=&lbrace;&lbrace;page&rbrace;&rbrace;"
                             bind:value={paginationState.template.urlTemplate}
                         />
                         <Field.Description>

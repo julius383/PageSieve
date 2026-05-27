@@ -1,4 +1,5 @@
 import { writable, derived } from 'svelte/store';
+import type { LogRecord } from '@logtape/logtape';
 
 const MAX = 100;
 
@@ -20,7 +21,7 @@ function createLogStore() {
     /**
      * LogTape sink function
      */
-    sink(record: any) {
+    sink(record: LogRecord) {
       update((logs) => {
         const entry: LogEntry = {
           id: crypto.randomUUID(),

@@ -112,7 +112,7 @@
                                     displayValue={group.name}
                                     onSave={saveName}
                                     onCancel={cancelEditing}
-                                    iconSize={'icon-sm'}
+                                    iconSize="icon-sm"
                                 />
                             </div>
 

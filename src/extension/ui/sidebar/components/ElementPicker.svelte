@@ -8,7 +8,7 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     import { setStatus } from '@/extension/ui/sidebar/stores/ui.svelte';
-    import type { SelectedElementRequest } from '@/core/types';
+    import type { SelectedElementRequest } from '@/extension/types';
 
     let {
         label = 'Selector',

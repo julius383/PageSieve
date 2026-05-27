@@ -1,7 +1,8 @@
 import { zipObject } from 'es-toolkit';
 import { Parser } from '@json2csv/plainjs';
 import { downloadZip } from 'client-zip';
-import type { ExtractedGroup, StatusLevel, SupportedExportDataTypes } from '@/core/types';
+import type { ExtractedGroup, SupportedExportDataTypes } from '@/core/types';
+import type { StatusLevel } from '@/extension/types';
 import type { SelectorGroup } from '@/core/schema';
 // @ts-expect-error: handlebars integration through vite plugin
 import htmlTemplate from '@/extension/ui/sidebar/templates/htmltemplate.hbs';

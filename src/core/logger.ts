@@ -65,7 +65,9 @@ const initLogger = async () => {
                                     category: record.category.join('/'),
                                 });
                             }
-                        } catch (_) {}
+                        } catch {
+                            // Ignore relay failures (e.g., port disconnected)
+                        }
                     },
                 },
                 loggers: [

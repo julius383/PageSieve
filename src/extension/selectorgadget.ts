@@ -611,6 +611,7 @@ export class DomPredictionHelper {
             } else if (first === '#') {
                 expressions.push('(@id = "' + rest + '")');
             } else if (first === ',') {
+                // Ignore commas as they are not part of the selector logic here
             } else {
                 out += current;
             }

@@ -1,4 +1,5 @@
-import type { MessageRequest, ExtractedGroup, ExtractedRow } from '@/core/types';
+import type { ExtractedGroup, ExtractedRow } from '@/core/types';
+import type { MessageRequest } from '@/extension/types';
 import type { SelectorGroup } from '@/core/schema';
 import { DOMInspector } from '@/extension/dominspector.mjs';
 import { getLogger } from '@/core/logger';

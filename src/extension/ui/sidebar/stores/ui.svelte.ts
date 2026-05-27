@@ -1,11 +1,10 @@
 import { SvelteDate } from 'svelte/reactivity';
+import type { ExtractedGroup } from '@/core/types';
 import type {
     ExtensionStatus,
     StatusLevel,
     ScrapeStatusUpdateRequest,
-    ExtractedGroup,
-} from '@/core/types';
-
+} from '@/extension/types';
 import type { StoredConfig } from '@/core/schema';
 import { getAllConfigs } from '@/extension/ui/sidebar/services/storage';
 

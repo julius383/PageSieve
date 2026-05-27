@@ -244,7 +244,8 @@ export class DOMInspector {
             this.whitelistedElements.add(clickedElement);
             this.updatePersistentHighlight(clickedElement, 'whitelisted');
         }
-        this.inspectElement(clickedElement);
+        // this.inspectElement(clickedElement);
+        this.inspectElement();
     }
 
     handleKeyDown(event: KeyboardEvent) {
@@ -284,22 +285,8 @@ export class DOMInspector {
         this.currentHighlighted = null;
     }
 
-    inspectElement(element: HTMLElement) {
-        const elementData = {
-            element: element,
-            tagName: element.tagName,
-            id: element.id,
-            className: element.className,
-            textContent: element.textContent.trim(),
-            attributes: this.getAttributes(element),
-            computedStyle: window.getComputedStyle(element),
-            parentElement: element.parentElement,
-            children: Array.from(element.children),
-            boundingRect: element.getBoundingClientRect(),
-        };
-
-        // console.log('Complete Element Data:', elementData);
-
+    // inspectElement(_element: HTMLElement) {
+    inspectElement() {
         const selector = this.guessSelector();
         let foundElements = 0;
         if (selector) {
