@@ -1,7 +1,7 @@
 import { SvelteDate } from 'svelte/reactivity';
 import type { SelectorGroup } from '@/core/schema';
 import { extractedData, runWithStatus, runWithStatusAsync, setStatus } from '@/extension/ui/sidebar/stores/ui.svelte';
-import { shortHash, generateConfigId, validateSelectors } from '@/extension/ui/sidebar/util';
+import { shortHash, generateConfigId, validateSelectors } from '@/core/util';
 import { scrapeConfig, setScrapeConfig } from '@/extension/ui/sidebar/stores/scrapeConfig.svelte';
 import { StoredConfig, ScrapeConfig } from '@/core/schema';
 import { saveToBrowser } from '@/extension/ui/sidebar/services/storage';
