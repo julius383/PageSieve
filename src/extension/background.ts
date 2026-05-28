@@ -1,6 +1,7 @@
 import { createActor, type SnapshotFrom } from 'xstate';
 import { omit } from 'es-toolkit/object';
-import { ScrapeContext, scrapeMachine } from '@/core/scrapeMachine';
+import { ScrapeContext, createScrapeMachine } from '@/core/scrapeMachine';
+import { extensionDriver } from '@/extension/driver';
 import { PaginationStateStatus } from '@/core/types';
 import type { BackgroundRequest, StatusLevel } from '@/extension/types';
 import { getLogger } from '@/core/logger';
@@ -17,6 +18,7 @@ browser.browserAction.onClicked.addListener(() => {
     sidebarOpen = !sidebarOpen;
 });
 
+const scrapeMachine = createScrapeMachine(extensionDriver);
 let scrapeActor: ReturnType<typeof createActor<typeof scrapeMachine>> | null = null;
 
 function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
