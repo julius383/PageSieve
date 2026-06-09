@@ -19,6 +19,7 @@ export interface ScrapeContext {
     pageHash?: string;
     retries: number;
     isTesting: boolean;
+    driverContext?: any;
 }
 
 type ScrapeEvent =
@@ -30,14 +31,17 @@ type ScrapeEvent =
 interface InputType {
     config: ScrapeConfig;
     startURL: string;
+    driverContext?: unknown;
 }
 
 interface ExtractDataActorInput {
     selectors: SelectorGroup[];
+    driverContext?: unknown;
 }
 
 interface ComputePageHashActorInput {
     selectors: SelectorGroup[];
+    driverContext?: unknown;
 }
 
 interface ComputePageHashActorOutput {
@@ -47,6 +51,7 @@ interface ComputePageHashActorOutput {
 interface NavigateActorInput {
     config: ScrapeConfig;
     currentURL: string;
+    driverContext?: unknown;
 }
 
 interface NavigateActorOutput {
@@ -145,6 +150,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
             currentPage: 1,
             retries: 0,
             isTesting: false,
+            driverContext: input.driverContext,
             maxPages:
                 'maxPages' in input.config.pagination
                     ? input.config.pagination.maxPages
@@ -168,6 +174,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                     src: 'extractData',
                     input: ({ context }) => ({
                         selectors: context.config.selectors,
+                        driverContext: context.driverContext,
                     }),
                     onDone: [
                         {
@@ -232,6 +239,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                             input: ({ context }) => ({
                                 config: context.config,
                                 currentURL: context.currentURL,
+                                driverContext: context.driverContext,
                             }),
                             onDone: [
                                 {
@@ -265,6 +273,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                             input: ({ context }) => ({
                                 config: context.config,
                                 currentURL: context.currentURL,
+                                driverContext: context.driverContext,
                             }),
                             onDone: [
                                 {
@@ -295,6 +304,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                                     src: 'computePageHash',
                                     input: ({ context }) => ({
                                         selectors: context.config.selectors,
+                                        driverContext: context.driverContext,
                                     }),
                                     onDone: {
                                         target: 'clicking',
@@ -316,6 +326,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                                     input: ({ context }) => ({
                                         config: context.config,
                                         currentURL: context.currentURL,
+                                        driverContext: context.driverContext,
                                     }),
                                     onDone: [
                                         {
@@ -351,6 +362,7 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                                     src: 'computePageHash',
                                     input: ({ context }) => ({
                                         selectors: context.config.selectors,
+                                        driverContext: context.driverContext,
                                     }),
                                     onDone: [
                                         {
