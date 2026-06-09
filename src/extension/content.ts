@@ -1,43 +1,24 @@
-import type { ExtractedGroup, ExtractedRow } from '@/core/types';
+import type { ExtractedGroup } from '@/core/types';
 import type { MessageRequest } from '@/extension/types';
 import type { SelectorGroup } from '@/core/schema';
 import { DOMInspector } from '@/extension/dominspector.mjs';
 import { getLogger } from '@/core/logger';
+import { ExtractionEngine, executeExtraction, isXPath } from '@/core/extractor';
 
 const logger = getLogger(['ext', 'content']);
 const inspector = new DOMInspector();
-
-type SelectorSingleReturn = string | null | undefined;
-type SelectorReturns =
-    | SelectorSingleReturn
-    | SelectorSingleReturn[]
-    | Element
-    | NodeListOf<Element>;
-type ContextType = Element | Node | null;
-type SelectorFunType = (ctx: ContextType) => SelectorReturns;
-type StringArrayMap = {
-    [key: string]: SelectorReturns;
-};
 
 interface QueryOptions {
     context?: Element | Node;
     extractContent?: boolean;
 }
 
-interface PickSelectorOptions {
-    type?: 'single' | 'array';
-    extractContent?: boolean;
-}
-
 /**
  * Waits for the DOM to stop changing for a specified duration
- * @param timeout - Maximum time to wait in milliseconds
- * @param stabilityDuration - How long the DOM must be stable in milliseconds
- * @returns Promise that resolves when DOM is stable or timeout is reached
  */
 async function waitForDOMStable(
     timeout: number = 5_000,
-    stabilityDuration: number = 700, // TODO: make timer configurable
+    stabilityDuration: number = 700,
 ): Promise<boolean> {
     return new Promise((resolve) => {
         let stabilityTimer: NodeJS.Timeout | null = null;
@@ -72,14 +53,14 @@ async function waitForDOMStable(
 
 function extractXpathResult(result: XPathResult) {
     switch (result.resultType) {
-        case XPathResult.STRING_TYPE: // text() or @attr expressions
+        case XPathResult.STRING_TYPE:
             return result.stringValue;
         case XPathResult.NUMBER_TYPE:
             return result.numberValue;
         case XPathResult.BOOLEAN_TYPE:
             return result.booleanValue;
-        default: // UNORDERED_NODE_ITERATOR_TYPE or ORDERED_NODE_ITERATOR_TYPE
-            return null; // it's a node result, handle separately
+        default:
+            return null;
     }
 }
 
@@ -103,10 +84,6 @@ function xpathQuerySelectorAll(
         return nodes;
     }
     const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
-    logger.debug('Found data of type {resultType} for query {xpath} in qsa', {
-        resultType: result.resultType,
-        xpath,
-    });
     const scalar = extractXpathResult(result);
     if (scalar !== null) return [scalar];
 
@@ -127,174 +104,41 @@ function xpathQuerySelector(
             .singleNodeValue;
     }
     const result = document.evaluate(xpath, context, null, XPathResult.ANY_TYPE, null);
-
-    logger.debug('Found data of type {resultType} for query {xpath} in s', {
-        resultType: result.resultType,
-        xpath,
-    });
     const scalar = extractXpathResult(result);
     if (scalar !== null) return scalar;
 
-    // Otherwise grab the first node
     const node = result.iterateNext();
     return node ? node.textContent?.trim() : null;
 }
 
-function parseCSS(expr: string): [string | null, string] {
-    // expr is css
-    // img?src - extracts the src attribute from img tag
-    const parts = /\?([-a-zA-Z]+)$/gm.exec(expr);
-    let attribute = null;
-    if (parts != null) {
-        attribute = parts[1];
-        expr = expr.slice(0, parts.index);
-    }
-    return [attribute, expr];
-}
-
-function cssQuerySelector(
-    css: string,
-    { context = document.body, extractContent = true }: QueryOptions = {},
-) {
-    const [attribute, selector] = parseCSS(css);
-
-    const foundItem = (context as HTMLElement).querySelector(selector);
-    if (!extractContent) return foundItem;
-
-    return attribute ? foundItem?.getAttribute(attribute)?.trim() : foundItem?.textContent?.trim();
-}
-
-function cssQuerySelectorAll(
-    css: string,
-    { context = document.body, extractContent = true }: QueryOptions = {},
-) {
-    const [attribute, selector] = parseCSS(css);
-
-    const foundItems = (context as HTMLElement).querySelectorAll(selector);
-
-    if (!extractContent) return foundItems;
-
-    return Array.from(foundItems).map((i) => {
-        return attribute ? i?.getAttribute(attribute)?.trim() : i?.textContent?.trim();
-    });
-}
-
-function isXPath(selector: string): boolean {
-    return selector.startsWith('./') || selector.startsWith('//') || selector.startsWith('../');
-}
-
-function pickSelectorFunction(
-    selector: string,
-    { type = 'single', extractContent = true }: PickSelectorOptions = {},
-): SelectorFunType {
-    if (isXPath(selector)) {
-        // selector is xpath
-        if (type === 'single') {
-            return (ctx) => {
-                const foundItem = xpathQuerySelector(selector, {
-                    context: ctx === null ? document.body : ctx,
-                    extractContent,
-                });
-                return foundItem;
-            };
-        } else {
-            return (ctx) => {
-                const foundItems = xpathQuerySelectorAll(selector, {
-                    context: ctx === null ? document.body : ctx,
-                    extractContent,
-                });
-                return foundItems;
-            };
+const domEngine: ExtractionEngine<Document | Element, Element> = {
+    querySelectorAll: (ctx, sel) => {
+        if (isXPath(sel)) {
+            return xpathQuerySelectorAll(sel, {
+                context: ctx,
+                extractContent: false,
+            }) as Element[];
         }
-    } else {
-        if (type === 'single') {
-            return (ctx) => {
-                const foundItem = cssQuerySelector(selector, {
-                    context: ctx as HTMLElement,
-                    extractContent,
-                });
-                return foundItem;
-            };
-        } else {
-            return (ctx) => {
-                const foundItems = cssQuerySelectorAll(selector, {
-                    context: ctx as HTMLElement,
-                    extractContent,
-                });
-                return foundItems;
-            };
+        return Array.from((ctx as Element | Document).querySelectorAll(sel));
+    },
+    querySelector: (ctx, sel) => {
+        if (isXPath(sel)) {
+            return xpathQuerySelector(sel, {
+                context: ctx,
+                extractContent: false,
+            }) as Element;
         }
-    }
-}
+        return (ctx as Element | Document).querySelector(sel);
+    },
+    getAttribute: (el, attr) => el.getAttribute(attr),
+    getText: (el) => el.textContent?.trim(),
+};
 
 /**
  * Extracts data from DOM elements using provided selectors
- * @param selectors - Array of selector configurations
- * @returns Array of extracted data objects
  */
 function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
-    const extractionResults: ExtractedGroup[] = [];
-
-    selectors.forEach(({ id, container, fields }) => {
-        if (container) {
-            let containerItems;
-            if (isXPath(container)) {
-                containerItems = xpathQuerySelectorAll(container, {
-                    context: document.body,
-                    extractContent: false,
-                });
-            } else {
-                containerItems = cssQuerySelectorAll(container, {
-                    context: document.body,
-                    extractContent: false,
-                });
-            }
-            if (!containerItems) {
-                return;
-            }
-            const rows: ExtractedRow[] = [];
-            containerItems.forEach((containerItem) => {
-                const fieldData = fields.map(({ name, selector, type }) => {
-                    const fn = pickSelectorFunction(selector, { type });
-                    const value = fn(containerItem);
-                    return { [name]: value };
-                });
-                const row = Object.assign({}, ...fieldData);
-                // console.dir(row);
-                rows.push(row);
-            });
-
-            extractionResults.push({ id, results: rows });
-        } else {
-            // no container so assume no missing fields and zip
-            const foundItems: StringArrayMap = {};
-            fields.forEach(({ name, selector }) => {
-                const fn = pickSelectorFunction(selector, { type: 'array' });
-                const found = fn(document);
-                if (found) {
-                    foundItems[name] = found;
-                }
-            });
-            const rows = zipObjectArrays(foundItems as Record<string, unknown[]>) as ExtractedRow[];
-            extractionResults.push({ id, results: rows });
-        }
-    });
-    return extractionResults;
-}
-
-function zipObjectArrays<T extends Record<string, unknown[]>>(
-    obj: T,
-): Array<{ [K in keyof T]: T[K][number] }> {
-    const keys = Object.keys(obj) as (keyof T)[];
-    const length = Math.min(...keys.map((k) => obj[k].length));
-
-    return Array.from(
-        { length },
-        (_, i) =>
-            Object.fromEntries(keys.map((k) => [k, obj[k][i]])) as {
-                [K in keyof T]: T[K][number];
-            },
-    );
+    return executeExtraction(domEngine, document, selectors);
 }
 
 browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<unknown> => {
@@ -333,28 +177,17 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
     } else if (request.action === 'computePageHash') {
         let text: string = '';
 
-        // use selectors for more accurate hashing
         request.selectors.forEach((elem) => {
-            if (elem.container !== undefined && elem.container !== '') {
-
-                const fn = pickSelectorFunction(elem.container, {
-                    type: 'array',
-                    extractContent: false,
-                });
-                const containers = fn(document.body) as NodeListOf<HTMLElement>;
+            if (elem.container) {
+                const containers = domEngine.querySelectorAll(document.body, elem.container);
                 logger.debug('Found {count} container elements', { count: containers.length });
-                const containerTexts: string[] = [];
-                if (containers && containers instanceof NodeList) {
-                    containers.forEach((i) => {
-                        containerTexts.push(i.innerText)
-                    })
-                    text += containerTexts.join();
+                if (containers.length > 0) {
+                    text += containers.map((i) => (i as HTMLElement).innerText).join();
                 }
             }
+        });
 
-        })
-
-        if (text.trim() !== '') {
+        if (text.trim() === '') {
             text = document.body.innerText.replace(/\s+/g, ' ').trim();
         }
 
@@ -365,11 +198,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
             .join('');
         return { bodyHash: hash };
     } else if (request.action === 'clickAndWaitForStable') {
-        const fn = pickSelectorFunction(request.selector, {
-            type: 'single',
-            extractContent: false,
-        });
-        const el = fn(document.body);
+        const el = domEngine.querySelector(document.body, request.selector);
         if (!el) {
             logger.error('Element not found for click: {selector}', {
                 selector: request.selector,

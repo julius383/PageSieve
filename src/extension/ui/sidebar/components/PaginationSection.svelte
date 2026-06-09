@@ -71,7 +71,6 @@
             <Tabs.Trigger value="template">URL Template</Tabs.Trigger>
         </Tabs.List>
 
-        <!-- TODO: make sure setting none config works as expected -->
         <Tabs.Content value="none"></Tabs.Content>
         <Tabs.Content value="next">
             <ElementPicker
