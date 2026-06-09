@@ -2,7 +2,8 @@ import { match } from 'ts-pattern';
 import { downloadZip } from 'client-zip';
 import type { ExtractedGroup, SupportedExportDataTypes } from '@/core/types';
 import type { StatusLevel } from '@/extension/types';
-import { convertTo, sanitizeSegment, getMimeType } from '@/core/util';
+import { sanitizeSegment } from '@/core/util';
+import { convertTo, getMimeType } from '@/core/converters';
 
 // import { getLogger } from '../logger';
 // const logger = getLogger(["ext", "util"]);
