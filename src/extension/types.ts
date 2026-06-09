@@ -35,17 +35,6 @@ const ExtensionStatus = z.object({
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
 export type StatusLevel = z.infer<typeof StatusLevel>;
 
-type LogMessageRequest = {
-    action: 'logMessage';
-    payload: {
-        level: string;
-        logger: string;
-        message: string;
-        properties: Record<string, unknown>;
-        ts: number;
-    };
-};
-
 type OpenFullPageRequest = {
     action: 'openFullPage';
     makeActive?: boolean;
@@ -85,11 +74,6 @@ type InspectorAcceptRequest = {
     action: 'inspector-accept';
 };
 
-type ClickElementRequest = {
-    action: 'clickElement';
-    selector: string;
-};
-
 type ClickAndWaitRequest = {
     action: 'clickAndWaitForStable';
     selector: string;
@@ -100,12 +84,6 @@ type ClickAndWaitRequest = {
 type PageHashRequest = {
     action: 'computePageHash';
     selectors: SelectorGroup[],
-};
-
-type WaitPageLoadRequest = {
-    action: 'waitPageLoad';
-    timeout: number;
-    options: object;
 };
 
 
@@ -127,15 +105,12 @@ export type MessageRequest =
     | ExtractDataRequest
     | InspectorToggleRequest
     | InspectorAcceptRequest
-    | ClickElementRequest
     | ClickAndWaitRequest
-    | PageHashRequest
-    | WaitPageLoadRequest;
+    | PageHashRequest;
 
 export type BackgroundRequest =
     | GetTabInfoRequest
     | RunMainRequest
     | StopMainRequest
     | TestNavigateRequest
-    | LogMessageRequest
     | OpenFullPageRequest;

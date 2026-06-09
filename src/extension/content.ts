@@ -162,14 +162,6 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         }
         inspector.toggle(request.pickerId);
         return { isActive: inspector.isActive };
-    } else if (request.action === 'clickElement') {
-        const el = document.querySelector<HTMLElement>(request.selector);
-        if (!el) {
-            console.error('Element not found: ', request.selector);
-            return { didNavigate: false };
-        }
-        el.click();
-        return { didNavigate: true };
     } else if (request.action === 'inspector-accept') {
         const selector = inspector.guessSelector();
         inspector.deactivate();
