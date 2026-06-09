@@ -10,6 +10,7 @@
         "build": "bun run build:main && bun run build:content",
         "build:main": "BUILD_TARGET=main    vite build",
         "build:content": "BUILD_TARGET=content vite build",
+        "build:cli": "BUILD_TARGET=cli vite build",
         "lint": "eslint src/",
         "format": "bunx prettier src/ --write"
     },
@@ -22,6 +23,7 @@
         "@svelteuidev/core": "^0.15.7",
         "client-zip": "^2.5.0",
         "clsx": "^2.1.1",
+        "crawlee": "^3.16.0",
         "dayjs": "^1.11.20",
         "es-toolkit": "^1.47.0",
         "localforage": "^1.10.0",

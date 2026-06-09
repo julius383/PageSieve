@@ -4,6 +4,9 @@ lint:
 build:
   bun run build
 
+build-cli:
+  bun run build:cli && chmod +x dist/cli/cli.js
+
 watch:
   fd -t f . src | entr -c bun run build
 

@@ -56,9 +56,39 @@ const contentConfig = defineConfig({
     },
 });
 
+const cliConfig = defineConfig({
+    resolve: sharedResolve,
+    plugins: [
+        handlebars({ runtime: 'handlebars/dist/handlebars.runtime.js' }),
+    ],
+    build: {
+        outDir: 'dist/cli',
+        sourcemap: true,
+        emptyOutDir: true,
+        target: 'node22',
+        ssr: true,                  // Prevents browser shims; keeps Node built-ins external
+        copyPublicDir: false,
+        rollupOptions: {
+            input: {
+                cli: resolve(__dirname, 'src/cli/main.ts'),
+            },
+            external: [
+                /^node:/,           // Externalize all node: protocol imports
+                (id) => !id.startsWith('.') && !id.startsWith('/') && !id.startsWith('@/') && !id.startsWith('$lib'),
+            ],
+            output: {
+                entryFileNames: '[name].js',
+                format: 'esm',      // Node 18+ handles ESM natively; swap for 'cjs' if needed
+                banner: '#!/usr/bin/env node',
+            },
+        },
+    },
+});
+
 const configs = {
     main:    mainConfig,
     content: contentConfig,
+    cli:     cliConfig
 };
 
 
