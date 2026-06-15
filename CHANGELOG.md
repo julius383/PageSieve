@@ -1,3 +1,22 @@
+## [cli-v0.1.0] - 2026-06-15
+
+### Added
+
+- Add initial version of headless crawler. Uses same scrape config as extension 
+  but runs headless through a Cheerio crawler implemented through crawlee.
+
+## [extension-v1.5.0] - 2026-06-15
+
+### Changed
+
+- Switch to generalized extractor. Mostly code change as functionality is identical
+
+### Fixed
+
+- Fix how logging is handled in content vs background scripts
+- Simplify how pages are compared.
+- Correctly set error in various failure states
+
 ## [extension-v1.4.0] - 2026-05-09
 
 ### Added
