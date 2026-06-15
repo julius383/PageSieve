@@ -1,36 +1,22 @@
 {
-    "name": "pagesieve",
+    "name": "pagesieve-monorepo",
     "version": "1.4.0",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
     "description": "PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit. Define field names, CSS selectors and (optionally) pagination strategy through a sidebar and extract and export data in a variety of formats.",
     "license": "MIT",
     "author": "Julius Kibunjia",
     "type": "module",
-    "main": "index.js",
     "scripts": {
-        "build": "bun run build:main && bun run build:content",
-        "build:main": "BUILD_TARGET=main    vite build",
-        "build:content": "BUILD_TARGET=content vite build",
-        "build:cli": "BUILD_TARGET=cli vite build",
-        "lint": "eslint src/",
-        "format": "bunx prettier src/ --write"
+        "build": "bun run build:extension && bun run build:cli",
+        "build:extension": "bun run --filter @pagesieve/extension build",
+        "build:cli": "bun run --filter @pagesieve/cli build",
+        "lint": "eslint packages/",
+        "format": "bunx prettier packages/ --write"
     },
-    "dependencies": {
-        "@json2csv/plainjs": "^7.0.6",
-        "@kaifronsdal/svelte-json-viewer": "^0.1.0",
-        "@logtape/logtape": "^2.1.1",
-        "@medv/finder": "^4.0.2",
-        "@svelteuidev/composables": "^0.15.7",
-        "@svelteuidev/core": "^0.15.7",
-        "client-zip": "^2.5.0",
-        "clsx": "^2.1.1",
-        "crawlee": "^3.16.0",
-        "dayjs": "^1.11.20",
-        "es-toolkit": "^1.47.0",
-        "localforage": "^1.10.0",
-        "tailwind-merge": "^3.6.0",
-        "ts-pattern": "^5.9.0",
-        "zod": "^4.4.3"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@eslint/compat": "^1.4.1",
         "@eslint/eslintrc": "^3.3.5",

@@ -2,9 +2,8 @@
 const config = {
     darkMode: ['class'],
     content: [
-        './src/**/*.{html,js,svelte,ts}',
-        './public/**/*.html',
-        './src/lib/components/**/*.{html,js,svelte,ts}',
+        './packages/extension/src/**/*.{html,js,svelte,ts}',
+        './packages/extension/public/**/*.html',
     ],
     plugins: [require('tailwindcss-animate')],
 };

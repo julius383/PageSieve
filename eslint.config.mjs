@@ -32,6 +32,13 @@ export default [
     },
   },
   {
-    ignores: ['dist/', 'src/lib/**', 'src/selectorgadget.ts', 'tailwind.config.js', 'vite.config.js', '*.hbs'],
+    ignores: [
+      '**/dist/',
+      'packages/extension/src/lib/**',
+      'packages/extension/src/selectorgadget.ts',
+      'tailwind.config.js',
+      'packages/**/vite.config.js',
+      '*.hbs',
+    ],
   },
 ];

@@ -13,15 +13,20 @@
         "allowSyntheticDefaultImports": true,
         "isolatedModules": true,
         "noEmit": true,
-        "types": ["firefox-webext-browser", "bun"],
+        "types": ["firefox-webext-browser", "bun", "node"],
         "useDefineForClassFields": false,
         "verbatimModuleSyntax": false,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-            "$lib": ["src/lib"],
-            "$lib/*": ["src/lib/*"]
+            "@pagesieve/core": ["packages/core/src/index.ts"],
+            "@pagesieve/core/*": ["packages/core/src/*"],
+            "$lib": ["packages/extension/src/lib"],
+            "$lib/*": ["packages/extension/src/lib/*"]
         }
     },
-    "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
+    "include": [
+        "packages/**/*.d.ts",
+        "packages/**/*.ts",
+        "packages/**/*.svelte"
+    ]
 }

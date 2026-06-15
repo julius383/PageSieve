@@ -4,23 +4,6 @@
   "workspaces": {
     "": {
       "name": "pagesieve",
-      "dependencies": {
-        "@json2csv/plainjs": "^7.0.6",
-        "@kaifronsdal/svelte-json-viewer": "^0.1.0",
-        "@logtape/logtape": "^2.1.1",
-        "@medv/finder": "^4.0.2",
-        "@svelteuidev/composables": "^0.15.7",
-        "@svelteuidev/core": "^0.15.7",
-        "client-zip": "^2.5.0",
-        "clsx": "^2.1.1",
-        "crawlee": "^3.16.0",
-        "dayjs": "^1.11.20",
-        "es-toolkit": "^1.47.0",
-        "localforage": "^1.10.0",
-        "tailwind-merge": "^3.6.0",
-        "ts-pattern": "^5.9.0",
-        "zod": "^4.4.3",
-      },
       "devDependencies": {
         "@eslint/compat": "^1.4.1",
         "@eslint/eslintrc": "^3.3.5",
@@ -57,6 +40,68 @@
         "typescript-eslint": "^8.59.4",
         "vite": "^7.3.3",
         "xstate": "^5.31.1",
+      },
+    },
+    "packages/cli": {
+      "name": "@pagesieve/cli",
+      "version": "1.4.0",
+      "bin": {
+        "pagesieve": "./dist/cli.js",
+      },
+      "dependencies": {
+        "@pagesieve/core": "workspace:*",
+        "crawlee": "^3.16.0",
+        "ts-pattern": "^5.9.0",
+        "zod": "^4.4.3",
+      },
+      "devDependencies": {
+        "vite": "^7.3.3",
+      },
+    },
+    "packages/core": {
+      "name": "@pagesieve/core",
+      "version": "1.4.0",
+      "dependencies": {
+        "@json2csv/plainjs": "^7.0.6",
+        "@logtape/logtape": "^2.1.1",
+        "dayjs": "^1.11.20",
+        "es-toolkit": "^1.47.0",
+        "ts-pattern": "^5.9.0",
+        "zod": "^4.4.3",
+      },
+    },
+    "packages/extension": {
+      "name": "@pagesieve/extension",
+      "version": "1.4.0",
+      "dependencies": {
+        "@json2csv/plainjs": "^7.0.6",
+        "@kaifronsdal/svelte-json-viewer": "^0.1.0",
+        "@logtape/logtape": "^2.1.1",
+        "@lucide/svelte": "^0.561.0",
+        "@medv/finder": "^4.0.2",
+        "@pagesieve/core": "workspace:*",
+        "@svelteuidev/composables": "^0.15.7",
+        "@svelteuidev/core": "^0.15.7",
+        "@tanstack/table-core": "^8.21.3",
+        "bits-ui": "^2.18.1",
+        "client-zip": "^2.5.0",
+        "clsx": "^2.1.1",
+        "dayjs": "^1.11.20",
+        "es-toolkit": "^1.47.0",
+        "localforage": "^1.10.0",
+        "paneforge": "^1.0.2",
+        "svelte": "^5.55.9",
+        "tailwind-merge": "^3.6.0",
+        "tailwind-variants": "^3.2.2",
+        "ts-pattern": "^5.9.0",
+        "xstate": "^5.31.1",
+        "zod": "^4.4.3",
+      },
+      "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^6.2.4",
+        "@yoichiro/vite-plugin-handlebars": "^1.4.0",
+        "handlebars": "^4.7.9",
+        "vite": "^7.3.3",
       },
     },
   },
@@ -250,6 +295,12 @@
     "@medv/finder": ["@medv/finder@4.0.2", "", {}, "sha512-RraNY9SCcx4KZV0Dh6BEW6XEW2swkqYca74pkFFRw6hHItSHiy+O/xMnpbofjYbzXj0tSpBGthUF1hHTsr3vIQ=="],
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.1.4", "", { "dependencies": { "@tybys/wasm-util": "^0.10.1" }, "peerDependencies": { "@emnapi/core": "^1.7.1", "@emnapi/runtime": "^1.7.1" } }, "sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow=="],
+
+    "@pagesieve/cli": ["@pagesieve/cli@workspace:packages/cli"],
+
+    "@pagesieve/core": ["@pagesieve/core@workspace:packages/core"],
+
+    "@pagesieve/extension": ["@pagesieve/extension@workspace:packages/extension"],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.60.2", "", { "os": "android", "cpu": "arm" }, "sha512-dnlp69efPPg6Uaw2dVqzWRfAWRnYVb1XJ8CyyhIbZeaq4CA5/mLeZ1IEt9QqQxmbdvagjLIm2ZL8BxXv5lH4Yw=="],
 

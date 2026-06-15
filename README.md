@@ -9,6 +9,9 @@ structured data from any webpage you visit. Define field names, CSS
 selectors and (optionally) pagination strategy through a sidebar and extract
 and export data in a variety of formats.
 
+In cases when you need to crawl a large number of pages, use the CLI to run the
+created scrape config.
+
 ## Demo
 
 https://github.com/user-attachments/assets/db9b9f9c-8928-442e-887e-5759e1069366
@@ -37,6 +40,7 @@ The extension is designed around a few core principles:
 - Export extracted data in a variety of formats
 - Import / export configurations as JSON files
 - Works on any website your browser can load
+- Headless crawling via Crawlee based CLI
 
 ## Tech
 
@@ -44,74 +48,94 @@ The extension is designed around a few core principles:
 - Svelte with Shadcn
 - Zod
 - Selector algorithm adapted from [SelectorGadget](https://github.com/cantino/selectorgadget/)
+- Crawlee
 
 ## Developing
 
-This project uses pnpm for dependency management and vite for building. To
+This project uses bun for dependency management and vite for building. To
 develop the project use:
 
 ```
-pnpm install
-pnpm run build
+bun install
+bun run build
 ```
 
 ## Repository Overview
 
-Generated with `broot --cmd ":pt" --height 75 --sort-by-type-dirs-first > tree.txt`
+Generated with `broot --cmd ":pt" --height 150 --sort-by-type-dirs-first > tree.txt`
 
 ```
 /PageSieve
- ├──docs … 
- ├──public 
- │  ├──fullpage.html                # html entry point for data + logs page
- │  ├──sidebar.html                 # html entry point for sidebar
- │  ├──manifest.json                # extension manifest copied on build
- │  └──icons  … 
- ├──src
- │  ├──app.css 
- │  ├──dominspector.mts             # contains class that controls click based element selection
- │  ├──background.ts
- │  ├──logger.ts                    # logging config including native_relay
- │  ├──schema.ts                    # Zod schema for Scrape Config
- │  ├──scrapeMachine.ts 
- │  ├──content.ts 
- │  ├──selectorgadget.ts            # CSS guessing algorithm adapted from cantino/selectorgadget
- │  ├──types.ts                     # Other types including for browser messaging
- │  ├──verifyConfig.ts              # simple bun script for detecting error in scrape config from json file
- │  ├──fullpage …                   # component which displays data + logs in a separate tab
- │  ├──lib 
- │  │  ├──dmp.js                    # vendored version google/diff-match-patch required by selectorgadget.ts
- │  │  ├──utils.ts 
- │  │  ├──components …              # shadcn components
- │  │  └──hooks … 
- │  ├──scripts 
- │  │  ├──relay.py                  # native_relay for advanced debugging
- │  │  ├──render-annotations.ts     # script for rendering tippy.js annotations for docs/reference/{extension-ui.qmd,scraping-engine.qmd}
- │  │  └──verifyConfig.ts           # script for verifying JSON Scrape Configs
- │  └──sidebar 
- │     ├──App.svelte
- │     ├──actions.ts                # functions implementing main behaviour
- │     ├──main.ts 
- │     ├──util.ts                   # utility functions
- │     ├──components …              # UI components
- │     ├──services 
- │     │  └──storage.ts             # browser storage access via localforage
- │     ├──stores 
- │     │  ├──logs.ts                # vars tracking state shown by LogViewer.svelte
- │     │  ├──pagination.svelte.ts   # vars tracking state in PaginationSection.svelte
- │     │  ├──scrapeConfig.svelte.ts # vars tracking main scrape configuration
- │     │  └──ui.svelte.ts           # state required by UI elements
- │     └──templates …               # handlebar templates for data export to various formats
- ├──components.json                 # managed by shadcn
- ├──package.json
- ├──tsconfig.json
- ├──tailwind.config.js
- ├──vite.config.js
- ├──justfile
- ├──LICENSE
- ├──bun.lock
- ├──CHANGELOG.md
- ├──README.md
- ├──eslint.config.mjs
- └──postcss.config.mjs
+ ├──docs …                                        # Quarto based documentation
+ ├──packages 
+ │  ├──cli 
+ │  │  ├──src 
+ │  │  │  ├──cheerioDriver.ts                     # implements cheerio based crawler logic
+ │  │  │  └──main.ts                              # main CLI entrypoint
+ │  │  ├──package.json 
+ │  │  └──vite.config.js 
+ │  ├──core 
+ │  │  ├──src 
+ │  │  │  ├──templates …                          # handlebar templates for data export to various formats
+ │  │  │  ├──converters.ts                        # functions for converting results to different formats for saving
+ │  │  │  ├──extractor.ts                         # reusable extraction logic 
+ │  │  │  ├──index.ts 
+ │  │  │  ├──logger.ts                            # shared logging config
+ │  │  │  ├──schema.ts                            # Zod schema for Scrape Config
+ │  │  │  ├──scrapeMachine.ts                     # state machine for browser based scraping workflows
+ │  │  │  ├──types.ts 
+ │  │  │  └──util.ts 
+ │  │  └──package.json 
+ │  └──extension
+ │     ├──public 
+ │     │  ├──icons …
+ │     │  ├──background.html                      # html entry point for data + logs page
+ │     │  ├──fullpage.html                        # html entry point for sidebar logs page
+ │     │  ├──sidebar.html 
+ │     │  └──manifest.json                        # extension manifest v2
+ │     ├──src 
+ │     │  ├──lib 
+ │     │  │  ├──components …                      # shadcn components
+ │     │  │  ├──hooks 
+ │     │  │  ├──dmp.js 
+ │     │  │  └──utils.ts 
+ │     │  ├──ui 
+ │     │  │  ├──fullpage                          # component which displays data + logs in a separate tab
+ │     │  │  ├──sidebar 
+ │     │  │  │  ├──components …                   # UI components
+ │     │  │  │  ├──services 
+ │     │  │  │  │  └──storage.ts                  # browser storage interaction
+ │     │  │  │  ├──stores 
+ │     │  │  │  │  ├──logs.ts                     # state for LogViewer component
+ │     │  │  │  │  ├──pagination.svelte.ts        # state for PaginationSection component
+ │     │  │  │  │  ├──scrapeConfig.svelte.ts      # state for user defined Scrape Config
+ │     │  │  │  │  └──ui.svelte.ts                # miscellaneous UI states
+ │     │  │  │  ├──App.svelte 
+ │     │  │  │  ├──actions.ts  
+ │     │  │  │  ├──main.ts 
+ │     │  │  │  └──util.ts 
+ │     │  │  └──app.css 
+ │     │  ├──dominspector.mts                     # contains class that controls click based element selection
+ │     │  ├──background.ts 
+ │     │  ├──content.ts 
+ │     │  ├──driver.ts                            # browser extension driver, works using scrapeMachine and core/driver
+ │     │  ├──logger.ts                            # logger intialization for extension environment
+ │     │  ├──selectorgadget.ts                    # selector guessing algorithm adapted from cantino/selectorgadget
+ │     │  └──types.ts 
+ │     ├──components.json                         # shadcn-svelte config
+ │     ├──package.json 
+ │     └──vite.config.js
+ ├──scripts 
+ │  ├──relay.py                                   # native_relay for advanced debugging
+ │  ├──render-annotations.ts                      # script for rendering tippy.js annotations for docs/reference/{extension-ui.qmd,scraping-engine.qmd}
+ │  └──verifyConfig.ts                            # script for verifying JSON Scrape Configs ├──package.json 
+ ├──tsconfig.json 
+ ├──tailwind.config.js 
+ ├──justfile 
+ ├──LICENSE 
+ ├──bun.lock 
+ ├──CHANGELOG.md 
+ ├──README.md 
+ ├──eslint.config.mjs 
+ └──postcss.config.mjs 
 ```

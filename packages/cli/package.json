@@ -1,0 +1,20 @@
+{
+    "name": "@pagesieve/cli",
+    "version": "1.4.0",
+    "type": "module",
+    "bin": {
+        "pagesieve": "./dist/pagesieve.js"
+    },
+    "scripts": {
+        "build": "vite build"
+    },
+    "dependencies": {
+        "@pagesieve/core": "workspace:*",
+        "crawlee": "^3.16.0",
+        "ts-pattern": "^5.9.0",
+        "zod": "^4.4.3"
+    },
+    "devDependencies": {
+        "vite": "^7.3.3"
+    }
+}
