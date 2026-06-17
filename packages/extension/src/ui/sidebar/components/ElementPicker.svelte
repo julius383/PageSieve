@@ -13,6 +13,7 @@
     let {
         label = 'Selector',
         header_style = 'font-medium text-sm leading-none',
+        container = undefined,
         cssSelector = $bindable(),
         pickingElement = $bindable(false),
     } = $props();
@@ -45,6 +46,7 @@
             const response = await browser.tabs.sendMessage(tab.id, {
                 action: 'inspector-toggle',
                 pickerId: pickerId,
+                container: container,
             });
             if (response.isActive) {
                 pickingElement = true;

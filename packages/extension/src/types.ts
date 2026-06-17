@@ -66,6 +66,7 @@ type StopMainRequest = {
 type InspectorToggleRequest = {
     action: 'inspector-toggle';
     pickerId: string;
+    container?: string;
 };
 
 type InspectorAcceptRequest = {

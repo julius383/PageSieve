@@ -173,6 +173,12 @@
                             ),
                         )}
                     </code>
+                    <code class="block">
+                        {paginationState.template.urlTemplate.replace(
+                            '{{page}}',
+                            String(paginationState.template.maxPages),
+                        )}
+                    </code>
                 </div>
             {:else}
                 <p class="text-sm text-destructive">

@@ -165,6 +165,7 @@
                                     <FieldGroup
                                         id={field.id}
                                         deleteHandler={() => removeDefinition(field.id, group.id)}
+                                        container={group.container}
                                         bind:fieldName={field.name}
                                         bind:cssSelector={field.selector}
                                         bind:type={field.type}

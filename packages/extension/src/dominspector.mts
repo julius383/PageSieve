@@ -1,4 +1,6 @@
 import { DomPredictionHelper } from '@/selectorgadget';
+import { browserEngine } from './browserDriver';
+import { isXPath } from '@pagesieve/core/extractor';
 
 export class DOMInspector {
     isActive: boolean;
@@ -11,6 +13,7 @@ export class DOMInspector {
     helper: DomPredictionHelper;
     predictedSelector: string | null;
     activePickerId: string | null;
+    containerScope: string | undefined;
 
     // To manage highlight overlays for selected elements
     highlightOverlays: Map<HTMLElement, HTMLDivElement>;
@@ -20,6 +23,7 @@ export class DOMInspector {
         this.isActive = false;
         this.originalCursor = null;
         this.activePickerId = null;
+        this.containerScope = undefined;
 
         this.currentHighlighted = null;
         this.predictedSelector = null;
@@ -52,11 +56,12 @@ export class DOMInspector {
         // console.log('Inspector instance created');
     }
 
-    toggle(pickerId?: string) {
+    toggle(pickerId?: string, container?: string) {
         if (this.isActive) {
             this.deactivate();
         } else if (pickerId) {
-            this.activate(pickerId);
+            this.containerScope = container;
+            this.activate(pickerId, container);
         }
     }
 
@@ -129,7 +134,12 @@ export class DOMInspector {
         // FIXME: add max item count to avoid freezing browser
         this.selectorOverlays.forEach((overlay) => overlay.remove());
         this.selectorOverlays.clear();
-        const elements = document.querySelectorAll(selector);
+        let elements = browserEngine.querySelectorAll(document.body, selector);
+        // narrow highlighted elements by container if possible
+        const scope = this.containerScope;
+        if (scope !== undefined && !isXPath(scope)){
+            elements = elements.filter((elem) => elem.closest(scope) !== null)
+        }
         elements.forEach((element) => {
             let overlay = this.selectorOverlays.get(element as HTMLElement);
             if (!overlay) {
@@ -144,7 +154,7 @@ export class DOMInspector {
 
             this.updateOverlayPosition(element as HTMLElement, overlay);
 
-            overlay.style.border = '2px solid #ffd700'; // Yellow
+            overlay.style.border = '2px solid #ffd700';
             overlay.style.backgroundColor = 'rgb(255, 215, 0, 0.2)';
         });
         return elements.length;

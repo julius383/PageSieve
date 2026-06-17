@@ -10,6 +10,7 @@
     let {
         id,
         deleteHandler,
+        container,
         fieldName = $bindable(),
         cssSelector = $bindable(),
         type = $bindable(),
@@ -47,7 +48,7 @@
         </div>
     </div>
     <div class="flex items-end gap-x-1 flex-start">
-        <ElementPicker bind:cssSelector bind:pickingElement />
+        <ElementPicker container={container} bind:cssSelector bind:pickingElement />
         <Tooltip.Provider>
             <Tooltip.Root>
                 <Tooltip.Trigger>
