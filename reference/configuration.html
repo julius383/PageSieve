@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -40,9 +40,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-1d3c76d7457d11c9ac00a8b2999c4868.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -356,10 +356,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a></li>
-  <li><a href="#extraction-options" id="toc-extraction-options" class="nav-link" data-scroll-target="#extraction-options">Extraction Options</a></li>
-  <li><a href="#selectors" id="toc-selectors" class="nav-link" data-scroll-target="#selectors">Selectors</a></li>
-  <li><a href="#pagination" id="toc-pagination" class="nav-link" data-scroll-target="#pagination">Pagination</a></li>
+  <li><a href="#scrapeconfig" id="toc-scrapeconfig" class="nav-link active" data-scroll-target="#scrapeconfig">ScrapeConfig</a>
+  <ul class="collapse">
+  <li><a href="#selectorgroup" id="toc-selectorgroup" class="nav-link" data-scroll-target="#selectorgroup">SelectorGroup</a></li>
+  <li><a href="#extractionoptions" id="toc-extractionoptions" class="nav-link" data-scroll-target="#extractionoptions">ExtractionOptions</a></li>
+  <li><a href="#paginationconfig" id="toc-paginationconfig" class="nav-link" data-scroll-target="#paginationconfig">PaginationConfig</a></li>
+  <li><a href="#variableconfig" id="toc-variableconfig" class="nav-link" data-scroll-target="#variableconfig">VariableConfig</a></li>
+  <li><a href="#outputconfig" id="toc-outputconfig" class="nav-link" data-scroll-target="#outputconfig">OutputConfig</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/configuration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/configuration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -386,67 +390,558 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in <code>src/types.ts</code>.</p>
-<section id="metadata" class="level2">
-<h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
-<p>The metadata section provides information about the configuration itself:</p>
-<ul>
-<li><code>id</code>: Unique identifier for the configuration.</li>
-<li><code>description</code>: Optional description of what the configuration does.</li>
-<li><code>url</code>: The target URL for this configuration.</li>
-<li><code>version</code>: Version number for the configuration.</li>
-<li><code>author</code>: Optional author name.</li>
-</ul>
+<p>The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in <code>packages/core/src/schema.ts</code>.</p>
+<section id="scrapeconfig" class="level2">
+<h2 class="anchored" data-anchor-id="scrapeconfig">ScrapeConfig</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>""</code></td>
+<td>Auto-generated id.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Human readable name for config.</td>
+</tr>
+<tr class="odd">
+<td><code>schemaVersion</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>"2.0.0"</code></td>
+<td>Schema version. Incremented when breaking changes to format made.</td>
+</tr>
+<tr class="even">
+<td><code>revision</code></td>
+<td>number</td>
+<td>Yes</td>
+<td><code>1</code></td>
+<td>Increment when config is modified.</td>
+</tr>
+<tr class="odd">
+<td><code>url</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>-</td>
+<td>URL to start extraction.</td>
+</tr>
+<tr class="even">
+<td><code>urlPattern</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>glob/pattern this config applies to; omitted = exact url only</td>
+</tr>
+<tr class="odd">
+<td><code>createdAt</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>-</td>
+<td>When config was created.</td>
+</tr>
+<tr class="even">
+<td><code>updatedAt</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>-</td>
+<td>When config was updated. Should change alongside revision.</td>
+</tr>
+<tr class="odd">
+<td><code>description</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Description of config e.g what type of data it extracts</td>
+</tr>
+<tr class="even">
+<td><code>author</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Who made this config. Typically username</td>
+</tr>
+<tr class="odd">
+<td><code>tags</code></td>
+<td>string[]</td>
+<td>No</td>
+<td>-</td>
+<td>Content tags for easier categorization.</td>
+</tr>
+<tr class="even">
+<td><code>selectors</code></td>
+<td><a href="#selectorgroup">SelectorGroup</a>[]</td>
+<td>Yes</td>
+<td>-</td>
+<td>Defines what to extract from page.</td>
+</tr>
+<tr class="odd">
+<td><code>options</code></td>
+<td><a href="#extractionoptions">ExtractionOptions</a></td>
+<td>Yes</td>
+<td>-</td>
+<td>Options that control how extraction is done</td>
+</tr>
+<tr class="even">
+<td><code>pagination</code></td>
+<td><a href="#paginationconfig">PaginationConfig</a></td>
+<td>Yes</td>
+<td>-</td>
+<td>Controls how to move to the next page</td>
+</tr>
+<tr class="odd">
+<td><code>variables</code></td>
+<td><a href="#variableconfig">VariableConfig</a></td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><code>output</code></td>
+<td><a href="#outputconfig">OutputConfig</a></td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<section id="selectorgroup" class="level3">
+<h3 class="anchored" data-anchor-id="selectorgroup">SelectorGroup</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>"g_${nodeid(6)}"</code></td>
+<td>Random and stable id. Used to group results when multiple groups exist.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>"Group 1"</code></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td><code>container</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Item container selector when omitted =&gt; page-level group (scrape once)</td>
+</tr>
+<tr class="even">
+<td><code>fields</code></td>
+<td><a href="#field">Field</a>[]</td>
+<td>Yes</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<section id="field" class="level4">
+<h4 class="anchored" data-anchor-id="field">Field</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>"f_${nodeid(6)}"</code></td>
+<td>Random and stable id.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>""</code></td>
+<td>Field name used as column key in results.</td>
+</tr>
+<tr class="odd">
+<td><code>selector</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>""</code></td>
+<td>Selector for data point.</td>
+</tr>
+<tr class="even">
+<td><code>type</code></td>
+<td><code>single</code> or <code>multiple</code> or <code>count</code></td>
+<td>Yes</td>
+<td><code>"single"</code></td>
+<td>How to treat selector. Individual, collection or count</td>
+</tr>
+<tr class="odd">
+<td><code>extract</code></td>
+<td><code>text</code> or <code>property</code> or <code>attribute</code></td>
+<td>Yes</td>
+<td><code>"text"</code></td>
+<td>What part of element to extract.</td>
+</tr>
+<tr class="even">
+<td><code>attribute</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Which attribute to extract. Required when extract === ‘attribute’.</td>
+</tr>
+<tr class="odd">
+<td><code>property</code></td>
+<td><code>innerHTML</code> or <code>outerHTML</code> or <code>innerText</code> or <code>textContent</code></td>
+<td>No</td>
+<td>-</td>
+<td>Which property to extract. Required when extract === ‘property’.</td>
+</tr>
+<tr class="even">
+<td><code>required</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td><code>false</code></td>
+<td>Should absence of element be treated as error.</td>
+</tr>
+<tr class="odd">
+<td><code>default</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Default value for this element when it cannot be extracted.</td>
+</tr>
+<tr class="even">
+<td><code>datatype</code></td>
+<td><code>string</code> or <code>number</code> or <code>boolean</code> or <code>date</code></td>
+<td>No</td>
+<td>-</td>
+<td>Datatype to cast result to.</td>
+</tr>
+<tr class="odd">
+<td><code>fields</code></td>
+<td>Field[]</td>
+<td>No</td>
+<td>-</td>
+<td>Recursive sub-fields. Only valid when type === ‘multiple’</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="extraction-options" class="level2">
-<h2 class="anchored" data-anchor-id="extraction-options">Extraction Options</h2>
-<p>Customize how the extraction process behaves:</p>
-<ul>
-<li><code>waitforNetworkIdle</code>: Whether to wait for network activity to stop before starting extraction.</li>
-<li><code>scrollToBottom</code>: Whether to scroll to the bottom of the page before extraction.</li>
-<li><code>runJavaScript</code>: Whether to execute JavaScript on the page.</li>
-<li><code>delayMs</code>: Delay in milliseconds before extraction starts.</li>
-<li><code>timeoutMs</code>: Maximum time in milliseconds to wait for extraction to finish.</li>
-<li><code>appendData</code>: Whether to append new data to existing results or start fresh.</li>
-<li><code>maxRetries</code>: How many times to retry when a recoverable error is encountered.</li>
-</ul>
 </section>
-<section id="selectors" class="level2">
-<h2 class="anchored" data-anchor-id="selectors">Selectors</h2>
-<p>Selectors define the data fields to extract:</p>
-<ul>
-<li><code>id</code>: Unique ID for the selector.</li>
-<li><code>name</code>: The field name used in the exported data.</li>
-<li><code>selector</code>: The CSS or XPath selector for the element.</li>
-<li><code>type</code>: Either <code>single</code> or <code>array</code> for multiple matches.</li>
-<li><code>description</code>: Optional field description.</li>
-</ul>
-<p>Selectors can be grouped using <code>SelectorGroup</code>, which can also specify a <code>container</code> selector to scope its fields.</p>
+<section id="extractionoptions" class="level3">
+<h3 class="anchored" data-anchor-id="extractionoptions">ExtractionOptions</h3>
+<p>Options that control how extraction is done</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>waitforNetworkIdle</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td><code>true</code></td>
+<td>Wait for until no more network requests. For browser clients.</td>
+</tr>
+<tr class="even">
+<td><code>waitForSelector</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Wait for element before running extraction on page.</td>
+</tr>
+<tr class="odd">
+<td><code>scrollToBottom</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td><code>false</code></td>
+<td>Scroll to bottom of page before running extraction on page.</td>
+</tr>
+<tr class="even">
+<td><code>runJavaScript</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td><code>true</code></td>
+<td>Extraction requires javascript to be runnable.</td>
+</tr>
+<tr class="odd">
+<td><code>pageDelayMs</code></td>
+<td>number</td>
+<td>Yes</td>
+<td><code>3000</code></td>
+<td>Delay this many milliseconds after navigating to a new page.</td>
+</tr>
+<tr class="even">
+<td><code>timeoutMs</code></td>
+<td>number</td>
+<td>Yes</td>
+<td><code>60000</code></td>
+<td>Maximum amount of time to wait for action before it is considered failed.</td>
+</tr>
+<tr class="odd">
+<td><code>maxRetries</code></td>
+<td>number</td>
+<td>Yes</td>
+<td><code>2</code></td>
+<td>Maximum times to retry on failed actions.</td>
+</tr>
+<tr class="even">
+<td><code>appendData</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td><code>true</code></td>
+<td>Whether to append results to existing data or start fresh.</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="pagination" class="level2">
-<h2 class="anchored" data-anchor-id="pagination">Pagination</h2>
-<p>Configure how PageSieve navigates between pages:</p>
-<ul>
-<li><strong><code>none</code></strong>: No pagination.</li>
-<li><strong><code>next</code></strong>: Navigate using a “Next” button selector.
-<ul>
-<li><code>nextSelector</code>: CSS or XPath selector for the next button.</li>
-<li><code>maxPages</code>: Optional limit for the number of pages to navigate.</li>
-</ul></li>
-<li><strong><code>links</code></strong>: Extract data from a pre-defined list of links.
-<ul>
-<li><code>pageLinks</code>: A list of URLs to visit sequentially.</li>
-</ul></li>
-<li><strong><code>template</code></strong>: Generate page URLs based on a template.
-<ul>
-<li><code>urlTemplate</code>: URL containing <code>{page}</code> placeholder.</li>
-<li><code>startPage</code>: The starting page number (default: 1).</li>
-<li><code>increment</code>: The amount to increment the page number (default: 1).</li>
-<li><code>maxPages</code>: Maximum number of pages to scrape.</li>
-</ul></li>
-</ul>
+<section id="paginationconfig" class="level3">
+<h3 class="anchored" data-anchor-id="paginationconfig">PaginationConfig</h3>
+<p>Defines how to move between different pages.</p>
+<section id="modenext" class="level4">
+<h4 class="anchored" data-anchor-id="modenext">mode=next</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nextSelector</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td>-</td>
+<td>Selector for element that navigates to next page.</td>
+</tr>
+<tr class="even">
+<td><code>maxPages</code></td>
+<td>number</td>
+<td>Yes</td>
+<td>100</td>
+<td>Maximum number of pages to navigate to using in one session.</td>
+</tr>
+<tr class="odd">
+<td><code>waitAfterClickMs</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Wait this many milliseconds after clicking the element.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modelinks" class="level4">
+<h4 class="anchored" data-anchor-id="modelinks">mode=links</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pageLinks</code></td>
+<td>string[]</td>
+<td>Yes</td>
+<td>-</td>
+<td>List of links to process.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modetemplate" class="level4">
+<h4 class="anchored" data-anchor-id="modetemplate">mode=template</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>urlTemplate</code></td>
+<td>string</td>
+<td>Yes</td>
+<td><code>true</code></td>
+<td>Template for urls. Must have {{page}} is replaced with numbers.</td>
+</tr>
+<tr class="even">
+<td><code>startPage</code></td>
+<td>number</td>
+<td>Yes</td>
+<td>1</td>
+<td>First number to use in template.</td>
+</tr>
+<tr class="odd">
+<td><code>increment</code></td>
+<td>number</td>
+<td>Yes</td>
+<td>1</td>
+<td>Number to add during each step.</td>
+</tr>
+<tr class="even">
+<td><code>maxPages</code></td>
+<td>number</td>
+<td>No</td>
+<td>-</td>
+<td>Maximum number of pages to navigate in one session.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="variableconfig" class="level3">
+<h3 class="anchored" data-anchor-id="variableconfig">VariableConfig</h3>
+<p>Variables either embedded as string or secret for suggesting to client to prompt user.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>type</code></td>
+<td><code>secret</code> or <code>string</code></td>
+<td>Yes</td>
+<td>-</td>
+<td>Type of variable</td>
+</tr>
+<tr class="even">
+<td><code>value</code></td>
+<td>string</td>
+<td>No</td>
+<td>-</td>
+<td>Value of text variable</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="outputconfig" class="level3">
+<h3 class="anchored" data-anchor-id="outputconfig">OutputConfig</h3>
+<p>Results output hint.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>format</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>json</td>
+<td>Data format to use for results</td>
+</tr>
+<tr class="even">
+<td><code>mergeStrategy</code></td>
+<td>string</td>
+<td>Yes</td>
+<td>join</td>
+<td>How to combine results in different field groups.</td>
+</tr>
+<tr class="odd">
+<td><code>flatten</code></td>
+<td>boolean</td>
+<td>Yes</td>
+<td>true</td>
+<td>Flatten nested columns.</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
