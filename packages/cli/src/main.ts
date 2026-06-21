@@ -39,7 +39,6 @@ if (!result.success) {
 }
 const scrapeConfig = result.data;
 
-
 const crawler = new CheerioCrawler({
     minConcurrency: 3,
     maxConcurrency: 10,

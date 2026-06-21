@@ -7,6 +7,13 @@
 </script>
 
 <Accordion.Root type="multiple">
+    <Accordion.Item value="item-1">
+        <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
+        <Accordion.Content>
+            <MetadataSection />
+        </Accordion.Content>
+    </Accordion.Item>
+
     <Accordion.Item value="item-3">
         <Accordion.Trigger class="text-white font-bold text-xl">Pagination</Accordion.Trigger>
         <Accordion.Content>
@@ -20,13 +27,6 @@
         >
         <Accordion.Content>
             <OptionsSection />
-        </Accordion.Content>
-    </Accordion.Item>
-
-    <Accordion.Item value="item-1">
-        <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
-        <Accordion.Content>
-            <MetadataSection />
         </Accordion.Content>
     </Accordion.Item>
 

@@ -137,8 +137,8 @@ export class DOMInspector {
         let elements = browserEngine.querySelectorAll(document.body, selector);
         // narrow highlighted elements by container if possible
         const scope = this.containerScope;
-        if (scope !== undefined && !isXPath(scope)){
-            elements = elements.filter((elem) => elem.closest(scope) !== null)
+        if (scope !== undefined && !isXPath(scope)) {
+            elements = elements.filter((elem) => elem.closest(scope) !== null);
         }
         elements.forEach((element) => {
             let overlay = this.selectorOverlays.get(element as HTMLElement);

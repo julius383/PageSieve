@@ -48,7 +48,7 @@
         </div>
     </div>
     <div class="flex items-end gap-x-1 flex-start">
-        <ElementPicker container={container} bind:cssSelector bind:pickingElement />
+        <ElementPicker {container} bind:cssSelector bind:pickingElement />
         <Tooltip.Provider>
             <Tooltip.Root>
                 <Tooltip.Trigger>

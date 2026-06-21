@@ -55,17 +55,29 @@
             case 'Date Created':
                 return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return new SvelteDate(a.createdAt).getTime() - new SvelteDate(b.createdAt).getTime();
+                        return (
+                            new SvelteDate(a.createdAt).getTime() -
+                            new SvelteDate(b.createdAt).getTime()
+                        );
                     } else {
-                        return new SvelteDate(b.createdAt).getTime() - new SvelteDate(a.createdAt).getTime();
+                        return (
+                            new SvelteDate(b.createdAt).getTime() -
+                            new SvelteDate(a.createdAt).getTime()
+                        );
                     }
                 };
             case 'Date Updated':
                 return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return new SvelteDate(a.updatedAt).getTime() - new SvelteDate(b.updatedAt).getTime();
+                        return (
+                            new SvelteDate(a.updatedAt).getTime() -
+                            new SvelteDate(b.updatedAt).getTime()
+                        );
                     } else {
-                        return new SvelteDate(b.updatedAt).getTime() - new SvelteDate(a.updatedAt).getTime();
+                        return (
+                            new SvelteDate(b.updatedAt).getTime() -
+                            new SvelteDate(a.updatedAt).getTime()
+                        );
                     }
                 };
             case 'ID':
@@ -100,7 +112,7 @@
         }),
     );
 
-    function startEditing(item: { id: string; }) {
+    function startEditing(item: { id: string }) {
         editingId = item.id;
         newIdValue = item.id;
     }

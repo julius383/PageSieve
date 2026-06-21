@@ -1,6 +1,6 @@
 import type { ScrapeConfig, PaginationConfig } from '@pagesieve/core/schema';
 import { ExtractionOptions, SelectorGroup, Field } from '@pagesieve/core/schema';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import { SvelteDate } from 'svelte/reactivity';
 
 export const scrapeConfig = $state<ScrapeConfig>({
@@ -10,7 +10,7 @@ export const scrapeConfig = $state<ScrapeConfig>({
     revision: 1,
     createdAt: new SvelteDate().toISOString(),
     updatedAt: new SvelteDate().toISOString(),
-    selectors: [SelectorGroup.parse({fields: [Field.parse({})]})],
+    selectors: [SelectorGroup.parse({ fields: [Field.parse({})] })],
     options: ExtractionOptions.parse({}),
     pagination: { mode: 'none' },
 });
@@ -66,5 +66,5 @@ export function removeDefinition(selectorId: string, groupId: string) {
 }
 
 export function resetDefinitions() {
-    scrapeConfig.selectors = [SelectorGroup.parse({fields: [Field.parse({})]})];
+    scrapeConfig.selectors = [SelectorGroup.parse({ fields: [Field.parse({})] })];
 }

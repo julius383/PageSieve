@@ -11,7 +11,6 @@ import { browserEngine } from './browserDriver';
 const logger = getLogger(['ext', 'content']);
 const inspector = new DOMInspector();
 
-
 /**
  * Waits for the DOM to stop changing for a specified duration
  */
@@ -49,7 +48,6 @@ async function waitForDOMStable(
         });
     });
 }
-
 
 /**
  * Extracts data from DOM elements using provided selectors

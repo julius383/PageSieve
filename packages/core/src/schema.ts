@@ -231,7 +231,7 @@ export const ScrapeConfig = z.object({
         .optional()
         .meta({ description: 'Content tags for easier categorization.' }),
 
-    selectors: z.array(SelectorGroup).meta({ description: "Defines what to extract from page."}),
+    selectors: z.array(SelectorGroup).meta({ description: 'Defines what to extract from page.' }),
     options: ExtractionOptions,
     pagination: PaginationConfig,
     variables: VariablesMap.optional(),
@@ -239,7 +239,9 @@ export const ScrapeConfig = z.object({
         format: 'json',
         mergeStrategy: 'join',
         flatten: true,
-    }).optional().meta({ description: "Results output hint." }),
+    })
+        .optional()
+        .meta({ description: 'Results output hint.' }),
 });
 
 export type ExtractionOptions = z.infer<typeof ExtractionOptions>;
