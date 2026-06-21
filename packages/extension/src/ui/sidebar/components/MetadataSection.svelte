@@ -10,17 +10,17 @@
     dayjs.extend(advancedFormat);
 
     import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
-    import type { Metadata } from '@pagesieve/core/schema';
 
     function copyId() {
-        navigator.clipboard.writeText(scrapeConfig.metadata.id);
+        navigator.clipboard.writeText(scrapeConfig.id);
     }
 
-    function update<K extends keyof Metadata>(key: K, value: Metadata[K]) {
-        scrapeConfig.metadata[key] = value;
+    function update(key: string, value: unknown) {
+        scrapeConfig[key] = value;
     }
 </script>
 
+<!-- TODO: add new toplevel fields -->
 <div class="space-y-4">
     <Item.Root variant="outline">
         <Item.Content>
@@ -28,7 +28,7 @@
             <Item.Description>
                 <div class="flex items-center gap-2">
                     <code class="text-wrap rounded-md text-xs">
-                        {scrapeConfig.metadata.id}
+                        {scrapeConfig.id}
                     </code>
                 </div>
             </Item.Description>
@@ -47,7 +47,7 @@
                 <Textarea
                     placeholder="What does this scrape collect?"
                     rows={2}
-                    value={scrapeConfig.metadata.description ?? ''}
+                    value={scrapeConfig.description ?? ''}
                     oninput={(e) => update('description', e.currentTarget.value)}
                 />
             </Item.Description>
@@ -58,14 +58,14 @@
         <Item.Content>
             <Item.Title>Target URL</Item.Title>
             <Item.Description>
-                {scrapeConfig.metadata.url}
+                {scrapeConfig.url}
             </Item.Description>
         </Item.Content>
         <Item.Actions>
             <Button
                 size="icon"
                 variant="ghost"
-                onclick={() => window.open(scrapeConfig.metadata.url, '_blank')}
+                onclick={() => window.open(scrapeConfig.url, '_blank')}
             >
                 <ExternalLink class="h-4 w-4" />
             </Button>
@@ -76,11 +76,14 @@
         <div class="space-y-1">
             <Item.Root>
                 <Item.Content>
-                    <Item.Title>Version</Item.Title>
+                    <Item.Title>Revision</Item.Title>
                     <Item.Description>
                         <Input
-                            value={scrapeConfig.metadata.version}
-                            oninput={(e) => update('version', e.currentTarget.value)}
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={scrapeConfig.revision}
+                            oninput={(e) => update('revision', e.currentTarget.value)}
                         />
                     </Item.Description>
                 </Item.Content>
@@ -94,7 +97,7 @@
                     <Item.Description>
                         <Input
                             placeholder="Optional"
-                            value={scrapeConfig.metadata.author ?? ''}
+                            value={scrapeConfig.author ?? ''}
                             oninput={(e) => update('author', e.currentTarget.value)}
                         />
                     </Item.Description>

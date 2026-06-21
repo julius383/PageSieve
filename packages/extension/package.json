@@ -8,12 +8,12 @@
         "build:content": "BUILD_TARGET=content vite build"
     },
     "dependencies": {
-        "@pagesieve/core": "workspace:*",
         "@json2csv/plainjs": "^7.0.6",
         "@kaifronsdal/svelte-json-viewer": "^0.1.0",
         "@logtape/logtape": "^2.1.1",
         "@lucide/svelte": "^0.561.0",
         "@medv/finder": "^4.0.2",
+        "@pagesieve/core": "workspace:*",
         "@svelteuidev/composables": "^0.15.7",
         "@svelteuidev/core": "^0.15.7",
         "@tanstack/table-core": "^8.21.3",
@@ -23,6 +23,7 @@
         "dayjs": "^1.11.20",
         "es-toolkit": "^1.47.0",
         "localforage": "^1.10.0",
+        "nanoid": "^5.1.14",
         "paneforge": "^1.0.2",
         "svelte": "^5.55.9",
         "tailwind-merge": "^3.6.0",

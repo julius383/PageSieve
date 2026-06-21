@@ -1,18 +1,23 @@
-import type { ScrapeConfig, SelectorGroup, PaginationConfig } from '@pagesieve/core/schema';
-import { ExtractionOptions, Metadata } from '@pagesieve/core/schema';
+import type { ScrapeConfig, PaginationConfig } from '@pagesieve/core/schema';
+import { ExtractionOptions, SelectorGroup, Field } from '@pagesieve/core/schema';
+import { nanoid } from 'nanoid'
+import { SvelteDate } from 'svelte/reactivity';
 
 export const scrapeConfig = $state<ScrapeConfig>({
-    metadata: Metadata.parse({}),
-    selectors: [
-        { id: 1, name: 'Group 1', fields: [{ id: 1, name: '', selector: '', type: 'single' }] },
-    ],
+    id: '',
+    url: '',
+    schemaVersion: '2.0.0',
+    revision: 1,
+    createdAt: new SvelteDate().toISOString(),
+    updatedAt: new SvelteDate().toISOString(),
+    selectors: [SelectorGroup.parse({fields: [Field.parse({})]})],
     options: ExtractionOptions.parse({}),
     pagination: { mode: 'none' },
 });
 
 export function setScrapeConfig(config: ScrapeConfig) {
+    Object.assign(scrapeConfig, {});
     Object.assign(scrapeConfig, config);
-    updateIds();
 }
 
 export function setPaginationConfig(pagination: PaginationConfig) {
@@ -20,69 +25,46 @@ export function setPaginationConfig(pagination: PaginationConfig) {
 }
 
 export function addGroup() {
-    const lastID =
-        scrapeConfig.selectors.length > 0
-            ? scrapeConfig.selectors[scrapeConfig.selectors.length - 1].id
-            : 0;
-    const newID = lastID + 1;
+    const newID = `g_${nanoid(6)}`;
     const newGroup = {
         id: newID,
         name: `Group ${newID}`,
-        fields: [{ id: 1, name: '', selector: '', type: 'single' }],
+        fields: [Field.parse({})],
     };
     scrapeConfig.selectors.push(newGroup as SelectorGroup);
 }
 
-export function renameGroup(groupID: number, name: string) {
+export function renameGroup(groupID: string, name: string) {
     const group = scrapeConfig.selectors.find((element) => element.id == groupID);
     if (group) {
         group.name = name;
     }
 }
 
-export function removeGroup(groupID: number) {
+export function removeGroup(groupID: string) {
     const groupIdx = scrapeConfig.selectors.findIndex((element) => element.id == groupID);
     if (groupIdx != -1) {
         scrapeConfig.selectors.splice(groupIdx, 1);
     }
 }
 
-export function addDefinition(groupID: number) {
+export function addDefinition(groupID: string) {
     const group = scrapeConfig.selectors.find((element) => element.id == groupID);
     if (group) {
-        const nextId = group.fields.length > 0 ? Math.max(...group.fields.map((f) => f.id)) + 1 : 1;
-        group.fields.push({ id: nextId, name: '', selector: '', type: 'single' });
-        updateIds(group);
+        group.fields.push(Field.parse({}));
     }
 }
 
-export function removeDefinition(selectorId: number, groupId: number) {
+export function removeDefinition(selectorId: string, groupId: string) {
     const group = scrapeConfig.selectors.find((element) => element.id == groupId);
     if (group) {
         const index = group.fields.findIndex((element) => element.id === selectorId);
         if (index !== -1) {
             group.fields.splice(index, 1);
-            updateIds(group);
         }
     }
 }
 
-function updateIds(group: SelectorGroup | null = null) {
-    if (group) {
-        group.fields.forEach((elem, idx) => {
-            elem.id = idx + 1;
-        });
-    } else {
-        scrapeConfig.selectors.forEach((group) => {
-            group.fields.forEach((elem, idx) => {
-                elem.id = idx + 1;
-            });
-        });
-    }
-}
-
 export function resetDefinitions() {
-    scrapeConfig.selectors = [
-        { id: 1, name: 'Group 1', fields: [{ id: 1, name: '', selector: '', type: 'single' }] },
-    ];
+    scrapeConfig.selectors = [SelectorGroup.parse({fields: [Field.parse({})]})];
 }

@@ -1,4 +1,6 @@
+import { match } from 'ts-pattern';
 import { ExtractionEngine, isXPath } from '@pagesieve/core/extractor';
+import type { PropertyType } from '@pagesieve/core';
 
 interface QueryOptions {
     context?: Element | Node;
@@ -86,4 +88,12 @@ export const browserEngine: ExtractionEngine<Document | Element, Element> = {
     },
     getAttribute: (el, attr) => el.getAttribute(attr),
     getText: (el) => el.textContent?.trim(),
+    getProperty: (el, prop: PropertyType) => {
+        return match(prop)
+            .with('innerHTML', () => el?.innerHTML.trim())
+            .with('outerHTML', () => el?.outerHTML.trim())
+            .with('textContent', () => el?.textContent.trim())
+            .with('innerText', () => (el as HTMLElement)?.innerText.trim())
+            .exhaustive();
+    },
 };

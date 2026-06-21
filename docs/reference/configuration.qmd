@@ -2,54 +2,133 @@
 title: "Scrape Configuration Reference"
 ---
 
-The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in `src/types.ts`.
+The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in `packages/core/src/schema.ts`.
 
-## Metadata
+## ScrapeConfig
 
-The metadata section provides information about the configuration itself:
 
-- `id`: Unique identifier for the configuration.
-- `description`: Optional description of what the configuration does.
-- `url`: The target URL for this configuration.
-- `version`: Version number for the configuration.
-- `author`: Optional author name.
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `id` | string | Yes | `""` | Auto-generated id. |
+| `name` | string | No | - | Human readable name for config. |
+| `schemaVersion` | string | Yes | `"2.0.0"` | Schema version. Incremented when breaking changes to format made. |
+| `revision` | number | Yes | `1` | Increment when config is modified. |
+| `url` | string | Yes | - | URL to start extraction. |
+| `urlPattern` | string | No | - | glob/pattern this config applies to; omitted = exact url only |
+| `createdAt` | string | Yes | - | When config was created. |
+| `updatedAt` | string | Yes | - | When config was updated. Should change alongside revision. |
+| `description` | string | No | - | Description of config e.g what type of data it extracts |
+| `author` | string | No | - | Who made this config. Typically username |
+| `tags` | string\[\] | No | - | Content tags for easier categorization. |
+| `selectors` | [SelectorGroup](#selectorgroup)\[\] | Yes | - | Defines what to extract from page.|
+| `options` | [ExtractionOptions](#extractionoptions) | Yes | - | Options that control how extraction is done |
+| `pagination` | [PaginationConfig](#paginationconfig) | Yes | - | Controls how to move to the next page |
+| `variables` | [VariableConfig](#variableconfig) | No | - | - |
+| `output` | [OutputConfig](#outputconfig) | No | - | - |
 
-## Extraction Options
 
-Customize how the extraction process behaves:
+### SelectorGroup
 
-- `waitforNetworkIdle`: Whether to wait for network activity to stop before starting extraction.
-- `scrollToBottom`: Whether to scroll to the bottom of the page before extraction.
-- `runJavaScript`: Whether to execute JavaScript on the page.
-- `delayMs`: Delay in milliseconds before extraction starts.
-- `timeoutMs`: Maximum time in milliseconds to wait for extraction to finish.
-- `appendData`: Whether to append new data to existing results or start fresh.
-- `maxRetries`: How many times to retry when a recoverable error is encountered.
 
-## Selectors
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `id` | string | Yes | `"g_${nodeid(6)}"` | Random and stable id. Used to group results when multiple groups exist. |
+| `name` | string | Yes | `"Group 1"` | - |
+| `container` | string | No | - | Item container selector when omitted => page-level group (scrape once) |
+| `fields` | [Field](#field)[] | Yes | - | - |
 
-Selectors define the data fields to extract:
 
-- `id`: Unique ID for the selector.
-- `name`: The field name used in the exported data.
-- `selector`: The CSS or XPath selector for the element.
-- `type`: Either `single` or `array` for multiple matches.
-- `description`: Optional field description.
+#### Field
 
-Selectors can be grouped using `SelectorGroup`, which can also specify a `container` selector to scope its fields.
 
-## Pagination
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `id` | string | Yes | `"f_${nodeid(6)}"` | Random and stable id. |
+| `name` | string | Yes | `""` | Field name used as column key in results. |
+| `selector` | string | Yes | `""` | Selector for data point. |
+| `type` | `single` or `multiple` or `count` | Yes | `"single"` | How to treat selector. Individual, collection or count |
+| `extract` | `text` or `property` or `attribute` | Yes | `"text"` | What part of element to extract. |
+| `attribute` | string | No | - | Which attribute to extract. Required when extract === 'attribute'. |
+| `property` | `innerHTML` or `outerHTML` or `innerText` or `textContent` | No | - | Which property to extract. Required when extract === 'property'. |
+| `required` | boolean | Yes | `false` | Should absence of element be treated as error. |
+| `default` | string | No | - | Default value for this element when it cannot be extracted. |
+| `datatype` | `string` or `number` or `boolean` or `date` | No | - | Datatype to cast result to. |
+| `fields` | Field[] | No | - | Recursive sub-fields. Only valid when type === 'multiple' |
 
-Configure how PageSieve navigates between pages:
 
-- **`none`**: No pagination.
-- **`next`**: Navigate using a "Next" button selector.
-    - `nextSelector`: CSS or XPath selector for the next button.
-    - `maxPages`: Optional limit for the number of pages to navigate.
-- **`links`**: Extract data from a pre-defined list of links.
-    - `pageLinks`: A list of URLs to visit sequentially.
-- **`template`**: Generate page URLs based on a template.
-    - `urlTemplate`: URL containing `{{page}}` placeholder.
-    - `startPage`: The starting page number (default: 1).
-    - `increment`: The amount to increment the page number (default: 1).
-    - `maxPages`: Maximum number of pages to scrape.
+### ExtractionOptions
+
+Options that control how extraction is done
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `waitforNetworkIdle` | boolean | Yes | `true` | Wait for until no more network requests. For browser clients. |
+| `waitForSelector` | string | No | - | Wait for element before running extraction on page. |
+| `scrollToBottom` | boolean | Yes | `false` | Scroll to bottom of page before running extraction on page. |
+| `runJavaScript` | boolean | Yes | `true` | Extraction requires javascript to be runnable. |
+| `pageDelayMs` | number | Yes | `3000` | Delay this many milliseconds after navigating to a new page. |
+| `timeoutMs` | number | Yes | `60000` | Maximum amount of time to wait for action before it is considered failed. |
+| `maxRetries` | number | Yes | `2` | Maximum times to retry on failed actions. |
+| `appendData` | boolean | Yes | `true` | Whether to append results to existing data or start fresh. |
+
+
+
+### PaginationConfig
+
+Defines how to move between different pages.
+
+#### mode=next
+
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `nextSelector` | boolean | Yes | - | Selector for element that navigates to next page. |
+| `maxPages` | number | Yes | 100 | Maximum number of pages to navigate to using in one session. |
+| `waitAfterClickMs` | string | No | - | Wait this many milliseconds after clicking the element. |
+
+
+#### mode=links
+
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `pageLinks` | string[] | Yes | - | List of links to process. |
+
+
+
+#### mode=template
+
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `urlTemplate` | string | Yes | `true` | Template for urls. Must have {{page}} is replaced with numbers. |
+| `startPage` | number | Yes | 1 | First number to use in template. |
+| `increment` | number | Yes | 1 | Number to add during each step. |
+| `maxPages` | number | No | - | Maximum number of pages to navigate in one session. |
+
+
+### VariableConfig
+
+Variables either embedded as string or secret for suggesting to client to
+prompt user.
+
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `type` | `secret` or `string` | Yes | - | Type of variable |
+| `value` | string | No | - | Value of text variable |
+
+
+
+### OutputConfig
+
+Results output hint.
+
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `format` | string | Yes | json | Data format to use for results |
+| `mergeStrategy` | string | Yes | join | How to combine results in different field groups. |
+| `flatten` | boolean | Yes | true | Flatten nested columns. |
+
+

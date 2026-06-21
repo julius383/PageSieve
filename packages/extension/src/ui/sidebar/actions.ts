@@ -8,7 +8,7 @@ import {
 } from '@/ui/sidebar/stores/ui.svelte';
 import { shortHash, generateConfigId, validateSelectors } from '@pagesieve/core/util';
 import { scrapeConfig, setScrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
-import { StoredConfig, ScrapeConfig } from '@pagesieve/core/schema';
+import { ScrapeConfig } from '@pagesieve/core/schema';
 import { saveToBrowser } from '@/ui/sidebar/services/storage';
 import { commitPaginationToScrapeConfig } from '@/ui/sidebar/stores/pagination.svelte';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
@@ -84,11 +84,11 @@ export function importConfig(event: Event) {
             reader.onload = () => {
                 if (reader.result) {
                     configData = JSON.parse(reader.result as string);
-                    const result = StoredConfig.safeParse(configData);
+                    const result = ScrapeConfig.safeParse(configData);
                     if (!result.success) {
                         console.error(result.error); // ZodError instance
                     } else {
-                        setScrapeConfig(result.data.config);
+                        setScrapeConfig(result.data);
                     }
                     console.dir(configData);
                 }
@@ -114,14 +114,8 @@ export async function exportConfig(): Promise<string> {
             timestamp: new Date().toISOString(),
         },
         () => {
-            const storedConfig = StoredConfig.parse({
-                id: config.metadata.id,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                config: config,
-            });
             const dataStr =
-                'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(storedConfig));
+                'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(config));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute('href', dataStr);
 
@@ -142,23 +136,17 @@ export async function saveConfig() {
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
     const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
     const filename = await generateConfigId(tabInfo.url, config.selectors);
-    const storedConfig = {
-        id: config.metadata.id,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        config: config,
-    };
 
     await runWithStatusAsync(
         {
             status: 'saving',
-            message: `Saving config for ${config.metadata.url}`,
+            message: `Saving config for ${config.url}`,
             timestamp: new SvelteDate().toISOString(),
         },
         async () => {
-            const result = await saveToBrowser(filename, storedConfig);
+            const result = await saveToBrowser(filename, config);
             if (!result) {
-                setStatus('errored', `conflict with existing config with id ${storedConfig.id}`);
+                setStatus('errored', `conflict with existing config with id ${config.id}`);
             }
         },
     );
@@ -167,15 +155,15 @@ export async function saveConfig() {
 /**
  * Load config from browser storage into UI
  */
-export function loadConfig(stored: StoredConfig) {
+export function loadConfig(config: ScrapeConfig) {
     runWithStatus(
         {
             status: 'loading',
-            message: `Loading config ${stored.id} from browser storage`,
+            message: `Loading config ${config.id} from browser storage`,
             timestamp: new Date().toISOString(),
         },
         () => {
-            setScrapeConfig(stored.config);
+            setScrapeConfig(config);
         },
     );
 }
@@ -221,10 +209,9 @@ export async function runConfig() {
         return;
     }
 
-    if (!config.metadata.id) {
-        scrapeConfig.metadata.url = tabs[0].url || '';
-        scrapeConfig.metadata.id = await generateConfigId(tabs[0].url || '', config.selectors);
-        config.metadata = JSON.parse(JSON.stringify(scrapeConfig.metadata));
+    if (!config.id) {
+        scrapeConfig.url = tabs[0].url || '';
+        scrapeConfig.id = await generateConfigId(tabs[0].url || '', config.selectors);
     }
 
     // Trigger the background machine

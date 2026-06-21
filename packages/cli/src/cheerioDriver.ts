@@ -21,6 +21,7 @@ export const cheerioEngine: ExtractionEngine<CheerioAPI | Cheerio<any>, Cheerio<
     },
     getAttribute: (el, attr) => el.attr(attr),
     getText: (el) => el.text().trim(),
+    getProperty: (el, prop) => el.prop(prop),
 };
 
 export async function extractWithCheerio(

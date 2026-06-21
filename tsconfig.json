@@ -19,6 +19,7 @@
         "baseUrl": ".",
         "paths": {
             "@pagesieve/core": ["packages/core/src/index.ts"],
+            "@/*": ["packages/extension/src/*"],
             "@pagesieve/core/*": ["packages/core/src/*"],
             "$lib": ["packages/extension/src/lib"],
             "$lib/*": ["packages/extension/src/lib/*"]

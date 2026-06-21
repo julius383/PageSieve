@@ -16,7 +16,7 @@ export type ExtractedRow = Record<
  * Represents a group of extracted data, typically corresponding to a SelectorGroup.
  */
 export interface ExtractedGroup {
-    id: number;
+    id: string;
     results: ExtractedRow[];
 }
 

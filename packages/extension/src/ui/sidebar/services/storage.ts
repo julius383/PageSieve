@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { ExtractedGroup } from '@pagesieve/core/types';
-import { StoredConfig } from '@pagesieve/core/schema';
+import { ScrapeConfig } from '@pagesieve/core/schema';
 import localforage from 'localforage';
 import { setStatus } from '@/ui/sidebar/stores/ui.svelte';
 import { LogEntry } from '@/ui/sidebar/stores/logs';
@@ -48,10 +48,10 @@ export async function getLatestLogs(): Promise<LogEntry[] | null> {
     return null;
 }
 
-export async function getAllConfigs(): Promise<StoredConfig[]> {
-    const configs: StoredConfig[] = [];
+export async function getAllConfigs(): Promise<ScrapeConfig[]> {
+    const configs: ScrapeConfig[] = [];
     await localforage.iterate((value, key) => {
-        const result = StoredConfig.safeParse(value);
+        const result = ScrapeConfig.safeParse(value);
         if (result.success) {
             if (result.data.id !== key) {
                 result.data.id = key;
@@ -64,15 +64,15 @@ export async function getAllConfigs(): Promise<StoredConfig[]> {
     return configs;
 }
 
-export async function getConfig(id: string): Promise<StoredConfig | null> {
+export async function getConfig(id: string): Promise<ScrapeConfig | null> {
     const item = await localforage.getItem(id);
     if (item) {
-        return StoredConfig.parse(item);
+        return ScrapeConfig.parse(item);
     }
     return null;
 }
 
-export async function saveToBrowser(id: string, config: StoredConfig): Promise<boolean> {
+export async function saveToBrowser(id: string, config: ScrapeConfig): Promise<boolean> {
     const existing = await getConfig(id);
     if (existing) {
         return false;
@@ -90,7 +90,7 @@ export async function renameConfig(oldId: string, newId: string): Promise<boolea
         setStatus('errored', `Config with id "${newId}" already exists.`);
         return false;
     }
-    const result = StoredConfig.safeParse(await localforage.getItem(oldId));
+    const result = ScrapeConfig.safeParse(await localforage.getItem(oldId));
     if (!result.success) {
         setStatus('errored', z.prettifyError(result.error));
     } else {

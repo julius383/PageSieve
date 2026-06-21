@@ -1,11 +1,11 @@
 import { SvelteDate } from 'svelte/reactivity';
 import type { ExtractedGroup } from '@pagesieve/core/types';
 import type { ExtensionStatus, StatusLevel, ScrapeStatusUpdateRequest } from '@/types';
-import type { StoredConfig } from '@pagesieve/core/schema';
+import type { ScrapeConfig } from '@pagesieve/core/schema';
 import { getAllConfigs } from '@/ui/sidebar/services/storage';
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({
-    data: [{ id: 1, results: [] }],
+    data: [{ id: '', results: [] }],
 });
 
 export const extensionStatus = $state<ExtensionStatus>({
@@ -65,7 +65,7 @@ export function getStatus(): StatusLevel {
 }
 
 export function resetExtractedData() {
-    extractedData.data = [{ id: 1, results: [] }];
+    extractedData.data = [{ id: '', results: [] }];
 }
 
 // Listener for messages from background script to status
@@ -83,7 +83,7 @@ browser.runtime.onMessage.addListener((request: ScrapeStatusUpdateRequest) => {
 });
 
 // Library of saved configs
-export const allConfigs = $state<{ configs: StoredConfig[] }>({ configs: [] });
+export const allConfigs = $state<{ configs: ScrapeConfig[] }>({ configs: [] });
 export async function refreshConfigs() {
     const configs = await getAllConfigs();
     allConfigs.configs = configs;

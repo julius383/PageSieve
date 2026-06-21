@@ -3,7 +3,7 @@ import { match } from 'ts-pattern';
 import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { CheerioCrawler, EnqueueLinksOptions, log, LogLevel } from 'crawlee';
-import { StoredConfig } from '@pagesieve/core/schema';
+import { ScrapeConfig } from '@pagesieve/core/schema';
 import { extractWithCheerio } from './cheerioDriver';
 
 log.setLevel(LogLevel.INFO);
@@ -29,7 +29,7 @@ if (!values.config) {
 const fileContent = await readFile(values.config, 'utf8');
 const stored = JSON.parse(fileContent);
 
-const result = StoredConfig.safeParse(stored);
+const result = ScrapeConfig.safeParse(stored);
 if (!result.success) {
     console.error('Configuration validation failed:');
     console.error(z.prettifyError(result.error));
@@ -37,7 +37,7 @@ if (!result.success) {
 } else {
     console.log('Configuration validated successfully');
 }
-const scrapeConfig = result.data.config;
+const scrapeConfig = result.data;
 
 
 const crawler = new CheerioCrawler({
@@ -115,5 +115,5 @@ const crawler = new CheerioCrawler({
     },
 });
 
-await crawler.run([stored.config.metadata.url]);
+await crawler.run([scrapeConfig.url]);
 log.debug('Crawler finished.');

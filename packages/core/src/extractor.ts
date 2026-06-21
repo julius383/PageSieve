@@ -1,12 +1,14 @@
-import { parseCSS, zipObjectArrays } from './util';
+import { zipObjectArrays } from './util';
+import { match } from 'ts-pattern';
 import type { ExtractedGroup, ExtractedRow } from './types';
-import type { SelectorGroup, SelectorDefinition } from './schema';
+import type { SelectorGroup, FieldType } from './schema';
 
 export interface ExtractionEngine<TContext, TElement> {
     querySelectorAll(context: TContext | TElement, selector: string): TElement[];
     querySelector(context: TContext | TElement, selector: string): TElement | null;
     getAttribute(element: TElement, attr: string): string | null | undefined;
     getText(element: TElement): string | null | undefined;
+    getProperty(element: TElement, prop: string): string | null | undefined;
 }
 
 /**
@@ -51,19 +53,29 @@ export function executeExtraction<TContext, TElement>(
 function extractField<TContext, TElement>(
     engine: ExtractionEngine<TContext, TElement>,
     context: TContext | TElement,
-    field: SelectorDefinition,
+    field: FieldType,
     forceArray = false,
 ): (string | null | undefined) | (string | null | undefined)[] {
-    const [attr, selector] = parseCSS(field.selector);
-    const isArray = forceArray || field.type === 'array';
+    const isArray = forceArray || field.type === 'multiple';
 
     if (isArray) {
-        const elements = engine.querySelectorAll(context, selector);
-        return elements.map((el) => (attr ? engine.getAttribute(el, attr) : engine.getText(el)));
+        const elements = engine.querySelectorAll(context, field.selector);
+        return elements.map((el) => {
+            return match(field.extract)
+                .with('text', () => engine.getText(el))
+                .with('property', () => engine.getProperty(el, field.property as string))
+                .with('attribute', () => engine.getAttribute(el, field.attribute as string))
+                .exhaustive();
+        });
     } else {
-        const element = engine.querySelector(context, selector);
+        const element = engine.querySelector(context, field.selector);
         if (!element) return null;
-        return attr ? engine.getAttribute(element, attr) : engine.getText(element);
+
+        return match(field.extract)
+            .with('text', () => engine.getText(element))
+            .with('property', () => engine.getProperty(element, field.property as string))
+            .with('attribute', () => engine.getAttribute(element, field.attribute as string))
+            .exhaustive();
     }
 }
 

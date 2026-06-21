@@ -33,7 +33,7 @@
     import { renameConfig, removeConfig } from '@/ui/sidebar/services/storage';
 
     import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
-    import type { StoredConfig } from '@pagesieve/core/schema';
+    import type { ScrapeConfig } from '@pagesieve/core/schema';
 
     onMount(() => {
         refreshConfigs();
@@ -43,7 +43,7 @@
     let deletingId = $state('');
     let isConfirmOpen = $state(false);
 
-    let editingId = $state(null);
+    let editingId = $state<string | null>(null);
     let newIdValue = $state('');
 
     let searchQuery = $state('');
@@ -53,35 +53,35 @@
     function getSortFunction(mode: string, reverse: boolean) {
         switch (mode) {
             case 'Date Created':
-                return (a: StoredConfig, b: StoredConfig): number => {
+                return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return new SvelteDate(a.createdAt) - new SvelteDate(b.createdAt);
+                        return new SvelteDate(a.createdAt).getTime() - new SvelteDate(b.createdAt).getTime();
                     } else {
-                        return new SvelteDate(b.createdAt) - new SvelteDate(a.createdAt);
+                        return new SvelteDate(b.createdAt).getTime() - new SvelteDate(a.createdAt).getTime();
                     }
                 };
             case 'Date Updated':
-                return (a: StoredConfig, b: StoredConfig): number => {
+                return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return new SvelteDate(a.updatedAt) - new SvelteDate(b.updatedAt);
+                        return new SvelteDate(a.updatedAt).getTime() - new SvelteDate(b.updatedAt).getTime();
                     } else {
-                        return new SvelteDate(b.updatedAt) - new SvelteDate(a.updatedAt);
+                        return new SvelteDate(b.updatedAt).getTime() - new SvelteDate(a.updatedAt).getTime();
                     }
                 };
             case 'ID':
-                return (a: StoredConfig, b: StoredConfig): number => {
+                return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return -a.config.metadata.id.localeCompare(b.config.metadata.id);
+                        return -a.id.localeCompare(b.id);
                     } else {
-                        return a.config.metadata.id.localeCompare(b.config.metadata.id);
+                        return a.id.localeCompare(b.id);
                     }
                 };
             case 'URL':
-                return (a: StoredConfig, b: StoredConfig): number => {
+                return (a: ScrapeConfig, b: ScrapeConfig): number => {
                     if (reverse) {
-                        return -a.config.metadata.id.localeCompare(b.config.metadata.id);
+                        return -a.url.localeCompare(b.url);
                     } else {
-                        return a.config.metadata.id.localeCompare(b.config.metadata.id);
+                        return a.url.localeCompare(b.url);
                     }
                 };
             default:
@@ -95,12 +95,12 @@
         allConfigs.configs.filter((item) => {
             const query = searchQuery.toLowerCase();
             const idMatches = item.id.toLowerCase().includes(query);
-            const urlMatches = item.config.metadata.url?.toLowerCase().includes(query) ?? false;
+            const urlMatches = item.url?.toLowerCase().includes(query) ?? false;
             return idMatches || urlMatches;
         }),
     );
 
-    function startEditing(item) {
+    function startEditing(item: { id: string; }) {
         editingId = item.id;
         newIdValue = item.id;
     }
