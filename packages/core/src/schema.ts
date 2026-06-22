@@ -99,7 +99,7 @@ export const Field: z.ZodType<FieldType> = z.lazy(() =>
         .object({
             id: z
                 .string()
-                .default(`f_${nanoid(6)}`)
+                .default(() => `f_${nanoid(6)}`)
                 .meta({ description: 'Random and stable id.' }),
             name: z
                 .string()
@@ -134,6 +134,9 @@ export const Field: z.ZodType<FieldType> = z.lazy(() =>
         .refine((f) => f.extract !== 'attribute' || !!f.attribute, {
             message: "attribute is required when extract is 'attribute'",
         })
+        .refine((f) => f.extract !== 'property' || !!f.property, {
+            message: "property is required when extract is 'property'",
+        })
         .refine((f) => !(f.fields && f.fields.length > 0) || f.type === 'multiple', {
             message: "nested fields are only valid when type is 'multiple'",
         })
@@ -159,7 +162,7 @@ export type FieldType = {
 export const SelectorGroup = z.object({
     id: z
         .string()
-        .default(`g_${nanoid(6)}`)
+        .default(() => `g_${nanoid(6)}`)
         .meta({
             description: 'Random and stable id. Used to group results when multiple groups exist.',
         }),
