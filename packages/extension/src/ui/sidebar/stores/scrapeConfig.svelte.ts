@@ -48,19 +48,62 @@ export function removeGroup(groupID: string) {
     }
 }
 
-export function addDefinition(groupID: string) {
-    const group = scrapeConfig.selectors.find((element) => element.id == groupID);
-    if (group) {
-        group.fields.push(Field.parse({}));
+export function addField(itemID: string) {
+    for (const group of scrapeConfig.selectors) {
+        if (itemID == group.id) {
+            group.fields.push(Field.parse({}));
+            return;
+        }
+        for (const field of group.fields) {
+            if (itemID == field.id) {
+                if (field.fields) {
+                    field.fields.push(Field.parse({}))
+                } else {
+                    field.fields = [Field.parse({})];
+                }
+            }
+
+        }
     }
 }
 
-export function removeDefinition(selectorId: string, groupId: string) {
-    const group = scrapeConfig.selectors.find((element) => element.id == groupId);
-    if (group) {
+export function removeField(selectorId: string) {
+    for (const group of scrapeConfig.selectors) {
         const index = group.fields.findIndex((element) => element.id === selectorId);
         if (index !== -1) {
             group.fields.splice(index, 1);
+            return;
+        }
+        for (const field of group.fields) {
+            if (field.fields !== undefined) {
+                const index = field.fields.findIndex((element) => element.id === selectorId);
+                if (index !== -1) {
+                    field.fields.splice(index, 1);
+                    if (field.fields.length == 0) {
+                        delete field.fields;
+                    }
+                    return;
+                }
+
+            }
+        }
+
+    }
+}
+
+export function duplicateField(selectorId: string) {
+    for (const group of scrapeConfig.selectors) {
+        const index = group.fields.findIndex((element) => element.id === selectorId);
+        if (index !== -1) {
+            const field = $state.snapshot(group.fields[index])
+            field.id = `f_${nanoid(6)}`;
+            if (field.fields) {
+                for (const f of field.fields) {
+                    f.id = `f_${nanoid(6)}`;
+                }
+            }
+            group.fields.push(field);
+            return;
         }
     }
 }

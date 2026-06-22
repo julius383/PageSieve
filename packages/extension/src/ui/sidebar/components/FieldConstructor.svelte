@@ -6,8 +6,7 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     import {
-        addDefinition,
-        removeDefinition,
+        addField,
         removeGroup,
         renameGroup,
         scrapeConfig,
@@ -21,13 +20,13 @@
 
     let openGroups = $state<string[]>(scrapeConfig.selectors.map((g) => g.id.toString()));
 
-    let deletingGroupId = $state<number | null>(null);
+    let deletingGroupId = $state<string | null>(null);
     let isConfirmOpen = $state(false);
 
-    let editingGroupId = $state<number | null>(null);
+    let editingGroupId = $state<string | null>(null);
     let editValue = $state('');
 
-    function startEditing(group: { id: number; name: string }) {
+    function startEditing(group: { id: string; name: string }) {
         editingGroupId = group.id;
         editValue = group.name;
     }
@@ -61,7 +60,7 @@
         }
     }
 
-    function openDeleteConfirmation(id: number) {
+    function openDeleteConfirmation(id: string) {
         deletingGroupId = id;
         isConfirmOpen = true;
     }
@@ -90,9 +89,9 @@
                                             size="icon"
                                             variant="secondary"
                                             class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
-                                            onclick={() => toggleGroup(group.id.toString())}
+                                            onclick={() => toggleGroup(group.id)}
                                         >
-                                            {#if openGroups.includes(group.id.toString())}
+                                            {#if openGroups.includes(group.id)}
                                                 <ChevronUp class="size-4 transition-transform" />
                                             {:else}
                                                 <ChevronDown class="size-4 transition-transform" />
@@ -151,7 +150,7 @@
                             </Tooltip.Provider>
                         </div>
                     {/if}
-                    <Accordion.Item value={group.id.toString()} class="border-none">
+                    <Accordion.Item value={group.id} class="border-none">
                         <Accordion.Content>
                             <div class="bg-secondary space-y-4 mb-6">
                                 <ElementPicker
@@ -164,15 +163,18 @@
                                 {#each group.fields as field (field.id)}
                                     <FieldGroup
                                         id={field.id}
-                                        deleteHandler={() => removeDefinition(field.id, group.id)}
                                         container={group.container}
                                         bind:fieldName={field.name}
                                         bind:cssSelector={field.selector}
                                         bind:type={field.type}
+                                        bind:extract={field.extract}
+                                        bind:attribute={field.attribute}
+                                        bind:property={field.property}
+                                        bind:fields={field.fields}
                                     />
                                 {/each}
                             </div>
-                            <Button onclick={() => addDefinition(group.id)} class="mt-4 w-full">
+                            <Button onclick={() => addField(group.id)} class="mt-4 w-full">
                                 <Plus /> Add Field
                             </Button>
                         </Accordion.Content>

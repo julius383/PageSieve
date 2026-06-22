@@ -16,9 +16,16 @@
     import { ChevronDown, ChevronUp } from '@lucide/svelte';
     import * as Resizable from '$lib/components/ui/resizable/index.js';
 
+    import { extractedData } from '@/ui/sidebar/stores/ui.svelte';
+
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
 
     let logViewerAccordionValue = $state<string | undefined>(undefined);
+
+
+    const totalResults = $derived(
+        extractedData.data.reduce((sum, group) => sum + group.results.length, 0),
+    );
 </script>
 
 <main class="p-4 flex flex-col gap-2 bg-background text-foreground h-screen">
@@ -58,12 +65,12 @@
         </TabsList>
         <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
             <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
-                <Resizable.Pane defaultSize={50} class="flex flex-col">
+                <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 60} class="flex flex-col">
                     <FieldConstructor />
                 </Resizable.Pane>
                 <Resizable.Handle withHandle />
 
-                <Resizable.Pane defaultSize={50}>
+                <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40}>
                     <ResultsViewer openInNewTab={false} />
                 </Resizable.Pane>
             </Resizable.PaneGroup>

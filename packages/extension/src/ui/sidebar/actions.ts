@@ -45,7 +45,7 @@ export async function extractData(selectors: SelectorGroup[]): Promise<void> {
                     // re-assign to trigger reactivity
                     extractedData.data = [...extractedData.data];
                 } else {
-                    extractedData.data = response.result;
+                    extractedData.data = [...response.result];
                 }
                 return;
             } else {

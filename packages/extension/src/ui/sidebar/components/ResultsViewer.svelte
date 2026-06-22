@@ -39,7 +39,7 @@
         extractedData.data.reduce((sum, group) => sum + group.results.length, 0),
     );
 
-    let openGroups = $state<string[]>(extractedData.data.map((g) => g.id.toString()));
+    let openGroups = $state<string[]>([]);
 
     function toggleGroup(id: string) {
         if (openGroups.includes(id)) {
@@ -205,6 +205,7 @@
         </div>
     </Tabs.List>
     <Tabs.Content value="data" class="px-4 overflow-auto grow">
+        <!-- FIXME: figure out how to start with groups open -->
         <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-4">
             {#each extractedData.data as groupData (groupData.id)}
                 <div class="relative border rounded-lg px-5 pt-5 pb-4">
@@ -215,9 +216,9 @@
                             size="icon"
                             variant="secondary"
                             class="flex items-center justify-center size-6 rounded hover:text-gray-400 hover:bg-white/10"
-                            onclick={() => toggleGroup(groupData.id.toString())}
+                            onclick={() => toggleGroup(groupData.id)}
                         >
-                            {#if openGroups.includes(groupData.id.toString())}
+                            {#if openGroups.includes(groupData.id)}
                                 <ChevronUp class="transition-transform" />
                             {:else}
                                 <ChevronDown class="transition-transform" />
@@ -227,7 +228,7 @@
                             Group {groupData.id} ({groupData.results.length})
                         </span>
                     </div>
-                    <Accordion.Item value={groupData.id.toString()} class="border-none">
+                    <Accordion.Item value={groupData.id} class="border-none">
                         <Accordion.Content>
                             <DataTable data={groupData.results} />
                         </Accordion.Content>

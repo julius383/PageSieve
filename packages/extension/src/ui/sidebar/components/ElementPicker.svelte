@@ -92,7 +92,9 @@
 </script>
 
 <div class="grid w-full items-center gap-1.5">
-    <label for="css-selector" class={header_style}>{label}</label>
+    {#if label}
+        <label for="css-selector" class={header_style}>{label}</label>
+    {/if}
     <div class="flex items-end gap-x-1 flex-start">
         <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title, //h2" />
         {#if pickingElement}
