@@ -12,7 +12,7 @@ const logger = getLogger(['ext', 'background']);
 let sidebarOpen = false;
 
 browser.browserAction.onClicked.addListener(() => {
-    if (sidebarOpen) {
+    if (sidebarOpen !== undefined && sidebarOpen) {
         browser.sidebarAction.close();
     } else {
         browser.sidebarAction.open();
