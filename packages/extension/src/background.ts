@@ -52,7 +52,7 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
     } else if (currentState === 'waiting') {
         logger.info('Waiting for {delay} milliseconds', {
             status: currentState,
-            delay: context.config.options.delayMs,
+            delay: context.config.options.pageDelayMs,
         });
     }
 
