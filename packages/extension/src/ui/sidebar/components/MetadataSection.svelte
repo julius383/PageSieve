@@ -1,6 +1,6 @@
 <script lang="ts">
-    import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import { Badge } from "$lib/components/ui/badge/index.js";
+    import * as Field from "$lib/components/ui/field/index.js";
     import * as Item from '$lib/components/ui/item/index.js';
     import { Input } from '$lib/components/ui/input/index.js';
     import { Textarea } from '$lib/components/ui/textarea/index.js';
@@ -13,12 +13,13 @@
     import advancedFormat from 'dayjs/plugin/advancedFormat.js';
     dayjs.extend(advancedFormat);
 
-    import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import { scrapeConfig, setScrapeConfigValue } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import type { ScrapeConfig as ScrapeConfigT } from "@pagesieve/core";
 
 
     let copied = $state(false);
     let copyTarget = $state('')
-    let timeoutId;
+    let timeoutId: ReturnType<typeof setTimeout>;
     function copyToClipboard(text: string, target: string) {
         navigator.clipboard.writeText(text);
 
@@ -31,8 +32,11 @@
         }, 1500);
     }
 
-    const updateKey = debounce((key: string, value: unknown) => {
-        scrapeConfig[key] = value;
+    type ConfigKey = keyof ScrapeConfigT;
+    type ConfigValue = typeof scrapeConfig[ConfigKey];
+    const updateKey = debounce((key: ConfigKey, value: ConfigValue) => {
+        setScrapeConfigValue(key, value);
+        ;
     }, 1000)
 
     let inputValue = $state("");
@@ -67,28 +71,32 @@
     }
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 text-white">
 
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>Name</Item.Title>
-            <Item.Description>
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="cname">Name</Field.Label>
                 <Input
+                    id="cname"
                     placeholder="Extractor for Some Data"
                     value={scrapeConfig.name}
                     oninput={(e) => updateKey('name', e.currentTarget.value)}
                 />
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
+                <Field.Description
+                >Choose a unique username for your account.</Field.Description
+                >
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
 
-    <Separator class="my-1" />
+    <Separator class="my-2" />
 
-    <Item.Root variant="outline">
+    <Item.Root>
         <Item.Content>
             <Item.Title>ID</Item.Title>
             <Item.Description>
-                <div class="flex items-center justify-between gap-2 bg-muted">
+                <div class="flex items-center justify-between gap-2">
                     <span class="text-sm font-mono break-all">{scrapeConfig.id}</span>
                     <Button size="icon" variant="ghost" onclick={() => copyToClipboard(scrapeConfig.id, 'id')}>
                         {#if copied && copyTarget == 'id'}
@@ -102,11 +110,12 @@
         </Item.Content>
     </Item.Root>
 
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>URL</Item.Title>
-            <Item.Description>
-                <div class="flex items-center justify-between gap-2 bg-muted" >
+
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="url">URL</Field.Label>
+                <div class="flex items-center justify-between gap-2" >
                     <!-- <span class="text-sm text-blue-500"> {scrapeConfig.url} </span> -->
                     <Input
                         placeholder="e.g en.wikipedia.org/*"
@@ -130,33 +139,29 @@
                         {/if}
                     </Button>
                 </div>
-                <label for="url" class="text-sm font-medium leading-none">Starting URL for ScrapeConfig.</label>
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
-
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>URL Pattern</Item.Title>
-            <Item.Description>
+                <Field.Description> Starting URL for ScrapeConfig. </Field.Description>
+            </Field.Field>
+            <Field.Field>
+                <Field.Label for="password">URL Pattern</Field.Label>
                 <Input 
                     placeholder="e.g en.wikipedia.org/*"
                     value={scrapeConfig.urlPattern}
                     id="urlpattern"
                     oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
                 />
-                <label for="urlpattern" class="text-sm font-medium leading-none">Pages this config apply to (glob). </label>
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
+                <Field.Description>Pages this config apply to (glob). </Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
+
 
     <Separator class="my-1" />
 
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>Tags</Item.Title>
-            <Item.Description>
 
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="tags">Tags</Field.Label>
                 <div class="flex flex-wrap mb-2">
                     {#each scrapeConfig.tags as tag (tag)}
                         <Badge class="h-8 text-lg font-bold text-white bg-[#383838] rounded-sm flex items-center justify-between">
@@ -175,59 +180,57 @@
                 <Input
                     bind:value={inputValue}
                     onkeydown={addTag}
-                    placeholder="Type tag and press enter"
+                    placeholder="Type tag name and press enter or comma (,)"
                 />
-            </Item.Description>
-        </Item.Content>
+                <Field.Description>Content tags for categorizing config.</Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
 
-    </Item.Root>
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="author">Author</Field.Label>
+                <Input
+                    placeholder="Optional"
+                    id="author"
+                    value={scrapeConfig.author ?? ''}
+                    oninput={(e) => updateKey('author', e.currentTarget.value)}
+                />
+                <Field.Description>Who created this config.</Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
 
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>Description</Item.Title>
-            <Item.Description>
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="description">Description</Field.Label>
                 <Textarea
-                    placeholder="What does this scrape collect?"
+                    placeholder="What does this scrape collect?..."
+                    id="description"
                     rows={2}
                     value={scrapeConfig.description ?? ''}
                     oninput={(e) => updateKey('description', e.currentTarget.value)}
                 />
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
+                <Field.Description>Detailed summary of the purpose of this config.</Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
 
-
-    <div class="grid grid-cols-2">
-        <div class="space-y-1">
-            <Item.Root>
-                <Item.Content>
-                    <Item.Title>Revision</Item.Title>
-                    <Item.Description>
-                        <Input
-                            type="number"
-                            min="1"
-                            step="1"
-                            value={scrapeConfig.revision}
-                            oninput={(e) => updateKey('revision', e.currentTarget.value)}
-                        />
-                    </Item.Description>
-                </Item.Content>
-            </Item.Root>
-        </div>
-
-        <div class="space-y-1">
-            <Item.Root>
-                <Item.Content>
-                    <Item.Title>Author</Item.Title>
-                    <Item.Description>
-                        <Input
-                            placeholder="Optional"
-                            value={scrapeConfig.author ?? ''}
-                            oninput={(e) => updateKey('author', e.currentTarget.value)}
-                        />
-                    </Item.Description>
-                </Item.Content>
-            </Item.Root>
-        </div>
-    </div>
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="revision">Revision</Field.Label>
+                <Input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={scrapeConfig.revision}
+                    oninput={(e) => updateKey('revision', e.currentTarget.value)}
+                />
+                <Field.Description>Increment this when to indicate configuration changed.</Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
 </div>

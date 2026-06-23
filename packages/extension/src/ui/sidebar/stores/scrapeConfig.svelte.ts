@@ -1,9 +1,9 @@
-import type { ScrapeConfig, PaginationConfig } from '@pagesieve/core/schema';
+import type { ScrapeConfig as ScrapeConfigT, PaginationConfig } from '@pagesieve/core/schema';
 import { ExtractionOptions, SelectorGroup, Field } from '@pagesieve/core/schema';
 import { nanoid } from 'nanoid';
 import { SvelteDate } from 'svelte/reactivity';
 
-export const scrapeConfig = $state<ScrapeConfig>({
+export const scrapeConfig: ScrapeConfigT = $state({
     id: '',
     url: '',
     schemaVersion: '2.0.0',
@@ -15,9 +15,18 @@ export const scrapeConfig = $state<ScrapeConfig>({
     pagination: { mode: 'none' },
 });
 
-export function setScrapeConfig(config: ScrapeConfig) {
-    Object.assign(scrapeConfig, {});
+
+type ConfigKey = keyof ScrapeConfigT;
+
+export function setScrapeConfig(config: ScrapeConfigT) {
+    for (const key of Object.keys(scrapeConfig) as ConfigKey[]) {
+        delete scrapeConfig[key];
+    }
     Object.assign(scrapeConfig, config);
+}
+
+export function setScrapeConfigValue<K extends keyof ScrapeConfigT>(key: K, value: ScrapeConfigT[K]) {
+    scrapeConfig[key] = value
 }
 
 export function setPaginationConfig(pagination: PaginationConfig) {
