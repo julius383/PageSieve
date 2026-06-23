@@ -125,7 +125,9 @@ export const extensionDriver: ScrapeActorDriver = {
                 } else {
                     console.debug('Using SPA for next pagination');
                     const res = result as { success: boolean; error?: string };
-                    if (!res.success) throw new Error(res.error || 'SPA click failed');
+                    if (!res.success) {
+                        throw new Error(res.error || 'SELECTOR NOT FOUND');
+                    }
                     return {
                         type: 'spa',
                         status: PaginationStateStatus.InProgress,

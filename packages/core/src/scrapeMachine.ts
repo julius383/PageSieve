@@ -86,10 +86,18 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
         },
         actors: driver,
         delays: {
-            DELAY_MS: ({ context }) => context.config.options.delayMs,
+            DELAY_MS: ({ context }) => context.config.options.pageDelayMs,
         },
         guards: {
             hasPagination: ({ context }) => context.config.pagination.mode !== 'none',
+            previouslyNavigated: ({ context }) => {
+                return (
+                    !context.isTesting &&
+                    context.config.pagination.mode == 'next' &&
+                    context.error == 'SELECTOR NOT FOUND' &&
+                    context.currentPage > 1
+                );
+            },
             isMaxPagesReached: ({ context }) => {
                 const maxPages =
                     'maxPages' in context.config.pagination
@@ -399,6 +407,12 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                 type: 'final',
             },
             errored: {
+                always: [
+                    {
+                        guard: 'previouslyNavigated',
+                        target: 'completed',
+                    },
+                ],
                 on: {
                     RETRY: 'extracting',
                     STOP: 'idle',
