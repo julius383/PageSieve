@@ -16,6 +16,7 @@
     import DataTable from '@/ui/sidebar/components/DataTable.svelte';
 
     import type { SupportedExportDataTypes } from '@pagesieve/core/types';
+    import type { ScrapeStatusUpdateRequest } from '@/types';
 
     import { downloadBundle, clipboardCopy, downloadFormat } from '@/ui/sidebar/util';
 
@@ -26,6 +27,21 @@
 
     let { openInNewTab = true } = $props();
 
+    let openGroups = $state<string[]>([]);
+
+    // this section is necessary to enable opening result groups when results are present
+    let groupsOpened = $state(false);
+    let resultsChanged = (request: ScrapeStatusUpdateRequest) => {
+        if (request.action === 'updateScrapeStatus') {
+            if (
+                !groupsOpened &&
+                (request.status == 'completed' || request.status == 'navigating')
+            ) {
+                openGroups = [...extractedData.data.map((g) => g.id)];
+                groupsOpened = true;
+            }
+        }
+    };
     onMount(async () => {
         if (openInNewTab) {
             const results = await getLatestResults();
@@ -33,13 +49,18 @@
                 extractedData.data = results;
             }
         }
+        browser.runtime.onMessage.addListener(resultsChanged);
+    });
+
+    $effect(() => {
+        if (groupsOpened) {
+            browser.runtime.onMessage.removeListener(resultsChanged);
+        }
     });
 
     const totalResults = $derived(
         extractedData.data.reduce((sum, group) => sum + group.results.length, 0),
     );
-
-    let openGroups = $state<string[]>([]);
 
     function toggleGroup(id: string) {
         if (openGroups.includes(id)) {
