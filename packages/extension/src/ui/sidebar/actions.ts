@@ -232,17 +232,18 @@ export async function runConfig() {
                 // TODO: open in new tab
                 await navigateAndWait(tab.id, config.url);
                 // await browser.tabs.create({ url: config.url, openerTabId: tab.id })
-                browser.runtime.sendMessage({
-                    action: 'runMain',
-                    config,
-                    tabId: tab.id,
-                });
 
             } catch (err) {
                 setStatus('errored', (err as Error)?.message || 'Failed to navigate to correct URL.');
                 return;
             }
         }
+
+        browser.runtime.sendMessage({
+            action: 'runMain',
+            config,
+            tabId: tab.id,
+        });
     }
 
 }
