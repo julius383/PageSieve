@@ -6,12 +6,13 @@ import {
     runWithStatusAsync,
     setStatus,
 } from '@/ui/sidebar/stores/ui.svelte';
-import { shortHash, generateConfigId, validateSelectors } from '@pagesieve/core/util';
+import { shortHash, generateConfigId, normalizeUrl, validateSelectors } from '@pagesieve/core/util';
 import { scrapeConfig, setScrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
 import { ScrapeConfig } from '@pagesieve/core/schema';
 import { saveToBrowser } from '@/ui/sidebar/services/storage';
 import { commitPaginationToScrapeConfig } from '@/ui/sidebar/stores/pagination.svelte';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
+import { navigateAndWait } from './util';
 
 /**
  * Extracts data from current tab using defined selector. Returns via
@@ -203,23 +204,47 @@ export async function runConfig() {
     commitPaginationToScrapeConfig();
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
 
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    if (!tabs[0]?.id) {
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) {
         setStatus('errored', 'Failed to find active tab');
         return;
     }
 
     if (!config.id) {
-        scrapeConfig.url = tabs[0].url || '';
-        scrapeConfig.id = await generateConfigId(tabs[0].url || '', config.selectors);
+        // newly created ScrapeConfig
+        scrapeConfig.url = tab.url || '';
+        scrapeConfig.id = await generateConfigId(tab.url || '', config.selectors);
+
+        // Trigger the background machine
+        browser.runtime.sendMessage({
+            action: 'runMain',
+            config,
+            tabId: tab.id,
+        });
+    } else {
+        if (tab.url === undefined) {
+            setStatus('errored', 'URL missing from config.');;
+            return;
+        }
+        // navigate to page in config before beginning extraction
+        if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url)) {
+            try {
+                // TODO: open in new tab
+                await navigateAndWait(tab.id, config.url);
+                // await browser.tabs.create({ url: config.url, openerTabId: tab.id })
+                browser.runtime.sendMessage({
+                    action: 'runMain',
+                    config,
+                    tabId: tab.id,
+                });
+
+            } catch (err) {
+                setStatus('errored', (err as Error)?.message || 'Failed to navigate to correct URL.');
+                return;
+            }
+        }
     }
 
-    // Trigger the background machine
-    browser.runtime.sendMessage({
-        action: 'runMain',
-        config,
-        tabId: tabs[0].id,
-    });
 }
 
 export async function stopRun() {

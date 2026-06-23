@@ -1,4 +1,5 @@
 <script lang="ts">
+    import * as Tooltip from "$lib/components/ui/tooltip/index.js";
     import { Badge } from "$lib/components/ui/badge/index.js";
     import * as Item from '$lib/components/ui/item/index.js';
     import { Input } from '$lib/components/ui/input/index.js';
@@ -6,6 +7,7 @@
     import { Button } from '$lib/components/ui/button';
     import { Separator } from '$lib/components/ui/separator';
     import { Copy, ExternalLink, Check, X } from '@lucide/svelte';
+    import { debounce } from 'es-toolkit/function';
 
     import { default as dayjs } from 'dayjs';
     import advancedFormat from 'dayjs/plugin/advancedFormat.js';
@@ -29,9 +31,9 @@
         }, 1500);
     }
 
-    function update(key: string, value: unknown) {
+    const updateKey = debounce((key: string, value: unknown) => {
         scrapeConfig[key] = value;
-    }
+    }, 1000)
 
     let inputValue = $state("");
     function addTag(e: KeyboardEvent) {
@@ -74,7 +76,7 @@
                 <Input
                     placeholder="Extractor for Some Data"
                     value={scrapeConfig.name}
-                    oninput={(e) => update('name', e.currentTarget.value)}
+                    oninput={(e) => updateKey('name', e.currentTarget.value)}
                 />
             </Item.Description>
         </Item.Content>
@@ -87,7 +89,7 @@
             <Item.Title>ID</Item.Title>
             <Item.Description>
                 <div class="flex items-center justify-between gap-2 bg-muted">
-                    <span class="text-sm font-mono">{scrapeConfig.id}</span>
+                    <span class="text-sm font-mono break-all">{scrapeConfig.id}</span>
                     <Button size="icon" variant="ghost" onclick={() => copyToClipboard(scrapeConfig.id, 'id')}>
                         {#if copied && copyTarget == 'id'}
                             <Check color="green" class="h-4 w-4" />
@@ -105,7 +107,14 @@
             <Item.Title>URL</Item.Title>
             <Item.Description>
                 <div class="flex items-center justify-between gap-2 bg-muted" >
-                    <span class="text-sm text-blue-500"> {scrapeConfig.url} </span>
+                    <!-- <span class="text-sm text-blue-500"> {scrapeConfig.url} </span> -->
+                    <Input
+                        placeholder="e.g en.wikipedia.org/*"
+                        value={scrapeConfig.url}
+                        id="url"
+                        class="text-sm text-blue-500"
+                        oninput={(e) => updateKey('url', e.currentTarget.value)}
+                    />
                     <Button
                         size="icon"
                         variant="ghost"
@@ -121,6 +130,7 @@
                         {/if}
                     </Button>
                 </div>
+                <label for="url" class="text-sm font-medium leading-none">Starting URL for ScrapeConfig.</label>
             </Item.Description>
         </Item.Content>
     </Item.Root>
@@ -133,7 +143,7 @@
                     placeholder="e.g en.wikipedia.org/*"
                     value={scrapeConfig.urlPattern}
                     id="urlpattern"
-                    oninput={(e) => update('urlPattern', e.currentTarget.value)}
+                    oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
                 />
                 <label for="urlpattern" class="text-sm font-medium leading-none">Pages this config apply to (glob). </label>
             </Item.Description>
@@ -180,7 +190,7 @@
                     placeholder="What does this scrape collect?"
                     rows={2}
                     value={scrapeConfig.description ?? ''}
-                    oninput={(e) => update('description', e.currentTarget.value)}
+                    oninput={(e) => updateKey('description', e.currentTarget.value)}
                 />
             </Item.Description>
         </Item.Content>
@@ -198,7 +208,7 @@
                             min="1"
                             step="1"
                             value={scrapeConfig.revision}
-                            oninput={(e) => update('revision', e.currentTarget.value)}
+                            oninput={(e) => updateKey('revision', e.currentTarget.value)}
                         />
                     </Item.Description>
                 </Item.Content>
@@ -213,7 +223,7 @@
                         <Input
                             placeholder="Optional"
                             value={scrapeConfig.author ?? ''}
-                            oninput={(e) => update('author', e.currentTarget.value)}
+                            oninput={(e) => updateKey('author', e.currentTarget.value)}
                         />
                     </Item.Description>
                 </Item.Content>

@@ -15,6 +15,18 @@ export function sanitizeSegment(input: string): string {
         .toLowerCase();
 }
 
+export function normalizeUrl(url: string) {
+    const u = new URL(url);
+
+    // Strip fragment (hash)
+    u.hash = '';
+
+    // Optional: strip trailing slash for consistency
+    u.pathname = u.pathname.replace(/\/$/, '') || '/';
+
+    return u.toString();
+}
+
 /**
  * Guesses a unique part of a URL
  */
