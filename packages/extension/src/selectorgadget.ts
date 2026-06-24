@@ -23,6 +23,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 */
+// @ts-ignore — no type declarations available for vendored dmp.js
 import DiffMatchPatch from '$lib/dmp.js';
 import { finder } from '@medv/finder';
 

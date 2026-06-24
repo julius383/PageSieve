@@ -29,7 +29,6 @@
         "tailwind-merge": "^3.6.0",
         "tailwind-variants": "^3.2.2",
         "ts-pattern": "^5.9.0",
-        "xstate": "^5.32.1",
         "zod": "^4.4.3"
     },
     "devDependencies": {

@@ -4,7 +4,6 @@ import {
     assign,
     type ErrorActorEvent,
     type PromiseActorLogic,
-    type AnyActorLogic,
 } from 'xstate';
 import type { ScrapeConfig, SelectorGroup } from './schema';
 import { PaginationStateStatus, type ExtractedGroup } from './types';
@@ -34,42 +33,42 @@ interface InputType {
     driverContext?: unknown;
 }
 
-interface ExtractDataActorInput {
+type ExtractDataActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
 }
 
-interface ComputePageHashActorInput {
+type ComputePageHashActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
 }
 
-interface ComputePageHashActorOutput {
+type ComputePageHashActorOutput = {
     pageHash: string;
 }
 
-interface NavigateActorInput {
+type NavigateActorInput = {
     config: ScrapeConfig;
     currentURL: string;
     driverContext?: unknown;
 }
 
-interface NavigateActorOutput {
+type NavigateActorOutput = {
     status: PaginationStateStatus;
     url: string;
 }
 
-interface NavigateNextActorOutput {
+type NavigateNextActorOutput = {
     type: 'navigation' | 'spa';
     status: PaginationStateStatus;
     url: string;
 }
 
-type ExtractDataActorOutput = ExtractedGroup[];
+export type ExtractDataActorOutput = ExtractedGroup[];
 
 // Actors contract for different implementations
 // prettier-ignore
-export interface ScrapeActorDriver extends Record<string, AnyActorLogic> {
+export type ScrapeActorDriver = {
     extractData:      PromiseActorLogic<ExtractDataActorOutput,     ExtractDataActorInput>,
     computePageHash:  PromiseActorLogic<ComputePageHashActorOutput, ComputePageHashActorInput>,
     navigateLinks:    PromiseActorLogic<NavigateActorOutput,        NavigateActorInput>,

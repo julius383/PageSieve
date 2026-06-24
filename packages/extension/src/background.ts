@@ -1,7 +1,7 @@
-import { createActor, type SnapshotFrom } from 'xstate';
+import { createActor, type SnapshotFrom, type Actor } from 'xstate';
 import { omit } from 'es-toolkit/object';
 import { ScrapeContext, createScrapeMachine } from '@pagesieve/core/scrapeMachine';
-import { extensionDriver } from '@/driver';
+import { extensionDriver } from '@/extensionDriver';
 import { PaginationStateStatus } from '@pagesieve/core/types';
 import type { BackgroundRequest, StatusLevel } from '@/types';
 import { getLogger } from '@pagesieve/core/logger';
@@ -21,7 +21,7 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 const scrapeMachine = createScrapeMachine(extensionDriver);
-let scrapeActor: ReturnType<typeof createActor<typeof scrapeMachine>> | null = null;
+let scrapeActor: Actor<typeof scrapeMachine> | null = null;
 
 function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
     const context: ScrapeContext = snapshot.context;

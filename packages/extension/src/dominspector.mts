@@ -1,5 +1,5 @@
 import { DomPredictionHelper } from '@/selectorgadget';
-import { browserEngine } from './browserDriver';
+import { browserEngine } from './browserEngine';
 import { isXPath } from '@pagesieve/core/extractor';
 
 export class DOMInspector {
@@ -61,7 +61,7 @@ export class DOMInspector {
             this.deactivate();
         } else if (pickerId) {
             this.containerScope = container;
-            this.activate(pickerId, container);
+            this.activate(pickerId);
         }
     }
 

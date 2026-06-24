@@ -6,7 +6,7 @@ import { getLogger } from '@pagesieve/core/logger';
 import { initExtensionLogger } from '@/logger';
 initExtensionLogger();
 import { executeExtraction } from '@pagesieve/core/extractor';
-import { browserEngine } from './browserDriver';
+import { browserEngine } from './browserEngine';
 
 const logger = getLogger(['ext', 'content']);
 const inspector = new DOMInspector();
