@@ -13,6 +13,7 @@
         "build": "bun run build:extension && bun run build:cli",
         "build:extension": "bun run --filter @pagesieve/extension build",
         "build:cli": "bun run --filter @pagesieve/cli build",
+        "build:crawler": "bun run --filter @pagesieve/cli build",
         "lint": "eslint packages/",
         "format": "bunx prettier packages/ --write"
     },

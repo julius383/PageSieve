@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Breaking refactor of scrape configuration format
+- Update field definition UI to support new Field schema
+- Update metadata section of config panel with new + updated properties in ScrapeConfig
+- Allow URL to be editable and navigate to URL when necessary before beginning
+  extraction
+
 ## [cli-v0.1.0] - 2026-06-15
 
 ### Added
