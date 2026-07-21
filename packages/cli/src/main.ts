@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { CheerioCrawler, EnqueueLinksOptions, log, LogLevel } from 'crawlee';
 import { ScrapeConfig } from '@pagesieve/core/schema';
-import { extractWithCheerio } from './cheerioDriver';
+import { extractWithCheerio } from './cheerioEngine';
 
 log.setLevel(LogLevel.INFO);
 
