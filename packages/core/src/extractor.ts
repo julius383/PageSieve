@@ -59,7 +59,10 @@ function extractField<TContext, TElement>(
     const isArray = forceArray || field.type === 'multiple';
 
     if (isArray) {
-        const elements = engine.querySelectorAll(context, field.selector);
+        const elements =
+            field.selector === '.'
+                ? [context as TElement]
+                : engine.querySelectorAll(context, field.selector);
         return elements.map((el) => {
             return match(field.extract)
                 .with('text', () => engine.getText(el))
@@ -68,8 +71,13 @@ function extractField<TContext, TElement>(
                 .exhaustive();
         });
     } else {
-        const element = engine.querySelector(context, field.selector);
-        if (!element) return null;
+        let element: TElement | null = null;
+        if (field.selector === '.') {
+            element = context as TElement;
+        } else {
+            element = engine.querySelector(context, field.selector);
+        }
+        if (element == null) return null;
 
         return match(field.extract)
             .with('text', () => engine.getText(element))
