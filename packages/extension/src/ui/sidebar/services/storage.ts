@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { SvelteDate } from 'svelte/reactivity';
 import { ExtractedGroup } from '@pagesieve/core/types';
 import { ScrapeConfig } from '@pagesieve/core/schema';
 import localforage from 'localforage';
@@ -19,13 +20,63 @@ const resultsStore = localforage.createInstance({
     driver: localforage.LOCALSTORAGE,
 });
 
-export async function saveResults(results: ExtractedGroup[]): Promise<void> {
-    await resultsStore.setItem('latest', results);
+export type Snapshot = {
+    id: string;
+    timestamp: string;
+    results: ExtractedGroup[];
 }
 
-export async function getLatestResults(): Promise<ExtractedGroup[] | null> {
+
+export async function getLatestResults(): Promise<Snapshot | null> {
     const results = await resultsStore.getItem('latest');
-    return Array.isArray(results) ? results : null;
+    return results !== null ? (results as Snapshot) : null;
+}
+
+// TODO: add code to cleanup excess items
+export async function saveSnapshot(key: string, results: ExtractedGroup[]): Promise<void> {
+    if (results.length > 0) {
+        const snapshot = {
+            id: key,
+            timestamp: new SvelteDate().toISOString(),
+            results,
+        }
+        await resultsStore.setItem(key, snapshot);
+    }
+}
+
+export async function saveResults(results: ExtractedGroup[]): Promise<void> {
+    return await saveSnapshot('latest', results);
+}
+
+export async function getSnapshot(key: string): Promise<Snapshot | null> {
+    const results = await resultsStore.getItem(key);
+    return results !== null ? results as Snapshot : null;
+}
+
+export async function removeSnapshot(key: string): Promise<boolean> {
+    const existing = await resultsStore.getItem(key);
+    if (existing) {
+        await resultsStore.removeItem(key);
+        return true;
+    }
+    return false;
+}
+
+export async function cleanupSnapshots(): Promise<boolean> {
+    const snapshots = (await resultsStore.keys()).filter((x: string) => x === 'latest');
+    const removed: boolean[] = []
+    for (const key of snapshots) {
+        removed.push(await removeSnapshot(key));
+    }
+    return removed.reduce((x, y) => x && y, true);
+}
+
+export async function getAllSnapshots(): Promise<Snapshot[]> {
+    const snapshots: Snapshot[] = [];
+    await resultsStore.iterate((value) => {
+        snapshots.push(value as Snapshot);
+    });
+    return snapshots;
 }
 
 const logsStore = localforage.createInstance({

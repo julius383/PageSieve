@@ -216,7 +216,7 @@
                         />
                     </Card.Title>
                     <Card.Description
-                        >Saved on {dayjs(item.updatedAt).format('D MMM YYYY')}</Card.Description
+                        >Saved on {dayjs(item.updatedAt).format('Do MMM YYYY')}</Card.Description
                     >
                     <Card.Action>
                         {#if editingId !== item.id}

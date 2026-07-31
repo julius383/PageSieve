@@ -2,11 +2,20 @@ import { SvelteDate } from 'svelte/reactivity';
 import type { ExtractedGroup } from '@pagesieve/core/types';
 import type { ExtensionStatus, StatusLevel, ScrapeStatusUpdateRequest } from '@/types';
 import type { ScrapeConfig } from '@pagesieve/core/schema';
-import { getAllConfigs } from '@/ui/sidebar/services/storage';
+import { getAllConfigs, getAllSnapshots, Snapshot, removeSnapshot } from '@/ui/sidebar/services/storage';
+import { scrapeConfig } from './scrapeConfig.svelte';
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({
     data: [{ id: '', results: [] }],
 });
+
+
+
+// Library of saved configs
+export const allSnapshots = $state<{ snapshots: Snapshot[] }>({ snapshots: [] });
+export async function refreshSnapshots() {
+    allSnapshots.snapshots = await getAllSnapshots();
+}
 
 export const extensionStatus = $state<ExtensionStatus>({
     status: 'idle',
@@ -68,8 +77,12 @@ export function resetExtractedData() {
     extractedData.data = [{ id: '', results: [] }];
 }
 
+export function setExtractedData(data: ExtractedGroup[]) {
+    extractedData.data = data;
+}
+
 // Listener for messages from background script to status
-browser.runtime.onMessage.addListener((request: ScrapeStatusUpdateRequest) => {
+browser.runtime.onMessage.addListener(async (request: ScrapeStatusUpdateRequest) => {
     if (request.action === 'updateScrapeStatus') {
         if (request.results.length > 0) {
             extractedData.data = [...request.results];
@@ -78,6 +91,11 @@ browser.runtime.onMessage.addListener((request: ScrapeStatusUpdateRequest) => {
             setStatus(request.status, request.message);
         } else {
             setStatus(request.status);
+        }
+        if (request.status == 'completed') {
+            // cleanup succeeded snapshot
+            // TODO: think about making this optional through a setting value
+            await removeSnapshot(scrapeConfig.id);
         }
     }
 });

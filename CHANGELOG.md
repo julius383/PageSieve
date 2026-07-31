@@ -14,7 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update field definition UI to support new Field schema
 - Update metadata section of config panel with new + updated properties in ScrapeConfig
 - Allow URL to be editable and navigate to URL when necessary before beginning
-  extraction
+  extraction.
+- Add columns sorting to results viewer table.
+- Add ability to extract attributes from container element using '.' selector.
+- Add snapshots/checkpoints when scraping for better error recovery.
 
 ## [cli-v0.1.0] - 2026-06-15
 

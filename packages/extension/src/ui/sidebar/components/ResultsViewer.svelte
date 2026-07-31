@@ -21,9 +21,10 @@
     import { downloadBundle, clipboardCopy, downloadFormat } from '@/ui/sidebar/util';
 
     import { extractedData, resetExtractedData } from '@/ui/sidebar/stores/ui.svelte';
-    import { saveResults, getLatestResults, saveLogs } from '@/ui/sidebar/services/storage';
+    import { saveResults, getLatestResults, saveLogs, saveSnapshot } from '@/ui/sidebar/services/storage';
     import { logStore } from '@/ui/sidebar/stores/logs';
     import { onMount } from 'svelte';
+    import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
 
     let { openInNewTab = true } = $props();
 
@@ -46,7 +47,7 @@
         if (openInNewTab) {
             const results = await getLatestResults();
             if (results) {
-                extractedData.data = results;
+                extractedData.data = results.results;
             }
         }
         browser.runtime.onMessage.addListener(resultsChanged);
@@ -55,6 +56,15 @@
     $effect(() => {
         if (groupsOpened) {
             browser.runtime.onMessage.removeListener(resultsChanged);
+        }
+    });
+
+
+    $effect(() => {
+    // save snapshot of data everytime extractedData is updated
+    const snapshotKey = scrapeConfig.id;
+    if (snapshotKey !== '' && snapshotKey !== undefined) {
+            saveSnapshot(snapshotKey, extractedData.data);
         }
     });
 
