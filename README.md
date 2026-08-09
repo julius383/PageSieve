@@ -1,5 +1,5 @@
 <div align="center">
-  <img align="center" src="/public/icons/icon128.png" >
+  <img align="center" src="/packages/extension/public/icons/icon128.png" >
   <h1><a href="https://julius383.github.io/PageSieve/">PageSieve</a></h1>
 </div>
 
