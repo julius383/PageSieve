@@ -38,9 +38,10 @@ export const extensionDriver: ScrapeActorDriver = {
         const pagination = config.pagination;
         if (pagination.mode == 'links') {
             const idx = pagination.pageLinks.findIndex((url: string) => url === currentURL);
-            if (idx === -1 || idx + 1 >= pagination.pageLinks.length) {
+            if (idx + 1 >= pagination.pageLinks.length) {
                 return { status: PaginationStateStatus.Complete, url: currentURL };
             }
+            // handles when idx === -1 as it starts from 0 after aadding
             const nextURL = pagination.pageLinks[idx + 1];
             await navigateAndWait(tab.id, nextURL, config.options.timeoutMs);
             return { status: PaginationStateStatus.InProgress, url: nextURL };
