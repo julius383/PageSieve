@@ -56,10 +56,8 @@ function extractField<TContext, TElement>(
     context: TContext | TElement,
     field: FieldType,
     forceArray = false,
-): (string | null | undefined) | (string | null | undefined)[] {
-    const isArray = forceArray || field.type === 'multiple';
-
-    if (isArray) {
+): (string | number | null | undefined) | (string | number | null | undefined)[] {
+    if (field.type === 'multiple' || forceArray) {
         const elements =
             field.selector === '.'
                 ? [context as TElement]
@@ -71,7 +69,7 @@ function extractField<TContext, TElement>(
                 .with('attribute', () => engine.getAttribute(el, field.attribute as string))
                 .exhaustive();
         });
-    } else {
+    } else if (field.type === 'single'){
         let element: TElement | null = null;
         if (field.selector === '.') {
             element = context as TElement;
@@ -85,6 +83,10 @@ function extractField<TContext, TElement>(
             .with('property', () => engine.getProperty(element, field.property as string))
             .with('attribute', () => engine.getAttribute(element, field.attribute as string))
             .exhaustive();
+    } else if (field.type === 'count') {
+        const elements = engine.querySelectorAll(context, field.selector);
+        return elements.length;
+
     }
 }
 
