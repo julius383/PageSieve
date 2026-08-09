@@ -21,7 +21,7 @@ export function executeExtraction<TContext, TElement>(
 ): ExtractedGroup[] {
     const extractionResults: ExtractedGroup[] = [];
 
-    selectors.forEach(({ id, container, fields }) => {
+    selectors.forEach(({ id, name, container, fields }) => {
         if (container) {
             const containerItems = engine.querySelectorAll(rootContext, container);
             const rows: ExtractedRow[] = [];
@@ -34,7 +34,8 @@ export function executeExtraction<TContext, TElement>(
                 rows.push(Object.assign({}, ...fieldData));
             });
 
-            extractionResults.push({ id, results: rows });
+            // TODO: make it configurable to either use ID or Group name for results
+            extractionResults.push({ id: name, results: rows });
         } else {
             const foundItems: Record<string, (string | null | undefined)[]> = {};
             fields.forEach((field) => {
@@ -43,7 +44,7 @@ export function executeExtraction<TContext, TElement>(
             });
 
             const rows = zipObjectArrays(foundItems) as ExtractedRow[];
-            extractionResults.push({ id, results: rows });
+            extractionResults.push({ id: name, results: rows });
         }
     });
 
