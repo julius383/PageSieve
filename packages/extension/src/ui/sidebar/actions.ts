@@ -106,8 +106,7 @@ export function importConfig(event: Event) {
 export async function exportConfig(): Promise<string> {
     commitPaginationToScrapeConfig();
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
-    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
-    const filename = await generateConfigId(tabInfo.url, config.selectors);
+    const filename = await generateConfigId(scrapeConfig.url, config.selectors);
     runWithStatus(
         {
             status: 'exporting',
@@ -135,8 +134,7 @@ export async function exportConfig(): Promise<string> {
 export async function saveConfig() {
     commitPaginationToScrapeConfig();
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
-    const tabInfo = await browser.runtime.sendMessage({ action: 'getTabUrl' });
-    const filename = await generateConfigId(tabInfo.url, config.selectors);
+    const filename = await generateConfigId(scrapeConfig.url, config.selectors);
 
     await runWithStatusAsync(
         {
@@ -212,8 +210,12 @@ export async function runConfig() {
 
     if (!config.id) {
         // newly created ScrapeConfig
-        scrapeConfig.url = tab.url || '';
-        scrapeConfig.id = await generateConfigId(tab.url || '', config.selectors);
+        if (tab.url === undefined) {
+            setStatus('errored', 'Extraction not possible in current tab. Unable to get URL');;
+            return;
+        }
+        scrapeConfig.url = tab.url;
+        scrapeConfig.id = await generateConfigId(scrapeConfig.url || '', config.selectors);
 
         // Trigger the background machine
         browser.runtime.sendMessage({
