@@ -3,7 +3,7 @@
 
     import * as Tabs from '$lib/components/ui/tabs/index.js';
     import * as Field from '$lib/components/ui/field/index.js';
-    import { Label } from '$lib/components/ui/label/index.js';
+    import * as Item from "$lib/components/ui/item/index.js";
     import { Textarea } from '$lib/components/ui/textarea/index.js';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
@@ -19,7 +19,7 @@
 
     function updateLinks(event: Event) {
         let text = (event?.currentTarget as HTMLTextAreaElement)?.value;
-        paginationState.links.pageLinks = text.split('\n');
+        paginationState.links.pageLinks = text.trim().split('\n');
     }
 
     function goToNextPage() {
@@ -74,8 +74,23 @@
             <Tabs.Trigger value="template">URL Template</Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value="none"></Tabs.Content>
+        <Tabs.Content value="none">
+            <Item.Root variant="outline" size="sm">
+                <Item.Content>
+                    <Item.Title>None Pagination</Item.Title>
+                    <Item.Description
+                    >No navigation only extracts config <a href="#main-url">url</a> field.</Item.Description>
+                </Item.Content>
+            </Item.Root>
+        </Tabs.Content>
         <Tabs.Content value="next">
+            <Item.Root variant="outline" size="sm">
+                <Item.Content>
+                    <Item.Title>Next Pagination</Item.Title>
+                    <Item.Description
+                    >Navigate by clicking on selected element.</Item.Description>
+                </Item.Content>
+            </Item.Root>
             <ElementPicker
                 label="Next Button Selector"
                 bind:cssSelector={paginationState.next.nextSelector}
@@ -98,18 +113,38 @@
             </Field.Set>
         </Tabs.Content>
         <Tabs.Content value="links">
+            <Item.Root variant="outline" size="sm">
+                <Item.Content>
+                    <Item.Title>Links Pagination</Item.Title>
+                    <Item.Description
+                    >List of links to extract in turn.</Item.Description>
+                </Item.Content>
+            </Item.Root>
             <div class="grid w-full gap-1.5">
-                <Label for="message-2">Links to Other Pages</Label>
-                <Textarea
-                    placeholder="Add links here. One per line"
-                    id="message-2"
-                    class="h-50"
-                    oninput={updateLinks}
-                    value={paginationState.links.pageLinks.join('\n')}
-                />
+                <Field.Set>
+                    <Field.Group>
+                        <Field.Field>
+                            <Field.Label>Links to Other Pages</Field.Label>
+                            <Textarea
+                                placeholder="Add links here. One per line"
+                                class="h-50"
+                                oninput={updateLinks}
+                                value={paginationState.links.pageLinks.join('\n')}
+                            />
+                            <Field.Description>{paginationState.links.pageLinks.length} links</Field.Description>
+                        </Field.Field>
+                    </Field.Group>
+                </Field.Set>
             </div>
         </Tabs.Content>
         <Tabs.Content value="template">
+            <Item.Root variant="outline" size="sm">
+                <Item.Content>
+                    <Item.Title>URL Template Pagination</Item.Title>
+                    <Item.Description
+                    >Navigate through pages with numbered pages.</Item.Description>
+                </Item.Content>
+            </Item.Root>
             <Field.Set>
                 <Field.Group>
                     <Field.Field>
