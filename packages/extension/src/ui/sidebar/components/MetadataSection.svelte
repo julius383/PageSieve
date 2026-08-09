@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { Badge } from "$lib/components/ui/badge/index.js";
-    import * as Field from "$lib/components/ui/field/index.js";
-    import * as Item from '$lib/components/ui/item/index.js';
+    import { Badge } from '$lib/components/ui/badge/index.js';
+    import * as Field from '$lib/components/ui/field/index.js';
     import { Input } from '$lib/components/ui/input/index.js';
     import { Textarea } from '$lib/components/ui/textarea/index.js';
     import { Button } from '$lib/components/ui/button';
     import { Separator } from '$lib/components/ui/separator';
-    import { Copy, ExternalLink, Check, X } from '@lucide/svelte';
+    import { X } from '@lucide/svelte';
     import { debounce } from 'es-toolkit/function';
 
     import { default as dayjs } from 'dayjs';
@@ -14,47 +13,28 @@
     dayjs.extend(advancedFormat);
 
     import { scrapeConfig, setScrapeConfigValue } from '@/ui/sidebar/stores/scrapeConfig.svelte';
-    import type { ScrapeConfig as ScrapeConfigT } from "@pagesieve/core";
-
-
-    let copied = $state(false);
-    let copyTarget = $state('')
-    let timeoutId: ReturnType<typeof setTimeout>;
-    function copyToClipboard(text: string, target: string) {
-        navigator.clipboard.writeText(text);
-
-        copied = true;
-        copyTarget = target;
-        clearTimeout(timeoutId); // avoid overlapping timers if clicked again quickly
-        timeoutId = setTimeout(() => {
-            copied = false;
-            copyTarget = '';
-        }, 1500);
-    }
+    import type { ScrapeConfig as ScrapeConfigT } from '@pagesieve/core';
 
     type ConfigKey = keyof ScrapeConfigT;
-    type ConfigValue = typeof scrapeConfig[ConfigKey];
+    type ConfigValue = (typeof scrapeConfig)[ConfigKey];
     const updateKey = debounce((key: ConfigKey, value: ConfigValue) => {
         setScrapeConfigValue(key, value);
-        ;
-    }, 1000)
+    }, 1000);
 
-    let inputValue = $state("");
+    let inputValue = $state('');
     function addTag(e: KeyboardEvent) {
-        if ((e.key === "Enter" || e.key === ",") && inputValue.trim()) {
+        if ((e.key === 'Enter' || e.key === ',') && inputValue.trim()) {
             e.preventDefault();
-            const tag = inputValue.trim().replace(/,$/, "");
+            const tag = inputValue.trim().replace(/,$/, '');
             if (tag) {
                 if (scrapeConfig.tags === undefined) {
                     scrapeConfig.tags = [tag];
                 } else if (!scrapeConfig.tags.includes(tag)) {
-
-                    scrapeConfig.tags = [...scrapeConfig.tags ?? [], tag];
+                    scrapeConfig.tags = [...(scrapeConfig.tags ?? []), tag];
                 }
-
             }
-            inputValue = "";
-        } else if (e.key === "Backspace" && !inputValue) {
+            inputValue = '';
+        } else if (e.key === 'Backspace' && !inputValue) {
             if (scrapeConfig.tags !== undefined) {
                 scrapeConfig.tags = scrapeConfig.tags.slice(0, -1);
             }
@@ -72,6 +52,22 @@
 </script>
 
 <div class="space-y-4 text-white">
+    <Field.Set>
+        <Field.Group>
+            <Field.Field>
+                <Field.Label for="password">URL Pattern</Field.Label>
+                <Input
+                    placeholder="e.g en.wikipedia.org/*"
+                    value={scrapeConfig.urlPattern}
+                    id="urlpattern"
+                    oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
+                />
+                <Field.Description>Pages this config apply to (glob).</Field.Description>
+            </Field.Field>
+        </Field.Group>
+    </Field.Set>
+
+    <Separator class="my-2" />
 
     <Field.Set>
         <Field.Group>
@@ -83,80 +79,10 @@
                     value={scrapeConfig.name}
                     oninput={(e) => updateKey('name', e.currentTarget.value)}
                 />
-                <Field.Description
-                >Choose a unique username for your account.</Field.Description
-                >
+                <Field.Description>Name for this config.</Field.Description>
             </Field.Field>
         </Field.Group>
     </Field.Set>
-
-    <Separator class="my-2" />
-
-    <Item.Root>
-        <Item.Content>
-            <Item.Title>ID</Item.Title>
-            <Item.Description>
-                <div class="flex items-center justify-between gap-2">
-                    <span class="text-sm font-mono break-all">{scrapeConfig.id}</span>
-                    <Button size="icon" variant="ghost" onclick={() => copyToClipboard(scrapeConfig.id, 'id')}>
-                        {#if copied && copyTarget == 'id'}
-                            <Check color="green" class="h-4 w-4" />
-                        {:else}
-                            <Copy class="h-4 w-4" />
-                        {/if}
-                    </Button>
-                </div>
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
-
-
-    <Field.Set>
-        <Field.Group>
-            <Field.Field>
-                <Field.Label for="url">URL</Field.Label>
-                <div class="flex items-center justify-between gap-2" >
-                    <!-- <span class="text-sm text-blue-500"> {scrapeConfig.url} </span> -->
-                    <Input
-                        placeholder="e.g en.wikipedia.org/*"
-                        value={scrapeConfig.url}
-                        id="url"
-                        class="text-sm text-blue-500"
-                        oninput={(e) => updateKey('url', e.currentTarget.value)}
-                    />
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        onclick={() => window.open(scrapeConfig.url, '_blank')}
-                    >
-                        <ExternalLink class="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onclick={() => copyToClipboard(scrapeConfig.url, 'url')}>
-                        {#if copied && copyTarget == 'url'}
-                            <Check color="green" class="h-4 w-4" />
-                        {:else}
-                            <Copy class="h-4 w-4" />
-                        {/if}
-                    </Button>
-                </div>
-                <Field.Description> Starting URL for ScrapeConfig. </Field.Description>
-            </Field.Field>
-            <Field.Field>
-                <Field.Label for="password">URL Pattern</Field.Label>
-                <Input 
-                    placeholder="e.g en.wikipedia.org/*"
-                    value={scrapeConfig.urlPattern}
-                    id="urlpattern"
-                    oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
-                />
-                <Field.Description>Pages this config apply to (glob). </Field.Description>
-            </Field.Field>
-        </Field.Group>
-    </Field.Set>
-
-
-    <Separator class="my-1" />
-
 
     <Field.Set>
         <Field.Group>
@@ -164,7 +90,9 @@
                 <Field.Label for="tags">Tags</Field.Label>
                 <div class="flex flex-wrap mb-2">
                     {#each scrapeConfig.tags as tag (tag)}
-                        <Badge class="h-8 text-lg font-bold text-white bg-[#383838] rounded-sm flex items-center justify-between">
+                        <Badge
+                            class="h-8 text-lg font-bold text-white bg-[#383838] rounded-sm flex items-center justify-between"
+                        >
                             <span>{tag}</span>
                             <Button
                                 size="icon"
@@ -172,7 +100,7 @@
                                 aria-label={`Remove ${tag}`}
                                 class="bg-transparent rounded hover:stroke-red-400 hover:bg-white/10"
                             >
-                                <X class='size-4' color="white" onclick={() => removeTag(tag)}/>
+                                <X class="size-4" color="white" onclick={() => removeTag(tag)} />
                             </Button>
                         </Badge>
                     {/each}
@@ -213,7 +141,9 @@
                     value={scrapeConfig.description ?? ''}
                     oninput={(e) => updateKey('description', e.currentTarget.value)}
                 />
-                <Field.Description>Detailed summary of the purpose of this config.</Field.Description>
+                <Field.Description
+                    >Detailed summary of the purpose of this config.</Field.Description
+                >
             </Field.Field>
         </Field.Group>
     </Field.Set>
@@ -229,7 +159,9 @@
                     value={scrapeConfig.revision}
                     oninput={(e) => updateKey('revision', e.currentTarget.value)}
                 />
-                <Field.Description>Increment this when to indicate configuration changed.</Field.Description>
+                <Field.Description
+                    >Increment this when to indicate configuration changed.</Field.Description
+                >
             </Field.Field>
         </Field.Group>
     </Field.Set>
