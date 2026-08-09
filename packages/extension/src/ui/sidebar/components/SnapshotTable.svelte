@@ -10,23 +10,25 @@
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import Button from '$lib/components/ui/button/button.svelte';
     import { Trash2, Upload } from '@lucide/svelte';
-    import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import { default as dayjs } from 'dayjs';
 
-    let deletingId = $state('');
-    let isConfirmOpen = $state(false);
-
-    function openDeleteConfirmation(id: string) {
-        deletingId = id;
-        isConfirmOpen = true;
-    }
     onMount(() => {
         refreshSnapshots();
     });
+
     async function handleDelete(id: string): Promise<void> {
-        // Proceed with destructive operation
-        await removeSnapshot(id);
-        await refreshSnapshots();
+        if (
+            await confirm({
+                title: 'Delete snapshot?',
+                description: `This action cannot be undone. This will permanently delete results snapshot with id "${id}".`,
+                confirmLabel: 'Delete',
+                variant: 'destructive',
+            })
+        ) {
+            await removeSnapshot(id);
+            await refreshSnapshots();
+        }
     }
 </script>
 
@@ -65,7 +67,7 @@
                     <Tooltip.Root>
                         <Tooltip.Trigger>
                             <Button
-                                onclick={() => openDeleteConfirmation(snapshot.id)}
+                                onclick={() => handleDelete(snapshot.id)}
                                 variant="outline"
                                 size="icon"
                             >
@@ -81,16 +83,3 @@
         </div>
     {/each}
 </Item.Root>
-
-<ConfirmDialog
-    bind:open={isConfirmOpen}
-    onConfirm={() => handleDelete(deletingId)}
-    onCancel={() => {
-        deletingId = '';
-    }}
->
-    {#snippet description()}
-        This action cannot be undone. This will permanently delete results snapshot with id
-        <pre class="mt-2 p-2 bg-secondary rounded border">{deletingId}</pre>
-    {/snippet}
-</ConfirmDialog>

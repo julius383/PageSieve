@@ -13,15 +13,12 @@
     } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import EditableInput from '@/ui/sidebar/components/EditableInput.svelte';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
-    import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
 
     // let group = scrapeConfig.selectors[0];
     let showLabels = $derived(scrapeConfig.selectors.length > 1);
 
     let openGroups = $state<string[]>(scrapeConfig.selectors.map((g) => g.id.toString()));
-
-    let deletingGroupId = $state<string | null>(null);
-    let isConfirmOpen = $state(false);
 
     let editingGroupId = $state<string | null>(null);
     let editValue = $state('');
@@ -60,15 +57,16 @@
         }
     }
 
-    function openDeleteConfirmation(id: string) {
-        deletingGroupId = id;
-        isConfirmOpen = true;
-    }
-
-    function confirmDelete() {
-        if (deletingGroupId !== null) {
-            removeGroup(deletingGroupId);
-            deletingGroupId = null;
+    async function handleDeleteGroup(id: string) {
+        if (
+            await confirm({
+                title: 'Delete group?',
+                description: `This will permanently delete Group ${id} and all its fields. This action cannot be undone.`,
+                confirmLabel: 'Delete',
+                variant: 'destructive',
+            })
+        ) {
+            removeGroup(id);
         }
     }
 </script>
@@ -140,7 +138,7 @@
                                             size="icon"
                                             variant="secondary"
                                             class="flex items-center justify-center size-6 rounded hover:text-red-400 hover:bg-white/10"
-                                            onclick={() => openDeleteConfirmation(group.id)}
+                                            onclick={() => handleDeleteGroup(group.id)}
                                         >
                                             <X class="size-3" />
                                         </Button>
@@ -183,17 +181,6 @@
             {/each}
         </Accordion.Root>
     </section>
-
-    <ConfirmDialog
-        bind:open={isConfirmOpen}
-        onConfirm={confirmDelete}
-        onCancel={() => (deletingGroupId = null)}
-    >
-        {#snippet description()}
-            This will permanently delete <strong>Group {deletingGroupId}</strong> and all its fields.
-            This action cannot be undone.
-        {/snippet}
-    </ConfirmDialog>
 {:else}
     <div>
         <span>Error with Field Group</span>

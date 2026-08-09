@@ -1,57 +1,43 @@
 <script lang="ts">
     import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-    import type { Snippet } from 'svelte';
+    import { buttonVariants } from '$lib/components/ui/button/index.js';
+    import {
+        confirmState,
+        handleConfirm,
+        handleCancel,
+    } from '@/ui/sidebar/services/confirm.svelte';
 
-    let {
-        open = $bindable(false),
-        title = 'Are you sure?',
-        description,
-        confirmLabel = 'Delete',
-        cancelLabel = 'Cancel',
-        onConfirm,
-        onCancel,
-    }: {
-        open: boolean;
-        title?: string | Snippet;
-        description?: string | Snippet;
-        confirmLabel?: string;
-        cancelLabel?: string;
-        onConfirm: () => void;
-        onCancel?: () => void;
-    } = $props();
-
-    function handleConfirm() {
-        onConfirm();
-        open = false;
-    }
-
-    function handleCancel() {
-        if (onCancel) onCancel();
-        open = false;
+    function onOpenChange(val: boolean) {
+        if (!val) {
+            handleCancel();
+        }
     }
 </script>
 
-<AlertDialog.Root bind:open>
-    <AlertDialog.Content class="w-[calc(100% - 4rem)] bg-background text-foreground ">
+<AlertDialog.Root open={confirmState.open} {onOpenChange}>
+    <AlertDialog.Content class="w-[calc(100% - 4rem)] bg-background text-foreground">
         <AlertDialog.Header>
             <AlertDialog.Title>
-                {#if typeof title === 'string'}
-                    {title}
-                {:else if title}
-                    {@render title()}
+                {#if typeof confirmState.title === 'string'}
+                    {confirmState.title}
+                {:else if confirmState.title}
+                    {@render confirmState.title()}
                 {/if}
             </AlertDialog.Title>
             <div class="text-sm text-muted-foreground text-wrap">
-                {#if typeof description === 'string'}
-                    {description}
-                {:else if description}
-                    {@render description()}
+                {#if typeof confirmState.description === 'string'}
+                    {confirmState.description}
+                {:else if confirmState.description}
+                    {@render confirmState.description()}
                 {/if}
             </div>
         </AlertDialog.Header>
         <AlertDialog.Footer>
-            <AlertDialog.Cancel onclick={handleCancel}>{cancelLabel}</AlertDialog.Cancel>
-            <AlertDialog.Action onclick={handleConfirm}>{confirmLabel}</AlertDialog.Action>
+            <AlertDialog.Cancel onclick={handleCancel}>{confirmState.cancelLabel}</AlertDialog.Cancel>
+            <AlertDialog.Action
+                class={buttonVariants({ variant: confirmState.variant })}
+                onclick={handleConfirm}>{confirmState.confirmLabel}</AlertDialog.Action
+            >
         </AlertDialog.Footer>
     </AlertDialog.Content>
 </AlertDialog.Root>

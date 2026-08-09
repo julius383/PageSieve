@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { resetDefinitions, addGroup } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import { resetConfig, resetSelectors, addGroup } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import {
         runConfig,
         importConfig,
@@ -33,6 +34,33 @@
         await saveConfig();
         await refreshConfigs();
     }
+
+    async function handleResetConfig() {
+        if (
+            await confirm({
+                title: 'Clear configuration?',
+                description: 'Are you sure you want to clear the entire scrape configuration? This action cannot be undone.',
+                confirmLabel: 'Clear',
+                variant: 'destructive',
+            })
+        ) {
+            resetConfig();
+        }
+    }
+
+    async function handleResetSelectors() {
+        if (
+            await confirm({
+                title: 'Clear selectors?',
+                description: 'Are you sure you want to clear all selector groups? This action cannot be undone.',
+                confirmLabel: 'Clear',
+                variant: 'destructive',
+            })
+        ) {
+            resetSelectors();
+        }
+    }
+
     const runninStates = ['running', 'extracting', 'navigating', 'waiting'];
 </script>
 
@@ -167,7 +195,8 @@
         </DropdownMenu.Trigger>
         <DropdownMenu.Content class="w-56" align="start">
             <div class="bg-background">
-                <DropdownMenu.Item onclick={resetDefinitions}>Reset selectors</DropdownMenu.Item>
+                <DropdownMenu.Item onclick={handleResetConfig}>Clear config</DropdownMenu.Item>
+                <DropdownMenu.Item onclick={handleResetSelectors}>Clear selectors</DropdownMenu.Item>
             </div>
         </DropdownMenu.Content>
     </DropdownMenu.Root>

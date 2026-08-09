@@ -17,6 +17,7 @@
     import * as Resizable from '$lib/components/ui/resizable/index.js';
 
     import { extractedData } from '@/ui/sidebar/stores/ui.svelte';
+    import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
 
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
 
@@ -29,6 +30,7 @@
 </script>
 
 <main class="p-4 flex flex-col gap-2 bg-background text-foreground h-screen">
+    <ConfirmDialog />
     <div class="flex items-center justify-between border-b bg-background py-1.5">
         <ActionBar />
         <Separator orientation="vertical" class="mx-2 h-4" />

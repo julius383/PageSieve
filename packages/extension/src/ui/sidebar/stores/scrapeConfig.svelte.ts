@@ -117,6 +117,18 @@ export function duplicateField(selectorId: string) {
     }
 }
 
-export function resetDefinitions() {
+export function resetSelectors() {
     scrapeConfig.selectors = [SelectorGroup.parse({ fields: [Field.parse({})] })];
+}
+
+export function resetConfig() {
+    scrapeConfig.id = '';
+    scrapeConfig.url = '';
+    scrapeConfig.schemaVersion = '2.0.0';
+    scrapeConfig.revision = 1;
+    scrapeConfig.createdAt = new SvelteDate().toISOString();
+    scrapeConfig.updatedAt = new SvelteDate().toISOString();
+    scrapeConfig.selectors = [SelectorGroup.parse({ fields: [Field.parse({})] })];
+    scrapeConfig.options = ExtractionOptions.parse({});
+    scrapeConfig.pagination = { mode: 'none' };
 }

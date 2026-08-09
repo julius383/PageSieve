@@ -32,16 +32,13 @@
     import { loadConfig } from '@/ui/sidebar/actions';
     import { renameConfig, removeConfig } from '@/ui/sidebar/services/storage';
 
-    import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import type { ScrapeConfig } from '@pagesieve/core/schema';
 
     onMount(() => {
         refreshConfigs();
         allConfigs.configs.sort(getSortFunction('Date Created', false));
     });
-
-    let deletingId = $state('');
-    let isConfirmOpen = $state(false);
 
     let editingId = $state<string | null>(null);
     let newIdValue = $state('');
@@ -130,15 +127,18 @@
         cancelEditing();
     }
 
-    function openDeleteConfirmation(id: string) {
-        deletingId = id;
-        isConfirmOpen = true;
-    }
-
     async function handleDelete(id: string): Promise<void> {
-        // Proceed with destructive operation
-        await removeConfig(id);
-        await refreshConfigs();
+        if (
+            await confirm({
+                title: 'Delete config?',
+                description: `This action cannot be undone. This will permanently delete config with id "${id}".`,
+                confirmLabel: 'Delete',
+                variant: 'destructive',
+            })
+        ) {
+            await removeConfig(id);
+            await refreshConfigs();
+        }
     }
 </script>
 
@@ -239,7 +239,7 @@
                                 </Tooltip.Provider>
 
                                 <Button
-                                    onclick={() => openDeleteConfirmation(item.id)}
+                                    onclick={() => handleDelete(item.id)}
                                     variant="destructive"
                                     size="icon"
                                 >
@@ -280,16 +280,4 @@
             </Card.Root>
         </div>
     {/each}
-    <ConfirmDialog
-        bind:open={isConfirmOpen}
-        onConfirm={() => handleDelete(deletingId)}
-        onCancel={() => {
-            deletingId = '';
-        }}
-    >
-        {#snippet description()}
-            This action cannot be undone. This will permanently delete config with id
-            <pre class="mt-2 p-2 bg-secondary rounded border">{deletingId}</pre>
-        {/snippet}
-    </ConfirmDialog>
 </div>

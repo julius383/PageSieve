@@ -13,6 +13,7 @@
     } from '@lucide/svelte';
     import { JsonViewer } from '@kaifronsdal/svelte-json-viewer';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import DataTable from '@/ui/sidebar/components/DataTable.svelte';
 
     import type { SupportedExportDataTypes } from '@pagesieve/core/types';
@@ -84,6 +85,19 @@
         await saveLogs($logStore);
         await saveResults(extractedData.data || []);
         await browser.runtime.sendMessage({ action: 'openFullPage' });
+    }
+
+    async function handleResetData() {
+        if (
+            await confirm({
+                title: 'Clear results data?',
+                description: 'Are you sure you want to clear all the extracted data? This action cannot be undone.',
+                confirmLabel: 'Clear',
+                variant: 'destructive',
+            })
+        ) {
+            resetExtractedData();
+        }
     }
 </script>
 
@@ -223,7 +237,7 @@
                             <Button
                                 size="icon"
                                 variant="destructive"
-                                onclick={resetExtractedData}
+                                onclick={handleResetData}
                                 class="bg-red-500 text-white font-bold hover:bg-red-600"
                             >
                                 <SquareX class="size-4" strokeWidth={2.5} />
