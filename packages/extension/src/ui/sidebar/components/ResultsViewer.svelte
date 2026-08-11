@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from 'svelte/reactivity';
     import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
     import { Button } from '$lib/components/ui/button';
     import * as Tabs from '$lib/components/ui/tabs';
@@ -17,7 +18,6 @@
     import DataTable from '@/ui/sidebar/components/DataTable.svelte';
 
     import type { SupportedExportDataTypes } from '@pagesieve/core/types';
-    import type { ScrapeStatusUpdateRequest } from '@/types';
 
     import { downloadBundle, clipboardCopy, downloadFormat } from '@/ui/sidebar/util';
 
@@ -31,32 +31,34 @@
 
     let openGroups = $state<string[]>([]);
 
-    // this section is necessary to enable opening result groups when results are present
-    let groupsOpened = $state(false);
-    let resultsChanged = (request: ScrapeStatusUpdateRequest) => {
-        if (request.action === 'updateScrapeStatus') {
-            if (
-                !groupsOpened &&
-                (request.status == 'completed' || request.status == 'navigating')
-            ) {
-                openGroups = [...extractedData.data.map((g) => g.id)];
-                groupsOpened = true;
+    const seenGroupIds = new SvelteSet<string>();
+
+    $effect(() => {
+        const currentGroupIds = extractedData.data.map((g) => g.id);
+        const currentIdSet = new Set(currentGroupIds);
+
+        for (const id of seenGroupIds) {
+            if (!currentIdSet.has(id)) {
+                seenGroupIds.delete(id);
             }
         }
-    };
+
+        const newGroupIds = currentGroupIds.filter((id) => !seenGroupIds.has(id));
+
+        if (newGroupIds.length > 0) {
+            for (const id of newGroupIds) {
+                seenGroupIds.add(id);
+            }
+            openGroups = Array.from(new Set([...openGroups, ...newGroupIds]));
+        }
+    });
+
     onMount(async () => {
         if (openInNewTab) {
             const results = await getLatestResults();
             if (results) {
                 extractedData.data = results.results;
             }
-        }
-        browser.runtime.onMessage.addListener(resultsChanged);
-    });
-
-    $effect(() => {
-        if (groupsOpened) {
-            browser.runtime.onMessage.removeListener(resultsChanged);
         }
     });
 
@@ -109,10 +111,10 @@
         {/if}
     </h2>
 </div>
-<Tabs.Root value="data" class="h-full flex flex-col">
+<Tabs.Root value="table" class="h-full flex flex-col">
     <Tabs.List class="flex justify-between items-center w-full">
         <div class="flex">
-            <Tabs.Trigger value="data">Data</Tabs.Trigger>
+            <Tabs.Trigger value="table">Table</Tabs.Trigger>
             <Tabs.Trigger value="json">JSON</Tabs.Trigger>
         </div>
         <div>
@@ -249,8 +251,7 @@
             {/if}
         </div>
     </Tabs.List>
-    <Tabs.Content value="data" class="px-4 overflow-auto grow">
-        <!-- FIXME: figure out how to start with groups open -->
+    <Tabs.Content value="table" class="px-4 overflow-auto grow">
         <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-4">
             {#each extractedData.data as groupData (groupData.id)}
                 <div class="relative border rounded-lg px-5 pt-5 pb-4">

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from 'svelte/reactivity';
     import FieldGroup from '@/ui/sidebar/components/FieldGroup.svelte';
     import ElementPicker from '@/ui/sidebar/components/ElementPicker.svelte';
     import { Button } from '$lib/components/ui/button';
@@ -18,7 +19,28 @@
     // let group = scrapeConfig.selectors[0];
     let showLabels = $derived(scrapeConfig.selectors.length > 1);
 
-    let openGroups = $state<string[]>(scrapeConfig.selectors.map((g) => g.id.toString()));
+    let openGroups = $state<string[]>([]);
+    const seenGroupIds = new SvelteSet<string>();
+
+    $effect(() => {
+        const currentGroupIds = scrapeConfig.selectors.map((g) => g.id.toString());
+        const currentIdSet = new Set(currentGroupIds);
+
+        for (const id of seenGroupIds) {
+            if (!currentIdSet.has(id)) {
+                seenGroupIds.delete(id);
+            }
+        }
+
+        const newGroupIds = currentGroupIds.filter((id) => !seenGroupIds.has(id));
+
+        if (newGroupIds.length > 0) {
+            for (const id of newGroupIds) {
+                seenGroupIds.add(id);
+            }
+            openGroups = Array.from(new Set([...openGroups, ...newGroupIds]));
+        }
+    });
 
     let editingGroupId = $state<string | null>(null);
     let editValue = $state('');
@@ -39,15 +61,6 @@
         editingGroupId = null;
         editValue = '';
     }
-
-    $effect(() => {
-        if (
-            scrapeConfig.selectors.length == 1 &&
-            !openGroups.includes(scrapeConfig.selectors[0].id.toString())
-        ) {
-            toggleGroup(scrapeConfig.selectors[0].id.toString());
-        }
-    });
 
     function toggleGroup(id: string) {
         if (openGroups.includes(id)) {
