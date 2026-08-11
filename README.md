@@ -34,7 +34,8 @@ The extension is designed around a few core principles:
 
 - Sidebar UI for defining:
   - Field name
-  - CSS/XPath selector
+  - CSS or XPath selectors
+  - What to extract (text, element attribute, element property)
   - How to move to next page
 - Tabular display of extracted values
 - Export extracted data in a variety of formats

@@ -1,0 +1,65 @@
+{
+  "id": "50pros.com__fortune500__ad270a6e",
+  "schemaVersion": "2.0.0",
+  "revision": 1,
+  "url": "https://www.50pros.com/fortune500",
+  "createdAt": "2026-03-21T13:19:22.112Z",
+  "updatedAt": "2026-03-21T13:19:22.112Z",
+  "selectors": [
+    {
+      "id": "g_E60uqc",
+      "container": "td[colspan=\"9\"] .grid > div",
+      "fields": [
+        {
+          "id": "f_8gaIvs",
+          "name": "Role",
+          "selector": ".font-bold",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_5zx_hr",
+          "name": "Person Name",
+          "selector": " div .text-sm",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_fhIqid",
+          "name": "Position Name",
+          "selector": " div .text-xs",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_qn54EZ",
+          "name": "Company Name",
+          "selector": "../../../../preceding-sibling::tr[1]/td[2]/a/text()",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "options": {
+    "waitforNetworkIdle": true,
+    "scrollToBottom": false,
+    "runJavaScript": true,
+    "pageDelayMs": 3000,
+    "timeoutMs": 60000,
+    "maxRetries": 2,
+    "appendData": true
+  },
+  "pagination": {
+    "mode": "none"
+  },
+  "output": {
+    "format": "json",
+    "mergeStrategy": "join",
+    "flatten": true
+  }
+}

@@ -1,0 +1,126 @@
+---
+title: "Scraping Members of National Assembly from Mzalendo"
+lightbox: true
+---
+
+In this example we'll be scraping Members of National Assembly from [Mzalendo website](https://mzalendo.com/mps-performance/national-assembly/13th-parliament/)  which collects information such as voting patterns and bills sponsored for elected representatives. 
+
+
+![Mzalendo Members of National Assembly List](/assets/Screenshot_2026-08-11_at_14-01-06_Mzalendo_Eye-on-Kenyan-Parliament.png)
+
+
+The final config is below:
+
+
+[Download Config](./mzalendo.com__national-assembly-13th-parliament__leadership.json)
+
+```json
+{
+  "id": "mzalendo.com__national-assembly-13th-parliament__ded3c57c",
+  "url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/",
+  "schemaVersion": "2.0.0",
+  "revision": 1,
+  "createdAt": "2026-07-27T09:59:06.874Z",
+  "updatedAt": "2026-07-27T09:59:06.874Z",
+  "selectors": [
+    {
+      "id": "g_Mg-F4G",
+      "name": "Group 1",
+      "container": ".leadership-grid~ .members-list .members-list--item",
+      "fields": [
+        {
+          "id": "f_i2PBWd",
+          "name": "Name",
+          "selector": ".members-list--name",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_iuhh5W",
+          "name": "Role",
+          "selector": ".members-list--representation",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_DtpueE",
+          "name": "Constituency",
+          "selector": "strong",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_Z9Wpuf",
+          "name": "URL",
+          "selector": ".",  // <1>
+          "type": "single",
+          "extract": "attribute",
+          "attribute": "href",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "options": {
+    "waitforNetworkIdle": true,
+    "scrollToBottom": false,
+    "runJavaScript": true,
+    "pageDelayMs": 3000,
+    "timeoutMs": 60000,
+    "maxRetries": 2,
+    "appendData": true
+  },
+  "pagination": {
+    "mode": "template",   // <2>
+    "urlTemplate": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/?page={{page}}",
+    "startPage": 1,
+    "increment": 1,
+    "maxPages": 8
+  },
+  "output": {
+    "format": "json",
+    "mergeStrategy": "join",
+    "flatten": true
+  }
+}
+```
+
+1. Using `.` (dot/period) in a selector is used to indicate that the selector
+   is the field references the container. So the `href` extracted is from the
+   base container (`.leadership-grid .members-list--item`).
+2. This example uses the template pagination to extract results from multiple
+   pages. According to the definition, extraction will be run with
+   `{{page}}` in `urlTemplate` being replaced with the numbers 1-8 (`...?page=1`, `...?page=2`,
+   `...?page=8`)
+
+
+
+The first 20 results are:
+
+
+| Name |  Role |  Constituency |  URL | 
+| -------- |-------- |-------- |-------- |
+| Abdi Ali Abdi | MNA for Ijara constituency | Ijara | /mps-performance/national-assembly/13th-parliament/abdi-ali/ |
+| Abdikadir Hussein | MNA for Lagdera constituency | Lagdera | /mps-performance/national-assembly/13th-parliament/abdikadir-hussein/ |
+| Khamis Chome | MNA for Voi constituency | Voi | /mps-performance/national-assembly/13th-parliament/khamis-chome/ |
+| SHURIE ABDI OMAR | MNA for Balambala constituency | Balambala | /mps-performance/national-assembly/13th-parliament/abdi-omar-shurie/ |
+| Abdirahman Hussein Weytan Mohamed | MNA for Mandera East constituency | Mandera East | /mps-performance/national-assembly/13th-parliament/hussein-weytan/ |
+| Abdirahman Mohamed | MNA for Lafey constituency | Lafey | /mps-performance/national-assembly/13th-parliament/abdirahman-mohamed-abdille/ |
+| DAWOOD, ABDUL RAHIM | MNA for North Imenti constituency | North Imenti | /mps-performance/national-assembly/13th-parliament/abdul-rahim-dawood/ |
+| Abubakar Talib | Nominated member | Nominated member | /mps-performance/national-assembly/13th-parliament/abubakar-talib-ahmed/ |
+| Abuor Paul | MNA for Rongo constituency | Rongo | /mps-performance/national-assembly/13th-parliament/abuor-paul/ |
+| Adagala Beatrice | Woman Representative for Vihiga | Vihiga | /mps-performance/national-assembly/13th-parliament/adagala-beatrice-kahai/ |
+| YUSSUF, ADAN HAJI | MNA for Mandera West constituency | Mandera West | /mps-performance/national-assembly/13th-parliament/adan-haji-yussuf/ |
+| Adhe Wario Guyo | MNA for North Horr constituency | North Horr | /mps-performance/national-assembly/13th-parliament/adhe-wario-guyo/ |
+| Aden Mohammed | MNA for Wajir South constituency | Wajir South | /mps-performance/national-assembly/13th-parliament/adow-aden-mohammed/ |
+| PAREYIO MANTAINE AGNES | MNA for Narok North constituency | Narok North | /mps-performance/national-assembly/13th-parliament/agnes-mantaine-pareyio/ |
+| ALIO, AHMED MAALIM HASSAN | MNA for Banissa constituency | Banissa | /mps-performance/national-assembly/13th-parliament/ahmed-maalim-hassan/ |
+| Ahmed Shakeel Ahmed Shabbir | MNA for Kisumu East constituency | Kisumu East | /mps-performance/national-assembly/13th-parliament/ahmed-shakeel-ahmed-shabbir/ |
+| ALFAH ONDIEKI MIRUKA | MNA for Bomachoge Chache constituency | Bomachoge Chache | /mps-performance/national-assembly/13th-parliament/alfah-miruka-ondieki/ |
+| Abdisirat Khalif | Nominated member | Nominated member | /mps-performance/national-assembly/13th-parliament/ali-abdisirat-khalif/ |
+| Ali Wario | MNA for Garsen constituency | Garsen | /mps-performance/national-assembly/13th-parliament/ali-wario/ |
+| ABDULLAHI AMINA DIKA | Woman Representative for Tana River | Tana River | /mps-performance/national-assembly/13th-parliament/amina-dika-abdullahi/ |
+| OKUOME ADIPO ANDREW | MNA for Karachuonyo constituency | Karachuonyo | /mps-performance/national-assembly/13th-parliament/andrew-adipo-okuome/ |

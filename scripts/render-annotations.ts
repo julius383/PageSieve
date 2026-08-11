@@ -1,15 +1,15 @@
 #!/usr/bin/env bun
 /**
- * generate.ts
+ * render-annotations.ts
  *
  * Generates a self-contained static HTML page from a Tippy Annotator JSON export.
  *
  * Usage:
- *   bun generate.ts --json annotations.json --out index.html
+ *   bun render-annotations.ts --json annotations.json --out index.html
  *
  * The JSON should be a single figure object or an array of figure objects
  * exported from the Tippy Annotator tool. Each figure object must have:
- *   { id, image, markers: [{ id, x_pct, y_pct, title, content, placement, color }] }
+ *   { id, image, naturalWidth, naturalHeight markers: [{ id, x_pct, y_pct, title, content, placement, color }] }
  */
 
 import { readFileSync, writeFileSync } from "fs";
@@ -89,7 +89,7 @@ const template = `
                   <div class="tippy-marker"
                        data-tippy-content="<%= m.content ? m.content : '' %>"
                        data-tippy-placement="<%= m.placement || 'top' %>"
-                       style="position:absolute; left:<%= m.x_pct %>%; top:<%= m.y_pct %>%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:<%= m.color || '#e8ff47' %>; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
+                       style="position:absolute; left:<%= m.x_pct %>%; top:<%= m.y_pct %>%; width:24px; height:24px; transform:translate(-50%,-50%); border-radius:50%; background:<%= m.color || '#e8ff47' %>; border:2px solid #000; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:monospace; color:#fff; cursor:pointer; z-index:10; box-sizing:border-box; transition:transform 0.15s"
                   ><%= m.id %></div>
                 <% }) %>
             </div>

@@ -31,8 +31,8 @@ zip-source:
   git ls-files -z packages/extension | xargs -0 zip pagesieve_source.zip
 
 render-annotations:
-  bun src/scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html
-  bun src/scripts/render-annotations.ts --json docs/reference/statemachine-annotations.json --out docs/reference/_statemachine-annotations.html
+  bun scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html
+  bun scripts/render-annotations.ts --json docs/reference/statemachine-annotations.json --out docs/reference/_statemachine-annotations.html
 
 [working-directory: 'docs']
 docs-build:

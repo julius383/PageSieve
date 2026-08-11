@@ -17,12 +17,13 @@ The extension is built using:
 
 ## Core Components
 
-- **Sidebar UI (`src/sidebar/`)**: The main interface for defining scrape configurations.
-- **Content Script (`src/content.ts`)**: Injected into the webpage to interact with the DOM.
-- **Background Script (`src/background.ts`)**: Manages messaging between different parts of the extension.
-- **Scraping State Machine (`src/scrapeMachine.ts`)**: state machine controlling main loop of the extension
-- **DOM Inspector (`src/dominspector.mts`)**: Handles the click-based selection of elements.
-- **Selector Engine (`src/selectorgadget.ts`)**: Implements the CSS selector guessing algorithm.
-- **Data Types (`src/types.ts`)**: Central location for Zod schemas defining the scrape configuration.
-- **Logging System (`src/logger.ts`)**: Structured logging using LogTape, supporting relay to local environments.
+- **Sidebar UI (`packages/extension/ui/sidebar`)**: The main interface for defining scrape configurations.
+- **Content Script (`packages/extension/src/content.ts`)**: Injected into the webpage to interact with the DOM.
+- **Background Script (`packages/extension/src/background.ts`)**: Manages messaging between different parts of the extension.
+- **Scraping State Machine (`packages/core/src/scrapeMachine.ts`)**: state machine controlling main loop of the extension
+- **DOM Inspector (`packages/extension/src/dominspector.mts`)**: Handles the click-based selection of elements.
+- **Selector Engine (`packages/extension/src/selectorgadget.ts`)**: Implements the CSS selector guessing algorithm. Vendored version of [cantino/selectorgadget: Go go CSS / DOM inspection.](https://github.com/cantino/selectorgadget/)
+ 
+- **Data Types (`packages/core/src/schema.ts`)**: Central location for Zod schema defining the scrape configuration.
+- **Logging System (`packages/core/src/logger.ts`) and (`packages/extension/src/logger.ts`)**: Structured logging using LogTape, supporting relay to local environments.
 

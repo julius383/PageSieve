@@ -5,6 +5,10 @@ format:
     other-links:
       - text: Screenshot of Main View
         href: '#pagesieve-mainview'
+      - text: View of Field in List mode
+        href: '#pagesieve-field-list'
+      - text: View of Field in List mode with Sub-fields
+        href: '#pagesieve-field-list-subfields'
       - text: Screenshot of Config Tab view
         href: '#pagesieve-configview'
       - text: Next pagination config
@@ -15,7 +19,7 @@ format:
         href: '#pagesieve-configview-pagination-5'
       - text: Screenshot of Config Library
         href: '#pagesieve-libraryview'
-      - text: Screenshot of Results New Tab
+      - text: Screenshot of Full Page View
         href: '#pagesieve-fullpage'
     include-in-header:
       - text: |

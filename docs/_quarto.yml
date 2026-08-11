@@ -25,6 +25,8 @@ website:
         text: Overview
       - href: getting-started.qmd
         text: Getting Started
+      - text: Examples
+        href: examples/index.qmd
       - href: architecture.qmd
         text: Architecture
       - text: Reference
@@ -35,20 +37,15 @@ website:
             text: Extension UI Overview
           - href: reference/scraping-engine.qmd
             text: Scraping Engine Workflow
-      - text: Examples
-        menu:
-          - href: examples/index.qmd
-            text: All Examples
-          - href: examples/scraping-fortune-500-companies.qmd
-            text: Fortune 500
       - href: contributing.qmd
         text: Contributing
 
 format:
   html:
     theme:
-      light: flatly
-      dark: darkly
+      light: [flatly, light.scss]
+      dark: [darkly, dark.scss]
     respect-user-color-scheme: true
     css: styles.css
     toc: true
+    syntax-highlighting: oblivion

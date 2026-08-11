@@ -4,4 +4,11 @@ title: "Examples"
 
 This section contains practical examples of using PageSieve to extract data from different websites.
 
+- [Scraping Members of National Assembly Profiles from Mzalendo](scraping-mzalendo-profiles.qmd)
+  - Demonstrates: Multiple Selector Groups, Relative XPath, Pagination (Page Links)
+- [Scraping Members of National Assembly from Mzalendo](scraping-mzalendo-members-of-national-assembly.qmd)
+  - Demonstrates: `.` (dot/period) selector, Pagination (URL Template)
+- [Scraping Quotes To Scrape Example Page](scraping-quotes-to-scrape.qmd)
+  - Demonstrates: List Fields
 - [Scraping Fortune 500 Companies executive team](scraping-fortune-500-companies.qmd)
+  - Demonstrates: XPath Selectors, Relative XPath

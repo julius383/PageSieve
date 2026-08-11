@@ -1,0 +1,274 @@
+---
+title: "Scraping Members of National Assembly Profiles from Mzalendo"
+lightbox: true
+---
+
+In this example we'll be scraping Members of National Assembly Profiles using the URLs we found in our [previous example](scraping-mzalendo-members-of-national-assembly.qmd) e.g [this profile](https://mzalendo.com/mps-performance/national-assembly/13th-parliament/anthony-kimani-ichungwah/?in_depth=1#tab-performance)  
+
+
+![Member Profile Main](/assets/Screenshot_2026-08-11_at_15-44-46_ICHUNG’WAH_ANTONY_KIMANI_—_Member_of_the_National_Assembly_·_Mzalendo.png)
+
+![Member Profile Performance](/assets/Screenshot_2026-08-11_at_15-45-09_ICHUNG’WAH_ANTONY_KIMANI_—_Member_of_the_National_Assembly_·_Mzalendo.png)
+
+![Member Profile Voting Record](/assets/Screenshot_2026-08-11_at_15-45-33_ICHUNG’WAH_ANTONY_KIMANI_—_Member_of_the_National_Assembly_·_Mzalendo.png)
+
+Since we need to extract multiple pieces of data from each page, we make use of
+selector groups. By default the extension starts with a single group and
+additional ones can be created using the `No. 5` button as shown in the [UI
+overview page](/reference/extension-ui.html#pagesieve-mainview).
+
+The final config is the below:
+
+[Download Config](./mzalendo.com__13th-parliament-anthony-kimani-ichungwah__9b4ddf0f.json)
+
+```json
+{
+  "id": "mzalendo.com__13th-parliament-anthony-kimani-ichungwah__64ad6e87",
+  "url": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/anthony-kimani-ichungwah/?in_depth=1#tab-performance",
+  "schemaVersion": "2.0.0",
+  "revision": 1,
+  "createdAt": "2026-08-05T11:05:48.529Z",
+  "updatedAt": "2026-08-05T11:05:48.529Z",
+  "selectors": [
+    {
+      "id": "g_Nv8rAy",
+      "name": "Bio",  // <1>
+      "container": ".profile-hero",
+      "fields": [
+        {
+          "id": "f_grEqcd",
+          "name": "Name",
+          "selector": ".profile-hero__name",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_vrt_YJ",
+          "name": "Constituency",
+          "selector": "a[href^=\"/research-and-knowledge/constituencies/\"]",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_YX7AmV",
+          "name": "County",
+          "selector": "a[href^=\"/mps-performance/counties\"]",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_WaqaRW",
+          "name": "Party",
+          "selector": ".fact:nth-child(3):not(:has(.status-chip))",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_6RsaSD",
+          "name": "Status",
+          "selector": ".status-chip",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_AxJOM9",
+          "name": "Term",
+          "selector": ".fact:last-child .fact__value",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_uR1J_s",
+          "name": "Identity Source",
+          "selector": ".profile-note a",
+          "type": "single",
+          "extract": "attribute",
+          "attribute": "href",
+          "required": false
+        },
+        {
+          "id": "f_mNlVZr",
+          "name": "Picture",
+          "selector": "#main img",
+          "type": "single",
+          "extract": "attribute",
+          "attribute": "src",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "g_f0bkIv",
+      "name": "Performance",  // <2>
+      "fields": [
+        {
+          "id": "f_SwnChD",
+          "name": "contributions in Hansard",
+          "selector": ".mz-mm__item:nth-child(1) .mz-mm__figure",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_9ZtXE8",
+          "name": "divisions voted in",
+          "selector": ".mz-mm__item:nth-child(2) .mz-mm__figure",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_Mespc9",
+          "name": "Bills sponsored",
+          "selector": ".mz-mm__item:nth-child(3) .mz-mm__figure",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_ARIwVm",
+          "name": "items of counted business",
+          "selector": ".mz-mm__item:nth-child(4) .mz-mm__figure",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "g_rQHbz-",
+      "name": "Voting History",   // <3>
+      "container": ".voting-patterns-row",
+      "fields": [
+        {
+          "id": "f_7TMybO",
+          "name": "Date",
+          "selector": ".voting-date",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_u5akjP",
+          "name": "Vote",
+          "selector": ".voting-title",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_6_GolA",
+          "name": "Decision",
+          "selector": ".decision-badge",
+          "type": "single",
+          "extract": "text",
+          "required": false
+        },
+        {
+          "id": "f_4p43dZ",
+          "name": "Owner",
+          "selector": "//*[contains(concat(\" \",normalize-space(@class),\" \"),\" profile-hero__name \")]",  // <5>
+          "type": "single",
+          "extract": "text",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "options": {
+    "waitforNetworkIdle": true,
+    "scrollToBottom": false,
+    "runJavaScript": true,
+    "pageDelayMs": 3000,
+    "timeoutMs": 60000,
+    "maxRetries": 2,
+    "appendData": true
+  },
+  "pagination": {
+    "mode": "links",  // <4>
+    "pageLinks": [
+      "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/anthony-kimani-ichungwah/?in_depth=1#tab-performance",
+      "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/nuh-junet/?in_depth=1#tab-performance",
+      "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/abdi-ali/?in_depth=1#tab-performance"
+    ]
+  },
+  "urlPattern": "https://mzalendo.com/mps-performance/national-assembly/13th-parliament/*",
+  "name": "Mzalendo Parliament Performance Extractor",
+  "output": {
+    "format": "json",
+    "mergeStrategy": "join",
+    "flatten": true
+  }
+}
+```
+
+1. Selector Group for Biographical information (Name, Party, etc)
+2. Selector Group for Performance metrics (Bills sponsored, etc)
+3. Selector Group for Voting Records (Title, Date, Decision)
+4. Pagination mode in this examples is links which is a list of URLs to visit
+   one after the other.
+5. We use XPath here since we want the same value regardless of the current container.
+   This is necessary to correctly pair each voting history record with the
+   owner across multiple pages.
+
+
+The results are grouped as follows:
+
+Group Bio:
+
+
+| Name |  Constituency |  County |  Party |  Status |  Term |  Identity Source |  Picture | 
+| -------- |-------- |-------- |-------- |-------- |-------- |-------- |-------- |
+| ICHUNG’WAH ANTONY KIMANI | Kikuyu | Kiambu | Party&#10;              United Democratic Alliance | Elected | Present | https://www.parliament.go.ke/the-national-assembly/mps?page&#x3D;8 | /media/images-rendered/Anthony_Kimani_Ichungwah.min-320x400.jpg |
+| Junet Sheikh Nuh Mohamed | Suna East | Migori |  | Elected | Present | https://www.parliament.go.ke/the-national-assembly/mps?page&#x3D;9 | /media/images-rendered/Junet_Sheikh_Nuh_Mohamed.min-320x400.jpg |
+| Abdi Ali Abdi | Ijara | Garissa | Party&#10;              National Agenda Party of Kenya | Elected | Present | https://www.parliament.go.ke/the-national-assembly/mps?page&#x3D;1 | /media/images-rendered/Abdi_Ali.min-320x400.jpg |
+
+
+Group Performance: 
+
+| contributions in Hansard |  divisions voted in |  Bills sponsored |  items of counted business | 
+| -------- |-------- |-------- |-------- |
+| 2,196 | 10 | 87 | 1,025 |
+| 619 | 8 | 1 | 7 |
+| 21 | 7 | 0 | 3 |
+
+
+Group Voting History:
+
+| Date |  Vote |  Decision |  Owner | 
+| -------- |-------- |-------- |-------- |
+| 1 Jul 2025 | The Constitution of Kenya (Amendment) Bill 4 of 2025 | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 8 Oct 2024 | Rigathi Gachagua Impeachment | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 25 Jun 2024 | Consideration of Report of the  Committee of the Whole Finance Bill 2024 | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 20 Jun 2024 | Finance Bill 2024 (2nd Reading) | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 2 May 2024 | CS Linturi Impeachment Motion | No | ICHUNG’WAH ANTONY KIMANI |
+| 20 Feb 2024 | The Affordable Housing Bill, 2023 | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 22 Jun 2023 | Finance Bill 2023 - 2nd Reading | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 20 Jun 2023 | Finance Bill 2023 — 35% top income tax band | No | ICHUNG’WAH ANTONY KIMANI |
+| 14 Jun 2023 | The Finance Bill, 2023 | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 1 Dec 2022 | Extension Of Sitting Time Until Conclusion Of Business | Yes | ICHUNG’WAH ANTONY KIMANI |
+| 1 Jul 2025 | The Constitution of Kenya (Amendment) Bill 4 of 2025 | Yes | Junet Sheikh Nuh Mohamed |
+| 8 Oct 2024 | Rigathi Gachagua Impeachment | Yes | Junet Sheikh Nuh Mohamed |
+| 25 Jun 2024 | Consideration of Report of the  Committee of the Whole Finance Bill 2024 | No | Junet Sheikh Nuh Mohamed |
+| 20 Jun 2024 | Finance Bill 2024 (2nd Reading) | No | Junet Sheikh Nuh Mohamed |
+| 2 May 2024 | CS Linturi Impeachment Motion | Absent | Junet Sheikh Nuh Mohamed |
+| 20 Feb 2024 | The Affordable Housing Bill, 2023 | No | Junet Sheikh Nuh Mohamed |
+| 22 Jun 2023 | Finance Bill 2023 - 2nd Reading | No | Junet Sheikh Nuh Mohamed |
+| 20 Jun 2023 | Finance Bill 2023 — 35% top income tax band | Yes | Junet Sheikh Nuh Mohamed |
+| 14 Jun 2023 | The Finance Bill, 2023 | Yes | Junet Sheikh Nuh Mohamed |
+| 1 Jul 2025 | The Constitution of Kenya (Amendment) Bill 4 of 2025 | Absent | Abdi Ali Abdi |
+| 8 Oct 2024 | Rigathi Gachagua Impeachment | Yes | Abdi Ali Abdi |
+| 25 Jun 2024 | Consideration of Report of the  Committee of the Whole Finance Bill 2024 | Yes | Abdi Ali Abdi |
+| 20 Jun 2024 | Finance Bill 2024 (2nd Reading) | Yes | Abdi Ali Abdi |
+| 2 May 2024 | CS Linturi Impeachment Motion | Absent | Abdi Ali Abdi |
+| 20 Feb 2024 | The Affordable Housing Bill, 2023 | Yes | Abdi Ali Abdi |
+| 22 Jun 2023 | Finance Bill 2023 - 2nd Reading | Yes | Abdi Ali Abdi |
+| 20 Jun 2023 | Finance Bill 2023 — 35% top income tax band | No | Abdi Ali Abdi |
+| 14 Jun 2023 | The Finance Bill, 2023 | Yes | Abdi Ali Abdi |
+

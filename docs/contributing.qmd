@@ -8,11 +8,11 @@ Contributions are welcome! This page provides information on how to set up the d
 
 1. Clone the repository: `git clone https://github.com/julius383/PageSieve.git`
 2. Install dependencies: `bun install`
-3. Start the build process: `bun run build` (for production)
+3. Start the build process: `bun run build:extension` (for production)
 
 ## Build Commands
 
-- `bun run build`: Generates the production extension in the `dist/` folder.
+- `bun run build:extension`: Generates the production extension in the `dist/` folder.
 - `bun run lint`: Runs ESLint to check for code quality issues.
 - `bun run format`: Formats the codebase using Prettier.
 
@@ -20,7 +20,7 @@ Contributions are welcome! This page provides information on how to set up the d
 
 If you have [just](https://github.com/casey/just) installed, you can use the following commands:
 
-- `just build`: Build the extension.
+- `just build-extension`: Build the extension.
 - `just watch`: Start file watcher to trigger rebuild extension
 - `just lint`: Lint the codebase.
 - `just format`: Format the codebase.

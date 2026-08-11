@@ -1,7 +1,6 @@
 ---
 title: "Scraping Fortune 500 companies executive team"
 lightbox: true
-syntax-highlighting: dracula
 ---
 
 In this example we'll be scraping data for [Fortune 500](https://en.wikipedia.org/wiki/Fortune_500) companies
@@ -22,9 +21,11 @@ document.querySelectorAll('.group').forEach((el) => {el.click();})
 ```
 
 
-The final config is the following:
+The final config is below:
 
-```{.javascript code-line-numbers="true"}
+[Download Config](./50pros.com__fortune500-executive_team.json)
+
+```json
 {
   "id": "50pros.com__fortune500__ad270a6e",
   "schemaVersion": "2.0.0",
@@ -35,7 +36,7 @@ The final config is the following:
   "selectors": [
     {
       "id": "g_E60uqc",
-      "container": "td[colspan=\"9\"] .grid > div",
+      "container": "td[colspan=\"9\"] .grid > div", // <1>
       "fields": [
         {
           "id": "f_8gaIvs",
@@ -64,7 +65,7 @@ The final config is the following:
         {
           "id": "f_qn54EZ",
           "name": "Company Name",
-          "selector": "../../../../preceding-sibling::tr[1]/td[2]/a/text()",
+          "selector": "../../../../preceding-sibling::tr[1]/td[2]/a/text()", // <2>
           "type": "single",
           "extract": "text",
           "required": false
@@ -93,21 +94,16 @@ The final config is the following:
 
 ```
 
-We define a container selector (line 14) in this case because the information for each
-executive team member is encapsulated in a recognizable DOM element. The rest
-of the fields are can be obtained using the interactive picker or directly
-inspecting the relevant parts of the page. 
+1.  We define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page. 
+2.  The "Company Name" (lines 32-35) field requires special attention. Since we have defined a container element, we use an XPath selector to go up in the document tree.
 
-The "Company Name" (lines 32-35) field requires special attention. Since We have defined a
-container element, we need to figure out how to reference the Company which is
-not within the container we defined. To do this we use an XPath selector
-instead of a CSS selector due to it allowing for referring to elements in a
-different part of the document tree. 
-
-We use a relative axis to go 'up' in the tree before using `preceding-sibling`
-which selects siblings of the current node withing the same parent. In our
-particular case we find the first `tr` element that before the current node
+:::{.callout-note}
+We use a relative axis to go up in the tree before using `preceding-sibling`
+which selects siblings of the current node within the same parent.
+In our particular case we find the first `tr` element that's before the current node
 after navigating up in the tree.
+:::
+
 
 The first 20 items of the resulting data are:
 
