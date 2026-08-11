@@ -2,12 +2,15 @@
 title: "Welcome to PageSieve"
 ---
 
-PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS/XPath selectors to extract structured data from any website you visit.
+PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS or 
+XPath selectors to extract structured data from any website you visit.
+
+Get it on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/)
 
 
 ## Demo
 
-{{< video /assets/pagesieve-demo-2.mp4  width="800" height="400" >}}
+{{< video /assets/pagesieve-demo-2-short.mp4  width="800" height="400" >}}
 
 ## Key Features
 

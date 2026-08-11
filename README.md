@@ -14,11 +14,11 @@ created scrape config.
 
 ## Demo
 
-https://github.com/user-attachments/assets/b578840f-55fb-478f-8ecc-4480fb393027
+https://github.com/user-attachments/assets/b31d383c-58f5-4f95-aef2-48064b71dcb9
 
 ## Installation
 
-Install through the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/) or download a release from GitHub.
+Install through the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/).
 
 
 ## Goals
@@ -57,7 +57,7 @@ develop the project use:
 
 ```
 bun install
-bun run build
+just build-extension
 ```
 
 ## Repository Overview
