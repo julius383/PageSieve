@@ -43,14 +43,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f4bdd96c5a296af3264e735a66e4c377.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-fc4abb1fafa9eb611bc630edb714e616.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-f4bdd96c5a296af3264e735a66e4c377.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c0594c282233cd2e9ff74a42c86bebf8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -286,6 +286,10 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link active" href="./architecture.html" aria-current="page"> 
 <span class="menu-text">Architecture</span></a>
   </li>  
@@ -305,21 +309,6 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="./reference/scraping-engine.html">
  <span class="dropdown-text">Scraping Engine Workflow</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Examples</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
-        <li>
-    <a class="dropdown-item" href="./examples/index.html">
- <span class="dropdown-text">All Examples</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./examples/scraping-fortune-500-companies.html">
- <span class="dropdown-text">Fortune 500</span></a>
   </li>  
     </ul>
   </li>
@@ -403,14 +392,14 @@ ul.task-list li input[type="checkbox"] {
 <section id="core-components" class="level2">
 <h2 class="anchored" data-anchor-id="core-components">Core Components</h2>
 <ul>
-<li><strong>Sidebar UI (<code>src/sidebar/</code>)</strong>: The main interface for defining scrape configurations.</li>
-<li><strong>Content Script (<code>src/content.ts</code>)</strong>: Injected into the webpage to interact with the DOM.</li>
-<li><strong>Background Script (<code>src/background.ts</code>)</strong>: Manages messaging between different parts of the extension.</li>
-<li><strong>Scraping State Machine (<code>src/scrapeMachine.ts</code>)</strong>: state machine controlling main loop of the extension</li>
-<li><strong>DOM Inspector (<code>src/dominspector.mts</code>)</strong>: Handles the click-based selection of elements.</li>
-<li><strong>Selector Engine (<code>src/selectorgadget.ts</code>)</strong>: Implements the CSS selector guessing algorithm.</li>
-<li><strong>Data Types (<code>src/types.ts</code>)</strong>: Central location for Zod schemas defining the scrape configuration.</li>
-<li><strong>Logging System (<code>src/logger.ts</code>)</strong>: Structured logging using LogTape, supporting relay to local environments.</li>
+<li><p><strong>Sidebar UI (<code>packages/extension/ui/sidebar</code>)</strong>: The main interface for defining scrape configurations.</p></li>
+<li><p><strong>Content Script (<code>packages/extension/src/content.ts</code>)</strong>: Injected into the webpage to interact with the DOM.</p></li>
+<li><p><strong>Background Script (<code>packages/extension/src/background.ts</code>)</strong>: Manages messaging between different parts of the extension.</p></li>
+<li><p><strong>Scraping State Machine (<code>packages/core/src/scrapeMachine.ts</code>)</strong>: state machine controlling main loop of the extension</p></li>
+<li><p><strong>DOM Inspector (<code>packages/extension/src/dominspector.mts</code>)</strong>: Handles the click-based selection of elements.</p></li>
+<li><p><strong>Selector Engine (<code>packages/extension/src/selectorgadget.ts</code>)</strong>: Implements the CSS selector guessing algorithm. Vendored version of <a href="https://github.com/cantino/selectorgadget/">cantino/selectorgadget: Go go CSS / DOM inspection.</a></p></li>
+<li><p><strong>Data Types (<code>packages/core/src/schema.ts</code>)</strong>: Central location for Zod schema defining the scrape configuration.</p></li>
+<li><p><strong>Logging System (<code>packages/core/src/logger.ts</code>) and (<code>packages/extension/src/logger.ts</code>)</strong>: Structured logging using LogTape, supporting relay to local environments.</p></li>
 </ul>
 
 

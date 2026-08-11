@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Examples – PageSieve</title>
+<title>Scraping Members of National Assembly from Mzalendo – PageSieve</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -51,6 +86,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-c0594c282233cd2e9ff74a42c86bebf8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -83,10 +121,18 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="PageSieve Documentation">
 <meta property="og:description" content="Documentation website for PageSieve a web scraping browser extension.">
+<meta property="og:image" content="https://github.com/julius383/PageSieve/assets/Screenshot_2026-08-11_at_14-01-06_Mzalendo_Eye-on-Kenyan-Parliament.png">
 <meta property="og:site_name" content="PageSieve">
-<meta name="twitter:title" content="Examples – PageSieve">
+<meta property="og:image:alt" content="Mzalendo Members of National Assembly List">
+<meta property="og:image:height" content="957">
+<meta property="og:image:width" content="1875">
+<meta name="twitter:title" content="Scraping Members of National Assembly from Mzalendo – PageSieve">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/julius383/PageSieve/assets/Screenshot_2026-08-11_at_14-01-06_Mzalendo_Eye-on-Kenyan-Parliament.png">
+<meta name="twitter:image:alt" content="Mzalendo Members of National Assembly List">
+<meta name="twitter:image-height" content="957">
+<meta name="twitter:image-width" content="1875">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -286,7 +332,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../examples/index.html" aria-current="page"> 
+    <a class="nav-link" href="../examples/index.html"> 
 <span class="menu-text">Examples</span></a>
   </li>  
   <li class="nav-item">
@@ -352,7 +398,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Examples</h1>
+<h1 class="title">Scraping Members of National Assembly from Mzalendo</h1>
 </div>
 
 
@@ -369,25 +415,241 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This section contains practical examples of using PageSieve to extract data from different websites.</p>
-<ul>
-<li><a href="../examples/scraping-mzalendo-profiles.html">Scraping Members of National Assembly Profiles from Mzalendo</a>
-<ul>
-<li>Demonstrates: Multiple Selector Groups, Relative XPath, Pagination (Page Links)</li>
-</ul></li>
-<li><a href="../examples/scraping-mzalendo-members-of-national-assembly.html">Scraping Members of National Assembly from Mzalendo</a>
-<ul>
-<li>Demonstrates: <code>.</code> (dot/period) selector, Pagination (URL Template)</li>
-</ul></li>
-<li><a href="../examples/scraping-quotes-to-scrape.html">Scraping Quotes To Scrape Example Page</a>
-<ul>
-<li>Demonstrates: List Fields</li>
-</ul></li>
-<li><a href="../examples/scraping-fortune-500-companies.html">Scraping Fortune 500 Companies executive team</a>
-<ul>
-<li>Demonstrates: XPath Selectors, Relative XPath</li>
-</ul></li>
-</ul>
+<p>In this example we’ll be scraping Members of National Assembly from <a href="https://mzalendo.com/mps-performance/national-assembly/13th-parliament/">Mzalendo website</a> which collects information such as voting patterns and bills sponsored for elected representatives.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../assets/Screenshot_2026-08-11_at_14-01-06_Mzalendo_Eye-on-Kenyan-Parliament.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Mzalendo Members of National Assembly List"><img src="../assets/Screenshot_2026-08-11_at_14-01-06_Mzalendo_Eye-on-Kenyan-Parliament.png" class="img-fluid figure-img" alt="Mzalendo Members of National Assembly List"></a></p>
+<figcaption>Mzalendo Members of National Assembly List</figcaption>
+</figure>
+</div>
+<p>The final config is below:</p>
+<p><a href="./mzalendo.com__national-assembly-13th-parliament__leadership.json">Download Config</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"mzalendo.com__national-assembly-13th-parliament__ded3c57c"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://mzalendo.com/mps-performance/national-assembly/13th-parliament/"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"schemaVersion"</span><span class="fu">:</span> <span class="st">"2.0.0"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"revision"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"createdAt"</span><span class="fu">:</span> <span class="st">"2026-07-27T09:59:06.874Z"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"updatedAt"</span><span class="fu">:</span> <span class="st">"2026-07-27T09:59:06.874Z"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"selectors"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"g_Mg-F4G"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Group 1"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"container"</span><span class="fu">:</span> <span class="st">".leadership-grid~ .members-list .members-list--item"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"fields"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_i2PBWd"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-16"><a href="#annotated-cell-1-16" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Name"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-17"><a href="#annotated-cell-1-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">".members-list--name"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-19"><a href="#annotated-cell-1-19" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-1-21"><a href="#annotated-cell-1-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-1-22"><a href="#annotated-cell-1-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-1-23"><a href="#annotated-cell-1-23" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_iuhh5W"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-24"><a href="#annotated-cell-1-24" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Role"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-25"><a href="#annotated-cell-1-25" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">".members-list--representation"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-26"><a href="#annotated-cell-1-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-27"><a href="#annotated-cell-1-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-28"><a href="#annotated-cell-1-28" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-1-29"><a href="#annotated-cell-1-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-1-30"><a href="#annotated-cell-1-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-1-31"><a href="#annotated-cell-1-31" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_DtpueE"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Constituency"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">"strong"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-1-37"><a href="#annotated-cell-1-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-1-39"><a href="#annotated-cell-1-39" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_Z9Wpuf"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-40"><a href="#annotated-cell-1-40" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"URL"</span><span class="fu">,</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-41" class="code-annotation-target"><a href="#annotated-cell-1-41" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">"."</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-42"><a href="#annotated-cell-1-42" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-43"><a href="#annotated-cell-1-43" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"attribute"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-44"><a href="#annotated-cell-1-44" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"attribute"</span><span class="fu">:</span> <span class="st">"href"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-45"><a href="#annotated-cell-1-45" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-1-46"><a href="#annotated-cell-1-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="annotated-cell-1-47"><a href="#annotated-cell-1-47" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="annotated-cell-1-48"><a href="#annotated-cell-1-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="annotated-cell-1-49"><a href="#annotated-cell-1-49" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-50"><a href="#annotated-cell-1-50" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"options"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="annotated-cell-1-51"><a href="#annotated-cell-1-51" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"waitforNetworkIdle"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-52"><a href="#annotated-cell-1-52" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"scrollToBottom"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-53"><a href="#annotated-cell-1-53" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"runJavaScript"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-54"><a href="#annotated-cell-1-54" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"pageDelayMs"</span><span class="fu">:</span> <span class="dv">3000</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-55"><a href="#annotated-cell-1-55" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"timeoutMs"</span><span class="fu">:</span> <span class="dv">60000</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-56"><a href="#annotated-cell-1-56" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"maxRetries"</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-57"><a href="#annotated-cell-1-57" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"appendData"</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="annotated-cell-1-58"><a href="#annotated-cell-1-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="annotated-cell-1-59"><a href="#annotated-cell-1-59" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pagination"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-60" class="code-annotation-target"><a href="#annotated-cell-1-60" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mode"</span><span class="fu">:</span> <span class="st">"template"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-61"><a href="#annotated-cell-1-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"urlTemplate"</span><span class="fu">:</span> <span class="st">"https://mzalendo.com/mps-performance/national-assembly/13th-parliament/?page={{page}}"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-62"><a href="#annotated-cell-1-62" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"startPage"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-63"><a href="#annotated-cell-1-63" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"increment"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-64"><a href="#annotated-cell-1-64" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"maxPages"</span><span class="fu">:</span> <span class="dv">8</span></span>
+<span id="annotated-cell-1-65"><a href="#annotated-cell-1-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="annotated-cell-1-66"><a href="#annotated-cell-1-66" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"output"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="annotated-cell-1-67"><a href="#annotated-cell-1-67" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"json"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-68"><a href="#annotated-cell-1-68" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mergeStrategy"</span><span class="fu">:</span> <span class="st">"join"</span><span class="fu">,</span></span>
+<span id="annotated-cell-1-69"><a href="#annotated-cell-1-69" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"flatten"</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="annotated-cell-1-70"><a href="#annotated-cell-1-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="annotated-cell-1-71"><a href="#annotated-cell-1-71" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="41" data-code-annotation="1">Using <code>.</code> (dot/period) in a selector is used to indicate that the selector is the field references the container. So the <code>href</code> extracted is from the base container (<code>.leadership-grid .members-list--item</code>).</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="60" data-code-annotation="2">This example uses the template pagination to extract results from multiple pages. According to the definition, extraction will be run with <code>{page}</code> in <code>urlTemplate</code> being replaced with the numbers 1-8 (<code>...?page=1</code>, <code>...?page=2</code>, <code>...?page=8</code>)</span>
+</dd>
+</dl>
+<p>The first 20 results are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Role</th>
+<th>Constituency</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Abdi Ali Abdi</td>
+<td>MNA for Ijara constituency</td>
+<td>Ijara</td>
+<td>/mps-performance/national-assembly/13th-parliament/abdi-ali/</td>
+</tr>
+<tr class="even">
+<td>Abdikadir Hussein</td>
+<td>MNA for Lagdera constituency</td>
+<td>Lagdera</td>
+<td>/mps-performance/national-assembly/13th-parliament/abdikadir-hussein/</td>
+</tr>
+<tr class="odd">
+<td>Khamis Chome</td>
+<td>MNA for Voi constituency</td>
+<td>Voi</td>
+<td>/mps-performance/national-assembly/13th-parliament/khamis-chome/</td>
+</tr>
+<tr class="even">
+<td>SHURIE ABDI OMAR</td>
+<td>MNA for Balambala constituency</td>
+<td>Balambala</td>
+<td>/mps-performance/national-assembly/13th-parliament/abdi-omar-shurie/</td>
+</tr>
+<tr class="odd">
+<td>Abdirahman Hussein Weytan Mohamed</td>
+<td>MNA for Mandera East constituency</td>
+<td>Mandera East</td>
+<td>/mps-performance/national-assembly/13th-parliament/hussein-weytan/</td>
+</tr>
+<tr class="even">
+<td>Abdirahman Mohamed</td>
+<td>MNA for Lafey constituency</td>
+<td>Lafey</td>
+<td>/mps-performance/national-assembly/13th-parliament/abdirahman-mohamed-abdille/</td>
+</tr>
+<tr class="odd">
+<td>DAWOOD, ABDUL RAHIM</td>
+<td>MNA for North Imenti constituency</td>
+<td>North Imenti</td>
+<td>/mps-performance/national-assembly/13th-parliament/abdul-rahim-dawood/</td>
+</tr>
+<tr class="even">
+<td>Abubakar Talib</td>
+<td>Nominated member</td>
+<td>Nominated member</td>
+<td>/mps-performance/national-assembly/13th-parliament/abubakar-talib-ahmed/</td>
+</tr>
+<tr class="odd">
+<td>Abuor Paul</td>
+<td>MNA for Rongo constituency</td>
+<td>Rongo</td>
+<td>/mps-performance/national-assembly/13th-parliament/abuor-paul/</td>
+</tr>
+<tr class="even">
+<td>Adagala Beatrice</td>
+<td>Woman Representative for Vihiga</td>
+<td>Vihiga</td>
+<td>/mps-performance/national-assembly/13th-parliament/adagala-beatrice-kahai/</td>
+</tr>
+<tr class="odd">
+<td>YUSSUF, ADAN HAJI</td>
+<td>MNA for Mandera West constituency</td>
+<td>Mandera West</td>
+<td>/mps-performance/national-assembly/13th-parliament/adan-haji-yussuf/</td>
+</tr>
+<tr class="even">
+<td>Adhe Wario Guyo</td>
+<td>MNA for North Horr constituency</td>
+<td>North Horr</td>
+<td>/mps-performance/national-assembly/13th-parliament/adhe-wario-guyo/</td>
+</tr>
+<tr class="odd">
+<td>Aden Mohammed</td>
+<td>MNA for Wajir South constituency</td>
+<td>Wajir South</td>
+<td>/mps-performance/national-assembly/13th-parliament/adow-aden-mohammed/</td>
+</tr>
+<tr class="even">
+<td>PAREYIO MANTAINE AGNES</td>
+<td>MNA for Narok North constituency</td>
+<td>Narok North</td>
+<td>/mps-performance/national-assembly/13th-parliament/agnes-mantaine-pareyio/</td>
+</tr>
+<tr class="odd">
+<td>ALIO, AHMED MAALIM HASSAN</td>
+<td>MNA for Banissa constituency</td>
+<td>Banissa</td>
+<td>/mps-performance/national-assembly/13th-parliament/ahmed-maalim-hassan/</td>
+</tr>
+<tr class="even">
+<td>Ahmed Shakeel Ahmed Shabbir</td>
+<td>MNA for Kisumu East constituency</td>
+<td>Kisumu East</td>
+<td>/mps-performance/national-assembly/13th-parliament/ahmed-shakeel-ahmed-shabbir/</td>
+</tr>
+<tr class="odd">
+<td>ALFAH ONDIEKI MIRUKA</td>
+<td>MNA for Bomachoge Chache constituency</td>
+<td>Bomachoge Chache</td>
+<td>/mps-performance/national-assembly/13th-parliament/alfah-miruka-ondieki/</td>
+</tr>
+<tr class="even">
+<td>Abdisirat Khalif</td>
+<td>Nominated member</td>
+<td>Nominated member</td>
+<td>/mps-performance/national-assembly/13th-parliament/ali-abdisirat-khalif/</td>
+</tr>
+<tr class="odd">
+<td>Ali Wario</td>
+<td>MNA for Garsen constituency</td>
+<td>Garsen</td>
+<td>/mps-performance/national-assembly/13th-parliament/ali-wario/</td>
+</tr>
+<tr class="even">
+<td>ABDULLAHI AMINA DIKA</td>
+<td>Woman Representative for Tana River</td>
+<td>Tana River</td>
+<td>/mps-performance/national-assembly/13th-parliament/amina-dika-abdullahi/</td>
+</tr>
+<tr class="odd">
+<td>OKUOME ADIPO ANDREW</td>
+<td>MNA for Karachuonyo constituency</td>
+<td>Karachuonyo</td>
+<td>/mps-performance/national-assembly/13th-parliament/andrew-adipo-okuome/</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -806,8 +1068,40 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/examples/scraping-mzalendo-members-of-national-assembly.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/examples/scraping-mzalendo-members-of-national-assembly.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/examples/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/examples/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+</body></html>

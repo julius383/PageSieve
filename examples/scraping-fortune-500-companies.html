@@ -78,14 +78,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c26eaf8f4c81163bd29e2808ccbc065f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-5ff47d1e91c8fb74053cc9ca98fa03a4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-c26eaf8f4c81163bd29e2808ccbc065f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-c0594c282233cd2e9ff74a42c86bebf8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -332,6 +332,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../examples/index.html"> 
+<span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../architecture.html"> 
 <span class="menu-text">Architecture</span></a>
   </li>  
@@ -351,21 +355,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../reference/scraping-engine.html">
  <span class="dropdown-text">Scraping Engine Workflow</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Examples</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
-        <li>
-    <a class="dropdown-item" href="../examples/index.html">
- <span class="dropdown-text">All Examples</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../examples/scraping-fortune-500-companies.html">
- <span class="dropdown-text">Fortune 500</span></a>
   </li>  
     </ul>
   </li>
@@ -436,75 +425,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The first step is taking a look at the website to figure out the layout and identifying the information we want to obtain.</p>
 <p>For this website the executive team for each company is revealed when the company row is clicked. We can do this by running the following snippet in the browser console</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">document</span><span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">'.group'</span>)<span class="op">.</span><span class="fu">forEach</span>((el) <span class="kw">=&gt;</span> {el<span class="op">.</span><span class="fu">click</span>()<span class="op">;</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The final config is the following:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource javascript number-lines code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>{</span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>  <span class="st">"id"</span><span class="op">:</span> <span class="st">"50pros.com__fortune500__ad270a6e"</span><span class="op">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>  <span class="st">"schemaVersion"</span><span class="op">:</span> <span class="st">"2.0.0"</span><span class="op">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>  <span class="st">"revision"</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>  <span class="st">"url"</span><span class="op">:</span> <span class="st">"https://www.50pros.com/fortune500"</span><span class="op">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>  <span class="st">"createdAt"</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>  <span class="st">"updatedAt"</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>  <span class="st">"selectors"</span><span class="op">:</span> [</span>
-<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>    {</span>
-<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>      <span class="st">"id"</span><span class="op">:</span> <span class="st">"g_E60uqc"</span><span class="op">,</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>      <span class="st">"container"</span><span class="op">:</span> <span class="st">"td[colspan=</span><span class="sc">\"</span><span class="st">9</span><span class="sc">\"</span><span class="st">] .grid &gt; div"</span><span class="op">,</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>      <span class="st">"fields"</span><span class="op">:</span> [</span>
-<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>        {</span>
-<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_8gaIvs"</span><span class="op">,</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Role"</span><span class="op">,</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">".font-bold"</span><span class="op">,</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-label="19"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-label="20"></a>        }<span class="op">,</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-label="21"></a>        {</span>
-<span id="cb2-22"><a href="#cb2-22" aria-label="22"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_5zx_hr"</span><span class="op">,</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-label="23"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Person Name"</span><span class="op">,</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-label="24"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">" div .text-sm"</span><span class="op">,</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-label="25"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-label="26"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-label="27"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-label="28"></a>        }<span class="op">,</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-label="29"></a>        {</span>
-<span id="cb2-30"><a href="#cb2-30" aria-label="30"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_fhIqid"</span><span class="op">,</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-label="31"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Position Name"</span><span class="op">,</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-label="32"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">" div .text-xs"</span><span class="op">,</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-label="33"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-label="34"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-label="35"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-label="36"></a>        }<span class="op">,</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-label="37"></a>        {</span>
-<span id="cb2-38"><a href="#cb2-38" aria-label="38"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_qn54EZ"</span><span class="op">,</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-label="39"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Company Name"</span><span class="op">,</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-label="40"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">"../../../../preceding-sibling::tr[1]/td[2]/a/text()"</span><span class="op">,</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-label="41"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-label="42"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-label="43"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-label="44"></a>        }</span>
-<span id="cb2-45"><a href="#cb2-45" aria-label="45"></a>      ]</span>
-<span id="cb2-46"><a href="#cb2-46" aria-label="46"></a>    }</span>
-<span id="cb2-47"><a href="#cb2-47" aria-label="47"></a>  ]<span class="op">,</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-label="48"></a>  <span class="st">"options"</span><span class="op">:</span> {</span>
-<span id="cb2-49"><a href="#cb2-49" aria-label="49"></a>    <span class="st">"waitforNetworkIdle"</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-label="50"></a>    <span class="st">"scrollToBottom"</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-label="51"></a>    <span class="st">"runJavaScript"</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-label="52"></a>    <span class="st">"pageDelayMs"</span><span class="op">:</span> <span class="dv">3000</span><span class="op">,</span></span>
-<span id="cb2-53"><a href="#cb2-53" aria-label="53"></a>    <span class="st">"timeoutMs"</span><span class="op">:</span> <span class="dv">60000</span><span class="op">,</span></span>
-<span id="cb2-54"><a href="#cb2-54" aria-label="54"></a>    <span class="st">"maxRetries"</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
-<span id="cb2-55"><a href="#cb2-55" aria-label="55"></a>    <span class="st">"appendData"</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-label="56"></a>  }<span class="op">,</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-label="57"></a>  <span class="st">"pagination"</span><span class="op">:</span> {</span>
-<span id="cb2-58"><a href="#cb2-58" aria-label="58"></a>    <span class="st">"mode"</span><span class="op">:</span> <span class="st">"none"</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-label="59"></a>  }<span class="op">,</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-label="60"></a>  <span class="st">"output"</span><span class="op">:</span> {</span>
-<span id="cb2-61"><a href="#cb2-61" aria-label="61"></a>    <span class="st">"format"</span><span class="op">:</span> <span class="st">"json"</span><span class="op">,</span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-label="62"></a>    <span class="st">"mergeStrategy"</span><span class="op">:</span> <span class="st">"join"</span><span class="op">,</span></span>
-<span id="cb2-63"><a href="#cb2-63" aria-label="63"></a>    <span class="st">"flatten"</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-label="64"></a>  }</span>
-<span id="cb2-65"><a href="#cb2-65" aria-label="65"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>We define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.</p>
-<p>The “Company Name” (lines 32-35) field requires special attention. Since We have defined a container element, we need to figure out how to reference the Company which is not within the container we defined. To do this we use an XPath selector instead of a CSS selector due to it allowing for referring to elements in a different part of the document tree.</p>
-<p>We use a relative axis to go ‘up’ in the tree before using <code>preceding-sibling</code> which selects siblings of the current node withing the same parent. In our particular case we find the first <code>tr</code> element that before the current node after navigating up in the tree.</p>
+<p>The final config is below:</p>
+<p><a href="./50pros.com__fortune500-executive_team.json">Download Config</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"50pros.com__fortune500__ad270a6e"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"schemaVersion"</span><span class="fu">:</span> <span class="st">"2.0.0"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"revision"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://www.50pros.com/fortune500"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"createdAt"</span><span class="fu">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"updatedAt"</span><span class="fu">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"selectors"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"g_E60uqc"</span><span class="fu">,</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-11" class="code-annotation-target"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"container"</span><span class="fu">:</span> <span class="st">"td[colspan=</span><span class="ch">\"</span><span class="st">9</span><span class="ch">\"</span><span class="st">] .grid &gt; div"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"fields"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_8gaIvs"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-15"><a href="#annotated-cell-2-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Role"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">".font-bold"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-2-20"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-2-21"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-2-22"><a href="#annotated-cell-2-22" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_5zx_hr"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-23"><a href="#annotated-cell-2-23" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Person Name"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-24"><a href="#annotated-cell-2-24" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">" div .text-sm"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-25"><a href="#annotated-cell-2-25" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-26"><a href="#annotated-cell-2-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-27"><a href="#annotated-cell-2-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-2-28"><a href="#annotated-cell-2-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-2-29"><a href="#annotated-cell-2-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-2-30"><a href="#annotated-cell-2-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_fhIqid"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-31"><a href="#annotated-cell-2-31" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Position Name"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-32"><a href="#annotated-cell-2-32" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">" div .text-xs"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-33"><a href="#annotated-cell-2-33" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-34"><a href="#annotated-cell-2-34" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-35"><a href="#annotated-cell-2-35" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-2-36"><a href="#annotated-cell-2-36" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="annotated-cell-2-37"><a href="#annotated-cell-2-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="annotated-cell-2-38"><a href="#annotated-cell-2-38" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_qn54EZ"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-39"><a href="#annotated-cell-2-39" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Company Name"</span><span class="fu">,</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-40" class="code-annotation-target"><a href="#annotated-cell-2-40" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">"../../../../preceding-sibling::tr[1]/td[2]/a/text()"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-41"><a href="#annotated-cell-2-41" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-42"><a href="#annotated-cell-2-42" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-43"><a href="#annotated-cell-2-43" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="annotated-cell-2-44"><a href="#annotated-cell-2-44" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="annotated-cell-2-45"><a href="#annotated-cell-2-45" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="annotated-cell-2-46"><a href="#annotated-cell-2-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="annotated-cell-2-47"><a href="#annotated-cell-2-47" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-48"><a href="#annotated-cell-2-48" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"options"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="annotated-cell-2-49"><a href="#annotated-cell-2-49" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"waitforNetworkIdle"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-50"><a href="#annotated-cell-2-50" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"scrollToBottom"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-51"><a href="#annotated-cell-2-51" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"runJavaScript"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-52"><a href="#annotated-cell-2-52" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"pageDelayMs"</span><span class="fu">:</span> <span class="dv">3000</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-53"><a href="#annotated-cell-2-53" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"timeoutMs"</span><span class="fu">:</span> <span class="dv">60000</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-54"><a href="#annotated-cell-2-54" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"maxRetries"</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-55"><a href="#annotated-cell-2-55" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"appendData"</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="annotated-cell-2-56"><a href="#annotated-cell-2-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="annotated-cell-2-57"><a href="#annotated-cell-2-57" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pagination"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="annotated-cell-2-58"><a href="#annotated-cell-2-58" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mode"</span><span class="fu">:</span> <span class="st">"none"</span></span>
+<span id="annotated-cell-2-59"><a href="#annotated-cell-2-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="annotated-cell-2-60"><a href="#annotated-cell-2-60" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"output"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="annotated-cell-2-61"><a href="#annotated-cell-2-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"json"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-62"><a href="#annotated-cell-2-62" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"mergeStrategy"</span><span class="fu">:</span> <span class="st">"join"</span><span class="fu">,</span></span>
+<span id="annotated-cell-2-63"><a href="#annotated-cell-2-63" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"flatten"</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="annotated-cell-2-64"><a href="#annotated-cell-2-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="annotated-cell-2-65"><a href="#annotated-cell-2-65" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="11" data-code-annotation="1">We define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="40" data-code-annotation="2">The “Company Name” (lines 32-35) field requires special attention. Since we have defined a container element, we use an XPath selector to go up in the document tree.</span>
+</dd>
+</dl>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We use a relative axis to go up in the tree before using <code>preceding-sibling</code> which selects siblings of the current node within the same parent. In our particular case we find the first <code>tr</code> element that’s before the current node after navigating up in the tree.</p>
+</div>
+</div>
 <p>The first 20 items of the resulting data are:</p>
 <table class="caption-top table">
 <colgroup>
