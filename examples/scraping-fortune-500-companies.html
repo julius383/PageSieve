@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -75,14 +78,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ccafe2c99a4564d55934ca8539ca9f46.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-ccafe2c99a4564d55934ca8539ca9f46.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ccafe2c99a4564d55934ca8539ca9f46.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ef286c437fcf6143170214a45598948f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c0d8b30941409e3eb956e99a8db67490.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-ef286c437fcf6143170214a45598948f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c26eaf8f4c81163bd29e2808ccbc065f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-5ff47d1e91c8fb74053cc9ca98fa03a4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-c26eaf8f4c81163bd29e2808ccbc065f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -434,58 +437,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For this website the executive team for each company is revealed when the company row is clicked. We can do this by running the following snippet in the browser console</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">document</span><span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">'.group'</span>)<span class="op">.</span><span class="fu">forEach</span>((el) <span class="kw">=&gt;</span> {el<span class="op">.</span><span class="fu">click</span>()<span class="op">;</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The final config is the following:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource javascript number-lines code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1"></a>{</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="dt">id</span><span class="op">:</span> <span class="st">"50pros.com__fortune500__ad270a6e"</span><span class="op">,</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">createdAt</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a>  <span class="dt">updatedAt</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="dt">config</span><span class="op">:</span> {</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="dt">metadata</span><span class="op">:</span> {</span>
-<span id="cb2-7"><a href="#cb2-7"></a>      <span class="dt">id</span><span class="op">:</span> <span class="st">"50pros.com__fortune500__ad270a6e"</span><span class="op">,</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>      <span class="dt">url</span><span class="op">:</span> <span class="st">"https://www.50pros.com/fortune500"</span><span class="op">,</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a>      <span class="dt">version</span><span class="op">:</span> <span class="st">"1.0.0"</span><span class="op">,</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>    }<span class="op">,</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>    <span class="dt">selectors</span><span class="op">:</span> [</span>
-<span id="cb2-12"><a href="#cb2-12"></a>      {</span>
-<span id="cb2-13"><a href="#cb2-13"></a>        <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a>        <span class="dt">container</span><span class="op">:</span> <span class="st">"td[colspan=</span><span class="sc">\"</span><span class="st">9</span><span class="sc">\"</span><span class="st">] .grid &gt; div"</span><span class="op">,</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a>        <span class="dt">fields</span><span class="op">:</span> [</span>
-<span id="cb2-16"><a href="#cb2-16"></a>          {</span>
-<span id="cb2-17"><a href="#cb2-17"></a>            <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">"Role"</span><span class="op">,</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a>            <span class="dt">selector</span><span class="op">:</span> <span class="st">".font-bold"</span><span class="op">,</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a>            <span class="dt">type</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a>          }<span class="op">,</span> {</span>
-<span id="cb2-22"><a href="#cb2-22"></a>            <span class="dt">id</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
-<span id="cb2-23"><a href="#cb2-23"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">"Person Name"</span><span class="op">,</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a>            <span class="dt">selector</span><span class="op">:</span> <span class="st">" div .text-sm"</span><span class="op">,</span></span>
-<span id="cb2-25"><a href="#cb2-25"></a>            <span class="dt">type</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a>          }<span class="op">,</span> {</span>
-<span id="cb2-27"><a href="#cb2-27"></a>            <span class="dt">id</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span></span>
-<span id="cb2-28"><a href="#cb2-28"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">"Position Name"</span><span class="op">,</span></span>
-<span id="cb2-29"><a href="#cb2-29"></a>            <span class="dt">selector</span><span class="op">:</span> <span class="st">" div .text-xs"</span><span class="op">,</span></span>
-<span id="cb2-30"><a href="#cb2-30"></a>            <span class="dt">type</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-31"><a href="#cb2-31"></a>          }<span class="op">,</span> {</span>
-<span id="cb2-32"><a href="#cb2-32"></a>            <span class="dt">id</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
-<span id="cb2-33"><a href="#cb2-33"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">"Company Name"</span><span class="op">,</span></span>
-<span id="cb2-34"><a href="#cb2-34"></a>            <span class="dt">selector</span><span class="op">:</span> <span class="st">"../../../../preceding-sibling::tr[1]/td[2]/a/text()"</span><span class="op">,</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a>            <span class="dt">type</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
-<span id="cb2-36"><a href="#cb2-36"></a>          }</span>
-<span id="cb2-37"><a href="#cb2-37"></a>        ]<span class="op">,</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a>      }</span>
-<span id="cb2-39"><a href="#cb2-39"></a>    ]<span class="op">,</span></span>
-<span id="cb2-40"><a href="#cb2-40"></a>    <span class="dt">options</span><span class="op">:</span> {</span>
-<span id="cb2-41"><a href="#cb2-41"></a>      <span class="dt">waitforNetworkIdle</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb2-42"><a href="#cb2-42"></a>      <span class="dt">scrollToBottom</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
-<span id="cb2-43"><a href="#cb2-43"></a>      <span class="dt">runJavaScript</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb2-44"><a href="#cb2-44"></a>      <span class="dt">delayMs</span><span class="op">:</span> <span class="dv">3000</span><span class="op">,</span></span>
-<span id="cb2-45"><a href="#cb2-45"></a>      <span class="dt">timeoutMs</span><span class="op">:</span> <span class="dv">60000</span><span class="op">,</span></span>
-<span id="cb2-46"><a href="#cb2-46"></a>      <span class="dt">appendData</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb2-47"><a href="#cb2-47"></a>    }<span class="op">,</span></span>
-<span id="cb2-48"><a href="#cb2-48"></a>    <span class="dt">pagination</span><span class="op">:</span> {</span>
-<span id="cb2-49"><a href="#cb2-49"></a>      <span class="dt">mode</span><span class="op">:</span> <span class="st">"none"</span><span class="op">,</span></span>
-<span id="cb2-50"><a href="#cb2-50"></a>    }<span class="op">,</span></span>
-<span id="cb2-51"><a href="#cb2-51"></a>  }<span class="op">,</span></span>
-<span id="cb2-52"><a href="#cb2-52"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource javascript number-lines code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>{</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>  <span class="st">"id"</span><span class="op">:</span> <span class="st">"50pros.com__fortune500__ad270a6e"</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>  <span class="st">"schemaVersion"</span><span class="op">:</span> <span class="st">"2.0.0"</span><span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>  <span class="st">"revision"</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>  <span class="st">"url"</span><span class="op">:</span> <span class="st">"https://www.50pros.com/fortune500"</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>  <span class="st">"createdAt"</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>  <span class="st">"updatedAt"</span><span class="op">:</span> <span class="st">"2026-03-21T13:19:22.112Z"</span><span class="op">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>  <span class="st">"selectors"</span><span class="op">:</span> [</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>    {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>      <span class="st">"id"</span><span class="op">:</span> <span class="st">"g_E60uqc"</span><span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a>      <span class="st">"container"</span><span class="op">:</span> <span class="st">"td[colspan=</span><span class="sc">\"</span><span class="st">9</span><span class="sc">\"</span><span class="st">] .grid &gt; div"</span><span class="op">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>      <span class="st">"fields"</span><span class="op">:</span> [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a>        {</span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_8gaIvs"</span><span class="op">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Role"</span><span class="op">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">".font-bold"</span><span class="op">,</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-label="19"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-label="20"></a>        }<span class="op">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-label="21"></a>        {</span>
+<span id="cb2-22"><a href="#cb2-22" aria-label="22"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_5zx_hr"</span><span class="op">,</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-label="23"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Person Name"</span><span class="op">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-label="24"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">" div .text-sm"</span><span class="op">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-label="25"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-label="26"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-label="27"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-label="28"></a>        }<span class="op">,</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-label="29"></a>        {</span>
+<span id="cb2-30"><a href="#cb2-30" aria-label="30"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_fhIqid"</span><span class="op">,</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-label="31"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Position Name"</span><span class="op">,</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-label="32"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">" div .text-xs"</span><span class="op">,</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-label="33"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-label="34"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-label="35"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-label="36"></a>        }<span class="op">,</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-label="37"></a>        {</span>
+<span id="cb2-38"><a href="#cb2-38" aria-label="38"></a>          <span class="st">"id"</span><span class="op">:</span> <span class="st">"f_qn54EZ"</span><span class="op">,</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-label="39"></a>          <span class="st">"name"</span><span class="op">:</span> <span class="st">"Company Name"</span><span class="op">,</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-label="40"></a>          <span class="st">"selector"</span><span class="op">:</span> <span class="st">"../../../../preceding-sibling::tr[1]/td[2]/a/text()"</span><span class="op">,</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-label="41"></a>          <span class="st">"type"</span><span class="op">:</span> <span class="st">"single"</span><span class="op">,</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-label="42"></a>          <span class="st">"extract"</span><span class="op">:</span> <span class="st">"text"</span><span class="op">,</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-label="43"></a>          <span class="st">"required"</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-label="44"></a>        }</span>
+<span id="cb2-45"><a href="#cb2-45" aria-label="45"></a>      ]</span>
+<span id="cb2-46"><a href="#cb2-46" aria-label="46"></a>    }</span>
+<span id="cb2-47"><a href="#cb2-47" aria-label="47"></a>  ]<span class="op">,</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-label="48"></a>  <span class="st">"options"</span><span class="op">:</span> {</span>
+<span id="cb2-49"><a href="#cb2-49" aria-label="49"></a>    <span class="st">"waitforNetworkIdle"</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-label="50"></a>    <span class="st">"scrollToBottom"</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-label="51"></a>    <span class="st">"runJavaScript"</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-label="52"></a>    <span class="st">"pageDelayMs"</span><span class="op">:</span> <span class="dv">3000</span><span class="op">,</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-label="53"></a>    <span class="st">"timeoutMs"</span><span class="op">:</span> <span class="dv">60000</span><span class="op">,</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-label="54"></a>    <span class="st">"maxRetries"</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-label="55"></a>    <span class="st">"appendData"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-label="56"></a>  }<span class="op">,</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-label="57"></a>  <span class="st">"pagination"</span><span class="op">:</span> {</span>
+<span id="cb2-58"><a href="#cb2-58" aria-label="58"></a>    <span class="st">"mode"</span><span class="op">:</span> <span class="st">"none"</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-label="59"></a>  }<span class="op">,</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-label="60"></a>  <span class="st">"output"</span><span class="op">:</span> {</span>
+<span id="cb2-61"><a href="#cb2-61" aria-label="61"></a>    <span class="st">"format"</span><span class="op">:</span> <span class="st">"json"</span><span class="op">,</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-label="62"></a>    <span class="st">"mergeStrategy"</span><span class="op">:</span> <span class="st">"join"</span><span class="op">,</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-label="63"></a>    <span class="st">"flatten"</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-label="64"></a>  }</span>
+<span id="cb2-65"><a href="#cb2-65" aria-label="65"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>We define a container selector (line 14) in this case because the information for each executive team member is encapsulated in a recognizable DOM element. The rest of the fields are can be obtained using the interactive picker or directly inspecting the relevant parts of the page.</p>
 <p>The “Company Name” (lines 32-35) field requires special attention. Since We have defined a container element, we need to figure out how to reference the Company which is not within the container we defined. To do this we use an XPath selector instead of a CSS selector due to it allowing for referring to elements in a different part of the document tree.</p>
 <p>We use a relative axis to go ‘up’ in the tree before using <code>preceding-sibling</code> which selects siblings of the current node withing the same parent. In our particular case we find the first <code>tr</code> element that before the current node after navigating up in the tree.</p>
