@@ -10,7 +10,7 @@ Get it on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/add
 
 ## Demo
 
-{{< video /assets/pagesieve-demo-2-short.mp4  width="800" height="450" >}}
+{{< video /assets/pagesieve-demo-2-short.mp4  >}}
 
 ## Key Features
 
