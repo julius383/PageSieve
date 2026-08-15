@@ -6,6 +6,7 @@
         removeField,
         duplicateField,
     } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
     import { Trash2, Copy, Square, List, Tally5, CirclePile } from '@lucide/svelte';
@@ -31,6 +32,20 @@
     function createFields(id: string) {
         addField(id);
         extract = 'text';
+    }
+
+
+    async function handleDelete(id: string): Promise<void> {
+        if (
+            await confirm({
+                title: 'Delete field?',
+                description: `This action cannot be undone. ".`,
+                confirmLabel: 'Delete',
+                variant: 'destructive',
+            })
+        ) {
+            removeField(id);
+        }
     }
 </script>
 
@@ -63,7 +78,7 @@
                     <Tooltip.Root>
                         <Tooltip.Trigger>
                             <Button
-                                onclick={() => removeField(id)}
+                                onclick={() => handleDelete(id)}
                                 variant="destructive"
                                 size="icon"
                                 disabled={pickingElement}
