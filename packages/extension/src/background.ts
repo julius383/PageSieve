@@ -1,5 +1,4 @@
 import { createActor, type SnapshotFrom, type Actor } from 'xstate';
-import { omit } from 'es-toolkit/object';
 import { ScrapeContext, createScrapeMachine } from '@pagesieve/core/scrapeMachine';
 import { extensionDriver } from '@/extensionDriver';
 import { PaginationStateStatus } from '@pagesieve/core/types';
@@ -9,15 +8,9 @@ import { initExtensionLogger } from '@/logger';
 initExtensionLogger();
 const logger = getLogger(['ext', 'background']);
 
-let sidebarOpen = false;
 
 browser.browserAction.onClicked.addListener(() => {
-    if (sidebarOpen !== undefined && sidebarOpen) {
-        browser.sidebarAction.close();
-    } else {
-        browser.sidebarAction.open();
-    }
-    sidebarOpen = !sidebarOpen;
+    browser.sidebarAction.toggle();
 });
 
 const scrapeMachine = createScrapeMachine(extensionDriver);
