@@ -86,7 +86,18 @@ export const browserEngine: ExtractionEngine<Document | Element, Element> = {
         }
         return (ctx as Element | Document).querySelector(sel);
     },
-    getAttribute: (el, attr) => el.getAttribute(attr),
+    getAttribute: (el, attr) => {
+        let v = el.getAttribute(attr);
+        // TODO: make this configurable as extension settings
+        if ((attr == 'href' || attr == 'src') && v?.startsWith('/')) {
+            const l = window.location;
+            if (l !== undefined) {
+                const urlBase = `${l.protocol}//${l.host}`
+                v = urlBase + v;
+            }
+        }
+        return v;
+    },
     getText: (el) => el.textContent?.trim(),
     getProperty: (el, prop: PropertyType) => {
         return match(prop)
