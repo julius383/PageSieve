@@ -127,7 +127,7 @@
                             <Field.Label>Links to Other Pages</Field.Label>
                             <Textarea
                                 placeholder="Add links here. One per line"
-                                class="h-50"
+                                class="h-50 overflow-auto"
                                 oninput={updateLinks}
                                 value={paginationState.links.pageLinks.join('\n')}
                             />
@@ -193,13 +193,13 @@
             {#if paginationState.template.urlTemplate.includes('{{page}}')}
                 <div class="rounded-md border bg-muted p-3 text-sm">
                     <p class="font-medium mb-1">Preview</p>
-                    <code class="block">
+                    <code class="block overflow-auto">
                         {paginationState.template.urlTemplate.replace(
                             '{{page}}',
                             String(paginationState.template.startPage),
                         )}
                     </code>
-                    <code class="block">
+                    <code class="block overflow-auto">
                         {paginationState.template.urlTemplate.replace(
                             '{{page}}',
                             String(
@@ -208,7 +208,7 @@
                             ),
                         )}
                     </code>
-                    <code class="block">
+                    <code class="block overflow-auto">
                         {paginationState.template.urlTemplate.replace(
                             '{{page}}',
                             String(paginationState.template.maxPages),
