@@ -1,4 +1,5 @@
 import { zipObject } from 'es-toolkit';
+import { stringify } from 'yaml';
 import { Parser } from '@json2csv/plainjs';
 import type { SupportedExportDataTypes } from './types';
 // @ts-expect-error: handlebars integration through vite plugin
@@ -49,6 +50,9 @@ export function convertTo(data: object[], format: SupportedExportDataTypes): str
             // restore newline escape
             return result.replace(/&amp;#10;/g, '&#10;');
         }
+        case 'yaml': {
+            return stringify(data);
+        }
     }
 }
 
@@ -64,5 +68,7 @@ export function getMimeType(type: SupportedExportDataTypes) {
             return 'application/html';
         case 'markdown':
             return 'text/markdown';
+        case 'yaml':
+            return 'application/yaml';
     }
 }

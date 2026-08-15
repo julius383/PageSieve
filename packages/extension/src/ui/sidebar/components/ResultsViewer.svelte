@@ -143,12 +143,12 @@
                                 <DropdownMenu.SubContent>
                                     <DropdownMenu.Item
                                         onclick={() => downloadBundle(extractedData.data, type)}
-                                        >Download {label} (All)</DropdownMenu.Item
+                                        >All</DropdownMenu.Item
                                     >
                                     {#each extractedData.data as group_data (group_data.id)}
                                         <DropdownMenu.Item
                                             onclick={() => downloadFormat(group_data.results, type)}
-                                            >Download {label} (Group {group_data.id})</DropdownMenu.Item
+                                            >Group {group_data.id}</DropdownMenu.Item
                                         >
                                     {/each}
                                 </DropdownMenu.SubContent>
@@ -165,6 +165,7 @@
                     {@render DownloadOption('CSV', 'csv')}
                     {@render DownloadOption('HTML', 'html')}
                     {@render DownloadOption('Markdown', 'markdown')}
+                    {@render DownloadOption('YAML', 'yaml')}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             <DropdownMenu.Root>
@@ -190,11 +191,16 @@
                             <DropdownMenu.Sub>
                                 <DropdownMenu.SubTrigger>Copy {label}</DropdownMenu.SubTrigger>
                                 <DropdownMenu.SubContent>
+                                    <DropdownMenu.Item
+                                        onclick={() =>
+                                            clipboardCopy(extractedData.data, format)}
+                                        >All </DropdownMenu.Item
+                                    >
                                     {#each extractedData.data as group_data (group_data.id)}
                                         <DropdownMenu.Item
                                             onclick={() =>
                                                 clipboardCopy(group_data.results, format)}
-                                            >Copy {label} (Group {group_data.id})</DropdownMenu.Item
+                                            >Group {group_data.id}</DropdownMenu.Item
                                         >
                                     {/each}
                                 </DropdownMenu.SubContent>
@@ -209,7 +215,7 @@
                     {/snippet}
 
                     <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
-                        >Copy JSON</DropdownMenu.Item
+                        >Copy Grouped JSON</DropdownMenu.Item
                     >
 
                     {@render CopyOption('HTML Table', 'html')}
@@ -217,6 +223,7 @@
                     {@render CopyOption('JSON', 'json')}
                     {@render CopyOption('NDJSON', 'ndjson')}
                     {@render CopyOption('CSV', 'csv')}
+                    {@render CopyOption('YAML', 'yaml')}
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             {#if !openInNewTab}

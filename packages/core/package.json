@@ -10,6 +10,7 @@
         "es-toolkit": "^1.47.0",
         "ts-pattern": "^5.9.0",
         "xstate": "^5.32.2",
+        "yaml": "^2.9.0",
         "zod": "^4.4.3"
     },
     "exports": {
@@ -19,6 +20,6 @@
         "./types": "./src/types.ts",
         "./converters": "./src/converters.ts",
         "./scrapeMachine": "./src/scrapeMachine.ts",
-        "./util": "./src/util.ts",
+        "./util": "./src/util.ts"
     }
 }

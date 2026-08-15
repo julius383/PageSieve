@@ -41,9 +41,18 @@ export async function downloadBundle(
 }
 
 export async function clipboardCopy(data: object[], format: SupportedExportDataTypes = 'json') {
-    const converted = convertTo(data, format);
-    await navigator.clipboard.writeText(converted);
-    console.log('Wrote data to clipboard');
+    let res: string = '';
+    if ('id' in data[0] && 'results' in data[0]) {
+        // passed full results object, combine them together with 2 newlines
+        res = '';
+        data.forEach((elem) => {
+            res += convertTo((elem as ExtractedGroup).results, format);
+            res += format == 'yaml' ? '---\n' : '\n\n';
+        });
+    } else {
+        res = convertTo(data, format);
+    }
+    await navigator.clipboard.writeText(res);
 }
 
 export async function downloadFormat(data: object[], format: SupportedExportDataTypes = 'json') {

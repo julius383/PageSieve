@@ -20,4 +20,4 @@ export interface ExtractedGroup {
     results: ExtractedRow[];
 }
 
-export type SupportedExportDataTypes = 'json' | 'ndjson' | 'csv' | 'html' | 'markdown';
+export type SupportedExportDataTypes = 'json' | 'ndjson' | 'csv' | 'html' | 'markdown' | 'yaml';
