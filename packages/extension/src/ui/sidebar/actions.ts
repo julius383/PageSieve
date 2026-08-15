@@ -1,4 +1,4 @@
-import { SvelteDate } from 'svelte/reactivity';
+import { RE2JS } from 're2js';
 import type { SelectorGroup } from '@pagesieve/core/schema';
 import {
     extractedData,
@@ -228,10 +228,16 @@ export async function runConfig() {
             setStatus('errored', 'URL missing from config.');;
             return;
         }
+
+        let urlPatternNoMatch = true;
+        if (config.urlPattern !== undefined) {
+            const re = RE2JS.compile(config.urlPattern);
+            urlPatternNoMatch = !re.test(config.urlPattern);
+        }
         // navigate to page in config before beginning extraction
-        if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url)) {
+        if ((normalizeUrl(tab.url as string) !== normalizeUrl(config.url)) && urlPatternNoMatch) {
             try {
-                // TODO: open in new tab
+                // TODO: open in new tab configurable in settings
                 await navigateAndWait(tab.id, config.url);
                 // await browser.tabs.create({ url: config.url, openerTabId: tab.id })
 

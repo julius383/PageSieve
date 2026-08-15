@@ -8,10 +8,6 @@
     import { X } from '@lucide/svelte';
     import { debounce } from 'es-toolkit/function';
 
-    import { default as dayjs } from 'dayjs';
-    import advancedFormat from 'dayjs/plugin/advancedFormat.js';
-    dayjs.extend(advancedFormat);
-
     import { scrapeConfig, setScrapeConfigValue } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import type { ScrapeConfig as ScrapeConfigT } from '@pagesieve/core';
 
@@ -57,12 +53,12 @@
             <Field.Field>
                 <Field.Label for="password">URL Pattern</Field.Label>
                 <Input
-                    placeholder="e.g en.wikipedia.org/*"
+                    placeholder="e.g https://en.wikipedia.org/"
                     value={scrapeConfig.urlPattern}
                     id="urlpattern"
                     oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
                 />
-                <Field.Description>Pages this config apply to (glob).</Field.Description>
+                <Field.Description>Pages this config applies to simple url or regex.</Field.Description>
             </Field.Field>
         </Field.Group>
     </Field.Set>
@@ -120,7 +116,7 @@
             <Field.Field>
                 <Field.Label for="author">Author</Field.Label>
                 <Input
-                    placeholder="Optional"
+                    placeholder="You"
                     id="author"
                     value={scrapeConfig.author ?? ''}
                     oninput={(e) => updateKey('author', e.currentTarget.value)}

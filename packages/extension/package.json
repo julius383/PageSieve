@@ -25,6 +25,7 @@
         "localforage": "^1.10.0",
         "nanoid": "^5.1.15",
         "paneforge": "^1.0.2",
+        "re2js": "^2.8.6",
         "svelte": "^5.56.3",
         "tailwind-merge": "^3.6.0",
         "tailwind-variants": "^3.2.2",
