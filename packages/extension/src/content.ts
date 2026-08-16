@@ -1,7 +1,7 @@
 import type { ExtractedGroup } from '@pagesieve/core/types';
 import type { MessageRequest } from '@/types';
 import type { SelectorGroup } from '@pagesieve/core/schema';
-import { DOMInspector } from '@/dominspector.mjs';
+import { DOMInspector } from '@/dominspector';
 import { getLogger } from '@pagesieve/core/logger';
 import { initExtensionLogger } from '@/logger';
 initExtensionLogger();
