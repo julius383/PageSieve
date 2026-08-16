@@ -131,7 +131,7 @@ export class DOMInspector {
         }
     }
 
-    deactivate(selecting: boolean = true) {
+    deactivate() {
         if (!this.isActive) return;
 
         console.log(`Deactivating DOM inspector for ${this.activePickerId}`);

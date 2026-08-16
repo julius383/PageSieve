@@ -1,3 +1,4 @@
+import { SvelteDate } from 'svelte/reactivity';
 import { RE2JS } from 're2js';
 import type { SelectorGroup } from '@pagesieve/core/schema';
 import {

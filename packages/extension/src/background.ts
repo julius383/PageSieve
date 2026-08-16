@@ -1,4 +1,5 @@
 import { createActor, type SnapshotFrom, type Actor } from 'xstate';
+import { omit } from 'es-toolkit';
 import { ScrapeContext, createScrapeMachine } from '@pagesieve/core/scrapeMachine';
 import { extensionDriver } from '@/extensionDriver';
 import { PaginationStateStatus } from '@pagesieve/core/types';
