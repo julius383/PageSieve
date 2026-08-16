@@ -1,0 +1,25 @@
+---
+title: "Reoadmap"
+---
+
+The items listed here are all planned features. Generally anything listed here
+is guaranteed to make it into a future versions. Priority is mostly based
+on what I feel the need to add. If you see a feature you'd like to be added
+sooner let me know on [GitHub](https://github.com/julius383/PageSieve/discussions).
+
+
+- [ ] Add advanced element selector mode
+    - [ ] Type casting for extracted data.
+    - [ ] Add simple filters
+    - [ ] HTML tree viewer
+- [ ] Improver error reporting on failed selectors.
+- [ ] Improve JSON display component (ResultsViewer + SavedLibrary)
+- [ ] Add apify actors as alternate client for ScrapeConfig.
+- [ ] Improved status tracking and logging.
+- [ ] Add settings page to extension.
+- [ ] Improved error recovery when network fails.
+- [ ] Improve selector guessing algorithm.
+- [ ] Add Chrome version of extension
+- [ ] Add online registry for ScrapeConfigs
+- [ ] **Add tests**
+- [ ] Add mustache based custom output formats

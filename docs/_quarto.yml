@@ -21,16 +21,18 @@ website:
             - text: Report a Bug
               href:  https://github.com/julius383/PageSieve/issues
     left:
-      - href: index.qmd
-        text: Overview
       - href: getting-started.qmd
         text: Getting Started
       - text: Examples
         href: examples/index.qmd
-      - href: architecture.qmd
-        text: Architecture
+      - text: Changelog
+        href: CHANGELOG.md
+      - text: Roadmap
+        href: roadmap.qmd
       - text: Reference
         menu:
+          - href: architecture.qmd
+            text: Architecture
           - href: reference/configuration.qmd
             text: Scrape Configuration
           - href: reference/extension-ui.qmd
