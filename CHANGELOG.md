@@ -10,6 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.1.0] - 2026-08-16
+
+### Added
+
+- Add button for highlighting elements by selector in Field definition component
+- Add count field type for counting matched elements as alternative to
+  extracting attributes or properties.
+- Automatically create full URL for href and src attributes during extraction.
+- Add YAML format for results export.
+- Add urlPattern implementation for controlling which URLs config applies to.
+
+### Changed
+
+- Use IntersectionObserver to prevent hanging when too many elements are highlighted.
+
+### Fixed
+
+- Fix problem where sidebar requires multiple clicks to open.
+- Cleanup changes made to DOM when inspector is launched such as event
+  listeners and HTML elements.
 
 ## [extension-v2.0.0] - 2026-08-09
 
