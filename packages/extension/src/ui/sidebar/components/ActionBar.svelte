@@ -64,7 +64,7 @@
     const runninStates = ['running', 'extracting', 'navigating', 'waiting'];
 </script>
 
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5">
     <ButtonGroup.Root>
         <Tooltip.Provider>
             <Tooltip.Root>

@@ -7,6 +7,7 @@ export class DOMInspector {
      * Activation status of inspector
      */
     public isActive: boolean;
+    isSelecting: boolean;
 
     whitelistedElements: Set<HTMLElement>;
     blacklistedElements: Set<HTMLElement>;
@@ -48,6 +49,7 @@ export class DOMInspector {
 
     constructor() {
         this.isActive = false;
+        this.isSelecting = true;
         this.originalCursor = null;
         this.activePickerId = null;
         this.containerScope = undefined;
@@ -104,67 +106,66 @@ export class DOMInspector {
         }
     }
 
-    toggle(pickerId?: string, container?: string) {
-        if (this.isActive) {
-            this.deactivate();
-        } else if (pickerId) {
-            this.containerScope = container;
-            this.activate(pickerId);
+    activate(pickerId: string, container?: string, selecting: boolean = true) {
+        // console.log(`Activating DOM inspector for ${pickerId}`);
+        if (this.isActive || !pickerId) return;
+
+        this.containerScope = container;
+        this.activePickerId = pickerId;
+        this.isActive = true;
+        this.isSelecting = selecting;
+
+        
+        this.setupObserver();
+        window.addEventListener('scroll', this.handleScroll, true);
+
+        if (this.isSelecting) {
+            this.setupOverlay();
+            this.originalCursor = document.body.style.cursor;
+            document.body.style.cursor = 'crosshair';
+
+            window.addEventListener('mouseover', this.handleMouseOver, true);
+            window.addEventListener('mouseout', this.handleMouseOut, true);
+            window.addEventListener('keydown', this.handleKeyDown, true);
+            window.addEventListener('click', this.handleClick, true);
         }
     }
 
-    activate(pickerId: string) {
-        // console.log(`Activating DOM inspector for ${pickerId}`);
-        if (this.isActive) return;
-
-        this.activePickerId = pickerId;
-        this.isActive = true;
-
-        this.setupOverlay();
-        this.setupObserver();
-
-        this.originalCursor = document.body.style.cursor;
-        document.body.style.cursor = 'crosshair';
-
-        window.addEventListener('mouseover', this.handleMouseOver, true);
-        window.addEventListener('mouseout', this.handleMouseOut, true);
-        window.addEventListener('keydown', this.handleKeyDown, true);
-        window.addEventListener('click', this.handleClick, true);
-        window.addEventListener('scroll', this.handleScroll, true);
-    }
-
-    deactivate() {
+    deactivate(selecting: boolean = true) {
         if (!this.isActive) return;
 
         console.log(`Deactivating DOM inspector for ${this.activePickerId}`);
         this.isActive = false;
         this.activePickerId = null;
 
-        document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
-
-        this.removeHighlight();
-
-        this.whitelistedElements.forEach((el) => this.removePersistentHighlight(el));
-        this.blacklistedElements.forEach((el) => this.removePersistentHighlight(el));
-        this.removeSelectorHighlight();
-
-        this.whitelistedElements.clear();
-        this.blacklistedElements.clear();
-
-        window.removeEventListener('mouseover', this.handleMouseOver, true);
-        window.removeEventListener('mouseout', this.handleMouseOut, true);
-        window.removeEventListener('keydown', this.handleKeyDown, true);
-        window.removeEventListener('click', this.handleClick, true);
         window.removeEventListener('scroll', this.handleScroll, true);
-
-        if (this.highlightOverlay) {
-            this.highlightOverlay.remove();
-            this.highlightOverlay = null;
-        }
 
         if (this.observer) {
             this.observer.disconnect();
             this.observer = null;
+        }
+
+        if (this.isSelecting) {
+            document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
+
+            this.removeHighlight();
+
+            this.whitelistedElements.forEach((el) => this.removePersistentHighlight(el));
+            this.blacklistedElements.forEach((el) => this.removePersistentHighlight(el));
+
+            this.whitelistedElements.clear();
+            this.blacklistedElements.clear();
+
+            window.removeEventListener('mouseover', this.handleMouseOver, true);
+            window.removeEventListener('mouseout', this.handleMouseOut, true);
+            window.removeEventListener('keydown', this.handleKeyDown, true);
+            window.removeEventListener('click', this.handleClick, true);
+
+        }
+        this.removeSelectorHighlight();
+        if (this.highlightOverlay) {
+            this.highlightOverlay.remove();
+            this.highlightOverlay = null;
         }
     }
 
@@ -265,6 +266,7 @@ export class DOMInspector {
         });
         return elements.length;
     }
+
     removeSelectorHighlight() {
         this.selectorOverlays.forEach((overlay) => overlay.remove());
         this.selectorOverlays.clear();

@@ -40,7 +40,7 @@
         <Field.Label for="url">URL</Field.Label>
         <div class="flex items-center justify-between gap-2">
             <Input
-                placeholder="e.g en.wikipedia.org/*"
+                placeholder="e.g https://en.wikipedia.org/"
                 value={scrapeConfig.url}
                 id="url"
                 class="text-sm text-indigo-300"

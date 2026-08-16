@@ -63,9 +63,22 @@ type StopMainRequest = {
     action: 'stopMain';
 };
 
-type InspectorToggleRequest = {
-    action: 'inspector-toggle';
+type InspectorActivateRequest = {
+    action: 'inspector-activate';
     pickerId: string;
+    container?: string;
+};
+
+type InspectorDeactivateRequest = {
+    action: 'inspector-deactivate';
+    pickerId: string;
+    container?: string;
+};
+
+type InspectorPreviewRequest = {
+    action: 'inspector-highlight';
+    pickerId: string;
+    selector: string;
     container?: string;
 };
 
@@ -101,7 +114,9 @@ export type ScrapeStatusUpdateRequest = {
 
 export type MessageRequest =
     | ExtractDataRequest
-    | InspectorToggleRequest
+    | InspectorActivateRequest
+    | InspectorDeactivateRequest
+    | InspectorPreviewRequest
     | InspectorAcceptRequest
     | ClickAndWaitRequest
     | PageHashRequest;

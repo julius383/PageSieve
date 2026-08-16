@@ -71,12 +71,22 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
                 error: error instanceof Error ? error.message : 'Unknown error occurred',
             };
         }
-    } else if (request.action === 'inspector-toggle') {
+    } else if (request.action === 'inspector-activate') {
         if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
             inspector.deactivate();
         }
-        inspector.toggle(request.pickerId, request.container);
+        inspector.activate(request.pickerId, request.container);
         return { isActive: inspector.isActive };
+    } else if (request.action === 'inspector-deactivate') {
+        inspector.deactivate();
+        return { isActive: inspector.isActive };
+    } else if (request.action === 'inspector-highlight') {
+        if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
+            inspector.deactivate();
+        }
+        inspector.activate(request.pickerId, request.container, false);
+        const foundElements = inspector.showSelectorHighlight(request.selector);
+        return { isActive: inspector.isActive, foundElements: foundElements}
     } else if (request.action === 'inspector-accept') {
         const selector = inspector.guessSelector();
         inspector.deactivate();

@@ -3,7 +3,8 @@
 
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { Pipette, Check, X } from '@lucide/svelte';
+    import { Toggle } from "$lib/components/ui/toggle/index.js";
+    import { Pipette, Check, X, Highlighter } from '@lucide/svelte';
 
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
@@ -21,6 +22,7 @@
     let pickerId: string;
     let foundElements: number = $state(0);
     let previousSelector: string = '';
+    let highlightingElement = $state(false);
 
     // This function will handle incoming messages from the content script.
     function messageListener(message: SelectedElementRequest) {
@@ -44,7 +46,7 @@
         const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
         if (tab?.id) {
             const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
+                action: 'inspector-activate',
                 pickerId: pickerId,
                 container: container,
             });
@@ -52,6 +54,39 @@
                 pickingElement = true;
                 previousSelector = cssSelector;
                 setStatus('inspecting', 'click html element to get CSS selector');
+            }
+        }
+    }
+
+    async function handleHighlight() {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+            if (highlightingElement) {
+
+                const response = await browser.tabs.sendMessage(tab.id, {
+                    action: 'inspector-deactivate',
+                });
+
+                if (!response.isActive) {
+                    pickingElement = false;
+                    foundElements = 0;
+                    highlightingElement = false;
+                    setStatus('idle', 'Ready');
+                }
+                return;
+            } else {
+                const response = await browser.tabs.sendMessage(tab.id, {
+                    action: 'inspector-highlight',
+                    selector: cssSelector,
+                    pickerId: pickerId,
+                    container: container,
+                });
+                if (response.isActive) {
+                    pickingElement = true;
+                    highlightingElement = true;
+                    foundElements = response.foundElements;
+                    setStatus('inspecting', `highlighting ${response.foundElements} element ${cssSelector} ${container ? 'in' + container : ''}`);
+                }
             }
         }
     }
@@ -77,7 +112,7 @@
         const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
         if (tab?.id) {
             const response = await browser.tabs.sendMessage(tab.id, {
-                action: 'inspector-toggle',
+                action: 'inspector-deactivate',
             });
 
             if (!response.isActive) {
@@ -97,7 +132,7 @@
     {/if}
     <div class="flex items-end gap-x-1 flex-start">
         <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title, //h2" />
-        {#if pickingElement}
+        {#if pickingElement && !highlightingElement}
             <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
@@ -122,7 +157,7 @@
             <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
-                        <Button onclick={handleInspect} variant="outline" size="icon">
+                        <Button onclick={handleInspect} variant="outline" size="icon" disabled={highlightingElement}>
                             <Pipette color="#fff" />
                         </Button>
                     </Tooltip.Trigger>
@@ -132,6 +167,27 @@
                 </Tooltip.Root>
             </Tooltip.Provider>
         {/if}
+
+        <Tooltip.Provider>
+            <Tooltip.Root>
+                <Tooltip.Trigger>
+                    <Toggle
+                        onclick={handleHighlight}
+                        variant="outline"
+                        class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
+                    >
+                        <Highlighter color="#fff" />
+                    </Toggle>
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                    {#if highlightingElement}
+                        <p>Click to stop highlighting</p>
+                    {:else}
+                        <p>Highlight selector elements</p>
+                    {/if}
+                </Tooltip.Content>
+            </Tooltip.Root>
+        </Tooltip.Provider>
     </div>
     {#if foundElements > 0 && pickingElement}
         <span class="text-xs text-[##d3d3d3] italic"

@@ -12,8 +12,8 @@
     import { buttonVariants } from '$lib/components/ui/button/index.js';
 
     import { default as dayjs } from 'dayjs';
-    import advancedFormat from 'dayjs/plugin/advancedFormat.js';
-    dayjs.extend(advancedFormat);
+    // import advancedFormat from 'dayjs/plugin/advancedFormat.js';
+    // dayjs.extend(advancedFormat);
 
     import EditableInput from '@/ui/sidebar/components/EditableInput.svelte';
 
@@ -216,7 +216,7 @@
                         />
                     </Card.Title>
                     <Card.Description
-                        >Saved on {dayjs(item.updatedAt).format('Do MMM YYYY')}</Card.Description
+                        >Saved on {dayjs(item.updatedAt).format('DD MMM YYYY')}</Card.Description
                     >
                     <Card.Action>
                         {#if editingId !== item.id}
