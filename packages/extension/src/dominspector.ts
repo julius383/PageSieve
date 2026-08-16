@@ -3,21 +3,48 @@ import { browserEngine } from './browserEngine';
 import { isXPath } from '@pagesieve/core/extractor';
 
 export class DOMInspector {
-    isActive: boolean;
+    /*^
+     * Activation status of inspector
+     */
+    public isActive: boolean;
 
     whitelistedElements: Set<HTMLElement>;
     blacklistedElements: Set<HTMLElement>;
+
     currentHighlighted: HTMLElement | null;
     highlightOverlay: HTMLElement | null;
+
     originalCursor: string | null;
+
+    /**
+     * Interface to selector guessing algorithm
+     */
     helper: DomPredictionHelper;
+
+    /**
+     * CSS Selector predicted by algorithm
+     */
     predictedSelector: string | null;
+
+    /**
+     * ID used to communicate back to UI through browser message
+     */
     activePickerId: string | null;
+
+    /**
+     * Container selector used to narrow context of selected elements
+     */
     containerScope: string | undefined;
 
-    // To manage highlight overlays for selected elements
+    // To manage highlight overlays for selected and highlighted elements
     highlightOverlays: Map<HTMLElement, HTMLDivElement>;
     selectorOverlays: Map<HTMLElement, HTMLDivElement>;
+
+    // intersection observer for more efficient highlighting
+    observer: IntersectionObserver | null;
+    private observedMatchElements: Set<HTMLElement> = new Set();
+
+    private handleScroll: () => void;
 
     constructor() {
         this.isActive = false;
@@ -30,9 +57,11 @@ export class DOMInspector {
 
         this.whitelistedElements = new Set();
         this.blacklistedElements = new Set();
+
         this.highlightOverlays = new Map();
         this.selectorOverlays = new Map();
         this.highlightOverlay = null;
+
         this.helper = new DomPredictionHelper();
 
         // Bind methods to preserve 'this' context
@@ -40,8 +69,19 @@ export class DOMInspector {
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleIntersection = this.handleIntersection.bind(this);
+        this.handleScroll = this.updateAllHighlights.bind(this);
+
+        this.observer = null;
 
         if (typeof document !== 'undefined') {
+            this.setupOverlay();
+            this.setupObserver();
+        }
+    }
+
+    private setupOverlay() {
+        if (this.highlightOverlay === null) {
             this.highlightOverlay = document.createElement('div');
             this.highlightOverlay.style.position = 'absolute';
             this.highlightOverlay.style.zIndex = '9999999';
@@ -52,8 +92,16 @@ export class DOMInspector {
             this.highlightOverlay.style.display = 'none';
             document.body.appendChild(this.highlightOverlay);
         }
+    }
 
-        // console.log('Inspector instance created');
+    private setupObserver() {
+        if (this.observer === null) {
+            this.observer = new IntersectionObserver(this.handleIntersection, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0,
+            });
+        }
     }
 
     toggle(pickerId?: string, container?: string) {
@@ -72,6 +120,9 @@ export class DOMInspector {
         this.activePickerId = pickerId;
         this.isActive = true;
 
+        this.setupOverlay();
+        this.setupObserver();
+
         this.originalCursor = document.body.style.cursor;
         document.body.style.cursor = 'crosshair';
 
@@ -79,11 +130,7 @@ export class DOMInspector {
         window.addEventListener('mouseout', this.handleMouseOut, true);
         window.addEventListener('keydown', this.handleKeyDown, true);
         window.addEventListener('click', this.handleClick, true);
-        window.addEventListener('scroll', this.updateAllHighlights.bind(this), true);
-
-        /* console.log(
-            'DOM Inspector activated. Hover over elements to highlight, click to inspect. Press ESC to exit.',
-        ); */
+        window.addEventListener('scroll', this.handleScroll, true);
     }
 
     deactivate() {
@@ -108,9 +155,17 @@ export class DOMInspector {
         window.removeEventListener('mouseout', this.handleMouseOut, true);
         window.removeEventListener('keydown', this.handleKeyDown, true);
         window.removeEventListener('click', this.handleClick, true);
-        window.removeEventListener('scroll', this.updateAllHighlights.bind(this), true);
+        window.removeEventListener('scroll', this.handleScroll, true);
 
-        // console.log('DOM Inspector deactivated.');
+        if (this.highlightOverlay) {
+            this.highlightOverlay.remove();
+            this.highlightOverlay = null;
+        }
+
+        if (this.observer) {
+            this.observer.disconnect();
+            this.observer = null;
+        }
     }
 
     guessSelector() {
@@ -130,44 +185,33 @@ export class DOMInspector {
         }
     }
 
-    showSelectorHighlight(selector: string) {
-        // FIXME: add max item count to avoid freezing browser
-        this.selectorOverlays.forEach((overlay) => overlay.remove());
-        this.selectorOverlays.clear();
-        let elements = browserEngine.querySelectorAll(document.body, selector);
-        // narrow highlighted elements by container if possible
-        const scope = this.containerScope;
-        if (scope !== undefined && !isXPath(scope)) {
-            elements = elements.filter((elem) => elem.closest(scope) !== null);
-        }
-        elements.forEach((element) => {
-            let overlay = this.selectorOverlays.get(element as HTMLElement);
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.style.position = 'absolute';
-                overlay.style.zIndex = '999998'; // Just below hover highlight
-                overlay.style.boxSizing = 'border-box';
-                overlay.style.pointerEvents = 'none';
-                document.body.appendChild(overlay);
-                this.selectorOverlays.set(element as HTMLElement, overlay);
+    handleIntersection(entries: IntersectionObserverEntry[]) {
+        for (const entry of entries) {
+            const el = entry.target as HTMLElement;
+            if (entry.isIntersecting) {
+                this.renderSelectorOverlay(el);
+            } else {
+                this.clearSelectorOverlay(el);
             }
-
-            this.updateOverlayPosition(element as HTMLElement, overlay);
-
-            overlay.style.border = '2px solid #ffd700';
-            overlay.style.backgroundColor = 'rgb(255, 215, 0, 0.2)';
-        });
-        return elements.length;
+        }
     }
-    removeSelectorHighlight() {
-        this.selectorOverlays.forEach((overlay) => {
-            overlay.remove();
-        });
-        this.selectorOverlays.clear();
+    private renderSelectorOverlay(element: HTMLElement) {
+        if (this.whitelistedElements.has(element)) {
+            this.paintOverlay(element, this.highlightOverlays, '#22C55E', 'rgba(34, 197, 94, 0.4)');
+        } else if (this.blacklistedElements.has(element)) {
+            this.paintOverlay(element, this.highlightOverlays, '#EF4444', 'rgba(239, 68, 68, 0.4)');
+        } else {
+            this.paintOverlay(element, this.selectorOverlays, '#ffd700', 'rgba(255, 223, 51, 0.2)');
+        }
     }
 
-    updatePersistentHighlight(element: HTMLElement, type: 'whitelisted' | 'blacklisted') {
-        let overlay = this.highlightOverlays.get(element);
+    private paintOverlay(
+        element: HTMLElement,
+        map: Map<HTMLElement, HTMLDivElement>,
+        border: string,
+        background: string,
+    ) {
+        let overlay = map.get(element);
         if (!overlay) {
             overlay = document.createElement('div');
             overlay.style.position = 'absolute';
@@ -175,29 +219,72 @@ export class DOMInspector {
             overlay.style.boxSizing = 'border-box';
             overlay.style.pointerEvents = 'none';
             document.body.appendChild(overlay);
-            this.highlightOverlays.set(element, overlay);
+            map.set(element, overlay);
         }
-
         this.updateOverlayPosition(element, overlay);
+        overlay.style.border = `2px solid ${border}`;
+        overlay.style.backgroundColor = background;
+    }
 
-        if (type === 'whitelisted') {
-            overlay.style.border = '2px solid #22C55E'; // Green
-            overlay.style.backgroundColor = 'rgba(34, 197, 94, 0.4)';
-        } else {
-            // blacklisted
-            overlay.style.border = '2px solid #EF4444'; // Red
-            overlay.style.backgroundColor = 'rgba(239, 68, 68, 0.4)';
+    private clearSelectorOverlay(element: HTMLElement) {
+        const hOverlay = this.highlightOverlays.get(element);
+        if (hOverlay) {
+            hOverlay.remove();
+            this.highlightOverlays.delete(element);
+        }
+        const sOverlay = this.selectorOverlays.get(element);
+        if (sOverlay) {
+            sOverlay.remove();
+            this.selectorOverlays.delete(element);
         }
     }
 
-    /**
-     * Removes a persistent highlight overlay from an element.
-     */
+    showSelectorHighlight(selector: string) {
+        this.selectorOverlays.forEach((overlay) => overlay.remove());
+        this.selectorOverlays.clear();
+
+        this.observedMatchElements.forEach((el) => {
+            if (!this.whitelistedElements.has(el) && !this.blacklistedElements.has(el)) {
+                this.observer?.unobserve(el);
+            }
+        });
+        this.observedMatchElements.clear();
+
+        let elements = browserEngine.querySelectorAll(document.body, selector);
+
+        // narrow highlighted elements by container if possible
+        const scope = this.containerScope;
+        if (scope !== undefined && scope !== '' && !isXPath(scope)) {
+            // closest only supports CSS selectors
+            elements = elements.filter((elem) => elem.closest(scope) !== null);
+        }
+        elements.forEach((element) => {
+            const el = element as HTMLElement;
+            this.observedMatchElements.add(el);
+            this.observer?.observe(el);
+        });
+        return elements.length;
+    }
+    removeSelectorHighlight() {
+        this.selectorOverlays.forEach((overlay) => overlay.remove());
+        this.selectorOverlays.clear();
+        this.observedMatchElements.forEach((el) => {
+            if (!this.whitelistedElements.has(el) && !this.blacklistedElements.has(el)) {
+                this.observer?.unobserve(el);
+            }
+        });
+        this.observedMatchElements.clear();
+    }
+
+    updatePersistentHighlight(element: HTMLElement) {
+        this.renderSelectorOverlay(element);
+        this.observer?.observe(element);
+    }
+
     removePersistentHighlight(element: HTMLElement) {
-        const overlay = this.highlightOverlays.get(element);
-        if (overlay) {
-            overlay.remove();
-            this.highlightOverlays.delete(element);
+        this.clearSelectorOverlay(element);
+        if (!this.observedMatchElements.has(element)) {
+            this.observer?.unobserve(element);
         }
     }
 
@@ -219,10 +306,6 @@ export class DOMInspector {
 
     handleClick(event: Event) {
         if (!this.isActive) return;
-
-        // if (event.target === this.highlightOverlay) {
-        //     return;
-        // }
 
         event.preventDefault();
         event.stopPropagation();
@@ -248,11 +331,11 @@ export class DOMInspector {
             // Cycle: Whitelisted -> Blacklisted
             this.whitelistedElements.delete(clickedElement);
             this.blacklistedElements.add(clickedElement);
-            this.updatePersistentHighlight(clickedElement, 'blacklisted');
+            this.updatePersistentHighlight(clickedElement);
         } else {
             // Cycle: Unselected -> Whitelisted
             this.whitelistedElements.add(clickedElement);
-            this.updatePersistentHighlight(clickedElement, 'whitelisted');
+            this.updatePersistentHighlight(clickedElement);
         }
         // this.inspectElement(clickedElement);
         this.inspectElement();
@@ -311,28 +394,15 @@ export class DOMInspector {
         });
     }
 
-    getAttributes(element: HTMLElement) {
-        const attrs = new Map<string, string>();
-        for (let i = 0; i < element.attributes.length; i++) {
-            const attr = element.attributes[i];
-            attrs.set(attr.name, attr.value);
-            // attrs[attr.name] = attr.value;
-        }
-        return attrs;
-    }
-
     updateAllHighlights() {
-        this.updateHighlights(this.selectorOverlays);
-        this.updateHighlights(this.highlightOverlays);
+        [this.selectorOverlays, this.highlightOverlays].forEach((overlays) => {
+            for (const [element, overlay] of overlays.entries()) {
+                this.updateOverlayPosition(element, overlay);
+            }
+        });
     }
 
-    updateHighlights(overlays: Map<HTMLElement, HTMLDivElement>) {
-        for (const [element, overlay] of overlays.entries()) {
-            this.updateOverlayPosition(element, overlay);
-        }
-    }
-
-    updateOverlayPosition(element: HTMLElement, overlay: HTMLDivElement) {
+    private updateOverlayPosition(element: HTMLElement, overlay: HTMLDivElement) {
         if (!element.isConnected) {
             overlay.remove();
             this.selectorOverlays.delete(element);
