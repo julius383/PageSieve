@@ -3,13 +3,13 @@ project:
   output-dir: _site
 
 website:
-  title: "PageSieve"
+  title: "PageSieve Docs"
   favicon: "assets/logo.png"
   twitter-card: true
   open-graph:
-    title: "PageSieve Documentation"
-    description: "Documentation website for PageSieve a web scraping browser extension."
-  site-url: https://github.com/julius383/PageSieve
+    title: "PageSieve Docs"
+    description: "Documentation website for PageSieve a browser extension that allows you to scrape websites without leaving your browser by defining CSS Selectors and XPath selectors."
+  site-url: https://julius383.github.io/PageSieve/
   repo-url: https://github.com/julius383/PageSieve
   repo-actions: [edit, source, issue]
   navbar:
