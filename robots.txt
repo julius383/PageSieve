@@ -1,1 +1,1 @@
-Sitemap: https://github.com/julius383/PageSieve/sitemap.xml
+Sitemap: https://julius383.github.io/PageSieve/sitemap.xml

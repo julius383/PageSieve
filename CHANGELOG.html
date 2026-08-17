@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>changelog – PageSieve</title>
+<title>changelog – PageSieve Docs</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -81,10 +81,10 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="PageSieve Documentation">
-<meta property="og:description" content="Documentation website for PageSieve a web scraping browser extension.">
-<meta property="og:site_name" content="PageSieve">
-<meta name="twitter:title" content="PageSieve">
+<meta property="og:title" content="PageSieve Docs">
+<meta property="og:description" content="Documentation website for PageSieve a browser extension that allows you to scrape websites without leaving your browser by defining CSS Selectors and XPath selectors.">
+<meta property="og:site_name" content="PageSieve Docs">
+<meta name="twitter:title" content="PageSieve Docs">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -268,7 +268,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">PageSieve</span>
+    <span class="navbar-title">PageSieve Docs</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -355,16 +355,21 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#changelog" id="toc-changelog" class="nav-link active" data-scroll-target="#changelog">Changelog</a>
   <ul class="collapse">
   <li><a href="#unreleased" id="toc-unreleased" class="nav-link" data-scroll-target="#unreleased">[Unreleased]</a></li>
+  <li><a href="#extension-v2.2.0---2026-08-17" id="toc-extension-v2.2.0---2026-08-17" class="nav-link" data-scroll-target="#extension-v2.2.0---2026-08-17">[extension-v2.2.0] - 2026-08-17</a>
+  <ul class="collapse">
+  <li><a href="#changed" id="toc-changed" class="nav-link" data-scroll-target="#changed">Changed</a></li>
+  <li><a href="#fixed" id="toc-fixed" class="nav-link" data-scroll-target="#fixed">Fixed</a></li>
+  </ul></li>
   <li><a href="#extension-v2.1.0---2026-08-16" id="toc-extension-v2.1.0---2026-08-16" class="nav-link" data-scroll-target="#extension-v2.1.0---2026-08-16">[extension-v2.1.0] - 2026-08-16</a>
   <ul class="collapse">
   <li><a href="#added" id="toc-added" class="nav-link" data-scroll-target="#added">Added</a></li>
-  <li><a href="#changed" id="toc-changed" class="nav-link" data-scroll-target="#changed">Changed</a></li>
-  <li><a href="#fixed" id="toc-fixed" class="nav-link" data-scroll-target="#fixed">Fixed</a></li>
+  <li><a href="#changed-1" id="toc-changed-1" class="nav-link" data-scroll-target="#changed-1">Changed</a></li>
+  <li><a href="#fixed-1" id="toc-fixed-1" class="nav-link" data-scroll-target="#fixed-1">Fixed</a></li>
   </ul></li>
   <li><a href="#extension-v2.0.0---2026-08-09" id="toc-extension-v2.0.0---2026-08-09" class="nav-link" data-scroll-target="#extension-v2.0.0---2026-08-09">[extension-v2.0.0] - 2026-08-09</a>
   <ul class="collapse">
   <li><a href="#added-1" id="toc-added-1" class="nav-link" data-scroll-target="#added-1">Added</a></li>
-  <li><a href="#changed-1" id="toc-changed-1" class="nav-link" data-scroll-target="#changed-1">Changed</a></li>
+  <li><a href="#changed-2" id="toc-changed-2" class="nav-link" data-scroll-target="#changed-2">Changed</a></li>
   </ul></li>
   <li><a href="#cli-v0.1.0---2026-06-15" id="toc-cli-v0.1.0---2026-06-15" class="nav-link" data-scroll-target="#cli-v0.1.0---2026-06-15">[cli-v0.1.0] - 2026-06-15</a>
   <ul class="collapse">
@@ -372,38 +377,38 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#extension-v1.5.0---2026-06-15" id="toc-extension-v1.5.0---2026-06-15" class="nav-link" data-scroll-target="#extension-v1.5.0---2026-06-15">[extension-v1.5.0] - 2026-06-15</a>
   <ul class="collapse">
-  <li><a href="#changed-2" id="toc-changed-2" class="nav-link" data-scroll-target="#changed-2">Changed</a></li>
-  <li><a href="#fixed-1" id="toc-fixed-1" class="nav-link" data-scroll-target="#fixed-1">Fixed</a></li>
+  <li><a href="#changed-3" id="toc-changed-3" class="nav-link" data-scroll-target="#changed-3">Changed</a></li>
+  <li><a href="#fixed-2" id="toc-fixed-2" class="nav-link" data-scroll-target="#fixed-2">Fixed</a></li>
   </ul></li>
   <li><a href="#extension-v1.4.0---2026-05-09" id="toc-extension-v1.4.0---2026-05-09" class="nav-link" data-scroll-target="#extension-v1.4.0---2026-05-09">[extension-v1.4.0] - 2026-05-09</a>
   <ul class="collapse">
   <li><a href="#added-3" id="toc-added-3" class="nav-link" data-scroll-target="#added-3">Added</a></li>
-  <li><a href="#fixed-2" id="toc-fixed-2" class="nav-link" data-scroll-target="#fixed-2">Fixed</a></li>
-  <li><a href="#changed-3" id="toc-changed-3" class="nav-link" data-scroll-target="#changed-3">Changed</a></li>
+  <li><a href="#fixed-3" id="toc-fixed-3" class="nav-link" data-scroll-target="#fixed-3">Fixed</a></li>
+  <li><a href="#changed-4" id="toc-changed-4" class="nav-link" data-scroll-target="#changed-4">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.3.0---2026-05-07" id="toc-extension-v1.3.0---2026-05-07" class="nav-link" data-scroll-target="#extension-v1.3.0---2026-05-07">[extension-v1.3.0] - 2026-05-07</a>
   <ul class="collapse">
   <li><a href="#added-4" id="toc-added-4" class="nav-link" data-scroll-target="#added-4">Added</a></li>
-  <li><a href="#fixed-3" id="toc-fixed-3" class="nav-link" data-scroll-target="#fixed-3">Fixed</a></li>
+  <li><a href="#fixed-4" id="toc-fixed-4" class="nav-link" data-scroll-target="#fixed-4">Fixed</a></li>
   </ul></li>
   <li><a href="#extension-v1.2.0---2026-04-22" id="toc-extension-v1.2.0---2026-04-22" class="nav-link" data-scroll-target="#extension-v1.2.0---2026-04-22">[extension-v1.2.0] - 2026-04-22</a>
   <ul class="collapse">
   <li><a href="#added-5" id="toc-added-5" class="nav-link" data-scroll-target="#added-5">Added</a></li>
-  <li><a href="#fixed-4" id="toc-fixed-4" class="nav-link" data-scroll-target="#fixed-4">Fixed</a></li>
-  <li><a href="#changed-4" id="toc-changed-4" class="nav-link" data-scroll-target="#changed-4">Changed</a></li>
+  <li><a href="#fixed-5" id="toc-fixed-5" class="nav-link" data-scroll-target="#fixed-5">Fixed</a></li>
+  <li><a href="#changed-5" id="toc-changed-5" class="nav-link" data-scroll-target="#changed-5">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.1.0---2026-04-05" id="toc-extension-v1.1.0---2026-04-05" class="nav-link" data-scroll-target="#extension-v1.1.0---2026-04-05">[extension-v1.1.0] - 2026-04-05</a>
   <ul class="collapse">
   <li><a href="#added-6" id="toc-added-6" class="nav-link" data-scroll-target="#added-6">Added</a></li>
-  <li><a href="#fixed-5" id="toc-fixed-5" class="nav-link" data-scroll-target="#fixed-5">Fixed</a></li>
-  <li><a href="#changed-5" id="toc-changed-5" class="nav-link" data-scroll-target="#changed-5">Changed</a></li>
+  <li><a href="#fixed-6" id="toc-fixed-6" class="nav-link" data-scroll-target="#fixed-6">Fixed</a></li>
+  <li><a href="#changed-6" id="toc-changed-6" class="nav-link" data-scroll-target="#changed-6">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.0.0---2026-03-02" id="toc-extension-v1.0.0---2026-03-02" class="nav-link" data-scroll-target="#extension-v1.0.0---2026-03-02">[extension-v1.0.0] - 2026-03-02</a>
   <ul class="collapse">
   <li><a href="#added-7" id="toc-added-7" class="nav-link" data-scroll-target="#added-7">Added</a></li>
-  <li><a href="#fixed-6" id="toc-fixed-6" class="nav-link" data-scroll-target="#fixed-6">Fixed</a></li>
+  <li><a href="#fixed-7" id="toc-fixed-7" class="nav-link" data-scroll-target="#fixed-7">Fixed</a></li>
   <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">Security</a></li>
-  <li><a href="#changed-6" id="toc-changed-6" class="nav-link" data-scroll-target="#changed-6">Changed</a></li>
+  <li><a href="#changed-7" id="toc-changed-7" class="nav-link" data-scroll-target="#changed-7">Changed</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -424,6 +429,21 @@ ul.task-list li input[type="checkbox"] {
 <section id="unreleased" class="level2">
 <h2 class="anchored" data-anchor-id="unreleased">[Unreleased]</h2>
 </section>
+<section id="extension-v2.2.0---2026-08-17" class="level2">
+<h2 class="anchored" data-anchor-id="extension-v2.2.0---2026-08-17">[extension-v2.2.0] - 2026-08-17</h2>
+<section id="changed" class="level3">
+<h3 class="anchored" data-anchor-id="changed">Changed</h3>
+<ul>
+<li>Prevent Content Script from always being loaded and instead only load it when extension sidebar is open.</li>
+</ul>
+</section>
+<section id="fixed" class="level3">
+<h3 class="anchored" data-anchor-id="fixed">Fixed</h3>
+<ul>
+<li>Properly cleanup inspector when extension sidebar closed i.e remove highlights, event listeners and restore cursor.</li>
+</ul>
+</section>
+</section>
 <section id="extension-v2.1.0---2026-08-16" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v2.1.0---2026-08-16">[extension-v2.1.0] - 2026-08-16</h2>
 <section id="added" class="level3">
@@ -436,14 +456,14 @@ ul.task-list li input[type="checkbox"] {
 <li>Add urlPattern implementation for controlling which URLs config applies to.</li>
 </ul>
 </section>
-<section id="changed" class="level3">
-<h3 class="anchored" data-anchor-id="changed">Changed</h3>
+<section id="changed-1" class="level3">
+<h3 class="anchored" data-anchor-id="changed-1">Changed</h3>
 <ul>
 <li>Use IntersectionObserver to prevent hanging when too many elements are highlighted.</li>
 </ul>
 </section>
-<section id="fixed" class="level3">
-<h3 class="anchored" data-anchor-id="fixed">Fixed</h3>
+<section id="fixed-1" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-1">Fixed</h3>
 <ul>
 <li>Fix problem where sidebar requires multiple clicks to open.</li>
 <li>Cleanup changes made to DOM when inspector is launched such as event listeners and HTML elements.</li>
@@ -461,8 +481,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Add user confirmation for destructive actions</li>
 </ul>
 </section>
-<section id="changed-1" class="level3">
-<h3 class="anchored" data-anchor-id="changed-1">Changed</h3>
+<section id="changed-2" class="level3">
+<h3 class="anchored" data-anchor-id="changed-2">Changed</h3>
 <ul>
 <li>Breaking refactor of scrape configuration format</li>
 <li>Update field definition UI to support new Field schema</li>
@@ -484,14 +504,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.5.0---2026-06-15" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.5.0---2026-06-15">[extension-v1.5.0] - 2026-06-15</h2>
-<section id="changed-2" class="level3">
-<h3 class="anchored" data-anchor-id="changed-2">Changed</h3>
+<section id="changed-3" class="level3">
+<h3 class="anchored" data-anchor-id="changed-3">Changed</h3>
 <ul>
 <li>Switch to generalized extractor. Mostly code change as functionality is identical</li>
 </ul>
 </section>
-<section id="fixed-1" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-1">Fixed</h3>
+<section id="fixed-2" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-2">Fixed</h3>
 <ul>
 <li>Fix how logging is handled in content vs background scripts</li>
 <li>Simplify how pages are compared.</li>
@@ -507,14 +527,14 @@ ul.task-list li input[type="checkbox"] {
 <li>Switch to logtape for logging for clearer information</li>
 </ul>
 </section>
-<section id="fixed-2" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-2">Fixed</h3>
+<section id="fixed-3" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-3">Fixed</h3>
 <ul>
 <li>Handle newlines in results which broke markdown table exports</li>
 </ul>
 </section>
-<section id="changed-3" class="level3">
-<h3 class="anchored" data-anchor-id="changed-3">Changed</h3>
+<section id="changed-4" class="level3">
+<h3 class="anchored" data-anchor-id="changed-4">Changed</h3>
 <ul>
 <li>Improve results downloading</li>
 </ul>
@@ -528,8 +548,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Add retries for various failure states</li>
 </ul>
 </section>
-<section id="fixed-3" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-3">Fixed</h3>
+<section id="fixed-4" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-4">Fixed</h3>
 <ul>
 <li>Add better log messages</li>
 <li>Add global stop event for user interruption of execution</li>
@@ -548,16 +568,16 @@ ul.task-list li input[type="checkbox"] {
 <li>Add search and sort in library component</li>
 </ul>
 </section>
-<section id="fixed-4" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-4">Fixed</h3>
+<section id="fixed-5" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-5">Fixed</h3>
 <ul>
 <li>Change how selector array type is toggled</li>
 <li>Change button style to be more visible</li>
 <li>Switching to none pagination now works</li>
 </ul>
 </section>
-<section id="changed-4" class="level3">
-<h3 class="anchored" data-anchor-id="changed-4">Changed</h3>
+<section id="changed-5" class="level3">
+<h3 class="anchored" data-anchor-id="changed-5">Changed</h3>
 <ul>
 <li>Default to Use dark colorscheme</li>
 </ul>
@@ -573,15 +593,15 @@ ul.task-list li input[type="checkbox"] {
 <li>Add export for individual group data</li>
 </ul>
 </section>
-<section id="fixed-5" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-5">Fixed</h3>
+<section id="fixed-6" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-6">Fixed</h3>
 <ul>
 <li>Exit early when no pagination defined</li>
 <li>Allow use of xpath for container selector</li>
 </ul>
 </section>
-<section id="changed-5" class="level3">
-<h3 class="anchored" data-anchor-id="changed-5">Changed</h3>
+<section id="changed-6" class="level3">
+<h3 class="anchored" data-anchor-id="changed-6">Changed</h3>
 <ul>
 <li>Modify DataTable style</li>
 </ul>
@@ -636,8 +656,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Add data copying to clipboard including HTML and Markdown tables</li>
 </ul>
 </section>
-<section id="fixed-6" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-6">Fixed</h3>
+<section id="fixed-7" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-7">Fixed</h3>
 <ul>
 <li>Use async function to fix status update</li>
 <li><em>(sidebar)</em> Move StatusIndicator and format</li>
@@ -660,8 +680,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Narrow CSP and update plugin description</li>
 </ul>
 </section>
-<section id="changed-6" class="level3">
-<h3 class="anchored" data-anchor-id="changed-6">Changed</h3>
+<section id="changed-7" class="level3">
+<h3 class="anchored" data-anchor-id="changed-7">Changed</h3>
 <ul>
 <li>Move to pnpm and fix issues found by eslint</li>
 <li>Change package name to page-sieve</li>
@@ -766,7 +786,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/github\.com\/julius383\/PageSieve");
+        var filterRegex = new RegExp("https:\/\/julius383\.github\.io\/PageSieve\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

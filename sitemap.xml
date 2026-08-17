@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/julius383/PageSieve/roadmap.html</loc>
+    <loc>https://julius383.github.io/PageSieve/roadmap.html</loc>
     <lastmod>2026-08-16T12:57:55.642Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/reference/configuration.html</loc>
+    <loc>https://julius383.github.io/PageSieve/reference/configuration.html</loc>
     <lastmod>2026-06-21T09:34:31.916Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/examples/scraping-fortune-500-companies.html</loc>
+    <loc>https://julius383.github.io/PageSieve/examples/scraping-fortune-500-companies.html</loc>
     <lastmod>2026-08-15T13:46:39.981Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/examples/scraping-mzalendo-profiles.html</loc>
+    <loc>https://julius383.github.io/PageSieve/examples/scraping-mzalendo-profiles.html</loc>
     <lastmod>2026-08-15T13:46:39.981Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/examples/index.html</loc>
+    <loc>https://julius383.github.io/PageSieve/examples/index.html</loc>
     <lastmod>2026-08-15T13:46:39.978Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/CHANGELOG.html</loc>
-    <lastmod>2026-08-16T12:16:04.965Z</lastmod>
+    <loc>https://julius383.github.io/PageSieve/CHANGELOG.html</loc>
+    <lastmod>2026-08-17T11:04:55.624Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/getting-started.html</loc>
+    <loc>https://julius383.github.io/PageSieve/getting-started.html</loc>
     <lastmod>2026-05-08T09:18:52.508Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/index.html</loc>
+    <loc>https://julius383.github.io/PageSieve/index.html</loc>
     <lastmod>2026-08-15T13:47:04.612Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/contributing.html</loc>
+    <loc>https://julius383.github.io/PageSieve/contributing.html</loc>
     <lastmod>2026-08-15T13:46:39.978Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/architecture.html</loc>
+    <loc>https://julius383.github.io/PageSieve/architecture.html</loc>
     <lastmod>2026-08-15T13:46:39.967Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/examples/scraping-mzalendo-members-of-national-assembly.html</loc>
+    <loc>https://julius383.github.io/PageSieve/examples/scraping-mzalendo-members-of-national-assembly.html</loc>
     <lastmod>2026-08-15T13:46:39.981Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/examples/scraping-quotes-to-scrape.html</loc>
+    <loc>https://julius383.github.io/PageSieve/examples/scraping-quotes-to-scrape.html</loc>
     <lastmod>2026-08-15T13:46:39.981Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/reference/extension-ui.html</loc>
+    <loc>https://julius383.github.io/PageSieve/reference/extension-ui.html</loc>
     <lastmod>2026-08-15T13:46:39.982Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/julius383/PageSieve/reference/scraping-engine.html</loc>
+    <loc>https://julius383.github.io/PageSieve/reference/scraping-engine.html</loc>
     <lastmod>2026-05-19T07:50:43.721Z</lastmod>
   </url>
 </urlset>
