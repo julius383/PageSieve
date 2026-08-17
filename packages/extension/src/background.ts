@@ -9,7 +9,6 @@ import { initExtensionLogger } from '@/logger';
 initExtensionLogger();
 const logger = getLogger(['ext', 'background']);
 
-
 browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.toggle();
 });
@@ -57,8 +56,34 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
     });
 }
 
+async function cleanupContentScripts() {
+    console.log('Running cleanup');
+    const tabs = await browser.tabs.query({});
+
+    await Promise.all(
+        tabs
+            .filter((tab) => tab.id !== undefined)
+            .map(async (tab) => {
+                try {
+                    await browser.tabs.sendMessage(tab.id!, {
+                        action: 'sidebar-closing',
+                    });
+                } catch {
+                    // No content script
+                }
+            }),
+    );
+}
+
+browser.runtime.onConnect.addListener((port) => {
+    if (port.name !== 'sidebar') return;
+
+    port.onDisconnect.addListener(() => {
+        cleanupContentScripts();
+    });
+});
+
 browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
-    // Handle start request from Sidebar
     if (request.action === 'runMain') {
         if (scrapeActor) scrapeActor.stop();
 

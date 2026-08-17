@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import ActionBar from '@/ui/sidebar/components/ActionBar.svelte';
     import SavedLibrary from '@/ui/sidebar/components/SavedLibrary.svelte';
     import ResultsViewer from '@/ui/sidebar/components/ResultsViewer.svelte';
@@ -21,8 +22,49 @@
 
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
 
-    let logViewerAccordionValue = $state<string | undefined>(undefined);
+    let registeredScript: browser.contentScripts.RegisteredContentScript | null = null;
+    onMount(() => {
+        // connect to background script to signal when sidebar closed using disconnect
+        const port = browser.runtime.connect({ name: 'sidebar' });
+        async function setup() {
+            // TODO: make this configurable in settings in case user only wants content script in activeTab
+            registeredScript = await browser.contentScripts.register({
+                matches: ['<all_urls>'],
+                js: [{ file: 'content.js' }],
+                runAt: 'document_idle',
+            });
 
+            // inject into current tab
+            const [tab] = await browser.tabs.query({
+                active: true,
+                currentWindow: true,
+            });
+
+            if (tab?.id !== undefined) {
+                await browser.tabs
+                    .executeScript(tab.id, {
+                        file: 'content.js',
+                        runAt: 'document_idle',
+                    })
+                    .catch(() => {});
+            }
+        }
+        setup();
+
+        return () => {
+            void cleanup();
+            port.disconnect();
+        };
+    });
+
+    async function cleanup() {
+        if (registeredScript) {
+            await registeredScript.unregister();
+            registeredScript = null;
+        }
+    }
+
+    let logViewerAccordionValue = $state<string | undefined>(undefined);
 
     const totalResults = $derived(
         extractedData.data.reduce((sum, group) => sum + group.results.length, 0),

@@ -4,12 +4,12 @@ import type { SelectorGroup } from '@pagesieve/core/schema';
 import { DOMInspector } from '@/dominspector';
 import { getLogger } from '@pagesieve/core/logger';
 import { initExtensionLogger } from '@/logger';
-initExtensionLogger();
 import { executeExtraction } from '@pagesieve/core/extractor';
 import { browserEngine } from './browserEngine';
 
+initExtensionLogger();
 const logger = getLogger(['ext', 'content']);
-const inspector = new DOMInspector();
+const inspector: DOMInspector | null = new DOMInspector();
 
 /**
  * Waits for the DOM to stop changing for a specified duration
@@ -56,8 +56,18 @@ function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
     return executeExtraction(browserEngine, document, selectors);
 }
 
+function cleanup() {
+    inspector?.deactivate();
+}
+
 browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<unknown> => {
-    if (request.action === 'extractData') {
+    // console.log('PageSieve content script received message');
+    // console.dir(request);
+    if (request.action === 'sidebar-closing') {
+        // console.log('unloading sidebar in content script');
+        cleanup();
+        return { success: true };
+    } else if (request.action === 'extractData') {
         try {
             const result = extractDataFromPage(request.selectors);
             return {
@@ -86,7 +96,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         }
         inspector.activate(request.pickerId, request.container, false);
         const foundElements = inspector.showSelectorHighlight(request.selector);
-        return { isActive: inspector.isActive, foundElements: foundElements}
+        return { isActive: inspector.isActive, foundElements: foundElements };
     } else if (request.action === 'inspector-accept') {
         const selector = inspector.guessSelector();
         inspector.deactivate();
@@ -148,3 +158,5 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
     }
     return false;
 });
+
+// console.log('PageSieve content script loaded');

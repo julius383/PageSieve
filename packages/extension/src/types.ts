@@ -86,6 +86,10 @@ type InspectorAcceptRequest = {
     action: 'inspector-accept';
 };
 
+type SidebarClosingRequest = {
+    action: 'sidebar-closing';
+};
+
 type ClickAndWaitRequest = {
     action: 'clickAndWaitForStable';
     selector: string;
@@ -119,6 +123,7 @@ export type MessageRequest =
     | InspectorPreviewRequest
     | InspectorAcceptRequest
     | ClickAndWaitRequest
+    | SidebarClosingRequest
     | PageHashRequest;
 
 export type BackgroundRequest =

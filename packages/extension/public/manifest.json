@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
     "name": "PageSieve",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit. Define field names, CSS selectors and (optionally) pagination strategy through a sidebar and extract and export data in a variety of formats.",
-    "permissions": ["activeTab", "tabs", "storage"],
+    "permissions": ["activeTab", "tabs", "storage", "<all_urls>"],
     "optional_permissions": ["nativeMessaging"],
     "content_security_policy": "script-src 'self'; object-src 'self';",
     "browser_specific_settings": {
@@ -33,11 +33,5 @@
             "64": "icons/icon64.png",
             "128": "icons/icon128.png"
         }
-    },
-    "content_scripts": [
-        {
-            "matches": ["http://*/*", "https://*/*", "file://*/*", "ftp://*/*"],
-            "js": ["content.js"]
-        }
-    ]
+    }
 }

@@ -1,6 +1,6 @@
 {
     "name": "@pagesieve/extension",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "type": "module",
     "scripts": {
         "build": "bun run build:main && bun run build:content",

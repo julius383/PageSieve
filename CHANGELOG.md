@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.2.0] - 2026-08-17
+
+### Changed
+
+- Prevent Content Script from always being loaded and instead only load it
+  when extension sidebar is open.
+
+### Fixed
+
+- Properly cleanup inspector when extension sidebar closed i.e remove
+  highlights, event listeners and restore cursor.
+
 ## [extension-v2.1.0] - 2026-08-16
 
 ### Added
