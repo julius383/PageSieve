@@ -247,6 +247,7 @@ export async function runConfig() {
                 return;
             }
         }
+        scrapeConfig.id = await generateConfigId(scrapeConfig.url || '', config.selectors);
 
         browser.runtime.sendMessage({
             action: 'runMain',
