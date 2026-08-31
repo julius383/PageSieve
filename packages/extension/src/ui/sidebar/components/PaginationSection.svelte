@@ -3,7 +3,7 @@
 
     import * as Tabs from '$lib/components/ui/tabs/index.js';
     import * as Field from '$lib/components/ui/field/index.js';
-    import * as Item from "$lib/components/ui/item/index.js";
+    import * as Item from '$lib/components/ui/item/index.js';
     import { Textarea } from '$lib/components/ui/textarea/index.js';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
@@ -79,7 +79,8 @@
                 <Item.Content>
                     <Item.Title>None Pagination</Item.Title>
                     <Item.Description
-                    >No navigation only extracts config <a href="#main-url">url</a> field.</Item.Description>
+                        >No navigation only extracts config <a href="#main-url">url</a> field.</Item.Description
+                    >
                 </Item.Content>
             </Item.Root>
         </Tabs.Content>
@@ -87,8 +88,7 @@
             <Item.Root variant="outline" size="sm">
                 <Item.Content>
                     <Item.Title>Next Pagination</Item.Title>
-                    <Item.Description
-                    >Navigate by clicking on selected element.</Item.Description>
+                    <Item.Description>Navigate by clicking on selected element.</Item.Description>
                 </Item.Content>
             </Item.Root>
             <ElementPicker
@@ -116,8 +116,7 @@
             <Item.Root variant="outline" size="sm">
                 <Item.Content>
                     <Item.Title>Links Pagination</Item.Title>
-                    <Item.Description
-                    >List of links to extract in turn.</Item.Description>
+                    <Item.Description>List of links to extract in turn.</Item.Description>
                 </Item.Content>
             </Item.Root>
             <div class="grid w-full gap-1.5">
@@ -131,7 +130,9 @@
                                 oninput={updateLinks}
                                 value={paginationState.links.pageLinks.join('\n')}
                             />
-                            <Field.Description>{paginationState.links.pageLinks.length} links</Field.Description>
+                            <Field.Description
+                                >{paginationState.links.pageLinks.length} links</Field.Description
+                            >
                         </Field.Field>
                     </Field.Group>
                 </Field.Set>
@@ -141,8 +142,7 @@
             <Item.Root variant="outline" size="sm">
                 <Item.Content>
                     <Item.Title>URL Template Pagination</Item.Title>
-                    <Item.Description
-                    >Navigate through pages with numbered pages.</Item.Description>
+                    <Item.Description>Navigate through pages with numbered pages.</Item.Description>
                 </Item.Content>
             </Item.Root>
             <Field.Set>
@@ -211,7 +211,11 @@
                     <code class="block overflow-auto">
                         {paginationState.template.urlTemplate.replace(
                             '{{page}}',
-                            String(paginationState.template.maxPages),
+                            String(
+                                paginationState.template.startPage +
+                                    paginationState.template.increment *
+                                        (paginationState.template.maxPages - 1)
+                            ),
                         )}
                     </code>
                 </div>
