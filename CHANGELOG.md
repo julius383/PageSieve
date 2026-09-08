@@ -16,11 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Prevent Content Script from always being loaded and instead only load it
   when extension sidebar is open.
+- Core ExtractorEngine now expects an async API, modified to simplify support
+  for playwright client.
 
 ### Fixed
 
 - Properly cleanup inspector when extension sidebar closed i.e remove
   highlights, event listeners and restore cursor.
+- Correctly handle negative increment in link preview for "URL Template" pagination.
+- Update `id` field in config when an existing config (from load) is modified.
 
 ## [extension-v2.1.0] - 2026-08-16
 
