@@ -251,7 +251,7 @@ export class DOMInspector {
         });
         this.observedMatchElements.clear();
 
-        let elements = browserEngine.querySelectorAll(document.body, selector);
+        let elements = browserEngine.querySelectorAll(document.body, selector) as Element[];
 
         // narrow highlighted elements by container if possible
         const scope = this.containerScope;

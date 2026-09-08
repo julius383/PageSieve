@@ -52,7 +52,7 @@ async function waitForDOMStable(
 /**
  * Extracts data from DOM elements using provided selectors
  */
-function extractDataFromPage(selectors: SelectorGroup[]): ExtractedGroup[] {
+async function extractDataFromPage(selectors: SelectorGroup[]): Promise<ExtractedGroup[]> {
     return executeExtraction(browserEngine, document, selectors);
 }
 
@@ -69,7 +69,7 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
         return { success: true };
     } else if (request.action === 'extractData') {
         try {
-            const result = extractDataFromPage(request.selectors);
+            const result = await extractDataFromPage(request.selectors);
             return {
                 result,
                 success: true,
@@ -104,9 +104,9 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
     } else if (request.action === 'computePageHash') {
         let text: string = '';
 
-        request.selectors.forEach((elem) => {
+        request.selectors.forEach(async (elem) => {
             if (elem.container) {
-                const containers = browserEngine.querySelectorAll(document.body, elem.container);
+                const containers = await browserEngine.querySelectorAll(document.body, elem.container);
                 logger.debug('Found {count} container elements', { count: containers.length });
                 if (containers.length > 0) {
                     text += containers.map((i) => (i as HTMLElement).innerText).join();

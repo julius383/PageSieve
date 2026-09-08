@@ -17,7 +17,10 @@
         "lint": "eslint packages/",
         "format": "bunx prettier packages/ --write"
     },
-    "dependencies": {},
+    "dependencies": {
+        "ts-pattern": "^5.9.0",
+        "xstate": "^5.32.6"
+    },
     "devDependencies": {
         "@eslint/compat": "^1.4.1",
         "@eslint/eslintrc": "^3.3.6",
