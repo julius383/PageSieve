@@ -36,7 +36,7 @@ export default [
       '**/dist/',
       'apps/extension/src/lib/**',
       'apps/extension/src/selectorgadget.ts',
-      'tailwind.config.js',
+      '**/tailwind.config.js',
       'apps/**/vite.config.js',
       'packages/**/vite.config.js',
       '*.hbs',

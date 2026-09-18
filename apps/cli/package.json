@@ -12,9 +12,12 @@
         "@pagesieve/core": "workspace:*",
         "crawlee": "^3.16.0",
         "ts-pattern": "^5.9.0",
-        "zod": "^4.4.3"
+        "zod": "^4.6.5"
     },
     "devDependencies": {
-        "vite": "^7.3.3"
+        "@types/node": "^22.20.3",
+        "@yoichiro/vite-plugin-handlebars": "^1.4.0",
+        "handlebars": "^4.7.9",
+        "vite": "^8.3.0"
     }
 }
