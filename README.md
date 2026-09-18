@@ -1,5 +1,5 @@
 <div align="center">
-  <img align="center" src="/packages/extension/public/icons/icon128.png" >
+  <img align="center" src="/apps/extension/public/icons/icon128.png" >
   <h1><a href="https://julius383.github.io/PageSieve/">PageSieve</a></h1>
 </div>
 
@@ -68,25 +68,13 @@ Generated with `broot --cmd ":pt" --height 150 --sort-by-type-dirs-first > tree.
 ```
 /PageSieve
  ├──docs …                                        # Quarto based documentation
- ├──packages 
+ ├──apps
  │  ├──cli 
  │  │  ├──src 
  │  │  │  ├──cheerioDriver.ts                     # implements cheerio based crawler logic
  │  │  │  └──main.ts                              # main CLI entrypoint
  │  │  ├──package.json 
  │  │  └──vite.config.js 
- │  ├──core 
- │  │  ├──src 
- │  │  │  ├──templates …                          # handlebar templates for data export to various formats
- │  │  │  ├──converters.ts                        # functions for converting results to different formats for saving
- │  │  │  ├──extractor.ts                         # reusable extraction logic 
- │  │  │  ├──index.ts 
- │  │  │  ├──logger.ts                            # shared logging config
- │  │  │  ├──schema.ts                            # Zod schema for Scrape Config
- │  │  │  ├──scrapeMachine.ts                     # state machine for browser based scraping workflows
- │  │  │  ├──types.ts 
- │  │  │  └──util.ts 
- │  │  └──package.json 
  │  └──extension
  │     ├──public 
  │     │  ├──icons …
@@ -126,6 +114,19 @@ Generated with `broot --cmd ":pt" --height 150 --sort-by-type-dirs-first > tree.
  │     ├──components.json                         # shadcn-svelte config
  │     ├──package.json 
  │     └──vite.config.js
+ ├──packages 
+ │  └──core 
+ │     ├──src 
+ │     │  ├──templates …                          # handlebar templates for data export to various formats
+ │     │  ├──converters.ts                        # functions for converting results to different formats for saving
+ │     │  ├──extractor.ts                         # reusable extraction logic 
+ │     │  ├──index.ts 
+ │     │  ├──logger.ts                            # shared logging config
+ │     │  ├──schema.ts                            # Zod schema for Scrape Config
+ │     │  ├──scrapeMachine.ts                     # state machine for browser based scraping workflows
+ │     │  ├──types.ts 
+ │     │  └──util.ts 
+ │     └──package.json
  ├──scripts 
  │  ├──relay.py                                   # native_relay for advanced debugging
  │  ├──render-annotations.ts                      # script for rendering tippy.js annotations for docs/reference/{extension-ui.qmd,scraping-engine.qmd}

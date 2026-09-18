@@ -7,9 +7,9 @@ const BUILD_TARGET = process.env.BUILD_TARGET ?? 'main'; // 'main' | 'content'
 
 const sharedResolve = {
     alias: {
-        '@': resolve(__dirname, './src'),
-        $lib: resolve(__dirname, './src/lib'),
-        '@pagesieve/core': resolve(__dirname, '../core/src'),
+        '@': resolve(import.meta.dirname, './src'),
+        $lib: resolve(import.meta.dirname, './src/lib'),
+        '@pagesieve/core': resolve(import.meta.dirname, '../../packages/core/src'),
     },
 };
 
@@ -26,10 +26,10 @@ const mainConfig = defineConfig({
         modulePreload: false,
         rollupOptions: {
             input: {
-                sidebar: resolve(__dirname, 'src/ui/sidebar/main.ts'),
-                fullpage: resolve(__dirname, 'src/ui/fullpage/main.ts'),
-                background: resolve(__dirname, 'src/background.ts'),
-                app: resolve(__dirname, 'src/ui/app.css'),
+                sidebar: resolve(import.meta.dirname, 'src/ui/sidebar/main.ts'),
+                fullpage: resolve(import.meta.dirname, 'src/ui/fullpage/main.ts'),
+                background: resolve(import.meta.dirname, 'src/background.ts'),
+                app: resolve(import.meta.dirname, 'src/ui/app.css'),
             },
             output: {
                 entryFileNames: '[name].js',
@@ -47,7 +47,7 @@ const contentConfig = defineConfig({
         sourcemap: true,
         emptyOutDir: false,
         lib: {
-            entry: resolve(__dirname, 'src/content.ts'),
+            entry: resolve(import.meta.dirname, 'src/content.ts'),
             formats: ['iife'],
             name: 'content',
             fileName: () => 'content.js',

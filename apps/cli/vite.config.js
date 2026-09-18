@@ -5,7 +5,7 @@ import { resolve } from 'path';
 export default defineConfig({
     resolve: {
         alias: {
-            '@pagesieve/core': resolve(__dirname, '../core/src'),
+            '@pagesieve/core': resolve(__dirname, '../../packages/core/src'),
         },
     },
     plugins: [handlebars({ runtime: 'handlebars/dist/handlebars.runtime.js' })],

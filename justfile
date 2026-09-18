@@ -8,27 +8,27 @@ build-extension:
   bun run --filter @pagesieve/extension build
 
 build-cli:
-  bun run --filter @pagesieve/cli build && chmod +x packages/cli/dist/pagesieve.js
+  bun run --filter @pagesieve/cli build && chmod +x apps/cli/dist/pagesieve.js
 
 run-cli config:
-  ./packages/cli/dist/pagesieve.js --config {{config}}
+  ./apps/cli/dist/pagesieve.js --config {{config}}
 
 watch:
-  fd -t f . packages | entr -c just build
+  fd -t f . packages apps | entr -c just build
 
 format:
-  bunx prettier packages/ --write
+  bunx prettier packages/ apps/ --write
 
 tasks:
-  rg 'TODO|FIXME' --glob '!packages/extension/src/lib/**' --glob "!justfile"
+  rg 'TODO|FIXME' --glob '!apps/extension/src/lib/**' --glob "!justfile"
 
 zip-dist:
   rm pagesieve.zip || true
-  cd packages/extension/dist/ && zip -r ../../../pagesieve.zip *
+  cd apps/extension/dist/ && zip -r ../../../pagesieve.zip *
 
 zip-source:
   rm pagesieve_source.zip || true
-  git ls-files -z packages/extension | xargs -0 zip pagesieve_source.zip
+  git ls-files -z apps/extension | xargs -0 zip pagesieve_source.zip
 
 render-annotations:
   bun scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html

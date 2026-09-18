@@ -17,19 +17,21 @@
         "verbatimModuleSyntax": false,
         "paths": {
             "@pagesieve/core": ["./packages/core/src/index.ts"],
-            "@/*": ["./packages/extension/src/*"],
+            "@/*": ["./apps/extension/src/*"],
             "@pagesieve/core/*": ["./packages/core/src/*"],
-            "$lib": ["./packages/extension/src/lib"],
-            "$lib/*": ["./packages/extension/src/lib/*"]
+            "$lib": ["./apps/extension/src/lib"],
+            "$lib/*": ["./apps/extension/src/lib/*"]
         }
     },
     "include": [
         "packages/**/*.d.ts",
         "packages/**/*.ts",
-        "packages/**/*.d.ts",
-        "packages/**/*.svelte"
+        "packages/**/*.svelte",
+        "apps/**/*.d.ts",
+        "apps/**/*.ts",
+        "apps/**/*.svelte"
     ],
     "exclude": [
-        "packages/extension/src/lib",
+        "apps/extension/src/lib"
     ]
 }
