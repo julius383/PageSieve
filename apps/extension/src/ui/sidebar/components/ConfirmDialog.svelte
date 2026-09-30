@@ -33,7 +33,9 @@
             </div>
         </AlertDialog.Header>
         <AlertDialog.Footer>
-            <AlertDialog.Cancel onclick={handleCancel}>{confirmState.cancelLabel}</AlertDialog.Cancel>
+            <AlertDialog.Cancel onclick={handleCancel}
+                >{confirmState.cancelLabel}</AlertDialog.Cancel
+            >
             <AlertDialog.Action
                 class={buttonVariants({ variant: confirmState.variant })}
                 onclick={handleConfirm}>{confirmState.confirmLabel}</AlertDialog.Action

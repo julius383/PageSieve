@@ -58,7 +58,9 @@
                     id="urlpattern"
                     oninput={(e) => updateKey('urlPattern', e.currentTarget.value)}
                 />
-                <Field.Description>Pages this config applies to simple url or regex.</Field.Description>
+                <Field.Description
+                    >Pages this config applies to simple url or regex.</Field.Description
+                >
             </Field.Field>
         </Field.Group>
     </Field.Set>

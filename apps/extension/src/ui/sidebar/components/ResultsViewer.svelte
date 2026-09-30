@@ -22,7 +22,12 @@
     import { downloadBundle, clipboardCopy, downloadFormat } from '@/ui/sidebar/util';
 
     import { extractedData, resetExtractedData } from '@/ui/sidebar/stores/ui.svelte';
-    import { saveResults, getLatestResults, saveLogs, saveSnapshot } from '@/ui/sidebar/services/storage';
+    import {
+        saveResults,
+        getLatestResults,
+        saveLogs,
+        saveSnapshot,
+    } from '@/ui/sidebar/services/storage';
     import { logStore } from '@/ui/sidebar/stores/logs';
     import { onMount } from 'svelte';
     import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
@@ -62,11 +67,10 @@
         }
     });
 
-
     $effect(() => {
-    // save snapshot of data everytime extractedData is updated
-    const snapshotKey = scrapeConfig.id;
-    if (snapshotKey !== '' && snapshotKey !== undefined) {
+        // save snapshot of data everytime extractedData is updated
+        const snapshotKey = scrapeConfig.id;
+        if (snapshotKey !== '' && snapshotKey !== undefined) {
             saveSnapshot(snapshotKey, extractedData.data);
         }
     });
@@ -93,7 +97,8 @@
         if (
             await confirm({
                 title: 'Clear results data?',
-                description: 'Are you sure you want to clear all the extracted data? This action cannot be undone.',
+                description:
+                    'Are you sure you want to clear all the extracted data? This action cannot be undone.',
                 confirmLabel: 'Clear',
                 variant: 'destructive',
             })
@@ -192,10 +197,9 @@
                                 <DropdownMenu.SubTrigger>Copy {label}</DropdownMenu.SubTrigger>
                                 <DropdownMenu.SubContent>
                                     <DropdownMenu.Item
-                                        onclick={() =>
-                                            clipboardCopy(extractedData.data, format)}
-                                        >All </DropdownMenu.Item
-                                    >
+                                        onclick={() => clipboardCopy(extractedData.data, format)}
+                                        >All
+                                    </DropdownMenu.Item>
                                     {#each extractedData.data as group_data (group_data.id)}
                                         <DropdownMenu.Item
                                             onclick={() =>

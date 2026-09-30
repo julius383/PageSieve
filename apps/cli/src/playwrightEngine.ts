@@ -2,10 +2,9 @@
 import type { Page, Locator } from 'playwright';
 import { match } from 'ts-pattern';
 import { ExtractionEngine, executeExtraction, isXPath } from '@pagesieve/core/extractor';
-import type { PropertyType} from '@pagesieve/core/schema';
+import type { PropertyType } from '@pagesieve/core/schema';
 import { SelectorGroup } from '@pagesieve/core/schema';
 import { ExtractedGroup } from '@pagesieve/core/types';
-
 
 function toPlaywrightSelector(selector: string): string {
     return isXPath(selector) ? `xpath=${selector}` : selector;
@@ -52,7 +51,6 @@ export const playwrightEngine: ExtractionEngine<Page | Locator, Locator> = {
             .then((v) => (typeof v === 'string' ? v.trim() : v));
     },
 };
-
 
 export async function extractWithPlaywright(
     page: Page,

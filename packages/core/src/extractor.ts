@@ -23,10 +23,10 @@ export async function executeExtraction<TContext, TElement>(
 ): Promise<ExtractedGroup[]> {
     const extractionResults: ExtractedGroup[] = [];
 
-    const groupNames = selectors.map(s => s.name);
+    const groupNames = selectors.map((s) => s.name);
     let idKey: 'name' | 'id';
-    if ((new Set(groupNames)).size == groupNames.length) {
-        idKey = 'name'
+    if (new Set(groupNames).size == groupNames.length) {
+        idKey = 'name';
     } else {
         idKey = 'id';
     }
@@ -76,9 +76,7 @@ async function extractField<TContext, TElement>(
             field.selector === '.'
                 ? [context as TElement]
                 : await engine.querySelectorAll(context, field.selector);
-        return await Promise.all(
-            elements.map((el) => resolveFieldValue(engine, el, field)),
-        );
+        return await Promise.all(elements.map((el) => resolveFieldValue(engine, el, field)));
     } else if (field.type === 'single') {
         let element: TElement | null = null;
         if (field.selector === '.') {
@@ -103,7 +101,6 @@ async function resolveFieldValue<TContext, TElement>(
         .with('property', () => engine.getProperty(element, field.property as string))
         .with('attribute', () => engine.getAttribute(element, field.attribute as string))
         .exhaustive();
-
 }
 
 export function isXPath(selector: string): boolean {

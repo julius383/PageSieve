@@ -2,14 +2,14 @@ import { extractWithCheerio } from './cheerioEngine';
 import { match } from 'ts-pattern';
 import { delay } from 'es-toolkit';
 import * as cheerio from 'cheerio';
-import { createFetch, type FetchOptions } from "ofetch";
-import { fetch as undiciFetch, ProxyAgent } from "undici";
+import { createFetch, type FetchOptions } from 'ofetch';
+import { fetch as undiciFetch, ProxyAgent } from 'undici';
 import { PaginationStateStatus } from '@pagesieve/core/types';
 import type { RunOptions } from './commands';
 import { saveOutput } from './util';
 
 const ofetch = createFetch({
-  fetch: undiciFetch as unknown as typeof globalThis.fetch,
+    fetch: undiciFetch as unknown as typeof globalThis.fetch,
 });
 
 type PaginationResult = { status: PaginationStateStatus; msg: string };
@@ -17,9 +17,7 @@ type PaginationResult = { status: PaginationStateStatus; msg: string };
 export async function run(options: RunOptions) {
     const scrapeConfig = options.config;
 
-    console.log(
-        `using proxy ${options.proxy}`,
-    );
+    console.log(`using proxy ${options.proxy}`);
 
     let cfetch = async (url: string, args: FetchOptions = {}) => {
         return await ofetch(url, args);
@@ -29,7 +27,7 @@ export async function run(options: RunOptions) {
         const proxyAgent = new ProxyAgent({
             uri: options.proxy,
             requestTls: { rejectUnauthorized: false }, // TLS to the target site
-            proxyTls: { rejectUnauthorized: false },   // TLS to the proxy (if it's https)
+            proxyTls: { rejectUnauthorized: false }, // TLS to the proxy (if it's https)
         });
         cfetch = async (url: string, args: FetchOptions = {}) => {
             return await ofetch(url, { dispatcher: proxyAgent, ...args });
@@ -57,7 +55,7 @@ export async function run(options: RunOptions) {
                 url: nextUrl,
             });
             extractionResults.map((elem) => {
-                results[elem.id] = [...(results[elem.id] as object[] ?? []), ...elem.results];
+                results[elem.id] = [...((results[elem.id] as object[]) ?? []), ...elem.results];
             });
             // results.push(...extractionResults);
             const pagination = scrapeConfig.pagination;
@@ -135,7 +133,11 @@ export async function run(options: RunOptions) {
         // await saveOutput(results, options.outputFormat, options.outputFile)
         await saveOutput(results, {
             format: options.outputFormat,
-            mode: { kind: options.outputMode, filename: options.outputFile, dir: options.outputFile },
+            mode: {
+                kind: options.outputMode,
+                filename: options.outputFile,
+                dir: options.outputFile,
+            },
         });
     } catch (error) {
         console.error(error);

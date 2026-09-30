@@ -115,7 +115,6 @@ export class DOMInspector {
         this.isActive = true;
         this.isSelecting = selecting;
 
-        
         this.setupObserver();
         window.addEventListener('scroll', this.handleScroll, true);
 
@@ -146,7 +145,8 @@ export class DOMInspector {
         }
 
         if (this.isSelecting) {
-            document.body.style.cursor = this.originalCursor == null ? 'pointer' : this.originalCursor;
+            document.body.style.cursor =
+                this.originalCursor == null ? 'pointer' : this.originalCursor;
 
             this.removeHighlight();
 
@@ -160,7 +160,6 @@ export class DOMInspector {
             window.removeEventListener('mouseout', this.handleMouseOut, true);
             window.removeEventListener('keydown', this.handleKeyDown, true);
             window.removeEventListener('click', this.handleClick, true);
-
         }
         this.removeSelectorHighlight();
         if (this.highlightOverlay) {

@@ -92,7 +92,7 @@ export const browserEngine: ExtractionEngine<Document | Element, Element> = {
         if ((attr == 'href' || attr == 'src') && v?.startsWith('/')) {
             const l = window.location;
             if (l !== undefined) {
-                const urlBase = `${l.protocol}//${l.host}`
+                const urlBase = `${l.protocol}//${l.host}`;
                 v = urlBase + v;
             }
         }

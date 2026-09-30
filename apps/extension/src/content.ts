@@ -106,7 +106,10 @@ browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<u
 
         request.selectors.forEach(async (elem) => {
             if (elem.container) {
-                const containers = await browserEngine.querySelectorAll(document.body, elem.container);
+                const containers = await browserEngine.querySelectorAll(
+                    document.body,
+                    elem.container,
+                );
                 logger.debug('Found {count} container elements', { count: containers.length });
                 if (containers.length > 0) {
                     text += containers.map((i) => (i as HTMLElement).innerText).join();

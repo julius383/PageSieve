@@ -13,9 +13,7 @@ const sharedResolve = {
 };
 
 const mainConfig = defineConfig({
-    plugins: [
-        svelte({ configFile: false, compilerOptions: { runes: true } }),
-    ],
+    plugins: [svelte({ configFile: false, compilerOptions: { runes: true } })],
     resolve: sharedResolve,
     build: {
         outDir: 'dist',

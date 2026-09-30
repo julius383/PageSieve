@@ -24,8 +24,7 @@ export type Snapshot = {
     id: string;
     timestamp: string;
     results: ExtractedGroup[];
-}
-
+};
 
 export async function getLatestResults(): Promise<Snapshot | null> {
     const results = await resultsStore.getItem('latest');
@@ -39,7 +38,7 @@ export async function saveSnapshot(key: string, results: ExtractedGroup[]): Prom
             id: key,
             timestamp: new SvelteDate().toISOString(),
             results,
-        }
+        };
         await resultsStore.setItem(key, snapshot);
     }
 }
@@ -50,7 +49,7 @@ export async function saveResults(results: ExtractedGroup[]): Promise<void> {
 
 export async function getSnapshot(key: string): Promise<Snapshot | null> {
     const results = await resultsStore.getItem(key);
-    return results !== null ? results as Snapshot : null;
+    return results !== null ? (results as Snapshot) : null;
 }
 
 export async function removeSnapshot(key: string): Promise<boolean> {
@@ -64,7 +63,7 @@ export async function removeSnapshot(key: string): Promise<boolean> {
 
 export async function cleanupSnapshots(): Promise<boolean> {
     const snapshots = (await resultsStore.keys()).filter((x: string) => x === 'latest');
-    const removed: boolean[] = []
+    const removed: boolean[] = [];
     for (const key of snapshots) {
         removed.push(await removeSnapshot(key));
     }

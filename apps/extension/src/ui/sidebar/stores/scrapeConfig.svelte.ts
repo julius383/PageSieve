@@ -15,7 +15,6 @@ export const scrapeConfig: ScrapeConfigT = $state({
     pagination: { mode: 'none' },
 });
 
-
 type ConfigKey = keyof ScrapeConfigT;
 
 export function setScrapeConfig(config: ScrapeConfigT) {
@@ -25,8 +24,11 @@ export function setScrapeConfig(config: ScrapeConfigT) {
     Object.assign(scrapeConfig, config);
 }
 
-export function setScrapeConfigValue<K extends keyof ScrapeConfigT>(key: K, value: ScrapeConfigT[K]) {
-    scrapeConfig[key] = value
+export function setScrapeConfigValue<K extends keyof ScrapeConfigT>(
+    key: K,
+    value: ScrapeConfigT[K],
+) {
+    scrapeConfig[key] = value;
 }
 
 export function setPaginationConfig(pagination: PaginationConfig) {
@@ -66,12 +68,11 @@ export function addField(itemID: string) {
         for (const field of group.fields) {
             if (itemID == field.id) {
                 if (field.fields) {
-                    field.fields.push(Field.parse({}))
+                    field.fields.push(Field.parse({}));
                 } else {
                     field.fields = [Field.parse({})];
                 }
             }
-
         }
     }
 }
@@ -93,10 +94,8 @@ export function removeField(selectorId: string) {
                     }
                     return;
                 }
-
             }
         }
-
     }
 }
 
@@ -104,7 +103,7 @@ export function duplicateField(selectorId: string) {
     for (const group of scrapeConfig.selectors) {
         const index = group.fields.findIndex((element) => element.id === selectorId);
         if (index !== -1) {
-            const field = $state.snapshot(group.fields[index])
+            const field = $state.snapshot(group.fields[index]);
             field.id = `f_${nanoid(6)}`;
             if (field.fields) {
                 for (const f of field.fields) {

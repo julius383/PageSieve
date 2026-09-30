@@ -1,10 +1,5 @@
 // vim:set foldlevel=3 foldmethod=indent:
-import {
-    setup,
-    assign,
-    type ErrorActorEvent,
-    type PromiseActorLogic,
-} from 'xstate';
+import { setup, assign, type ErrorActorEvent, type PromiseActorLogic } from 'xstate';
 import type { ScrapeConfig, SelectorGroup } from './schema';
 import { PaginationStateStatus, type ExtractedGroup } from './types';
 
@@ -22,10 +17,7 @@ export interface ScrapeContext {
 }
 
 type ScrapeEvent =
-    | { type: 'START' }
-    | { type: 'STOP' }
-    | { type: 'RETRY' }
-    | { type: 'TEST_PAGINATION' };
+    { type: 'START' } | { type: 'STOP' } | { type: 'RETRY' } | { type: 'TEST_PAGINATION' };
 
 interface InputType {
     config: ScrapeConfig;
@@ -36,33 +28,33 @@ interface InputType {
 type ExtractDataActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
-}
+};
 
 type ComputePageHashActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
-}
+};
 
 type ComputePageHashActorOutput = {
     pageHash: string;
-}
+};
 
 type NavigateActorInput = {
     config: ScrapeConfig;
     currentURL: string;
     driverContext?: unknown;
-}
+};
 
 type NavigateActorOutput = {
     status: PaginationStateStatus;
     url: string;
-}
+};
 
 type NavigateNextActorOutput = {
     type: 'navigation' | 'spa';
     status: PaginationStateStatus;
     url: string;
-}
+};
 
 export type ExtractDataActorOutput = ExtractedGroup[];
 
@@ -422,5 +414,5 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                 },
             },
         },
-        output: ({ context }) => ({results: context.results }),
+        output: ({ context }) => ({ results: context.results }),
     });

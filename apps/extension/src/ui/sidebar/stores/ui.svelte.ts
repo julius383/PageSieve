@@ -2,14 +2,17 @@ import { SvelteDate } from 'svelte/reactivity';
 import type { ExtractedGroup } from '@pagesieve/core/types';
 import type { ExtensionStatus, StatusLevel, ScrapeStatusUpdateRequest } from '@/types';
 import type { ScrapeConfig } from '@pagesieve/core/schema';
-import { getAllConfigs, getAllSnapshots, Snapshot, removeSnapshot } from '@/ui/sidebar/services/storage';
+import {
+    getAllConfigs,
+    getAllSnapshots,
+    Snapshot,
+    removeSnapshot,
+} from '@/ui/sidebar/services/storage';
 import { scrapeConfig } from './scrapeConfig.svelte';
 
 export const extractedData = $state<{ data: ExtractedGroup[] }>({
     data: [{ id: '', results: [] }],
 });
-
-
 
 // Library of saved configs
 export const allSnapshots = $state<{ snapshots: Snapshot[] }>({ snapshots: [] });

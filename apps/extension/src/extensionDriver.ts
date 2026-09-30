@@ -91,8 +91,7 @@ export const extensionDriver: ScrapeActorDriver = {
         console.debug('Attempting next pagination');
         if (pagination.mode == 'next') {
             let listener:
-                | ((tid: number, info: browser.tabs._OnUpdatedChangeInfo) => void)
-                | undefined;
+                ((tid: number, info: browser.tabs._OnUpdatedChangeInfo) => void) | undefined;
 
             const navPromise = new Promise<{ type: 'navigation'; url: string }>((resolve) => {
                 listener = (tid: number, info: browser.tabs._OnUpdatedChangeInfo) => {

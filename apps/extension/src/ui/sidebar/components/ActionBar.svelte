@@ -39,7 +39,8 @@
         if (
             await confirm({
                 title: 'Clear configuration?',
-                description: 'Are you sure you want to clear the entire scrape configuration? This action cannot be undone.',
+                description:
+                    'Are you sure you want to clear the entire scrape configuration? This action cannot be undone.',
                 confirmLabel: 'Clear',
                 variant: 'destructive',
             })
@@ -52,7 +53,8 @@
         if (
             await confirm({
                 title: 'Clear selectors?',
-                description: 'Are you sure you want to clear all selector groups? This action cannot be undone.',
+                description:
+                    'Are you sure you want to clear all selector groups? This action cannot be undone.',
                 confirmLabel: 'Clear',
                 variant: 'destructive',
             })
@@ -196,7 +198,8 @@
         <DropdownMenu.Content class="w-56" align="start">
             <div class="bg-background">
                 <DropdownMenu.Item onclick={handleResetConfig}>Clear config</DropdownMenu.Item>
-                <DropdownMenu.Item onclick={handleResetSelectors}>Clear selectors</DropdownMenu.Item>
+                <DropdownMenu.Item onclick={handleResetSelectors}>Clear selectors</DropdownMenu.Item
+                >
             </div>
         </DropdownMenu.Content>
     </DropdownMenu.Root>

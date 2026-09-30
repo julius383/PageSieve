@@ -3,8 +3,8 @@ import { Parser } from '@json2csv/plainjs';
 import type { SupportedExportDataTypes } from './types';
 
 export interface TableData {
-  columns: string[]
-  rows: object[]
+    columns: string[];
+    rows: object[];
 }
 
 function escapeMd(value: unknown) {
@@ -14,7 +14,7 @@ function escapeMd(value: unknown) {
         .replace(/\r?\n/g, '&#10;'); // newlines
 }
 
-function escapeHtml (s: unknown){
+function escapeHtml(s: unknown) {
     String(s ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -66,8 +66,8 @@ export function convertTo(data: Row[], format: SupportedExportDataTypes): string
         }
         case 'markdown': {
             const columns = Object.keys(data[0]) as string[];
-            const result = toMarkdownTable(data, columns,);
-            return result
+            const result = toMarkdownTable(data, columns);
+            return result;
         }
         case 'yaml': {
             return stringify(data);

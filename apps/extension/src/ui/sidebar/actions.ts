@@ -212,7 +212,7 @@ export async function runConfig() {
     if (!config.id) {
         // newly created ScrapeConfig
         if (tab.url === undefined) {
-            setStatus('errored', 'Extraction not possible in current tab. Unable to get URL');;
+            setStatus('errored', 'Extraction not possible in current tab. Unable to get URL');
             return;
         }
         scrapeConfig.url = tab.url;
@@ -226,7 +226,7 @@ export async function runConfig() {
         });
     } else {
         if (tab.url === undefined) {
-            setStatus('errored', 'URL missing from config.');;
+            setStatus('errored', 'URL missing from config.');
             return;
         }
 
@@ -236,14 +236,16 @@ export async function runConfig() {
             urlPatternNoMatch = !re.test(config.urlPattern);
         }
         // navigate to page in config before beginning extraction
-        if ((normalizeUrl(tab.url as string) !== normalizeUrl(config.url)) && urlPatternNoMatch) {
+        if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url) && urlPatternNoMatch) {
             try {
                 // TODO: open in new tab configurable in settings
                 await navigateAndWait(tab.id, config.url);
                 // await browser.tabs.create({ url: config.url, openerTabId: tab.id })
-
             } catch (err) {
-                setStatus('errored', (err as Error)?.message || 'Failed to navigate to correct URL.');
+                setStatus(
+                    'errored',
+                    (err as Error)?.message || 'Failed to navigate to correct URL.',
+                );
                 return;
             }
         }
@@ -255,7 +257,6 @@ export async function runConfig() {
             tabId: tab.id,
         });
     }
-
 }
 
 export async function stopRun() {

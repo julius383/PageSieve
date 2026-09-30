@@ -3,7 +3,7 @@
 
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { Toggle } from "$lib/components/ui/toggle/index.js";
+    import { Toggle } from '$lib/components/ui/toggle/index.js';
     import { Pipette, Check, X, Highlighter } from '@lucide/svelte';
 
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
@@ -62,7 +62,6 @@
         const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
         if (tab?.id) {
             if (highlightingElement) {
-
                 const response = await browser.tabs.sendMessage(tab.id, {
                     action: 'inspector-deactivate',
                 });
@@ -85,7 +84,10 @@
                     pickingElement = true;
                     highlightingElement = true;
                     foundElements = response.foundElements;
-                    setStatus('inspecting', `highlighting ${response.foundElements} element ${cssSelector} ${container ? 'in' + container : ''}`);
+                    setStatus(
+                        'inspecting',
+                        `highlighting ${response.foundElements} element ${cssSelector} ${container ? 'in' + container : ''}`,
+                    );
                 }
             }
         }
@@ -157,7 +159,12 @@
             <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
-                        <Button onclick={handleInspect} variant="outline" size="icon" disabled={highlightingElement}>
+                        <Button
+                            onclick={handleInspect}
+                            variant="outline"
+                            size="icon"
+                            disabled={highlightingElement}
+                        >
                             <Pipette color="#fff" />
                         </Button>
                     </Tooltip.Trigger>

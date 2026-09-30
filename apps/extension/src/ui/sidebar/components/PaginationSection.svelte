@@ -214,7 +214,7 @@
                             String(
                                 paginationState.template.startPage +
                                     paginationState.template.increment *
-                                        (paginationState.template.maxPages - 1)
+                                        (paginationState.template.maxPages - 1),
                             ),
                         )}
                     </code>

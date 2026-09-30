@@ -51,7 +51,9 @@ export async function run(options: RunOptions) {
     // TODO: correctly handle this in bun environment
     const isDev = process.env.NODE_ENV === 'development';
 
-    console.log(`using proxy ${options.proxy !== undefined ? { server: options.proxy } : undefined}`);
+    console.log(
+        `using proxy ${options.proxy !== undefined ? { server: options.proxy } : undefined}`,
+    );
     const browser: Browser = await chromium.launch({
         proxy: options.proxy !== undefined ? { server: options.proxy } : undefined,
         // TODO: make this configurable
@@ -95,17 +97,23 @@ export async function run(options: RunOptions) {
         });
         const groupedResults: Record<string, any[]> = {};
         extractionResults.map((elem) => {
-            groupedResults[elem.id] = [...(groupedResults[elem.id] as object[] ?? []), ...elem.results];
+            groupedResults[elem.id] = [
+                ...((groupedResults[elem.id] as object[]) ?? []),
+                ...elem.results,
+            ];
         });
         // await saveOutput(groupedResults, options.outputFormat, options.outputFile)
         await saveOutput(groupedResults, {
             format: options.outputFormat,
-            mode: { kind: options.outputMode, filename: options.outputFile, dir: options.outputFile },
+            mode: {
+                kind: options.outputMode,
+                filename: options.outputFile,
+                dir: options.outputFile,
+            },
         });
     }
 
     // TODO: handle user interrupting execution
-
 
     await context.close();
     await browser.close();

@@ -73,7 +73,9 @@
                 placeholder="e.g. 1000"
                 bind:value={scrapeConfig.options.pageDelayMs}
             />
-            <Field.Description>Wait this many milliseconds before extraction after navigating to new page.</Field.Description>
+            <Field.Description
+                >Wait this many milliseconds before extraction after navigating to new page.</Field.Description
+            >
         </Field.Field>
         <Field.Field>
             <Field.Label>Timeout (ms)</Field.Label>
