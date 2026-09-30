@@ -2,10 +2,21 @@
     "name": "pagesieve-monorepo",
     "version": "2.0.0",
     "private": true,
-    "workspaces": [
-        "packages/*",
-        "apps/*"
-    ],
+    "workspaces": {
+        "packages": ["packages/*", "apps/*"],
+        "catalog": {
+            "xstate": "^5.33.2",
+            "zod": "^4.6.5",
+            "@logtape/logtape": "^2.3.5",
+            "ts-pattern": "^5.9.0",
+            "es-toolkit": "^1.52.0",
+            "vite": "^8.3.0",
+            "nanoid": "^6.0.1",
+            "@json2csv/plainjs": "^7.0.8",
+            "dayjs": "^1.11.23",
+            "yaml": "^2.9.0"
+        }
+    },
     "description": "PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit. Define field names, CSS selectors and (optionally) pagination strategy through a sidebar and extract and export data in a variety of formats.",
     "license": "MIT",
     "author": "Julius Kibunjia",
