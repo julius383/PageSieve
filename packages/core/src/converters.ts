@@ -1,20 +1,48 @@
-import { zipObject } from 'es-toolkit';
 import { stringify } from 'yaml';
 import { Parser } from '@json2csv/plainjs';
 import type { SupportedExportDataTypes } from './types';
-// @ts-expect-error: handlebars integration through vite plugin
-import htmlTemplate from './templates/htmltemplate.hbs';
-// @ts-expect-error: handlebars integration through vite plugin
-import mdTemplate from './templates/mdtemplate.hbs';
 
-function escapeCell(value: unknown) {
+export interface TableData {
+  columns: string[]
+  rows: object[]
+}
+
+function escapeMd(value: unknown) {
     return String(value ?? '')
         .replace(/\\/g, '\\\\') // backslashes first (must be before other escapes)
         .replace(/\|/g, '\\|') // pipes
-        .replace(/\n/g, '&#10;'); // newlines
+        .replace(/\r?\n/g, '&#10;'); // newlines
 }
 
-export function convertTo(data: object[], format: SupportedExportDataTypes): string {
+function escapeHtml (s: unknown){
+    String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+type Row = Record<string, unknown>;
+
+export function toHtmlTable(rows: Row[], columns = Object.keys(rows[0] ?? {})) {
+    const head = columns.map((c) => `<th>${escapeHtml(c)}</th>`).join('');
+    const body = rows
+        .map((r) => `<tr>${columns.map((c) => `<td>${escapeHtml(r[c])}</td>`).join('')}</tr>`)
+        .join('\n');
+    return `<table>\n<thead><tr>${head}</tr></thead>\n<tbody>\n${body}\n</tbody>\n</table>`;
+}
+
+export function toMarkdownTable(rows: Row[], columns = Object.keys(rows[0] ?? {})) {
+    const line = (cells: unknown[]) => `| ${cells.map(escapeMd).join(' | ')} |`;
+    return [
+        line(columns),
+        line(columns.map(() => '---')),
+        ...rows.map((r) => line(columns.map((c) => r[c]))),
+    ].join('\n');
+}
+
+export function convertTo(data: Row[], format: SupportedExportDataTypes): string {
     if (data.length == 0) {
         return '';
     }
@@ -33,22 +61,13 @@ export function convertTo(data: object[], format: SupportedExportDataTypes): str
         }
         case 'html': {
             const columns = Object.keys(data[0]);
-            const result = htmlTemplate({ columns, rows: data });
+            const result = toHtmlTable(data, columns);
             return result;
         }
         case 'markdown': {
             const columns = Object.keys(data[0]) as string[];
-            // eslint-disable-next-line
-            const escaped = data.map((row: Record<string, any>) => {
-                const newVals = columns.map((col) => escapeCell(row[col]));
-                return zipObject(columns, newVals);
-            });
-            const result = mdTemplate({
-                columns,
-                rows: escaped,
-            });
-            // restore newline escape
-            return result.replace(/&amp;#10;/g, '&#10;');
+            const result = toMarkdownTable(data, columns,);
+            return result
         }
         case 'yaml': {
             return stringify(data);

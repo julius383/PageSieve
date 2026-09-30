@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import handlebars from '@yoichiro/vite-plugin-handlebars';
 import { resolve } from 'path';
 
 const BUILD_TARGET = process.env.BUILD_TARGET ?? 'main'; // 'main' | 'content'
@@ -16,7 +15,6 @@ const sharedResolve = {
 const mainConfig = defineConfig({
     plugins: [
         svelte({ configFile: false, compilerOptions: { runes: true } }),
-        handlebars({ runtime: 'handlebars/dist/handlebars.runtime.js' }),
     ],
     resolve: sharedResolve,
     build: {
