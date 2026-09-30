@@ -23,6 +23,14 @@ export async function executeExtraction<TContext, TElement>(
 ): Promise<ExtractedGroup[]> {
     const extractionResults: ExtractedGroup[] = [];
 
+    const groupNames = selectors.map(s => s.name);
+    let idKey: 'name' | 'id';
+    if ((new Set(groupNames)).size == groupNames.length) {
+        idKey = 'name'
+    } else {
+        idKey = 'id';
+    }
+
     for (const { id, name, container, fields } of selectors) {
         if (container) {
             const containerItems = await engine.querySelectorAll(rootContext, container);
@@ -38,8 +46,7 @@ export async function executeExtraction<TContext, TElement>(
                 }),
             );
 
-            // TODO: make it configurable to either use ID or Group name for results
-            extractionResults.push({ id: name, results: rows });
+            extractionResults.push({ id: idKey == 'id' ? id : name, results: rows });
         } else {
             const foundItems: Record<string, (string | null | undefined)[]> = {};
             await Promise.all(
@@ -51,7 +58,7 @@ export async function executeExtraction<TContext, TElement>(
             );
 
             const rows = zipObjectArrays(foundItems) as ExtractedRow[];
-            extractionResults.push({ id: name, results: rows });
+            extractionResults.push({ id: idKey == 'id' ? id : name, results: rows });
         }
     }
 
