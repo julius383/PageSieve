@@ -422,4 +422,5 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                 },
             },
         },
+        output: ({ context }) => ({results: context.results }),
     });

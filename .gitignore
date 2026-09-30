@@ -148,3 +148,10 @@ stats.html
 docs/_site/
 plan/
 storage/
+# This file tells Git which files shouldn't be added to source control
+
+.DS_Store
+.idea
+.vscode
+.zed
+storage

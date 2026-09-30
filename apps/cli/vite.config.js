@@ -1,14 +1,13 @@
 import { defineConfig } from 'vite';
-import handlebars from '@yoichiro/vite-plugin-handlebars';
 import { resolve } from 'path';
 
 export default defineConfig({
     resolve: {
         alias: {
-            '@pagesieve/core': resolve(__dirname, '../../packages/core/src'),
+            '@pagesieve/core': resolve(import.meta.dirname, '../../packages/core/src'),
         },
     },
-    plugins: [handlebars({ runtime: 'handlebars/dist/handlebars.runtime.js' })],
+    plugins: [],
     build: {
         outDir: 'dist',
         sourcemap: true,
@@ -16,23 +15,17 @@ export default defineConfig({
         target: 'node22',
         ssr: true,
         copyPublicDir: false,
-        rollupOptions: {
+        rolldownOptions: {
             input: {
-                cli: resolve(__dirname, 'src/main.ts'),
+                cli: resolve(import.meta.dirname, 'src/commands.ts'),
             },
-            external: [
-                /^node:/,
-                (id) =>
-                    !id.startsWith('.') &&
-                    !id.startsWith('/') &&
-                    !id.startsWith('@/') &&
-                    !id.startsWith('@pagesieve/core'),
-            ],
             output: {
-                entryFileNames: 'pagesieve.js',
-                format: 'esm',
+                entryFileNames: 'index.js',
                 banner: '#!/usr/bin/env node',
             },
         },
+    },
+    ssr: {
+        noExternal: [/^@pagesieve\/core(\/.*)?$/],
     },
 });

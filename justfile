@@ -1,17 +1,26 @@
+cli_version := `jq -r '.version' apps/cli/package.json`
+cli_pkg := invocation_directory() / 'apps/cli/pagesieve-cli-' + cli_version + '.tgz'
+
 lint:
   bun run lint
 
 build:
-  bun run build:extension && bun run build:cli
+  bun run build:extension && bun run build:cli && bun run build:crawler
 
 build-extension:
   bun run --filter @pagesieve/extension build
 
 build-cli:
-  bun run --filter @pagesieve/cli build && chmod +x apps/cli/dist/pagesieve.js
+  bun run --filter @pagesieve/cli build
 
-run-cli config:
-  ./apps/cli/dist/pagesieve.js --config {{config}}
+[working-directory: 'apps/cli']
+package-cli:
+  bun pm pack
+
+[working-directory: 'apps/cli']
+install-cli: build-cli package-cli
+  bun remove -g @pagesieve/cli || true
+  bun add -g "{{cli_pkg}}"
 
 watch:
   fd -t f . packages apps | entr -c just build
