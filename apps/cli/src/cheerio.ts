@@ -17,17 +17,16 @@ type PaginationResult = { status: PaginationStateStatus; msg: string };
 export async function run(options: RunOptions) {
     const scrapeConfig = options.config;
 
-    console.log(`using proxy ${options.proxy}`);
 
     let cfetch = async (url: string, args: FetchOptions = {}) => {
         return await ofetch(url, args);
     };
 
     if (options.proxy !== undefined) {
+
+        console.log(`using proxy ${options.proxy}`);
         const proxyAgent = new ProxyAgent({
             uri: options.proxy,
-            requestTls: { rejectUnauthorized: false }, // TLS to the target site
-            proxyTls: { rejectUnauthorized: false }, // TLS to the proxy (if it's https)
         });
         cfetch = async (url: string, args: FetchOptions = {}) => {
             return await ofetch(url, { dispatcher: proxyAgent, ...args });

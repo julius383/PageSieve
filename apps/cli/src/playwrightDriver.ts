@@ -84,7 +84,7 @@ export function createPlaywrightDriver(page: Page): ScrapeActorDriver {
             return { status: PaginationStateStatus.InProgress, url: nextURL };
         }),
 
-        // TODO: test this
+        // FIXME: make sure this works properly
         navigateNext: fromPromise(async ({ input }) => {
             const { config, currentURL } = input;
             const pagination = config.pagination;

@@ -48,21 +48,20 @@ export async function run(options: RunOptions) {
     console.log('Running plawright started');
     const scrapeConfig = options.config;
 
-    // TODO: correctly handle this in bun environment
-    const isDev = process.env.NODE_ENV === 'development';
+    if (options.proxy !== undefined) {
+        console.log(`using proxy ${options.proxy}`);
+    }
+    const spki = process.env.PAGESIEVE_PROXY_SPKI;
+    const certArgs: string[] = [];
+    if (spki && spki.length === 45) {
+        certArgs.push(`--ignore-certificate-errors-spki-list=${spki}`);
+    }
 
-    console.log(
-        `using proxy ${options.proxy !== undefined ? { server: options.proxy } : undefined}`,
-    );
     const browser: Browser = await chromium.launch({
         proxy: options.proxy !== undefined ? { server: options.proxy } : undefined,
         // TODO: make this configurable
         // headless: false,
-        args: [
-            '--disable-gpu', // Mitigates the "crashing GPU process" issue in Docker containers
-            // FIXME: figure out how to make this configurable
-            '--ignore-certificate-errors-spki-list=XWSzIILrz7Ib2FYRZhVRE263tEpnWpmdUrS9P25N444=',
-        ],
+        args: ['--disable-gpu', ...certArgs],
     });
 
     const context = await browser.newContext({
@@ -90,8 +89,9 @@ export async function run(options: RunOptions) {
     scrapeActor.start();
     scrapeActor.send({ type: 'START' });
 
-    const extractionResults: ExtractedGroup[] | undefined = await toPromise(scrapeActor);
+    const extractionResults: ExtractedGroup[] | undefined = (await toPromise(scrapeActor))?.results;
     if (extractionResults !== undefined) {
+        console.dir(extractionResults);
         console.info('Scrape completed with {count} results from {url}', {
             count: extractionResults.reduce((acc, g) => acc + g.results.length, 0),
         });
