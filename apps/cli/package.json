@@ -1,10 +1,20 @@
 {
     "name": "pagesieve-cli",
-    "version": "0.1.0",
+    "version": "0.3.0",
+    "description": "A secondary client for extracting data based on the PageSieve ScrapeConfig. Provides Playwright and Cheerio based crawlers.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/julius383/PageSieve.git"
+    },
+    "homepage": "https://julius383.github.io/PageSieve/",
+    "bugs": "https://github.com/julius383/PageSieve/issues",
+    "keywords": ["cli", "scraping"],
     "type": "module",
     "bin": {
         "pagesieve": "./dist/index.js"
     },
+    "files": ["dist", "README.md"],
     "scripts": {
         "build": "vite build && chmod +x ./dist/index.js",
         "dev": "vite build --watch",

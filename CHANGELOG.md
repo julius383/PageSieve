@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make sure results grouping always uses unique id keys
 - Correctly handle versions for shared dependencies using catalog
 
-## [cli-v0.1.0]
+## [cli-v0.3.0]
 
 ### Added
 
