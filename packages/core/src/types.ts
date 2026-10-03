@@ -1,3 +1,5 @@
+import { SupportedExportDataTypesSchema } from '../../../apps/cli/src/commands';
+
 export enum PaginationStateStatus {
     InProgress = 1,
     Complete,
@@ -20,4 +22,19 @@ export interface ExtractedGroup {
     results: ExtractedRow[];
 }
 
-export type SupportedExportDataTypes = 'json' | 'ndjson' | 'csv' | 'html' | 'markdown' | 'yaml';
+const dataTypes = ['json', 'ndjson', 'csv', 'html', 'markdown', 'yaml'] as const;
+const nonNestableTypes = ['ndjson', 'csv'] as const;
+
+export type SupportedExportDataTypes = (typeof dataTypes)[number];
+export type NonNestableExportDataTypes = (typeof nonNestableTypes)[number];
+
+export function isSupportedExportType(value: string): value is SupportedExportDataTypes {
+    return (dataTypes as readonly string[]).includes(value);
+}
+
+export function isNestableType(value: string): value is NonNestableExportDataTypes {
+    return (
+        (dataTypes as readonly string[]).includes(value) &&
+        !(nonNestableTypes as readonly string[]).includes(value)
+    );
+}

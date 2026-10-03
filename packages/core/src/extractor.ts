@@ -51,9 +51,10 @@ export async function executeExtraction<TContext, TElement>(
             const foundItems: Record<string, (string | null | undefined)[]> = {};
             await Promise.all(
                 fields.map(async (field) => {
+                    // FIXME: does not work when extracting only single 'row' unless container is present
                     const values = await extractField(engine, rootContext, field, true);
                     // @ts-expect-error : type check this later
-                    foundItems[field.name] = Array.isArray(values) ? values : [values];
+                    foundItems[field.name] = Array.isArray(values) ? values : [values]; // FIXME: nest here arrays?
                 }),
             );
 
@@ -69,7 +70,7 @@ async function extractField<TContext, TElement>(
     engine: ExtractionEngine<TContext, TElement>,
     context: TContext | TElement,
     field: FieldType,
-    forceArray = false,
+    forceArray = false, // FIXME: remove this field?
 ): Promise<(string | number | null | undefined) | (string | number | null | undefined)[]> {
     if (field.type === 'multiple' || forceArray) {
         const elements =
