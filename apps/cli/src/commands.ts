@@ -49,34 +49,53 @@ const VerifySchema = z
     .object({
         config: ScrapeConfig,
     })
-    .meta({ title: 'verify' });
+    .meta({ title: 'verify', description: 'Check if ScrapeConfig is valid and print any errors' });
 
 const MigrateSchema = z
     .object({
-        config: ScrapeConfig,
+        config: ScrapeConfig.meta({ description: 'Scrape recipe' }),
         version: z.enum(['latest']).default('latest'), // TODO: extend when schema version updates
     })
     .meta({ title: 'migrate' });
 
 const RunSchema = z
     .object({
-        config: ScrapeConfig,
-        engine: z.enum(['cheerio', 'playwright']).default('cheerio'),
-        outputFile: z.string().default('output'),
-        outputFormat: SupportedExportDataTypesSchema.default('json'),
-        outputMode: z.enum(['single', 'zip', 'directory']).default('zip'),
-        proxy: z.url().optional(),
-        dryRun: z.boolean().default(false),
-        maxRequests: z.coerce.number().min(0).default(500),
+        config: ScrapeConfig.meta({ description: 'Scrape recipe' }),
+        engine: z
+            .enum(['cheerio', 'playwright'])
+            .default('cheerio')
+            .meta({ description: 'Which engine to use' }),
+        outputFile: z
+            .string()
+            .default('output')
+            .meta({ description: 'File or folder to save to without extension' }),
+        outputFormat: SupportedExportDataTypesSchema.default('json').meta({
+            description: 'Which format to output for each result',
+        }),
+        outputMode: z.enum(['single', 'zip', 'directory']).default('single').meta({
+            description: 'How to save files. Important when extracting different kinds of data',
+        }),
+        proxy: z.url().optional().meta({ description: 'Proxy URL to route requests through' }),
+        dryRun: z.boolean().default(false).meta({ description: 'Test mode' }),
+        maxRequests: z.coerce
+            .number()
+            .min(0)
+            .default(500)
+            .meta({ description: 'Maximum total number of requests' }),
     })
-    .meta({ title: 'run' });
+    .meta({ title: 'run', description: 'Extract using ScrapeConfig and save results' });
 
 export type RunOptions = z.infer<typeof RunSchema>;
 
 const ServerSchema = z
     .object({
-        proxy: z.url().optional(),
-        port: z.coerce.number().min(1).max(65535).default(4444),
+        proxy: z.url().optional().meta({ description: 'Proxy URL to route requests through' }),
+        port: z.coerce
+            .number()
+            .min(1)
+            .max(65535)
+            .default(4444)
+            .meta({ description: 'PORT to start server' }),
     })
     .meta({ title: 'server' });
 
@@ -95,12 +114,73 @@ function checkFile(config: string): unknown {
     }
 }
 
-program.name('pagesieve').description('PageSieve scraping toolkit CLI');
+program.name('pagesieve').description('PageSieve scraping toolkit');
+
+
+// TODO: add interactive mode
+program
+    .command('run')
+    .description(RunSchema.description!)
+    .option('-c, --config <config-file>', RunSchema.shape.config.description!, checkFile)
+    .option(
+        '-o, --output-file [output]',
+        RunSchema.shape.outputFile.description!,
+        RunSchema.shape.outputFile.parse(undefined),
+    )
+    .option(
+        '-f, --output-format [format]',
+        RunSchema.shape.outputFormat.description!,
+        RunSchema.shape.outputFormat.parse(undefined),
+    )
+    .option(
+        '-m, --output-mode [mode]',
+        RunSchema.shape.outputMode.description!,
+        RunSchema.shape.outputMode.parse(undefined),
+    )
+    .option(
+        '-e, --engine [engine]',
+        RunSchema.shape.engine.description!,
+        RunSchema.shape.engine.parse(undefined),
+    )
+    .option(
+        '-r, --max-requests [number]',
+        RunSchema.shape.maxRequests.description!,
+        RunSchema.shape.maxRequests.parse(undefined).toString(),
+    )
+    .option('-x, --proxy <proxy>', 'URL for proxy to use')
+    .option(
+        '--dry-run',
+        RunSchema.shape.dryRun.description!,
+        RunSchema.shape.dryRun.parse(undefined),
+    )
+    .action(async (opts) => {
+        const options = parseOptions(RunSchema, opts);
+        console.dir(omit(opts, ['config']));
+
+        if (options.type === 'error') {
+            console.error(options.msg);
+            process.exitCode = 1;
+            return;
+        }
+
+        const data = options.data;
+        console.log(data.config.id);
+        match(data)
+            .with({ engine: 'cheerio' }, async (options) => {
+                console.log('Starting cheerio extraction');
+                await runCheerio(options);
+            })
+            .with({ engine: 'playwright' }, async (options) => {
+                console.log('Starting playwright extraction');
+                await runPlaywright(options);
+            })
+            .exhaustive();
+    });
 
 program
     .command('verify')
-    .description('Check if ScrapeConfig is valid and print errors')
-    .option('-c, --config <config-file>', 'config to check', checkFile)
+    .description(VerifySchema.description!)
+    .option('-c, --config <config-file>', VerifySchema.shape.config.description!, checkFile)
     .action((opts) => {
         const options = parseOptions(VerifySchema, opts);
 
@@ -138,58 +218,6 @@ program
         }
     });
 
-// TODO: add interactive mode
-program
-    .command('run')
-    .description('Run Scrape config')
-    .option('-c, --config <config-file>', 'config to check', checkFile)
-    .option(
-        '-o, --output-file [output]',
-        'output file',
-        RunSchema.shape.outputFile.parse(undefined),
-    )
-    .option(
-        '-f, --output-format [format]',
-        'output format',
-        RunSchema.shape.outputFormat.parse(undefined),
-    )
-    .option('-m, --output-mode [mode]', 'output mode', RunSchema.shape.outputMode.parse(undefined))
-    .option('-e, --engine [engine]', 'which engine to use', RunSchema.shape.engine.parse(undefined))
-    .option(
-        '-r, --max-requests [number]',
-        'maximum number of requests to make',
-        RunSchema.shape.maxRequests.parse(undefined).toString(),
-    )
-    .option('-x, --proxy <proxy>', 'URL for proxy to use')
-    .option(
-        '--dry-run',
-        'Show what will be done without executing',
-        RunSchema.shape.dryRun.parse(undefined),
-    )
-    .action(async (opts) => {
-        const options = parseOptions(RunSchema, opts);
-        console.dir(omit(opts, ['config']));
-
-        if (options.type === 'error') {
-            console.error(options.msg);
-            process.exitCode = 1;
-            return;
-        }
-
-        const data = options.data;
-        console.log(data.config.id);
-        match(data)
-            .with({ engine: 'cheerio' }, async (options) => {
-                console.log('Starting cheerio extraction');
-                await runCheerio(options);
-            })
-            .with({ engine: 'playwright' }, async (options) => {
-                console.log('Starting playwright extraction');
-                await runPlaywright(options);
-            })
-            .exhaustive();
-    });
-
 program
     .command('serve')
     .description('Start PageSieve Run service')
@@ -211,4 +239,24 @@ program
         console.log(`Starting server on ${data.port} - ${data.proxy}`);
     });
 
+export function dumpHelp() {
+    const helper = program.createHelp();
+
+    const commands = helper.visibleCommands(program);
+    commands.forEach(cmd => {
+        console.log(`Command: ${cmd.name()}`);
+        console.log(`   ${helper.subcommandTerm(cmd)} ${helper.subcommandDescription(cmd)}`);
+
+        console.log('Options:');
+        const options = helper.visibleOptions(cmd);
+        options.forEach(option => {
+            console.log(`  ${helper.optionTerm(option)} ${helper.optionDescription(option)}`);
+        });
+        console.log();
+
+        // arguments
+    });
+}
+
+// dumpHelp();
 await program.parseAsync();
