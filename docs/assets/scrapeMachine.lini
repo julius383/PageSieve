@@ -1,0 +1,70 @@
+{
+  layout: flow; direction: column; gap: 40; padding: 32;
+  |-| { stroke: --gray-deep; stroke-width: 1.5; font-size: 12; }
+  |group| { gap: 24; padding: 24; }
+
+  // Classes utilizing Lini's built-in wash/ink palette system
+  .good {
+    fill: --green-wash; stroke: --green-deep; color: --green-ink; stroke-width: 2;
+  }
+  .good-link { stroke: --green-deep; color: --green-ink; stroke-width: 2; }
+  .bad {
+    fill: --red-wash; stroke: --red-deep; color: --red-ink; stroke-width: 2;
+  }
+  .bad-link { stroke: --red-deep; color: --red-ink; stroke-width: 2; }
+  .recover {
+    fill: --purple-wash; stroke: --purple-deep; color: --purple-ink; stroke-width: 2;
+  }
+  .recover-link { stroke: --purple-deep; color: --purple-ink; stroke-width: 2; }
+}
+
+|oval#idle| "idle"
+
+// Top Level States / Targets
+|row#outcomes| { gap: 40; padding: 40; } [
+  |box#retrying| "retrying" .recover
+  |box#extracting| "extracting"
+  |box#waiting| "waiting"
+  |box#completed| "completed" .good
+  |box#errored| "errored" .bad
+  extracting -> waiting
+  extracting -> retrying .recover-link
+  extracting:top -> errored .bad-link
+  retrying -> extracting
+]
+
+|group#navigating| "navigating" {
+  layout: grid; columns: repeat(12); rows: repeat(6); direction: column; align: stretch; justify: stretch;
+} [
+
+  |box#deciding| "deciding" { cell: 1 1; span: 12 1; gap: 100; }
+  |box#retryingNav| "retryingNav" .recover { cell: 1 6; span: 12 1; }
+  retryingNav:left -> deciding .recover-link
+
+  |group#next| "next" { direction: column; cell: 1 3; span: 4; gap: 40; } [
+    |box#hashingBefore| "hashingBefore"
+    |box#clicking| "clicking"
+    |box#hashingAfter| "hashingAfter"
+    hashingBefore -> clicking -> hashingAfter
+
+  ]
+  |box#links| "links" { cell: 5 3; span: 4; }
+  |box#template| "template" { cell: 9 3; span: 4; }
+  deciding -> next
+  deciding -> links
+  deciding -> template
+
+  next -> retryingNav .recover-link
+  links -> retryingNav .recover-link
+  template -> retryingNav .recover-link
+
+]
+
+idle -> outcomes.extracting
+outcomes.extracting:top -> outcomes.completed .good-link
+
+navigating -> outcomes.extracting
+navigating:top -> outcomes.completed:bottom .good-link
+outcomes.waiting -> navigating
+navigating:right -> outcomes.errored .bad-link
+
