@@ -1,0 +1,122 @@
+---
+title: "CLI Reference"
+---
+
+The PageSieve CLI (`pagesieve`) is a command-line tool that executes saved scrape recipes headlessly. It allows you to run extractions through either a fast HTTP engine ([Cheerio](https://cheerio.js.org/)) or a full headless browser ([Playwright](https://playwright.dev/)).
+
+## Installation
+
+Install globally using `npm` or `bun`:
+
+```bash
+npm install -g pagesieve-cli
+```
+
+Or install from the repository root:
+
+```bash
+just install-cli
+```
+
+If you plan to use the `playwright` engine, install the Chromium browser binary:
+
+```bash
+npx playwright install chromium
+```
+
+## Commands
+
+### `run`
+
+Executes extraction against a target website according to a [ScrapeConfig](configuration.qmd) recipe file.
+
+```bash
+pagesieve run -c <config-file> [options]
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-c, --config <file>` | `string` | **Required** | Path to the JSON scrape recipe file. |
+| `-e, --engine [engine]` | `'cheerio' | 'playwright'` | `'cheerio'` | Engine to use. Cheerio is fast plain HTTP; Playwright runs a full Chromium browser. |
+| `-o, --output-file [path]` | `string` | `'output'` | File or folder destination path (without file extension). |
+| `-f, --output-format [format]` | `'json' | 'ndjson' | 'csv' | 'html' | 'markdown' | 'yaml'` | `'json'` | Data serialization format for exported results. |
+| `-m, --output-mode [mode]` | `'zip' | 'single' | 'directory'` | `'single'` | How output files are structured on disk. |
+| `-r, --max-requests [number]` | `number` | `500` | Maximum total HTTP requests / page navigations allowed. |
+| `-x, --proxy <url>` | `string` | - | Proxy URL to route network traffic through. |
+| `--dry-run` | `boolean` | `false` | Run extraction in test mode without persisting output files. |
+| `-h, --help` | - | - | Display help for the `run` command. |
+
+
+#### Engines
+
+- **`cheerio` (Default)**: Fetches raw HTML via HTTP requests and queries the DOM with Cheerio. Recommended for static or server-rendered sites where JavaScript execution is not required. Offers high throughput and minimal resource usage.
+- **`playwright`**: Launches a headless Chromium browser instance. Supports JavaScript-rendered dynamic pages, `waitforNetworkIdle`, custom timeouts, and interactive pagination clicks.
+
+#### Examples
+
+Scrape using the default Cheerio engine and export to CSV:
+
+```bash
+pagesieve run -c docs/examples/quotes.toscrape.com__page-1__ade6b8ac.json -o quotes_data.csv
+```
+
+Scrape a dynamic single-page app using Playwright through a proxy:
+
+```bash
+pagesieve run -c docs/examples/mzalendo.com__national-assembly-13th-parliament__leadership.json -e playwright -x http://proxy.local:8080 -o parliament_data
+```
+
+---
+
+### `verify`
+
+Validates a JSON recipe file against the [ScrapeConfig Zod schema](configuration.qmd).
+
+```bash
+pagesieve verify -c <config-file>
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-c, --config <file>` | `string` | **Required** | Path to the scrape recipe file to validate. |
+| `-h, --help` | - | - | Display help for the `verify` command. |
+
+---
+
+### `migrate`
+
+Checks and updates recipe files across different `schemaVersion` releases.
+
+```bash
+pagesieve migrate -c <config-file> [--version <version>]
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-c, --config <file>` | `string` | **Required** | Path to the config file to check. |
+| `--version <version>` | `string` | `'latest'` | Target schema version to migrate to. |
+| `-h, --help` | - | - | Display help for the `migrate` command. |
+
+---
+
+### `serve`
+
+Starts a background daemon service listening for remote scraping requests.
+
+```bash
+pagesieve serve [options]
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-p, --port <port>` | `number` | `4444` | Port number to bind the server to. |
+| `-x, --proxy <url>` | `string` | - | Proxy URL to route service requests through. |
+| `-h, --help` | - | - | Display help for the `serve` command. |

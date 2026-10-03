@@ -23,8 +23,8 @@ The scrape configuration defines how PageSieve should interact with a webpage to
 | `selectors` | [SelectorGroup](#selectorgroup)\[\] | Yes | - | Defines what to extract from page.|
 | `options` | [ExtractionOptions](#extractionoptions) | Yes | - | Options that control how extraction is done |
 | `pagination` | [PaginationConfig](#paginationconfig) | Yes | - | Controls how to move to the next page |
-| `variables` | [VariableConfig](#variableconfig) | No | - | - |
-| `output` | [OutputConfig](#outputconfig) | No | - | - |
+| `variables` | [VariableConfig](#variableconfig) | No | - | Variable mappings for parameterized scrapes. |
+| `output` | [OutputConfig](#outputconfig) | No | - | Results output format and merge options. |
 
 
 ### SelectorGroup
@@ -33,9 +33,9 @@ The scrape configuration defines how PageSieve should interact with a webpage to
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `id` | string | Yes | `"g_${nodeid(6)}"` | Random and stable id. Used to group results when multiple groups exist. |
-| `name` | string | Yes | `"Group 1"` | - |
+| `name` | string | Yes | `"Group 1"` | Label for this selector group. |
 | `container` | string | No | - | Item container selector when omitted => page-level group (scrape once) |
-| `fields` | [Field](#field)[] | Yes | - | - |
+| `fields` | [Field](#field)[] | Yes | - | List of field definitions to extract within this group. |
 
 
 #### Field
@@ -77,14 +77,18 @@ Options that control how extraction is done
 
 Defines how to move between different pages.
 
+#### mode=none
+
+No pagination is performed; extraction runs only on the initial page.
+
 #### mode=next
 
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `nextSelector` | boolean | Yes | - | Selector for element that navigates to next page. |
-| `maxPages` | number | Yes | 100 | Maximum number of pages to navigate to using in one session. |
-| `waitAfterClickMs` | string | No | - | Wait this many milliseconds after clicking the element. |
+| `nextSelector` | string | Yes | - | Selector for element that navigates to next page. |
+| `maxPages` | number | Yes | `100` | Maximum number of pages to navigate to in one session. |
+| `waitAfterClickMs` | number | No | - | Wait this many milliseconds after clicking the element. |
 
 
 #### mode=links
@@ -101,10 +105,10 @@ Defines how to move between different pages.
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `urlTemplate` | string | Yes | `true` | Template for urls. Must have {{page}} is replaced with numbers. |
-| `startPage` | number | Yes | 1 | First number to use in template. |
-| `increment` | number | Yes | 1 | Number to add during each step. |
-| `maxPages` | number | No | - | Maximum number of pages to navigate in one session. |
+| `urlTemplate` | string | Yes | `"page={{page}}"` | Template for URLs where `{{page}}` is replaced with page numbers. |
+| `startPage` | number | Yes | `1` | First number to use in template. |
+| `increment` | number | Yes | `1` | Number to add during each step. |
+| `maxPages` | number | Yes | `100` | Maximum number of pages to navigate in one session. |
 
 
 ### VariableConfig
@@ -122,13 +126,13 @@ prompt user.
 
 ### OutputConfig
 
-Results output hint.
+Results output hints and formatting configuration.
 
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
-| `format` | string | Yes | json | Data format to use for results |
-| `mergeStrategy` | string | Yes | join | How to combine results in different field groups. |
-| `flatten` | boolean | Yes | true | Flatten nested columns. |
+| `format` | `json` \| `ndjson` \| `csv` \| `html` \| `markdown` | Yes | `"json"` | Data format to use for results. |
+| `mergeStrategy` | `join` \| `separate` \| `zip` | Yes | `"join"` | How to combine results from different field groups. |
+| `flatten` | boolean | Yes | `true` | Flatten nested columns in output. |
 
 

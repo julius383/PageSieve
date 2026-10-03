@@ -5,10 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-`cli` prefix corresponds to `packages/cli` and `extension` corresponds to
-`packages/extension`
+`cli` prefix corresponds to `apps/cli` and `extension` corresponds to
+`apps/extension`
 
 ## [Unreleased]
+
+## core
+
+### Added
+
+- Update documentation and add new cli and selector docs.
+
+### Changed
+
+- Remove handlebars for exporting to html and markdown
+- Separate monorepo into packages/ and apps/ with extension and cli moving to
+  apps/
+
+### Fixed
+
+- Make sure results grouping always uses unique id keys
+- Correctly handle versions for shared dependencies using catalog
+
+## [cli-v0.1.0]
+
+### Added
+
+- Added playwright and cheerio based crawlers through cli
+- Automatically use right output type if part of filename 
+- Switch to sub commands for grouping cli functionality
 
 ## [extension-v2.3.0] - 2026-09-08
 

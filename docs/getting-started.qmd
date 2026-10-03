@@ -6,16 +6,21 @@ title: "Getting Started"
 
 You can install PageSieve from the [Mozilla Add-on Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/) or by downloading the latest release from [GitHub](https://github.com/julius383/PageSieve/releases).
 
+::: {.callout-note}
+### Browser Compatibility
+The browser extension is currently built for **Mozilla Firefox** using WebExtensions Manifest v2. Support for Chrome and Chromium-based browsers is planned on the [Roadmap](roadmap.qmd).
+:::
+
 ### Development Build
 
 To build the extension from source:
 
 1. Clone the repository
 2. Install dependencies: `bun install`
-3. Build the project: `bun run build`
-4. Load the `dist/` folder as a temporary extension in your browser.
+3. Build the extension: `just build-extension` (or `bun run build:extension`)
+4. In Firefox, go to `about:debugging` -> **This Firefox** -> **Load Temporary Add-on...** and select `apps/extension/dist/manifest.json`.
 
-## Basic Usage
+## Extension Usage
 
 1. Open the PageSieve sidebar from your browser's extension menu.
 2. **Define Fields**: Add field names for the data you want to extract.
@@ -23,3 +28,41 @@ To build the extension from source:
 4. **Pagination**: Configure how the extension should navigate to the next page (optional).
 5. **Extract**: Click the "Scrape" button to start the process.
 6. **Export**: Download your results in JSON, CSV, or other supported formats.
+
+## Command Line Interface
+
+Saved recipes can also be run headlessly using the CLI with either Cheerio (fast HTTP) or Playwright (full browser).
+
+### CLI Installation
+
+Install globally via npm:
+
+```bash
+npm install -g pagesieve-cli
+```
+
+Or build from the repository:
+
+```bash
+just install-cli
+```
+
+If using the Playwright engine, install Chromium:
+
+```bash
+npx playwright install chromium
+```
+
+### CLI Basic Usage
+
+Run a scrape recipe:
+
+```bash
+pagesieve run -c recipe.json -o results -f json
+```
+
+Verify a recipe against the schema:
+
+```bash
+pagesieve verify -c recipe.json
+```

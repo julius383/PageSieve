@@ -35,6 +35,10 @@ website:
             text: Architecture
           - href: reference/configuration.qmd
             text: Scrape Configuration
+          - href: reference/selectors.qmd
+            text: Selectors & Extraction Guide
+          - href: reference/cli.qmd
+            text: CLI Reference
           - href: reference/extension-ui.qmd
             text: Extension UI Overview
           - href: reference/scraping-engine.qmd

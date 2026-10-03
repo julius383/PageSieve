@@ -17,13 +17,14 @@ The extension is built using:
 
 ## Core Components
 
-- **Sidebar UI (`apps/extension/ui/sidebar`)**: The main interface for defining scrape configurations.
+- **Sidebar UI (`apps/extension/src/ui/sidebar`)**: The main interface for defining scrape configurations.
 - **Content Script (`apps/extension/src/content.ts`)**: Injected into the webpage to interact with the DOM.
 - **Background Script (`apps/extension/src/background.ts`)**: Manages messaging between different parts of the extension.
-- **Scraping State Machine (`packages/core/src/scrapeMachine.ts`)**: state machine controlling main loop of the extension
-- **DOM Inspector (`apps/extension/src/dominspector.mts`)**: Handles the click-based selection of elements.
-- **Selector Engine (`apps/extension/src/selectorgadget.ts`)**: Implements the CSS selector guessing algorithm. Vendored version of [cantino/selectorgadget: Go go CSS / DOM inspection.](https://github.com/cantino/selectorgadget/)
- 
+- **Scraping State Machine (`packages/core/src/scrapeMachine.ts`)**: State machine controlling the main extraction and pagination loop.
+- **DOM Inspector (`apps/extension/src/dominspector.ts`)**: Handles the click-based selection of elements.
+- **Selector Engine (`apps/extension/src/selectorgadget.ts`)**: Implements the CSS selector guessing algorithm. Vendored version of [cantino/selectorgadget](https://github.com/cantino/selectorgadget/).
+- **CLI Crawlers (`apps/cli/src/`)**: Headless runners supporting Playwright for browser rendering and Cheerio for lightweight HTTP extraction.
+- **Shared Extractor & Converters (`packages/core/src/`)**: Reusable extraction pipeline, data converters (JSON, CSV, YAML), and schema definitions.
 - **Data Types (`packages/core/src/schema.ts`)**: Central location for Zod schema defining the scrape configuration.
 - **Logging System (`packages/core/src/logger.ts`) and (`apps/extension/src/logger.ts`)**: Structured logging using LogTape, supporting relay to local environments.
 

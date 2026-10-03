@@ -15,7 +15,7 @@ In this example we'll be scraping Members of National Assembly Profiles using th
 Since we need to extract multiple pieces of data from each page, we make use of
 selector groups. By default the extension starts with a single group and
 additional ones can be created using the `No. 5` button as shown in the [UI
-overview page](/reference/extension-ui.html#pagesieve-mainview).
+overview page](../reference/extension-ui.qmd#pagesieve-mainview).
 
 The final config is the below:
 

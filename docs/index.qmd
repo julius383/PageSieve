@@ -2,11 +2,15 @@
 title: "Welcome to PageSieve"
 ---
 
-PageSieve is a browser extension for declarative web scraping. It allows you to define field names and CSS or 
-XPath selectors to extract structured data from any website you visit.
+PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit.
 
-Get it on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/). Star it on [Github](https://github.com/julius383/PageSieve).
+Define field names, CSS selectors and (optionally) pagination strategy then extract
+and export data in your desired format (JSON, YAML, CSV etc). 
 
+When you need to crawl a large number of pages, use the [CLI](getting-started.qmd#command-line-interface) to run the same scraping
+workflow through a Headless Browser or Plain HTTP using the reusable recipes.
+
+Get the extension on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/addon/pagesieve/) and the CLI on [npm](https://www.npmjs.com/package/pagesieve-cli). Star it on [GitHub](https://github.com/julius383/PageSieve).
 
 ## Demo
 
@@ -15,9 +19,10 @@ Get it on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/add
 ## Key Features
 
 - **Point-and-click selection**: Easily discover CSS selectors for any element.
-- **Minimal Sidebar UI**: No need to leave your current tab.
-- **Local-first**: All scraping is performed entirely within your browser.
-- **Reusable Recipes**: Save and share your scrape configurations as JSON files.
+- **Minimal Sidebar UI**: No need to leave your current tab. Define how and what to extract data in one UI.
+- **Local-first**: All extraction is performed entirely on your device.
+- **Reusable Recipes**: Import / export configurations as reusable recipes (plain JSON files)
+- **Run in Headless Browser**: Use CLI to run the same recipe through Playwright or Plain HTTP + Cheerio.
 
 ## Explore the Docs
 
@@ -25,6 +30,8 @@ Get it on the [Mozilla Addon Store](https://addons.mozilla.org/en-US/firefox/add
 - [Architecture](architecture.qmd)
 - [Extension UI Overview](reference/extension-ui.qmd)
 - [Scrape Configuration Reference](reference/configuration.qmd)
+- [Selectors & Extraction Guide](reference/selectors.qmd)
+- [CLI Reference](reference/cli.qmd)
 - [Scraping Engine Workflow](reference/scraping-engine.qmd)
 - [Examples](examples/index.qmd)
 - [Contributing](contributing.qmd)

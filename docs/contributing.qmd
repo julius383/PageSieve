@@ -12,18 +12,22 @@ Contributions are welcome! This page provides information on how to set up the d
 
 ## Build Commands
 
-- `bun run build:extension`: Generates the production extension in the `dist/` folder.
-- `bun run lint`: Runs ESLint to check for code quality issues.
+- `bun run build:extension`: Generates the production extension in `apps/extension/dist/`.
+- `bun run build:cli`: Generates the CLI bundle in `apps/cli/dist/`.
+- `bun run lint`: Runs ESLint to check for code quality issues across packages and apps.
 - `bun run format`: Formats the codebase using Prettier.
 
 ## Just Tasks
 
 If you have [just](https://github.com/casey/just) installed, you can use the following commands:
 
-- `just build-extension`: Build the extension.
-- `just watch`: Start file watcher to trigger rebuild extension
-- `just lint`: Lint the codebase.
-- `just format`: Format the codebase.
+- `just build-extension`: Build the browser extension.
+- `just build-cli`: Build the CLI application.
+- `just watch`: Start file watcher to rebuild upon changes.
+- `just lint`: Lint the monorepo.
+- `just format`: Format the monorepo.
+- `just docs-preview`: Start a local Quarto documentation preview server.
+- `just docs-build`: Render the documentation site.
 
 ## Submitting Changes
 
