@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Scrape Configuration Reference – PageSieve Docs</title>
+<title>CLI Reference – PageSieve Docs</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -84,7 +119,7 @@ ul.task-list li input[type="checkbox"] {
 <meta property="og:title" content="PageSieve Docs">
 <meta property="og:description" content="Documentation website for PageSieve a browser extension that allows you to scrape websites without leaving your browser by defining CSS Selectors and XPath selectors.">
 <meta property="og:site_name" content="PageSieve Docs">
-<meta name="twitter:title" content="Scrape Configuration Reference – PageSieve Docs">
+<meta name="twitter:title" content="CLI Reference – PageSieve Docs">
 <meta name="twitter:description" content="">
 <meta name="twitter:card" content="summary">
 </head>
@@ -360,16 +395,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#scrapeconfig" id="toc-scrapeconfig" class="nav-link active" data-scroll-target="#scrapeconfig">ScrapeConfig</a>
+  <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#commands" id="toc-commands" class="nav-link" data-scroll-target="#commands">Commands</a>
   <ul class="collapse">
-  <li><a href="#selectorgroup" id="toc-selectorgroup" class="nav-link" data-scroll-target="#selectorgroup">SelectorGroup</a></li>
-  <li><a href="#extractionoptions" id="toc-extractionoptions" class="nav-link" data-scroll-target="#extractionoptions">ExtractionOptions</a></li>
-  <li><a href="#paginationconfig" id="toc-paginationconfig" class="nav-link" data-scroll-target="#paginationconfig">PaginationConfig</a></li>
-  <li><a href="#variableconfig" id="toc-variableconfig" class="nav-link" data-scroll-target="#variableconfig">VariableConfig</a></li>
-  <li><a href="#outputconfig" id="toc-outputconfig" class="nav-link" data-scroll-target="#outputconfig">OutputConfig</a></li>
+  <li><a href="#run" id="toc-run" class="nav-link" data-scroll-target="#run"><code>run</code></a></li>
+  <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify"><code>verify</code></a></li>
+  <li><a href="#migrate" id="toc-migrate" class="nav-link" data-scroll-target="#migrate"><code>migrate</code></a></li>
+  <li><a href="#serve" id="toc-serve" class="nav-link" data-scroll-target="#serve"><code>serve</code></a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/configuration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/configuration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/cli.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/cli.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -377,7 +412,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Scrape Configuration Reference</h1>
+<h1 class="title">CLI Reference</h1>
 </div>
 
 
@@ -394,561 +429,242 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in <code>packages/core/src/schema.ts</code>.</p>
-<section id="scrapeconfig" class="level2">
-<h2 class="anchored" data-anchor-id="scrapeconfig">ScrapeConfig</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Auto-generated id.</td>
-</tr>
-<tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Human readable name for config.</td>
-</tr>
-<tr class="odd">
-<td><code>schemaVersion</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"2.0.0"</code></td>
-<td>Schema version. Incremented when breaking changes to format made.</td>
-</tr>
-<tr class="even">
-<td><code>revision</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>Increment when config is modified.</td>
-</tr>
-<tr class="odd">
-<td><code>url</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>URL to start extraction.</td>
-</tr>
-<tr class="even">
-<td><code>urlPattern</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>glob/pattern this config applies to; omitted = exact url only</td>
-</tr>
-<tr class="odd">
-<td><code>createdAt</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>When config was created.</td>
-</tr>
-<tr class="even">
-<td><code>updatedAt</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>When config was updated. Should change alongside revision.</td>
-</tr>
-<tr class="odd">
-<td><code>description</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Description of config e.g what type of data it extracts</td>
-</tr>
-<tr class="even">
-<td><code>author</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Who made this config. Typically username</td>
-</tr>
-<tr class="odd">
-<td><code>tags</code></td>
-<td>string[]</td>
-<td>No</td>
-<td>-</td>
-<td>Content tags for easier categorization.</td>
-</tr>
-<tr class="even">
-<td><code>selectors</code></td>
-<td><a href="#selectorgroup">SelectorGroup</a>[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>Defines what to extract from page.</td>
-</tr>
-<tr class="odd">
-<td><code>options</code></td>
-<td><a href="#extractionoptions">ExtractionOptions</a></td>
-<td>Yes</td>
-<td>-</td>
-<td>Options that control how extraction is done</td>
-</tr>
-<tr class="even">
-<td><code>pagination</code></td>
-<td><a href="#paginationconfig">PaginationConfig</a></td>
-<td>Yes</td>
-<td>-</td>
-<td>Controls how to move to the next page</td>
-</tr>
-<tr class="odd">
-<td><code>variables</code></td>
-<td><a href="#variableconfig">VariableConfig</a></td>
-<td>No</td>
-<td>-</td>
-<td>Variable mappings for parameterized scrapes.</td>
-</tr>
-<tr class="even">
-<td><code>output</code></td>
-<td><a href="#outputconfig">OutputConfig</a></td>
-<td>No</td>
-<td>-</td>
-<td>Results output format and merge options.</td>
-</tr>
-</tbody>
-</table>
-<section id="selectorgroup" class="level3">
-<h3 class="anchored" data-anchor-id="selectorgroup">SelectorGroup</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"g_${nodeid(6)}"</code></td>
-<td>Random and stable id. Used to group results when multiple groups exist.</td>
-</tr>
-<tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"Group 1"</code></td>
-<td>Label for this selector group.</td>
-</tr>
-<tr class="odd">
-<td><code>container</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Item container selector when omitted =&gt; page-level group (scrape once)</td>
-</tr>
-<tr class="even">
-<td><code>fields</code></td>
-<td><a href="#field">Field</a>[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>List of field definitions to extract within this group.</td>
-</tr>
-</tbody>
-</table>
-<section id="field" class="level4">
-<h4 class="anchored" data-anchor-id="field">Field</h4>
+<p>The PageSieve CLI (<code>pagesieve</code>) is a command-line tool that executes saved scrape recipes headlessly. It allows you to run extractions through either a fast HTTP engine (<a href="https://cheerio.js.org/">Cheerio</a>) or a full headless browser (<a href="https://playwright.dev/">Playwright</a>).</p>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>Install globally using <code>npm</code> or <code>bun</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> pagesieve-cli</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or install from the repository root:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">just</span> install-cli</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you plan to use the <code>playwright</code> engine, install the Chromium browser binary:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> playwright install chromium</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="commands" class="level2">
+<h2 class="anchored" data-anchor-id="commands">Commands</h2>
+<section id="run" class="level3">
+<h3 class="anchored" data-anchor-id="run"><code>run</code></h3>
+<p>Executes extraction against a target website according to a <a href="../reference/configuration.html">ScrapeConfig</a> recipe file.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> run <span class="at">-c</span> <span class="op">&lt;</span>config-file<span class="op">&gt;</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="options" class="level4">
+<h4 class="anchored" data-anchor-id="options">Options</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
 <col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 36%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Field</th>
+<th>Option</th>
 <th>Type</th>
-<th>Required</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"f_${nodeid(6)}"</code></td>
-<td>Random and stable id.</td>
+<td><code>-c, --config &lt;file&gt;</code></td>
+<td><code>string</code></td>
+<td><strong>Required</strong></td>
+<td>Path to the JSON scrape recipe file.</td>
 </tr>
 <tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Field name used as column key in results.</td>
+<td><code>-e, --engine [engine]</code></td>
+<td><code>'cheerio' | 'playwright'</code></td>
+<td><code>'cheerio'</code></td>
+<td>Engine to use. Cheerio is fast plain HTTP; Playwright runs a full Chromium browser.</td>
 </tr>
 <tr class="odd">
-<td><code>selector</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Selector for data point.</td>
+<td><code>-o, --output-file [path]</code></td>
+<td><code>string</code></td>
+<td><code>'output'</code></td>
+<td>File or folder destination path (without file extension).</td>
 </tr>
 <tr class="even">
-<td><code>type</code></td>
-<td><code>single</code> or <code>multiple</code> or <code>count</code></td>
-<td>Yes</td>
-<td><code>"single"</code></td>
-<td>How to treat selector. Individual, collection or count</td>
+<td><code>-f, --output-format [format]</code></td>
+<td><code>'json' | 'ndjson' | 'csv' | 'html' | 'markdown' | 'yaml'</code></td>
+<td><code>'json'</code></td>
+<td>Data serialization format for exported results.</td>
 </tr>
 <tr class="odd">
-<td><code>extract</code></td>
-<td><code>text</code> or <code>property</code> or <code>attribute</code></td>
-<td>Yes</td>
-<td><code>"text"</code></td>
-<td>What part of element to extract.</td>
+<td><code>-m, --output-mode [mode]</code></td>
+<td><code>'zip' | 'single' | 'directory'</code></td>
+<td><code>'single'</code></td>
+<td>How output files are structured on disk.</td>
 </tr>
 <tr class="even">
-<td><code>attribute</code></td>
-<td>string</td>
-<td>No</td>
+<td><code>-r, --max-requests [number]</code></td>
+<td><code>number</code></td>
+<td><code>500</code></td>
+<td>Maximum total HTTP requests / page navigations allowed.</td>
+</tr>
+<tr class="odd">
+<td><code>-x, --proxy &lt;url&gt;</code></td>
+<td><code>string</code></td>
 <td>-</td>
-<td>Which attribute to extract. Required when extract === ‘attribute’.</td>
-</tr>
-<tr class="odd">
-<td><code>property</code></td>
-<td><code>innerHTML</code> or <code>outerHTML</code> or <code>innerText</code> or <code>textContent</code></td>
-<td>No</td>
-<td>-</td>
-<td>Which property to extract. Required when extract === ‘property’.</td>
+<td>Proxy URL to route network traffic through.</td>
 </tr>
 <tr class="even">
-<td><code>required</code></td>
-<td>boolean</td>
-<td>Yes</td>
+<td><code>--dry-run</code></td>
+<td><code>boolean</code></td>
 <td><code>false</code></td>
-<td>Should absence of element be treated as error.</td>
+<td>Run extraction in test mode without persisting output files.</td>
 </tr>
 <tr class="odd">
-<td><code>default</code></td>
-<td>string</td>
-<td>No</td>
+<td><code>-h, --help</code></td>
 <td>-</td>
-<td>Default value for this element when it cannot be extracted.</td>
-</tr>
-<tr class="even">
-<td><code>datatype</code></td>
-<td><code>string</code> or <code>number</code> or <code>boolean</code> or <code>date</code></td>
-<td>No</td>
 <td>-</td>
-<td>Datatype to cast result to.</td>
-</tr>
-<tr class="odd">
-<td><code>fields</code></td>
-<td>Field[]</td>
-<td>No</td>
-<td>-</td>
-<td>Recursive sub-fields. Only valid when type === ‘multiple’</td>
+<td>Display help for the <code>run</code> command.</td>
 </tr>
 </tbody>
 </table>
 </section>
+<section id="engines" class="level4">
+<h4 class="anchored" data-anchor-id="engines">Engines</h4>
+<ul>
+<li><strong><code>cheerio</code> (Default)</strong>: Fetches raw HTML via HTTP requests and queries the DOM with Cheerio. Recommended for static or server-rendered sites where JavaScript execution is not required. Offers high throughput and minimal resource usage.</li>
+<li><strong><code>playwright</code></strong>: Launches a headless Chromium browser instance. Supports JavaScript-rendered dynamic pages, <code>waitforNetworkIdle</code>, custom timeouts, and interactive pagination clicks.</li>
+</ul>
 </section>
-<section id="extractionoptions" class="level3">
-<h3 class="anchored" data-anchor-id="extractionoptions">ExtractionOptions</h3>
-<p>Options that control how extraction is done</p>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<p>Scrape using the default Cheerio engine and export to CSV:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> run <span class="at">-c</span> docs/examples/quotes.toscrape.com__page-1__ade6b8ac.json <span class="at">-o</span> quotes_data.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Scrape a dynamic single-page app using Playwright through a proxy:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> run <span class="at">-c</span> docs/examples/mzalendo.com__national-assembly-13th-parliament__leadership.json <span class="at">-e</span> playwright <span class="at">-x</span> http://proxy.local:8080 <span class="at">-o</span> parliament_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="verify" class="level3">
+<h3 class="anchored" data-anchor-id="verify"><code>verify</code></h3>
+<p>Validates a JSON recipe file against the <a href="../reference/configuration.html">ScrapeConfig Zod schema</a>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> verify <span class="at">-c</span> <span class="op">&lt;</span>config-file<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="options-1" class="level4">
+<h4 class="anchored" data-anchor-id="options-1">Options</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
 <col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 36%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Field</th>
+<th>Option</th>
 <th>Type</th>
-<th>Required</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>waitforNetworkIdle</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Wait for until no more network requests. For browser clients.</td>
+<td><code>-c, --config &lt;file&gt;</code></td>
+<td><code>string</code></td>
+<td><strong>Required</strong></td>
+<td>Path to the scrape recipe file to validate.</td>
 </tr>
 <tr class="even">
-<td><code>waitForSelector</code></td>
-<td>string</td>
-<td>No</td>
+<td><code>-h, --help</code></td>
 <td>-</td>
-<td>Wait for element before running extraction on page.</td>
-</tr>
-<tr class="odd">
-<td><code>scrollToBottom</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>false</code></td>
-<td>Scroll to bottom of page before running extraction on page.</td>
-</tr>
-<tr class="even">
-<td><code>runJavaScript</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Extraction requires javascript to be runnable.</td>
-</tr>
-<tr class="odd">
-<td><code>pageDelayMs</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>3000</code></td>
-<td>Delay this many milliseconds after navigating to a new page.</td>
-</tr>
-<tr class="even">
-<td><code>timeoutMs</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>60000</code></td>
-<td>Maximum amount of time to wait for action before it is considered failed.</td>
-</tr>
-<tr class="odd">
-<td><code>maxRetries</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>2</code></td>
-<td>Maximum times to retry on failed actions.</td>
-</tr>
-<tr class="even">
-<td><code>appendData</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Whether to append results to existing data or start fresh.</td>
+<td>-</td>
+<td>Display help for the <code>verify</code> command.</td>
 </tr>
 </tbody>
 </table>
+<hr>
 </section>
-<section id="paginationconfig" class="level3">
-<h3 class="anchored" data-anchor-id="paginationconfig">PaginationConfig</h3>
-<p>Defines how to move between different pages.</p>
-<section id="modenone" class="level4">
-<h4 class="anchored" data-anchor-id="modenone">mode=none</h4>
-<p>No pagination is performed; extraction runs only on the initial page.</p>
 </section>
-<section id="modenext" class="level4">
-<h4 class="anchored" data-anchor-id="modenext">mode=next</h4>
+<section id="migrate" class="level3">
+<h3 class="anchored" data-anchor-id="migrate"><code>migrate</code></h3>
+<p>Checks and updates recipe files across different <code>schemaVersion</code> releases.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> migrate <span class="at">-c</span> <span class="op">&lt;</span>config-file<span class="op">&gt;</span> [--version <span class="op">&lt;</span>version<span class="op">&gt;</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="options-2" class="level4">
+<h4 class="anchored" data-anchor-id="options-2">Options</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
 <col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 36%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Field</th>
+<th>Option</th>
 <th>Type</th>
-<th>Required</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>nextSelector</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>Selector for element that navigates to next page.</td>
+<td><code>-c, --config &lt;file&gt;</code></td>
+<td><code>string</code></td>
+<td><strong>Required</strong></td>
+<td>Path to the config file to check.</td>
 </tr>
 <tr class="even">
-<td><code>maxPages</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>100</code></td>
-<td>Maximum number of pages to navigate to in one session.</td>
+<td><code>--version &lt;version&gt;</code></td>
+<td><code>string</code></td>
+<td><code>'latest'</code></td>
+<td>Target schema version to migrate to.</td>
 </tr>
 <tr class="odd">
-<td><code>waitAfterClickMs</code></td>
-<td>number</td>
-<td>No</td>
+<td><code>-h, --help</code></td>
 <td>-</td>
-<td>Wait this many milliseconds after clicking the element.</td>
+<td>-</td>
+<td>Display help for the <code>migrate</code> command.</td>
 </tr>
 </tbody>
 </table>
+<hr>
 </section>
-<section id="modelinks" class="level4">
-<h4 class="anchored" data-anchor-id="modelinks">mode=links</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pageLinks</code></td>
-<td>string[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>List of links to process.</td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="modetemplate" class="level4">
-<h4 class="anchored" data-anchor-id="modetemplate">mode=template</h4>
+<section id="serve" class="level3">
+<h3 class="anchored" data-anchor-id="serve"><code>serve</code></h3>
+<p>Starts a background daemon service listening for remote scraping requests.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pagesieve</span> serve <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="options-3" class="level4">
+<h4 class="anchored" data-anchor-id="options-3">Options</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
 <col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 36%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Field</th>
+<th>Option</th>
 <th>Type</th>
-<th>Required</th>
 <th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>urlTemplate</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"page={{page}}"</code></td>
-<td>Template for URLs where <code>{page}</code> is replaced with page numbers.</td>
+<td><code>-p, --port &lt;port&gt;</code></td>
+<td><code>number</code></td>
+<td><code>4444</code></td>
+<td>Port number to bind the server to.</td>
 </tr>
 <tr class="even">
-<td><code>startPage</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>First number to use in template.</td>
-</tr>
-<tr class="odd">
-<td><code>increment</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>Number to add during each step.</td>
-</tr>
-<tr class="even">
-<td><code>maxPages</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>100</code></td>
-<td>Maximum number of pages to navigate in one session.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="variableconfig" class="level3">
-<h3 class="anchored" data-anchor-id="variableconfig">VariableConfig</h3>
-<p>Variables either embedded as string or secret for suggesting to client to prompt user.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>type</code></td>
-<td><code>secret</code> or <code>string</code></td>
-<td>Yes</td>
+<td><code>-x, --proxy &lt;url&gt;</code></td>
+<td><code>string</code></td>
 <td>-</td>
-<td>Type of variable</td>
+<td>Proxy URL to route service requests through.</td>
 </tr>
-<tr class="even">
-<td><code>value</code></td>
-<td>string</td>
-<td>No</td>
+<tr class="odd">
+<td><code>-h, --help</code></td>
 <td>-</td>
-<td>Value of text variable</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="outputconfig" class="level3">
-<h3 class="anchored" data-anchor-id="outputconfig">OutputConfig</h3>
-<p>Results output hints and formatting configuration.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>format</code></td>
-<td><code>json</code> | <code>ndjson</code> | <code>csv</code> | <code>html</code> | <code>markdown</code></td>
-<td>Yes</td>
-<td><code>"json"</code></td>
-<td>Data format to use for results.</td>
-</tr>
-<tr class="even">
-<td><code>mergeStrategy</code></td>
-<td><code>join</code> | <code>separate</code> | <code>zip</code></td>
-<td>Yes</td>
-<td><code>"join"</code></td>
-<td>How to combine results from different field groups.</td>
-</tr>
-<tr class="odd">
-<td><code>flatten</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Flatten nested columns in output.</td>
+<td>-</td>
+<td>Display help for the <code>serve</code> command.</td>
 </tr>
 </tbody>
 </table>
 
 
+</section>
 </section>
 </section>
 
@@ -1371,4 +1087,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/configuration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/configuration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/cli.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/cli.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

@@ -78,7 +78,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta name="directree-verify" content="directree-verify=d217e2dcd4e78902fe505cdba39400f4">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -308,6 +307,14 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Scrape Configuration</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./reference/selectors.html">
+ <span class="dropdown-text">Selectors &amp; Extraction Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./reference/cli.html">
+ <span class="dropdown-text">CLI Reference</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./reference/extension-ui.html">
  <span class="dropdown-text">Extension UI Overview</span></a>
   </li>  
@@ -395,8 +402,9 @@ ul.task-list li input[type="checkbox"] {
 <section id="build-commands" class="level2">
 <h2 class="anchored" data-anchor-id="build-commands">Build Commands</h2>
 <ul>
-<li><code>bun run build:extension</code>: Generates the production extension in the <code>dist/</code> folder.</li>
-<li><code>bun run lint</code>: Runs ESLint to check for code quality issues.</li>
+<li><code>bun run build:extension</code>: Generates the production extension in <code>apps/extension/dist/</code>.</li>
+<li><code>bun run build:cli</code>: Generates the CLI bundle in <code>apps/cli/dist/</code>.</li>
+<li><code>bun run lint</code>: Runs ESLint to check for code quality issues across packages and apps.</li>
 <li><code>bun run format</code>: Formats the codebase using Prettier.</li>
 </ul>
 </section>
@@ -404,10 +412,13 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="just-tasks">Just Tasks</h2>
 <p>If you have <a href="https://github.com/casey/just">just</a> installed, you can use the following commands:</p>
 <ul>
-<li><code>just build-extension</code>: Build the extension.</li>
-<li><code>just watch</code>: Start file watcher to trigger rebuild extension</li>
-<li><code>just lint</code>: Lint the codebase.</li>
-<li><code>just format</code>: Format the codebase.</li>
+<li><code>just build-extension</code>: Build the browser extension.</li>
+<li><code>just build-cli</code>: Build the CLI application.</li>
+<li><code>just watch</code>: Start file watcher to rebuild upon changes.</li>
+<li><code>just lint</code>: Lint the monorepo.</li>
+<li><code>just format</code>: Format the monorepo.</li>
+<li><code>just docs-preview</code>: Start a local Quarto documentation preview server.</li>
+<li><code>just docs-build</code>: Render the documentation site.</li>
 </ul>
 </section>
 <section id="submitting-changes" class="level2">

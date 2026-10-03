@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Scrape Configuration Reference – PageSieve Docs</title>
+<title>Selectors &amp; Extraction Guide – PageSieve Docs</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -51,6 +86,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-c0594c282233cd2e9ff74a42c86bebf8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -83,10 +121,18 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="PageSieve Docs">
 <meta property="og:description" content="Documentation website for PageSieve a browser extension that allows you to scrape websites without leaving your browser by defining CSS Selectors and XPath selectors.">
+<meta property="og:image" content="https://julius383.github.io/PageSieve/assets/example-highlight-green.png">
 <meta property="og:site_name" content="PageSieve Docs">
-<meta name="twitter:title" content="Scrape Configuration Reference – PageSieve Docs">
+<meta property="og:image:alt" content="Clicking an element to target">
+<meta property="og:image:height" content="957">
+<meta property="og:image:width" content="1879">
+<meta name="twitter:title" content="Selectors &amp; Extraction Guide – PageSieve Docs">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://julius383.github.io/PageSieve/assets/example-highlight-green.png">
+<meta name="twitter:image:alt" content="Clicking an element to target">
+<meta name="twitter:image-height" content="957">
+<meta name="twitter:image-width" content="1879">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -360,16 +406,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#scrapeconfig" id="toc-scrapeconfig" class="nav-link active" data-scroll-target="#scrapeconfig">ScrapeConfig</a>
+  <li><a href="#point-and-click-selection" id="toc-point-and-click-selection" class="nav-link active" data-scroll-target="#point-and-click-selection">Point-and-Click Selection</a></li>
+  <li><a href="#scoping-with-containers" id="toc-scoping-with-containers" class="nav-link" data-scroll-target="#scoping-with-containers">Scoping with Containers</a></li>
+  <li><a href="#special-selector-syntax" id="toc-special-selector-syntax" class="nav-link" data-scroll-target="#special-selector-syntax">Special Selector Syntax</a>
   <ul class="collapse">
-  <li><a href="#selectorgroup" id="toc-selectorgroup" class="nav-link" data-scroll-target="#selectorgroup">SelectorGroup</a></li>
-  <li><a href="#extractionoptions" id="toc-extractionoptions" class="nav-link" data-scroll-target="#extractionoptions">ExtractionOptions</a></li>
-  <li><a href="#paginationconfig" id="toc-paginationconfig" class="nav-link" data-scroll-target="#paginationconfig">PaginationConfig</a></li>
-  <li><a href="#variableconfig" id="toc-variableconfig" class="nav-link" data-scroll-target="#variableconfig">VariableConfig</a></li>
-  <li><a href="#outputconfig" id="toc-outputconfig" class="nav-link" data-scroll-target="#outputconfig">OutputConfig</a></li>
+  <li><a href="#the-dot-.-selector" id="toc-the-dot-.-selector" class="nav-link" data-scroll-target="#the-dot-.-selector">The Dot (<code>.</code>) Selector</a></li>
+  <li><a href="#relative-xpath" id="toc-relative-xpath" class="nav-link" data-scroll-target="#relative-xpath">Relative XPath</a></li>
   </ul></li>
+  <li><a href="#extraction-targets" id="toc-extraction-targets" class="nav-link" data-scroll-target="#extraction-targets">Extraction Targets</a></li>
+  <li><a href="#multi-value-nested-fields" id="toc-multi-value-nested-fields" class="nav-link" data-scroll-target="#multi-value-nested-fields">Multi-Value &amp; Nested Fields</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/configuration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/configuration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/selectors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/selectors.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -377,7 +424,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Scrape Configuration Reference</h1>
+<h1 class="title">Selectors &amp; Extraction Guide</h1>
 </div>
 
 
@@ -394,562 +441,146 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The scrape configuration defines how PageSieve should interact with a webpage to extract data. It is validated using Zod schemas defined in <code>packages/core/src/schema.ts</code>.</p>
-<section id="scrapeconfig" class="level2">
-<h2 class="anchored" data-anchor-id="scrapeconfig">ScrapeConfig</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Auto-generated id.</td>
-</tr>
-<tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Human readable name for config.</td>
-</tr>
-<tr class="odd">
-<td><code>schemaVersion</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"2.0.0"</code></td>
-<td>Schema version. Incremented when breaking changes to format made.</td>
-</tr>
-<tr class="even">
-<td><code>revision</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>Increment when config is modified.</td>
-</tr>
-<tr class="odd">
-<td><code>url</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>URL to start extraction.</td>
-</tr>
-<tr class="even">
-<td><code>urlPattern</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>glob/pattern this config applies to; omitted = exact url only</td>
-</tr>
-<tr class="odd">
-<td><code>createdAt</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>When config was created.</td>
-</tr>
-<tr class="even">
-<td><code>updatedAt</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>When config was updated. Should change alongside revision.</td>
-</tr>
-<tr class="odd">
-<td><code>description</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Description of config e.g what type of data it extracts</td>
-</tr>
-<tr class="even">
-<td><code>author</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Who made this config. Typically username</td>
-</tr>
-<tr class="odd">
-<td><code>tags</code></td>
-<td>string[]</td>
-<td>No</td>
-<td>-</td>
-<td>Content tags for easier categorization.</td>
-</tr>
-<tr class="even">
-<td><code>selectors</code></td>
-<td><a href="#selectorgroup">SelectorGroup</a>[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>Defines what to extract from page.</td>
-</tr>
-<tr class="odd">
-<td><code>options</code></td>
-<td><a href="#extractionoptions">ExtractionOptions</a></td>
-<td>Yes</td>
-<td>-</td>
-<td>Options that control how extraction is done</td>
-</tr>
-<tr class="even">
-<td><code>pagination</code></td>
-<td><a href="#paginationconfig">PaginationConfig</a></td>
-<td>Yes</td>
-<td>-</td>
-<td>Controls how to move to the next page</td>
-</tr>
-<tr class="odd">
-<td><code>variables</code></td>
-<td><a href="#variableconfig">VariableConfig</a></td>
-<td>No</td>
-<td>-</td>
-<td>Variable mappings for parameterized scrapes.</td>
-</tr>
-<tr class="even">
-<td><code>output</code></td>
-<td><a href="#outputconfig">OutputConfig</a></td>
-<td>No</td>
-<td>-</td>
-<td>Results output format and merge options.</td>
-</tr>
-</tbody>
-</table>
-<section id="selectorgroup" class="level3">
-<h3 class="anchored" data-anchor-id="selectorgroup">SelectorGroup</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"g_${nodeid(6)}"</code></td>
-<td>Random and stable id. Used to group results when multiple groups exist.</td>
-</tr>
-<tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"Group 1"</code></td>
-<td>Label for this selector group.</td>
-</tr>
-<tr class="odd">
-<td><code>container</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Item container selector when omitted =&gt; page-level group (scrape once)</td>
-</tr>
-<tr class="even">
-<td><code>fields</code></td>
-<td><a href="#field">Field</a>[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>List of field definitions to extract within this group.</td>
-</tr>
-</tbody>
-</table>
-<section id="field" class="level4">
-<h4 class="anchored" data-anchor-id="field">Field</h4>
+<p>PageSieve allows you to define fields using CSS selectors, XPath expressions, or interactive point-and-click selection. This guide explains the selection syntax, scoping rules, and extraction targets.</p>
+<section id="point-and-click-selection" class="level2">
+<h2 class="anchored" data-anchor-id="point-and-click-selection">Point-and-Click Selection</h2>
+<p>The browser extension embeds an interactive DOM inspector adapted from <a href="https://github.com/cantino/selectorgadget/">SelectorGadget</a>.</p>
+<ol type="1">
+<li>Click <strong>Pick</strong> next to any field in the sidebar.</li>
+<li>Click an element on the webpage you wish to target (highlighted in yellow/green).</li>
+<li>If unneeded elements are highlighted, click them to reject them (highlighted in red).</li>
+<li>The algorithm automatically calculates an optimal CSS selector matching your desired elements.</li>
+</ol>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../assets/example-highlight-green.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Clicking an element to target"><img src="../assets/example-highlight-green.png" class="img-fluid figure-img" alt="Clicking an element to target"></a></p>
+<figcaption>Clicking an element to target</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../assets/example-highlight-red.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Rejecting an element"><img src="../assets/example-highlight-red.png" class="img-fluid figure-img" alt="Rejecting an element"></a></p>
+<figcaption>Rejecting an element</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="scoping-with-containers" class="level2">
+<h2 class="anchored" data-anchor-id="scoping-with-containers">Scoping with Containers</h2>
+<p>When extracting repeated items (e.g.&nbsp;products, rows, cards), use the <code>container</code> field on a <a href="../reference/configuration.html#selectorgroup">SelectorGroup</a> (<em>Container Selector</em> input field in Extension Sidebar UI):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Quote Items"</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"container"</span><span class="fu">:</span> <span class="st">".quote"</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"fields"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Quote Text"</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">".text"</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>With</strong> <code>container</code>: Each field’s <code>selector</code> is evaluated relative to each container element.</li>
+<li><strong>Without</strong> <code>container</code>: Selectors are evaluated against the entire document once (page-level extraction).</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Treating Entire Page as Container
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To extract singular individual fields from a page <em>always</em> include a container even one like <code>body</code> since by extractor assumes you’re working with multiple instances of each field on a page. This lets you extract data similar to the <a href="https://github.com/obsidianmd/obsidian-clipper/">Obsidian Clipper</a>.</p>
+</div>
+</div>
+</section>
+<section id="special-selector-syntax" class="level2">
+<h2 class="anchored" data-anchor-id="special-selector-syntax">Special Selector Syntax</h2>
+<section id="the-dot-.-selector" class="level3">
+<h3 class="anchored" data-anchor-id="the-dot-.-selector">The Dot (<code>.</code>) Selector</h3>
+<p>When targeting an attribute or property directly on the container element itself, use <code>.</code> as the field selector:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_Z9Wpuf"</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"URL"</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">"."</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"attribute"</span><span class="fu">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"attribute"</span><span class="fu">:</span> <span class="st">"href"</span><span class="fu">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This extracts the <code>href</code> attribute from the container element itself without querying for child nodes.</p>
+<p>See the <a href="../examples/scraping-mzalendo-members-of-national-assembly.html">Scraping Members of National Assembly from Mzalendo Example</a> for a demonstration.</p>
+</section>
+<section id="relative-xpath" class="level3">
+<h3 class="anchored" data-anchor-id="relative-xpath">Relative XPath</h3>
+<p>When extracting elements that require navigating up the DOM tree or selecting preceding/following sibling nodes relative to a container, you can provide an XPath expression:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"f_qn54EZ"</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Company Name"</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"selector"</span><span class="fu">:</span> <span class="st">"../../../../preceding-sibling::tr[1]/td[2]/a/text()"</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"single"</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"extract"</span><span class="fu">:</span> <span class="st">"text"</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"required"</span><span class="fu">:</span> <span class="kw">false</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>See the <a href="../examples/scraping-fortune-500-companies.html">Fortune 500 Companies Example</a> for a practical demonstration. This pattern is useful when you want to associate each container element with a single value.</p>
+</section>
+</section>
+<section id="extraction-targets" class="level2">
+<h2 class="anchored" data-anchor-id="extraction-targets">Extraction Targets</h2>
+<p>The <code>extract</code> option determines what data is collected from the matched element:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 68%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
+<th><code>extract</code> Value</th>
+<th>Additional Requirement</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>id</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"f_${nodeid(6)}"</code></td>
-<td>Random and stable id.</td>
-</tr>
-<tr class="even">
-<td><code>name</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Field name used as column key in results.</td>
-</tr>
-<tr class="odd">
-<td><code>selector</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>""</code></td>
-<td>Selector for data point.</td>
-</tr>
-<tr class="even">
-<td><code>type</code></td>
-<td><code>single</code> or <code>multiple</code> or <code>count</code></td>
-<td>Yes</td>
-<td><code>"single"</code></td>
-<td>How to treat selector. Individual, collection or count</td>
-</tr>
-<tr class="odd">
-<td><code>extract</code></td>
-<td><code>text</code> or <code>property</code> or <code>attribute</code></td>
-<td>Yes</td>
 <td><code>"text"</code></td>
-<td>What part of element to extract.</td>
+<td>None</td>
+<td>Extracts trimmed text content (<code>textContent</code>).</td>
 </tr>
 <tr class="even">
-<td><code>attribute</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Which attribute to extract. Required when extract === ‘attribute’.</td>
+<td><code>"attribute"</code></td>
+<td><code>attribute: "&lt;name&gt;"</code></td>
+<td>Extracts an HTML attribute (e.g., <code>href</code>, <code>src</code>, <code>title</code>, <code>data-*</code>).</td>
 </tr>
 <tr class="odd">
-<td><code>property</code></td>
-<td><code>innerHTML</code> or <code>outerHTML</code> or <code>innerText</code> or <code>textContent</code></td>
-<td>No</td>
-<td>-</td>
-<td>Which property to extract. Required when extract === ‘property’.</td>
-</tr>
-<tr class="even">
-<td><code>required</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>false</code></td>
-<td>Should absence of element be treated as error.</td>
-</tr>
-<tr class="odd">
-<td><code>default</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Default value for this element when it cannot be extracted.</td>
-</tr>
-<tr class="even">
-<td><code>datatype</code></td>
-<td><code>string</code> or <code>number</code> or <code>boolean</code> or <code>date</code></td>
-<td>No</td>
-<td>-</td>
-<td>Datatype to cast result to.</td>
-</tr>
-<tr class="odd">
-<td><code>fields</code></td>
-<td>Field[]</td>
-<td>No</td>
-<td>-</td>
-<td>Recursive sub-fields. Only valid when type === ‘multiple’</td>
+<td><code>"property"</code></td>
+<td><code>property: "&lt;name&gt;"</code></td>
+<td>Extracts DOM property: <code>innerHTML</code>, <code>outerHTML</code>, <code>innerText</code>, or <code>textContent</code>.</td>
 </tr>
 </tbody>
 </table>
 </section>
-</section>
-<section id="extractionoptions" class="level3">
-<h3 class="anchored" data-anchor-id="extractionoptions">ExtractionOptions</h3>
-<p>Options that control how extraction is done</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>waitforNetworkIdle</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Wait for until no more network requests. For browser clients.</td>
-</tr>
-<tr class="even">
-<td><code>waitForSelector</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Wait for element before running extraction on page.</td>
-</tr>
-<tr class="odd">
-<td><code>scrollToBottom</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>false</code></td>
-<td>Scroll to bottom of page before running extraction on page.</td>
-</tr>
-<tr class="even">
-<td><code>runJavaScript</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Extraction requires javascript to be runnable.</td>
-</tr>
-<tr class="odd">
-<td><code>pageDelayMs</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>3000</code></td>
-<td>Delay this many milliseconds after navigating to a new page.</td>
-</tr>
-<tr class="even">
-<td><code>timeoutMs</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>60000</code></td>
-<td>Maximum amount of time to wait for action before it is considered failed.</td>
-</tr>
-<tr class="odd">
-<td><code>maxRetries</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>2</code></td>
-<td>Maximum times to retry on failed actions.</td>
-</tr>
-<tr class="even">
-<td><code>appendData</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Whether to append results to existing data or start fresh.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="paginationconfig" class="level3">
-<h3 class="anchored" data-anchor-id="paginationconfig">PaginationConfig</h3>
-<p>Defines how to move between different pages.</p>
-<section id="modenone" class="level4">
-<h4 class="anchored" data-anchor-id="modenone">mode=none</h4>
-<p>No pagination is performed; extraction runs only on the initial page.</p>
-</section>
-<section id="modenext" class="level4">
-<h4 class="anchored" data-anchor-id="modenext">mode=next</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>nextSelector</code></td>
-<td>string</td>
-<td>Yes</td>
-<td>-</td>
-<td>Selector for element that navigates to next page.</td>
-</tr>
-<tr class="even">
-<td><code>maxPages</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>100</code></td>
-<td>Maximum number of pages to navigate to in one session.</td>
-</tr>
-<tr class="odd">
-<td><code>waitAfterClickMs</code></td>
-<td>number</td>
-<td>No</td>
-<td>-</td>
-<td>Wait this many milliseconds after clicking the element.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="modelinks" class="level4">
-<h4 class="anchored" data-anchor-id="modelinks">mode=links</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pageLinks</code></td>
-<td>string[]</td>
-<td>Yes</td>
-<td>-</td>
-<td>List of links to process.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="modetemplate" class="level4">
-<h4 class="anchored" data-anchor-id="modetemplate">mode=template</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>urlTemplate</code></td>
-<td>string</td>
-<td>Yes</td>
-<td><code>"page={{page}}"</code></td>
-<td>Template for URLs where <code>{page}</code> is replaced with page numbers.</td>
-</tr>
-<tr class="even">
-<td><code>startPage</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>First number to use in template.</td>
-</tr>
-<tr class="odd">
-<td><code>increment</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>1</code></td>
-<td>Number to add during each step.</td>
-</tr>
-<tr class="even">
-<td><code>maxPages</code></td>
-<td>number</td>
-<td>Yes</td>
-<td><code>100</code></td>
-<td>Maximum number of pages to navigate in one session.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="variableconfig" class="level3">
-<h3 class="anchored" data-anchor-id="variableconfig">VariableConfig</h3>
-<p>Variables either embedded as string or secret for suggesting to client to prompt user.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>type</code></td>
-<td><code>secret</code> or <code>string</code></td>
-<td>Yes</td>
-<td>-</td>
-<td>Type of variable</td>
-</tr>
-<tr class="even">
-<td><code>value</code></td>
-<td>string</td>
-<td>No</td>
-<td>-</td>
-<td>Value of text variable</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="outputconfig" class="level3">
-<h3 class="anchored" data-anchor-id="outputconfig">OutputConfig</h3>
-<p>Results output hints and formatting configuration.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>format</code></td>
-<td><code>json</code> | <code>ndjson</code> | <code>csv</code> | <code>html</code> | <code>markdown</code></td>
-<td>Yes</td>
-<td><code>"json"</code></td>
-<td>Data format to use for results.</td>
-</tr>
-<tr class="even">
-<td><code>mergeStrategy</code></td>
-<td><code>join</code> | <code>separate</code> | <code>zip</code></td>
-<td>Yes</td>
-<td><code>"join"</code></td>
-<td>How to combine results from different field groups.</td>
-</tr>
-<tr class="odd">
-<td><code>flatten</code></td>
-<td>boolean</td>
-<td>Yes</td>
-<td><code>true</code></td>
-<td>Flatten nested columns in output.</td>
-</tr>
-</tbody>
-</table>
+<section id="multi-value-nested-fields" class="level2">
+<h2 class="anchored" data-anchor-id="multi-value-nested-fields">Multi-Value &amp; Nested Fields</h2>
+<ul>
+<li><strong><code>type: "single"</code></strong>: Returns a single scalar value from the first matching element.</li>
+<li><strong><code>type: "multiple"</code></strong>: Returns an array of values for all matching elements within the container.</li>
+<li><strong><code>type: "count"</code></strong>: Returns the numeric count of matching elements.</li>
+<li><strong>Recursive Sub-Fields</strong>: When <code>type</code> is set to <code>"multiple"</code>, you can specify nested <code>fields: [...]</code> to produce structured array-of-objects data within a row.</li>
+</ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1367,8 +998,40 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/selectors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/selectors.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/julius383/PageSieve/edit/main/reference/configuration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/julius383/PageSieve/blob/main/reference/configuration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/julius383/PageSieve/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+</body></html>
