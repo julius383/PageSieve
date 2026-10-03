@@ -11,7 +11,7 @@ build-extension:
   bun run --filter @pagesieve/extension build
 
 build-cli:
-  bun run --filter @pagesieve/cli build
+  bun run --filter pagesieve-cli build
 
 [working-directory: 'apps/cli']
 package-cli:
@@ -19,7 +19,7 @@ package-cli:
 
 [working-directory: 'apps/cli']
 install-cli: build-cli package-cli
-  bun remove -g @pagesieve/cli || true
+  bun remove -g pagesieve-cli || true
   bun add -g "{{cli_pkg}}"
 
 watch:
