@@ -87,7 +87,7 @@ export function getIndicatorColor(status: StatusLevel): { label: string; style: 
         .with('inspecting', () => ({ label, style: '#9b5de5' }))
         .with('waiting', () => ({ label, style: '#f9c74f' }))
         .with('saving', 'loading', 'importing', 'exporting', () => ({ label, style: '#f77f00' }))
-        .with('errored', () => ({ label, style: '#F87171' }))
+        .with('errored', 'retrying', () => ({ label, style: '#F87171' }))
         .with('completed', () => ({ label, style: '#228b22' }))
         .exhaustive();
     /* prettier-ignore-end */

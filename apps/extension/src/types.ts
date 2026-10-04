@@ -17,6 +17,7 @@ const StatusLevel = z.enum([
     'completed',
 
     'errored',
+    'retrying',
 
     'importing',
     'exporting',
@@ -28,6 +29,10 @@ const ExtensionStatus = z.object({
     status: StatusLevel,
     message: z.string(),
     timestamp: z.iso.datetime(),
+    progress: z.object({
+        progressIndex: z.number().positive(),
+        progressMax: z.number().positive()
+    }).optional(),
 });
 
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
@@ -112,7 +117,9 @@ export type SelectedElementRequest = {
 export type ScrapeStatusUpdateRequest = {
     action: 'updateScrapeStatus';
     status: StatusLevel;
-    message: string;
+    message?: string;
+    progressIndex?: number;     // either currentPage or retries
+    progressMax?: number;       // either maxPages or maxRetries
     results: ExtractedGroup[];
 };
 

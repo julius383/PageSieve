@@ -38,11 +38,11 @@ export const initExtensionLogger = async () => {
                 sinks: {
                     console: getConsoleSink(),
                     store: (record) => {
-                        logStore.sink(record);
+                        // logStore.sink(record);
                         if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
                             browser.runtime
                                 .sendMessage({
-                                    action: 'log',
+                                    action: 'addToLogStore',
                                     record: serializeRecord(record),
                                 })
                                 .catch(() => {

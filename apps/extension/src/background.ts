@@ -3,7 +3,7 @@ import { omit } from 'es-toolkit';
 import { ScrapeContext, createScrapeMachine } from '@pagesieve/core/scrapeMachine';
 import { extensionDriver } from '@/extensionDriver';
 import { PaginationStateStatus } from '@pagesieve/core/types';
-import type { BackgroundRequest, StatusLevel } from '@/types';
+import type { BackgroundRequest, StatusLevel, ScrapeStatusUpdateRequest } from '@/types';
 import { getLogger } from '@pagesieve/core/logger';
 import { initExtensionLogger } from '@/logger';
 initExtensionLogger();
@@ -22,38 +22,61 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
         snapshot.value instanceof Object ? Object.keys(snapshot.value)[0] : snapshot.value
     ) as StatusLevel;
     // logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
-    logger.debug('Current state is {status} with context {context}', {
+    logger.debug('Current state is {status}', {
         status: currentState,
         context: omit(context, ['config', 'results']),
     });
+    let message: string = currentState;
+    let progress = {};
     if (currentState === 'errored') {
         logger.error('An error occurred: {error}', {
             status: currentState,
             error: context.error || 'Unknown error',
         });
+        message = context.error || 'An error occurred during scraping';
+    } else if (currentState === 'retrying') {
+        logger.warning('Trying to recover ({retries}/{maxRetries}) from:\n {error}', {
+            status: currentState,
+            retries: context.retries,
+            maxRetries: context.config.options.maxRetries,
+            error: context.error || 'Unknown error',
+        });
+        message = `Trying to recover from ${context.error}`;
+        progress = {
+            progressIndex: context.retries,
+            progressMax: context.config.options.maxRetries,
+        };
     } else if (currentState === 'extracting') {
         logger.info('Extracting data from {currentURL}', {
             status: currentState,
             currentURL: context.currentURL,
         });
+        message = `Extracting data from ${context.currentURL}: ${context.currentPage}${context.maxPages ? ' of ' + context.maxPages : ''}`;
+        if (context.config.pagination.mode !== 'none') {
+            progress = { progressIndex: context.currentPage, progressMax: context.maxPages };
+        }
     } else if (currentState === 'navigating') {
         logger.info('Navigating from {currentURL} using {pagination}', {
             status: currentState,
             currentURL: context.currentURL,
             pagination: context.config.pagination.mode,
         });
+        message = `Navigating to next page (${context.config.pagination.mode})`;
     } else if (currentState === 'waiting') {
         logger.info('Waiting for {delay} milliseconds', {
             status: currentState,
             delay: context.config.options.pageDelayMs,
         });
+        message = `Waiting for ${context.config.options.pageDelayMs}`;
     }
 
     browser.runtime.sendMessage({
         action: 'updateScrapeStatus',
         status: currentState,
+        message,
         results: context.results,
-    });
+        ...progress,
+    } as ScrapeStatusUpdateRequest);
 }
 
 async function cleanupContentScripts() {

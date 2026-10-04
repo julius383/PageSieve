@@ -24,6 +24,7 @@ export const extensionStatus = $state<ExtensionStatus>({
     status: 'idle',
     message: 'ready',
     timestamp: new SvelteDate().toISOString(),
+    // progress: { progressIndex: 1, progressMax: 0 },
 });
 
 export function runWithStatus<T>(status: ExtensionStatus, fn: () => T) {
@@ -64,12 +65,20 @@ export async function runWithStatusAsync<T>(status: ExtensionStatus, fn: () => P
     }
 }
 
-export function setStatus(status: StatusLevel, message?: string) {
+export function setStatus(
+    status: StatusLevel,
+    message?: string,
+    progress?: { progressIndex: number; progressMax: number },
+) {
     Object.assign(extensionStatus, {
         status,
         message: message ? message : status,
         timestamp: new SvelteDate().toISOString(),
+        // ...(progress ?? {}),
     });
+    if (progress != null) {
+        extensionStatus.progress = progress;
+    }
 }
 
 export function getStatus(): StatusLevel {
@@ -87,15 +96,14 @@ export function setExtractedData(data: ExtractedGroup[]) {
 // Listener for messages from background script to status
 browser.runtime.onMessage.addListener(async (request: ScrapeStatusUpdateRequest) => {
     if (request.action === 'updateScrapeStatus') {
-        if (request.results.length > 0) {
+        const { status, message, progressIndex, progressMax, results } = request;
+        if (results.length > 0) {
             extractedData.data = [...request.results];
         }
-        if (request.message) {
-            setStatus(request.status, request.message);
-        } else {
-            setStatus(request.status);
-        }
-        if (request.status == 'completed') {
+        const progress =
+            progressIndex != null && progressMax != null ? { progressIndex, progressMax } : undefined;
+        setStatus(status, message, progress);
+        if (status == 'completed') {
             // cleanup succeeded snapshot
             // TODO: think about making this optional through a setting value
             await removeSnapshot(scrapeConfig.id);

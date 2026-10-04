@@ -63,7 +63,7 @@
         }
     }
 
-    const runninStates = ['running', 'extracting', 'navigating', 'waiting'];
+    const runningStates = ['running', 'extracting', 'navigating', 'waiting'];
 </script>
 
 <div class="flex items-center gap-1.5">
@@ -71,7 +71,7 @@
         <Tooltip.Provider>
             <Tooltip.Root>
                 <Tooltip.Trigger>
-                    {#if runninStates.includes(extensionStatus.status)}
+                    {#if runningStates.includes(extensionStatus.status)}
                         <Button
                             size="icon"
                             onclick={stopRun}
@@ -90,7 +90,7 @@
                     {/if}
                 </Tooltip.Trigger>
                 <Tooltip.Content>
-                    {#if runninStates.includes(extensionStatus.status)}
+                    {#if runningStates.includes(extensionStatus.status)}
                         Interrupt execution
                     {:else}
                         Scrape page

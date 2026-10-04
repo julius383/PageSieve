@@ -52,7 +52,7 @@ export const logStore = createLogStore();
 // Listen for logs from other contexts (e.g., background script)
 if (typeof browser !== 'undefined' && browser.runtime?.onMessage) {
     browser.runtime.onMessage.addListener((message) => {
-        if (message.action === 'log' && message.record) {
+        if (message.action === 'addToLogStore' && message.record) {
             logStore.sink(message.record);
         }
     });
