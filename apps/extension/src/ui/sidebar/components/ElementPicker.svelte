@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from 'svelte';
 
     import { Input } from '$lib/components/ui/input';
+    import * as Field from '$lib/components/ui/field/index.js';
     import { Button } from '$lib/components/ui/button';
     import { Toggle } from '$lib/components/ui/toggle/index.js';
     import { Pipette, Check, X, Highlighter } from '@lucide/svelte';
@@ -10,6 +11,7 @@
 
     import { setStatus } from '@/ui/sidebar/stores/ui.svelte';
     import type { SelectedElementRequest } from '@/types';
+    import { isValidSelector } from '@pagesieve/core/util';
 
     let {
         label = 'Selector',
@@ -23,6 +25,17 @@
     let foundElements: number = $state(0);
     let previousSelector: string = '';
     let highlightingElement = $state(false);
+
+    let debouncedSelector = $state('');
+    $effect(() => {
+        const value = cssSelector;
+        const timeout = setTimeout(() => {
+            debouncedSelector = value;
+        }, 300);
+        return () => clearTimeout(timeout);
+    });
+    let validation = $derived(isValidSelector(debouncedSelector));
+    let isInvalid = $derived(debouncedSelector?.trim() && !validation.valid);
 
     // This function will handle incoming messages from the content script.
     function messageListener(message: SelectedElementRequest) {
@@ -129,76 +142,88 @@
 </script>
 
 <div class="grid w-full items-center gap-1.5">
-    {#if label}
-        <label for="css-selector" class={header_style}>{label}</label>
-    {/if}
-    <div class="flex items-end gap-x-1 flex-start">
-        <Input id="css-selector" bind:value={cssSelector} placeholder="e.g. h1.title, //h2" />
-        {#if pickingElement && !highlightingElement}
+    <Field.Field data-invalid={isInvalid || undefined}>
+        {#if label}
+            <Field.Label for="css-selector" class={header_style}>{label}</Field.Label>
+        {/if}
+        <div class="flex items-end gap-x-1 flex-start">
+            <Input
+                id="css-selector"
+                bind:value={cssSelector}
+                placeholder="e.g. h1.title, //h2"
+                aria-invalid={isInvalid}
+            />
+            {#if pickingElement && !highlightingElement}
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button onclick={acceptSelection} variant="outline" size="icon">
+                                <Check />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Accept selection</Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button onclick={cancelSelection} variant="destructive" size="icon">
+                                <X />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Accept selection</Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+            {:else}
+                <Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button
+                                onclick={handleInspect}
+                                variant="outline"
+                                size="icon"
+                                disabled={highlightingElement}
+                            >
+                                <Pipette color="#fff" />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>
+                            <p>Start Element Picker</p>
+                        </Tooltip.Content>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
+            {/if}
+
             <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
-                        <Button onclick={acceptSelection} variant="outline" size="icon">
-                            <Check />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>Accept selection</Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button onclick={cancelSelection} variant="destructive" size="icon">
-                            <X />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>Accept selection</Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
-        {:else}
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button
-                            onclick={handleInspect}
+                        <Toggle
+                            onclick={handleHighlight}
                             variant="outline"
-                            size="icon"
-                            disabled={highlightingElement}
+                            class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
                         >
-                            <Pipette color="#fff" />
-                        </Button>
+                            <Highlighter color="#fff" />
+                        </Toggle>
                     </Tooltip.Trigger>
                     <Tooltip.Content>
-                        <p>Start Element Picker</p>
+                        {#if highlightingElement}
+                            <p>Click to stop highlighting</p>
+                        {:else}
+                            <p>Highlight selector elements</p>
+                        {/if}
                     </Tooltip.Content>
                 </Tooltip.Root>
             </Tooltip.Provider>
-        {/if}
-
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    <Toggle
-                        onclick={handleHighlight}
-                        variant="outline"
-                        class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
-                    >
-                        <Highlighter color="#fff" />
-                    </Toggle>
-                </Tooltip.Trigger>
-                <Tooltip.Content>
-                    {#if highlightingElement}
-                        <p>Click to stop highlighting</p>
-                    {:else}
-                        <p>Highlight selector elements</p>
-                    {/if}
-                </Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
-    </div>
-    {#if foundElements > 0 && pickingElement}
-        <span class="text-xs text-[##d3d3d3] italic"
-            >Matches <span class="font-bold">{foundElements}</span> elements</span
-        >
-    {/if}
+        </div>
+        <Field.Description>
+            {#if foundElements > 0 && pickingElement}
+                <span class="text-xs text-[#d3d3d3] italic"
+                    >Matches <span class="font-bold">{foundElements}</span> elements</span
+                >
+            {/if}
+            {#if isInvalid}
+                <span class="text-xs italic">{validation?.error ?? ''}</span>
+            {/if}
+        </Field.Description>
+    </Field.Field>
 </div>

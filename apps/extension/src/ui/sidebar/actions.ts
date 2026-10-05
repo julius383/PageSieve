@@ -20,11 +20,6 @@ import { navigateAndWait } from './util';
  * browser sendMessage
  */
 export async function extractData(selectors: SelectorGroup[]): Promise<void> {
-    if (!validateSelectors(selectors)) {
-        setStatus('errored', 'No valid selectors present');
-        return;
-    }
-
     try {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
         if (tabs[0]?.id) {
@@ -179,6 +174,7 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
             timestamp: new Date().toISOString(),
         },
         async () => {
+            // TODO: validate nav inputs before running
             const navRes = await browser.runtime.sendMessage({
                 action: 'testNavigate',
                 config: config,
@@ -206,6 +202,29 @@ export async function runConfig() {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) {
         setStatus('errored', 'Failed to find active tab');
+        return;
+    }
+
+    const selectorValidations = Object.values(validateSelectors(config.selectors)).flat();
+
+    console.log('Validating');
+    console.dir(selectorValidations, { depth: null });
+    console.dir(config, { depth: null });
+    if (!selectorValidations.reduce((acc, val) => acc && val.valid, true)) {
+        const errors = selectorValidations
+            .filter((val) => !val.valid)
+            .map((val) => {
+                const idWithName = (
+                    val.id.startsWith('g_')
+                        ? config.selectors.map(({ id, name }) => ({ id, name }))
+                        : config.selectors
+                              .map(({ fields }) => fields)
+                              .flat()
+                              .map(({ id, name }) => ({ id, name }))
+                ).find(({ id }) => id == val.id);
+                return `Error on ${val.id.startsWith('g_') ? 'group' : 'field'} "${idWithName?.name ?? val.id}":\n\n ${val.error}`;
+            });
+        setStatus('errored', errors.join('\n'));
         return;
     }
 

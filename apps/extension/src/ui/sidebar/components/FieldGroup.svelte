@@ -5,7 +5,7 @@
     import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import { Input } from '$lib/components/ui/input';
     import { Button } from '$lib/components/ui/button';
-    import { Trash2, Copy, Square, List, Tally5, CirclePile } from '@lucide/svelte';
+    import { Trash, Copy, Square, List, Tally5, CirclePile } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
@@ -79,7 +79,7 @@
                                 disabled={pickingElement}
                                 class="bg-red-500 text-white font-bold hover:bg-red-800"
                             >
-                                <Trash2 />
+                                <Trash />
                             </Button>
                         </Tooltip.Trigger>
                         <Tooltip.Content>
@@ -213,7 +213,7 @@
                                         disabled={pickingElement}
                                         class="bg-red-500 text-white font-bold hover:bg-red-800"
                                     >
-                                        <Trash2 />
+                                        <Trash />
                                     </Button>
                                 </Tooltip.Trigger>
                                 <Tooltip.Content>

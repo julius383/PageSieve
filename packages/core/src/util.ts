@@ -1,4 +1,5 @@
 import type { SelectorGroup } from './schema';
+import { isXPath } from './extractor';
 
 // Characters not allowed in filenames across major OSes
 // eslint-disable-next-line no-control-regex
@@ -65,21 +66,63 @@ export async function generateConfigId(url: string, selectors: SelectorGroup[]):
     return filename;
 }
 
-export function validateSelectors(selectors: SelectorGroup[]): boolean {
-    const allFields = selectors.flatMap((item) => item.fields);
-    return allFields.some((f) => f.name && f.selector);
+type ValidationResult = { valid: true } | { valid: false; error: string };
+type Validation = ValidationResult & { id: string };
+
+export function validateSelectors(selectors: SelectorGroup[]): Record<string, Validation[]> {
+    const validations: Validation[] = [];
+    for (const group of selectors) {
+        // validate container
+        if (group.container != null && group.container != '') {
+            const valid = { id: group.id, ...isValidSelector(group.container) };
+            validations.push(valid);
+        } else {
+            validations.push({ id: group.id, valid: true });
+        }
+        // validate fields
+        for (const field of group.fields) {
+            validations.push({
+                id: field.id,
+                ...(field.name
+                    ? { valid: true }
+                    : { valid: false, error: 'Field name cannot be empty' }),
+            });
+            const valid = { id: field.id, ...isValidSelector(field.selector) };
+            validations.push(valid);
+        }
+    }
+    return Object.groupBy(validations, ({ id }) => id) as Record<string, Validation[]>;
 }
 
-export function parseCSS(expr: string): [string | null, string] {
-    // expr is css
-    // img?src - extracts the src attribute from img tag
-    const parts = /\?([-a-zA-Z]+)$/gm.exec(expr);
-    let attribute = null;
-    if (parts != null) {
-        attribute = parts[1];
-        expr = expr.slice(0, parts.index);
+export function isValidSelector(selector: string): ValidationResult {
+    if (!selector || selector.trim() === '') {
+        return { valid: false, error: 'Selector cannot be empty' };
     }
-    return [attribute, expr];
+    if (selector.trim() === '.') {
+        // special self container selector see docs/reference/selectors.qmd
+        return { valid: true };
+    }
+    try {
+        if (typeof document !== 'undefined') {
+            if (isXPath(selector)) {
+                document.createExpression(selector);
+            } else {
+                document.createDocumentFragment().querySelector(selector);
+            }
+        }
+        return { valid: true };
+    } catch (err) {
+        if (err instanceof DOMException) {
+            return {
+                valid: false,
+                error: 'Invalid selector',
+            };
+        }
+        return {
+            valid: false,
+            error: err instanceof Error ? err.message : 'Invalid CSS selector syntax',
+        };
+    }
 }
 
 export function zipObjectArrays<T extends Record<string, unknown[]>>(
