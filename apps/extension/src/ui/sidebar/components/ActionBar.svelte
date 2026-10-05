@@ -68,132 +68,120 @@
 
 <div class="flex items-center gap-1.5">
     <ButtonGroup.Root>
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    {#if runningStates.includes(extensionStatus.status)}
-                        <Button
-                            size="icon"
-                            onclick={stopRun}
-                            class="bg-red-500 text-white font-bold hover:bg-red-600"
-                        >
-                            <Square class="size-4 mr-1" strokeWidth={4} fill="white" />
-                        </Button>
-                    {:else}
-                        <Button
-                            size="icon"
-                            onclick={() => runConfig()}
-                            class="bg-green-500 text-white font-bold hover:bg-green-600"
-                        >
-                            <Play class="size-4 mr-1" strokeWidth={4} />
-                        </Button>
-                    {/if}
-                </Tooltip.Trigger>
-                <Tooltip.Content>
-                    {#if runningStates.includes(extensionStatus.status)}
-                        Interrupt execution
-                    {:else}
-                        Scrape page
-                    {/if}
-                </Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                {#if runningStates.includes(extensionStatus.status)}
+                    <Button
+                        size="icon"
+                        onclick={stopRun}
+                        class="bg-red-500 text-white font-bold hover:bg-red-600"
+                    >
+                        <Square class="size-4 mr-1" strokeWidth={4} fill="white" />
+                    </Button>
+                {:else}
+                    <Button
+                        size="icon"
+                        onclick={() => runConfig()}
+                        class="bg-green-500 text-white font-bold hover:bg-green-600"
+                    >
+                        <Play class="size-4 mr-1" strokeWidth={4} />
+                    </Button>
+                {/if}
+            </Tooltip.Trigger>
+            <Tooltip.Content>
+                {#if runningStates.includes(extensionStatus.status)}
+                    Interrupt execution
+                {:else}
+                    Scrape page
+                {/if}
+            </Tooltip.Content>
+        </Tooltip.Root>
     </ButtonGroup.Root>
 
     <ButtonGroup.Root>
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onclick={handleSave}
+                    class="hover:text-gray-400 hover:bg-white/10"
+                >
+                    <Save class="size-4" strokeWidth={2.5} />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>Save config in browser</Tooltip.Content>
+        </Tooltip.Root>
+
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                <div class="cursor-pointer">
+                    <input
+                        id="import-config"
+                        type="file"
+                        accept=".json"
+                        hidden
+                        onchange={importConfig}
+                    />
                     <Button
                         size="icon"
                         variant="ghost"
-                        onclick={handleSave}
+                        onclick={triggerLoad}
                         class="hover:text-gray-400 hover:bg-white/10"
                     >
-                        <Save class="size-4" strokeWidth={2.5} />
+                        <Upload class="size-4" strokeWidth={2.5} />
                     </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Content>Save config in browser</Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
+                </div>
+            </Tooltip.Trigger>
+            <Tooltip.Content>Load config from file</Tooltip.Content>
+        </Tooltip.Root>
 
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    <div class="cursor-pointer">
-                        <input
-                            id="import-config"
-                            type="file"
-                            accept=".json"
-                            hidden
-                            onchange={importConfig}
-                        />
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            onclick={triggerLoad}
-                            class="hover:text-gray-400 hover:bg-white/10"
-                        >
-                            <Upload class="size-4" strokeWidth={2.5} />
-                        </Button>
-                    </div>
-                </Tooltip.Trigger>
-                <Tooltip.Content>Load config from file</Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
-
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        onclick={() => exportConfig()}
-                        class="hover:text-gray-400 hover:bg-white/10"
-                    >
-                        <Download class="size-4" strokeWidth={2.5} />
-                    </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Content>Save config to file</Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onclick={() => exportConfig()}
+                    class="hover:text-gray-400 hover:bg-white/10"
+                >
+                    <Download class="size-4" strokeWidth={2.5} />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>Save config to file</Tooltip.Content>
+        </Tooltip.Root>
     </ButtonGroup.Root>
 
     <ButtonGroup.Root>
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        onclick={addGroup}
-                        class="hover:text-gray-400 hover:bg-white/10"
-                    >
-                        <SquarePlus class="size-4" strokeWidth={2.5} />
-                    </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Content>Add Selector Group</Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onclick={addGroup}
+                    class="hover:text-gray-400 hover:bg-white/10"
+                >
+                    <SquarePlus class="size-4" strokeWidth={2.5} />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>Add Selector Group</Tooltip.Content>
+        </Tooltip.Root>
     </ButtonGroup.Root>
 
     <DropdownMenu.Root>
         <DropdownMenu.Trigger>
-            <Tooltip.Provider>
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            onclick={() => true}
-                            class="hover:text-gray-400 hover:bg-white/10"
-                        >
-                            <EllipsisVertical class="size-4" strokeWidth={2.5} />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>More actions</Tooltip.Content>
-                </Tooltip.Root>
-            </Tooltip.Provider>
+            <Tooltip.Root>
+                <Tooltip.Trigger>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        onclick={() => true}
+                        class="hover:text-gray-400 hover:bg-white/10"
+                    >
+                        <EllipsisVertical class="size-4" strokeWidth={2.5} />
+                    </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content>More actions</Tooltip.Content>
+            </Tooltip.Root>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content class="w-56" align="start">
             <div class="bg-background">

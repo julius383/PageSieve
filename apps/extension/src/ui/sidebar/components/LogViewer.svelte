@@ -46,16 +46,14 @@
                     class="flex items-start gap-2 rounded-lg bg-gray-100 p-2 text-sm dark:bg-gray-800"
                 >
                     <div class="flex items-center gap-2">
-                        <Tooltip.Provider>
-                            <Tooltip.Root>
-                                <Tooltip.Trigger>
-                                    <CircleSmall fill={indicator.style} color={indicator.style} />
-                                </Tooltip.Trigger>
-                                <Tooltip.Content>
-                                    <span>{indicator.label}</span>
-                                </Tooltip.Content>
-                            </Tooltip.Root>
-                        </Tooltip.Provider>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <CircleSmall fill={indicator.style} color={indicator.style} />
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>
+                                <span>{indicator.label}</span>
+                            </Tooltip.Content>
+                        </Tooltip.Root>
                     </div>
 
                     <div class="flex flex-1 flex-col gap-1">

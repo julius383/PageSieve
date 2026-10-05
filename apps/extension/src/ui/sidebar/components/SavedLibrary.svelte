@@ -221,22 +221,20 @@
                     <Card.Action>
                         {#if editingId !== item.id}
                             <div class="flex items-end gap-x-1 flex-start">
-                                <Tooltip.Provider>
-                                    <Tooltip.Root>
-                                        <Tooltip.Trigger>
-                                            <Button
-                                                onclick={() => startEditing(item)}
-                                                variant="outline"
-                                                size="icon"
-                                            >
-                                                <Pencil />
-                                            </Button>
-                                        </Tooltip.Trigger>
-                                        <Tooltip.Content>
-                                            <p>Rename config</p>
-                                        </Tooltip.Content>
-                                    </Tooltip.Root>
-                                </Tooltip.Provider>
+                                <Tooltip.Root>
+                                    <Tooltip.Trigger>
+                                        <Button
+                                            onclick={() => startEditing(item)}
+                                            variant="outline"
+                                            size="icon"
+                                        >
+                                            <Pencil />
+                                        </Button>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content>
+                                        <p>Rename config</p>
+                                    </Tooltip.Content>
+                                </Tooltip.Root>
 
                                 <Button
                                     onclick={() => handleDelete(item.id)}

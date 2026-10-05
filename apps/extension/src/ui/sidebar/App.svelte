@@ -9,6 +9,7 @@
     import StatusIndicator from '@/ui/sidebar/components/StatusIndicator.svelte';
     import LogViewer from '@/ui/sidebar/components/LogViewer.svelte';
 
+    import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { Separator } from '$lib/components/ui/separator';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
 
@@ -72,60 +73,64 @@
 </script>
 
 <main class="p-4 flex flex-col gap-2 bg-background text-foreground h-screen">
-    <ConfirmDialog />
-    <div class="flex items-center justify-between border-b bg-background py-1.5">
-        <ActionBar />
-        <Separator orientation="vertical" class="mx-2 h-4" />
-        <StatusIndicator />
-        <Button
-            variant="ghost"
-            size="icon"
-            onclick={() =>
-                (logViewerAccordionValue =
-                    logViewerAccordionValue === 'log-viewer-item' ? undefined : 'log-viewer-item')}
-        >
-            {#if logViewerAccordionValue === 'log-viewer-item'}
-                <ChevronUp class="size-4" strokeWidth={2} color="#fff" />
-            {:else}
-                <ChevronDown class="size-4" strokeWidth={2} color="#fff" />
-            {/if}
-        </Button>
-    </div>
+    <Tooltip.Provider>
+        <ConfirmDialog />
+        <div class="flex items-center justify-between border-b bg-background py-1.5">
+            <ActionBar />
+            <Separator orientation="vertical" class="mx-2 h-4" />
+            <StatusIndicator />
+            <Button
+                variant="ghost"
+                size="icon"
+                onclick={() =>
+                    (logViewerAccordionValue =
+                        logViewerAccordionValue === 'log-viewer-item'
+                            ? undefined
+                            : 'log-viewer-item')}
+            >
+                {#if logViewerAccordionValue === 'log-viewer-item'}
+                    <ChevronUp class="size-4" strokeWidth={2} color="#fff" />
+                {:else}
+                    <ChevronDown class="size-4" strokeWidth={2} color="#fff" />
+                {/if}
+            </Button>
+        </div>
 
-    <!-- Moved Accordion.Root -->
-    <Accordion.Root type="single" bind:value={logViewerAccordionValue}>
-        <Accordion.Item value="log-viewer-item">
-            <Accordion.Content>
-                <LogViewer />
-                <Separator orientation="horizontal" class="mx-2 h-4" />
-            </Accordion.Content>
-        </Accordion.Item>
-    </Accordion.Root>
-    <TabsRoot value="selectorDefs" class="flex-1 min-h-0 flex flex-col">
-        <TabsList class="grid w-full grid-cols-3">
-            <TabsTrigger value="selectorDefs">Selectors</TabsTrigger>
-            <TabsTrigger value="properties">Config</TabsTrigger>
-            <TabsTrigger value="saved-configs">Library</TabsTrigger>
-        </TabsList>
-        <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
-            <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
-                <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 60} class="flex flex-col">
-                    <FieldConstructor />
-                </Resizable.Pane>
-                <Resizable.Handle withHandle />
+        <!-- Moved Accordion.Root -->
+        <Accordion.Root type="single" bind:value={logViewerAccordionValue}>
+            <Accordion.Item value="log-viewer-item">
+                <Accordion.Content>
+                    <LogViewer />
+                    <Separator orientation="horizontal" class="mx-2 h-4" />
+                </Accordion.Content>
+            </Accordion.Item>
+        </Accordion.Root>
+        <TabsRoot value="selectorDefs" class="flex-1 min-h-0 flex flex-col">
+            <TabsList class="grid w-full grid-cols-3">
+                <TabsTrigger value="selectorDefs">Selectors</TabsTrigger>
+                <TabsTrigger value="properties">Config</TabsTrigger>
+                <TabsTrigger value="saved-configs">Library</TabsTrigger>
+            </TabsList>
+            <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
+                <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
+                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 60} class="flex flex-col">
+                        <FieldConstructor />
+                    </Resizable.Pane>
+                    <Resizable.Handle withHandle />
 
-                <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40}>
-                    <ResultsViewer openInNewTab={false} />
-                </Resizable.Pane>
-            </Resizable.PaneGroup>
-        </TabsContent>
-        <TabsContent value="properties" class="pt-4 overflow-y-auto">
-            <div class="space-y-4">
-                <ConfigPanel />
-            </div>
-        </TabsContent>
-        <TabsContent value="saved-configs" class="pt-4 overflow-y-auto">
-            <SavedLibrary />
-        </TabsContent>
-    </TabsRoot>
+                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40}>
+                        <ResultsViewer openInNewTab={false} />
+                    </Resizable.Pane>
+                </Resizable.PaneGroup>
+            </TabsContent>
+            <TabsContent value="properties" class="pt-4 overflow-y-auto">
+                <div class="space-y-4">
+                    <ConfigPanel />
+                </div>
+            </TabsContent>
+            <TabsContent value="saved-configs" class="pt-4 overflow-y-auto">
+                <SavedLibrary />
+            </TabsContent>
+        </TabsRoot>
+    </Tooltip.Provider>
 </main>

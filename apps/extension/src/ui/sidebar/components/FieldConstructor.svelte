@@ -93,25 +93,23 @@
                         <div
                             class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1"
                         >
-                            <Tooltip.Provider>
-                                <Tooltip.Root>
-                                    <Tooltip.Trigger>
-                                        <Button
-                                            size="icon"
-                                            variant="secondary"
-                                            class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
-                                            onclick={() => toggleGroup(group.id)}
-                                        >
-                                            {#if openGroups.includes(group.id)}
-                                                <ChevronUp class="size-4 transition-transform" />
-                                            {:else}
-                                                <ChevronDown class="size-4 transition-transform" />
-                                            {/if}
-                                        </Button>
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>Toggle group</Tooltip.Content>
-                                </Tooltip.Root>
-                            </Tooltip.Provider>
+                            <Tooltip.Root>
+                                <Tooltip.Trigger>
+                                    <Button
+                                        size="icon"
+                                        variant="secondary"
+                                        class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
+                                        onclick={() => toggleGroup(group.id)}
+                                    >
+                                        {#if openGroups.includes(group.id)}
+                                            <ChevronUp class="size-4 transition-transform" />
+                                        {:else}
+                                            <ChevronDown class="size-4 transition-transform" />
+                                        {/if}
+                                    </Button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Content>Toggle group</Tooltip.Content>
+                            </Tooltip.Root>
 
                             <div
                                 class="text-[11px] text-gray-400 select-none mx-2 flex items-center h-6"
@@ -127,38 +125,34 @@
                             </div>
 
                             {#if editingGroupId !== group.id}
-                                <Tooltip.Provider>
-                                    <Tooltip.Root>
-                                        <Tooltip.Trigger>
-                                            <Button
-                                                size="icon"
-                                                variant="secondary"
-                                                class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
-                                                onclick={() => startEditing(group)}
-                                            >
-                                                <Pencil class="size-3" />
-                                            </Button>
-                                        </Tooltip.Trigger>
-                                        <Tooltip.Content>Rename group</Tooltip.Content>
-                                    </Tooltip.Root>
-                                </Tooltip.Provider>
-                            {/if}
-
-                            <Tooltip.Provider>
                                 <Tooltip.Root>
                                     <Tooltip.Trigger>
                                         <Button
                                             size="icon"
                                             variant="secondary"
-                                            class="flex items-center justify-center size-6 rounded hover:text-red-400 hover:bg-white/10"
-                                            onclick={() => handleDeleteGroup(group.id)}
+                                            class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
+                                            onclick={() => startEditing(group)}
                                         >
-                                            <X class="size-3" />
+                                            <Pencil class="size-3" />
                                         </Button>
                                     </Tooltip.Trigger>
-                                    <Tooltip.Content>Delete group</Tooltip.Content>
+                                    <Tooltip.Content>Rename group</Tooltip.Content>
                                 </Tooltip.Root>
-                            </Tooltip.Provider>
+                            {/if}
+
+                            <Tooltip.Root>
+                                <Tooltip.Trigger>
+                                    <Button
+                                        size="icon"
+                                        variant="secondary"
+                                        class="flex items-center justify-center size-6 rounded hover:text-red-400 hover:bg-white/10"
+                                        onclick={() => handleDeleteGroup(group.id)}
+                                    >
+                                        <X class="size-3" />
+                                    </Button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Content>Delete group</Tooltip.Content>
+                            </Tooltip.Root>
                         </div>
                     {/if}
                     <Accordion.Item value={group.id} class="border-none">

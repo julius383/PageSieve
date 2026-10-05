@@ -14,18 +14,16 @@
             <Input id="property-name-{id}" bind:value={key} placeholder="e.g. Bindable" />
         </div>
 
-        <Tooltip.Provider>
-            <Tooltip.Root>
-                <Tooltip.Trigger>
-                    <Button onclick={deleteHandler} variant="destructive" size="icon">
-                        <Trash2 />
-                    </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Content>
-                    <p>Delete Property</p>
-                </Tooltip.Content>
-            </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip.Root>
+            <Tooltip.Trigger>
+                <Button onclick={deleteHandler} variant="destructive" size="icon">
+                    <Trash2 />
+                </Button>
+            </Tooltip.Trigger>
+            <Tooltip.Content>
+                <p>Delete Property</p>
+            </Tooltip.Content>
+        </Tooltip.Root>
     </div>
     <div class="grid w-full items-center gap-1.5">
         <label for="property-item" class="text-sm font-medium leading-none">Key</label>

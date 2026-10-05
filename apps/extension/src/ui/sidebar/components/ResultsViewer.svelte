@@ -125,20 +125,18 @@
         <div>
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                    <Tooltip.Provider>
-                        <Tooltip.Root>
-                            <Tooltip.Trigger>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    class="hover:text-gray-400 hover:bg-white/10"
-                                >
-                                    <Download />
-                                </Button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Content>Download Data to File</Tooltip.Content>
-                        </Tooltip.Root>
-                    </Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                class="hover:text-gray-400 hover:bg-white/10"
+                            >
+                                <Download />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Download Data to File</Tooltip.Content>
+                    </Tooltip.Root>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
                     {#snippet DownloadOption(label: string, type: SupportedExportDataTypes)}
@@ -175,20 +173,18 @@
             </DropdownMenu.Root>
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                    <Tooltip.Provider>
-                        <Tooltip.Root>
-                            <Tooltip.Trigger>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    class="hover:text-gray-400 hover:bg-white/10"
-                                >
-                                    <ClipboardCopy />
-                                </Button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Content>Copy Data to Clipboard</Tooltip.Content>
-                        </Tooltip.Root>
-                    </Tooltip.Provider>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                class="hover:text-gray-400 hover:bg-white/10"
+                            >
+                                <ClipboardCopy />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Copy Data to Clipboard</Tooltip.Content>
+                    </Tooltip.Root>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
                     {#snippet CopyOption(label: string, format: SupportedExportDataTypes)}
@@ -231,34 +227,31 @@
                 </DropdownMenu.Content>
             </DropdownMenu.Root>
             {#if !openInNewTab}
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button size="sm" variant="secondary" onclick={showInNewTab}>
-                                <ExternalLink
-                                    strokeWidth={2.5}
-                                    class="hover:text-gray-400 hover:bg-white/10"
-                                />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>View Results in New Tab</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                size="icon"
-                                variant="destructive"
-                                onclick={handleResetData}
-                                class="bg-red-500 text-white font-bold hover:bg-red-600"
-                            >
-                                <SquareX class="size-4" strokeWidth={2.5} />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Clear Data</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button size="sm" variant="secondary" onclick={showInNewTab}>
+                            <ExternalLink
+                                strokeWidth={2.5}
+                                class="hover:text-gray-400 hover:bg-white/10"
+                            />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>View Results in New Tab</Tooltip.Content>
+                </Tooltip.Root>
+
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            size="icon"
+                            variant="destructive"
+                            onclick={handleResetData}
+                            class="bg-red-500 text-white font-bold hover:bg-red-600"
+                        >
+                            <SquareX class="size-4" strokeWidth={2.5} />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>Clear Data</Tooltip.Content>
+                </Tooltip.Root>
             {/if}
         </div>
     </Tabs.List>

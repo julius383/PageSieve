@@ -52,41 +52,38 @@
             <div class="flex items-end gap-x-1 flex-start">
                 <Input id="field-name-{id}" bind:value={fieldName} placeholder="e.g. productName" />
 
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                aria-label="Copy element"
-                                size="sm"
-                                variant="outline"
-                                onclick={() => duplicateField(id)}
-                            >
-                                <Copy />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            <p>Duplicate this element</p>
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                onclick={() => handleDelete(id)}
-                                variant="destructive"
-                                size="icon"
-                                disabled={pickingElement}
-                                class="bg-red-500 text-white font-bold hover:bg-red-800"
-                            >
-                                <Trash />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            <p>Delete Field</p>
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            aria-label="Copy element"
+                            size="sm"
+                            variant="outline"
+                            onclick={() => duplicateField(id)}
+                        >
+                            <Copy />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                        <p>Duplicate this element</p>
+                    </Tooltip.Content>
+                </Tooltip.Root>
+
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            onclick={() => handleDelete(id)}
+                            variant="destructive"
+                            size="icon"
+                            disabled={pickingElement}
+                            class="bg-red-500 text-white font-bold hover:bg-red-800"
+                        >
+                            <Trash />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                        <p>Delete Field</p>
+                    </Tooltip.Content>
+                </Tooltip.Root>
             </div>
         </div>
     </div>
@@ -203,24 +200,22 @@
                             </div>
                         </div>
 
-                        <Tooltip.Provider>
-                            <Tooltip.Root>
-                                <Tooltip.Trigger>
-                                    <Button
-                                        onclick={() => removeField(subfield.id)}
-                                        variant="destructive"
-                                        size="icon"
-                                        disabled={pickingElement}
-                                        class="bg-red-500 text-white font-bold hover:bg-red-800"
-                                    >
-                                        <Trash />
-                                    </Button>
-                                </Tooltip.Trigger>
-                                <Tooltip.Content>
-                                    <p>Delete Field</p>
-                                </Tooltip.Content>
-                            </Tooltip.Root>
-                        </Tooltip.Provider>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <Button
+                                    onclick={() => removeField(subfield.id)}
+                                    variant="destructive"
+                                    size="icon"
+                                    disabled={pickingElement}
+                                    class="bg-red-500 text-white font-bold hover:bg-red-800"
+                                >
+                                    <Trash />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>
+                                <p>Delete Field</p>
+                            </Tooltip.Content>
+                        </Tooltip.Root>
                     </div>
                 {/each}
                 <Button onclick={() => addField(id)} class="mt-4 w-full">

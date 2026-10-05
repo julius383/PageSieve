@@ -46,39 +46,35 @@
             </Item.Content>
 
             <Item.Actions class="ml-2">
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                onclick={() => setExtractedData(snapshot.results)}
-                                variant="outline"
-                                size="icon"
-                            >
-                                <Upload />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            <p>Load Results</p>
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            onclick={() => setExtractedData(snapshot.results)}
+                            variant="outline"
+                            size="icon"
+                        >
+                            <Upload />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                        <p>Load Results</p>
+                    </Tooltip.Content>
+                </Tooltip.Root>
 
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                onclick={() => handleDelete(snapshot.id)}
-                                variant="outline"
-                                size="icon"
-                            >
-                                <Trash2 />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            <p>Delete Snapshot</p>
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            onclick={() => handleDelete(snapshot.id)}
+                            variant="outline"
+                            size="icon"
+                        >
+                            <Trash2 />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                        <p>Delete Snapshot</p>
+                    </Tooltip.Content>
+                </Tooltip.Root>
             </Item.Actions>
         </div>
     {/each}

@@ -154,66 +154,59 @@
                 aria-invalid={isInvalid}
             />
             {#if pickingElement && !highlightingElement}
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button onclick={acceptSelection} variant="outline" size="icon">
-                                <Check />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Accept selection</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button onclick={cancelSelection} variant="destructive" size="icon">
-                                <X />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Accept selection</Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-            {:else}
-                <Tooltip.Provider>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                onclick={handleInspect}
-                                variant="outline"
-                                size="icon"
-                                disabled={highlightingElement}
-                            >
-                                <Pipette color="#fff" />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>
-                            <p>Start Element Picker</p>
-                        </Tooltip.Content>
-                    </Tooltip.Root>
-                </Tooltip.Provider>
-            {/if}
-
-            <Tooltip.Provider>
                 <Tooltip.Root>
                     <Tooltip.Trigger>
-                        <Toggle
-                            onclick={handleHighlight}
+                        <Button onclick={acceptSelection} variant="outline" size="icon">
+                            <Check />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>Accept selection</Tooltip.Content>
+                </Tooltip.Root>
+
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button onclick={cancelSelection} variant="destructive" size="icon">
+                            <X />
+                        </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>Accept selection</Tooltip.Content>
+                </Tooltip.Root>
+            {:else}
+                <Tooltip.Root>
+                    <Tooltip.Trigger>
+                        <Button
+                            onclick={handleInspect}
                             variant="outline"
-                            class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
+                            size="icon"
+                            disabled={highlightingElement}
                         >
-                            <Highlighter color="#fff" />
-                        </Toggle>
+                            <Pipette color="#fff" />
+                        </Button>
                     </Tooltip.Trigger>
                     <Tooltip.Content>
-                        {#if highlightingElement}
-                            <p>Click to stop highlighting</p>
-                        {:else}
-                            <p>Highlight selector elements</p>
-                        {/if}
+                        <p>Start Element Picker</p>
                     </Tooltip.Content>
                 </Tooltip.Root>
-            </Tooltip.Provider>
+            {/if}
+
+            <Tooltip.Root>
+                <Tooltip.Trigger>
+                    <Toggle
+                        onclick={handleHighlight}
+                        variant="outline"
+                        class="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
+                    >
+                        <Highlighter color="#fff" />
+                    </Toggle>
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                    {#if highlightingElement}
+                        <p>Click to stop highlighting</p>
+                    {:else}
+                        <p>Highlight selector elements</p>
+                    {/if}
+                </Tooltip.Content>
+            </Tooltip.Root>
         </div>
         <Field.Description>
             {#if foundElements > 0 && pickingElement}
