@@ -3,7 +3,8 @@
     import FieldGroup from '@/ui/sidebar/components/FieldGroup.svelte';
     import ElementPicker from '@/ui/sidebar/components/ElementPicker.svelte';
     import { Button } from '$lib/components/ui/button';
-    import { Plus, ChevronDown, ChevronUp, X, Pencil } from '@lucide/svelte';
+    import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
+    import { Plus, ChevronDown, ChevronUp, X, Pencil, Box, Blocks } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
     import {
@@ -11,6 +12,7 @@
         removeGroup,
         renameGroup,
         scrapeConfig,
+        addGroup,
     } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import EditableInput from '@/ui/sidebar/components/EditableInput.svelte';
     import * as Accordion from '$lib/components/ui/accordion/index.js';
@@ -85,7 +87,7 @@
 </script>
 
 {#if scrapeConfig.selectors !== undefined}
-    <section id="field-constructor" class="overflow-y-auto pt-2.5">
+    <section id="field-constructor" class="overflow-y-auto pt-0.5">
         <Accordion.Root type="multiple" bind:value={openGroups}>
             {#each scrapeConfig.selectors as group (group.id)}
                 <div class="relative border rounded-lg px-5 pt-5 pb-4 mb-4">
@@ -179,9 +181,18 @@
                                     />
                                 {/each}
                             </div>
-                            <Button onclick={() => addField(group.id)} class="mt-4 w-full">
-                                <Plus /> Add Field
-                            </Button>
+                            <ButtonGroup.Root class="mt-2 w-full">
+                                <ButtonGroup.Root class="grow">
+                                    <Button onclick={() => addField(group.id)} class="grow">
+                                        <Box /> Add Field
+                                    </Button>
+                                </ButtonGroup.Root>
+                                <ButtonGroup.Root class="grow">
+                                    <Button onclick={addGroup} class="grow">
+                                        <Blocks /> Add Group
+                                    </Button>
+                                </ButtonGroup.Root>
+                            </ButtonGroup.Root>
                         </Accordion.Content>
                     </Accordion.Item>
                 </div>

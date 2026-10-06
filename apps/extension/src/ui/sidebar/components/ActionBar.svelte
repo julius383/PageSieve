@@ -76,7 +76,7 @@
                         onclick={stopRun}
                         class="bg-red-500 text-white font-bold hover:bg-red-600"
                     >
-                        <Square class="size-4 mr-1" strokeWidth={4} fill="white" />
+                        <Square class="mr-1" strokeWidth={4} fill="white" />
                     </Button>
                 {:else}
                     <Button
@@ -84,7 +84,7 @@
                         onclick={() => runConfig()}
                         class="bg-green-500 text-white font-bold hover:bg-green-600"
                     >
-                        <Play class="size-4 mr-1" strokeWidth={4} />
+                        <Play class="mr-1" strokeWidth={4} />
                     </Button>
                 {/if}
             </Tooltip.Trigger>
@@ -107,7 +107,7 @@
                     onclick={handleSave}
                     class="hover:text-gray-400 hover:bg-white/10"
                 >
-                    <Save class="size-4" strokeWidth={2.5} />
+                    <Save strokeWidth={2.5} />
                 </Button>
             </Tooltip.Trigger>
             <Tooltip.Content>Save config in browser</Tooltip.Content>
@@ -129,7 +129,7 @@
                         onclick={triggerLoad}
                         class="hover:text-gray-400 hover:bg-white/10"
                     >
-                        <Upload class="size-4" strokeWidth={2.5} />
+                        <Upload strokeWidth={2.5} />
                     </Button>
                 </div>
             </Tooltip.Trigger>
@@ -144,26 +144,10 @@
                     onclick={() => exportConfig()}
                     class="hover:text-gray-400 hover:bg-white/10"
                 >
-                    <Download class="size-4" strokeWidth={2.5} />
+                    <Download strokeWidth={2.5} />
                 </Button>
             </Tooltip.Trigger>
             <Tooltip.Content>Save config to file</Tooltip.Content>
-        </Tooltip.Root>
-    </ButtonGroup.Root>
-
-    <ButtonGroup.Root>
-        <Tooltip.Root>
-            <Tooltip.Trigger>
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    onclick={addGroup}
-                    class="hover:text-gray-400 hover:bg-white/10"
-                >
-                    <SquarePlus class="size-4" strokeWidth={2.5} />
-                </Button>
-            </Tooltip.Trigger>
-            <Tooltip.Content>Add Selector Group</Tooltip.Content>
         </Tooltip.Root>
     </ButtonGroup.Root>
 
@@ -177,7 +161,7 @@
                         onclick={() => true}
                         class="hover:text-gray-400 hover:bg-white/10"
                     >
-                        <EllipsisVertical class="size-4" strokeWidth={2.5} />
+                        <EllipsisVertical strokeWidth={2.5} />
                     </Button>
                 </Tooltip.Trigger>
                 <Tooltip.Content>More actions</Tooltip.Content>

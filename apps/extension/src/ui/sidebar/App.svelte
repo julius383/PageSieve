@@ -72,28 +72,33 @@
     );
 </script>
 
-<main class="p-4 flex flex-col gap-2 bg-background text-foreground h-screen">
+<main class="p-2 flex flex-col gap-1 bg-background text-foreground h-screen">
     <Tooltip.Provider>
         <ConfirmDialog />
-        <div class="flex items-center justify-between border-b bg-background py-1.5">
-            <ActionBar />
-            <Separator orientation="vertical" class="mx-2 h-4" />
-            <StatusIndicator />
-            <Button
-                variant="ghost"
-                size="icon"
-                onclick={() =>
-                    (logViewerAccordionValue =
-                        logViewerAccordionValue === 'log-viewer-item'
-                            ? undefined
-                            : 'log-viewer-item')}
-            >
-                {#if logViewerAccordionValue === 'log-viewer-item'}
-                    <ChevronUp class="size-4" strokeWidth={2} color="#fff" />
-                {:else}
-                    <ChevronDown class="size-4" strokeWidth={2} color="#fff" />
-                {/if}
-            </Button>
+        <div class="flex shrink-0 items-center justify-between border-b bg-background py-1.5 w-full gap-1">
+            <div class="flex items-center gap-1 shrink-0">
+                <ActionBar />
+            </div>
+            <Separator orientation="vertical" class="mx-0.5 h-4" />
+            <div class="flex items-center gap-1 min-w-0 shrink">
+                <StatusIndicator />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    class="shrink-0"
+                    onclick={() =>
+                        (logViewerAccordionValue =
+                            logViewerAccordionValue === 'log-viewer-item'
+                                ? undefined
+                                : 'log-viewer-item')}
+                >
+                    {#if logViewerAccordionValue === 'log-viewer-item'}
+                        <ChevronUp class="size-4" strokeWidth={2} color="#fff" />
+                    {:else}
+                        <ChevronDown class="size-4" strokeWidth={2} color="#fff" />
+                    {/if}
+                </Button>
+            </div>
         </div>
 
         <!-- Moved Accordion.Root -->
