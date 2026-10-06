@@ -1,4 +1,4 @@
-import { createActor, type SnapshotFrom, type Actor } from 'xstate';
+import { createActor, type SnapshotFrom, type Actor, type Subscription } from 'xstate';
 import { omit } from 'es-toolkit';
 import { ScrapeContext, createScrapeMachine } from '@pagesieve/core/scrapeMachine';
 import { extensionDriver } from '@/extensionDriver';
@@ -68,6 +68,15 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
             delay: context.config.options.pageDelayMs,
         });
         message = `Waiting for ${context.config.options.pageDelayMs}`;
+    } else if (currentState === 'completed') {
+
+        const totalResults = context.results.reduce((sum, group) => sum + group.results.length, 0);
+        logger.info('Finished scraping. Found {totalResults} items on {totalPages} pages', {
+            status: currentState,
+            totalResults: totalResults,
+            totalPages: context.currentPage
+        });
+        message = `Finished scraping. Found ${totalResults} items on ${context.currentPage} pages`;
     }
 
     browser.runtime.sendMessage({
@@ -156,15 +165,30 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             currentWindow: true,
         });
         if (tab?.id && tab?.url) {
-            scrapeActor = createActor(scrapeMachine, {
+            const testActor = createActor(scrapeMachine, {
                 input: {
                     config: request.config,
                     startURL: tab.url,
                 },
             });
+            scrapeActor = testActor;
 
             return new Promise((resolve) => {
-                scrapeActor!.subscribe((snapshot) => {
+                let subscription: Subscription | undefined;
+                let settled = false;
+
+                const finish = (paginationStatus: PaginationStateStatus) => {
+                    if (settled) return;
+                    settled = true;
+                    subscription?.unsubscribe();
+                    testActor.stop();
+                    if (scrapeActor === testActor) {
+                        scrapeActor = null;
+                    }
+                    resolve({ paginationStatus });
+                };
+
+                subscription = testActor.subscribe((snapshot) => {
                     actorSubscriber(snapshot);
                     const currentState = (
                         snapshot.value instanceof Object
@@ -172,14 +196,14 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
                             : snapshot.value
                     ) as StatusLevel;
                     if (currentState === 'completed') {
-                        resolve({ paginationStatus: PaginationStateStatus.InProgress });
+                        finish(PaginationStateStatus.InProgress);
                     } else if (currentState === 'errored') {
-                        resolve({ paginationStatus: PaginationStateStatus.Failed });
+                        finish(PaginationStateStatus.Failed);
                     }
                 });
 
-                scrapeActor!.start();
-                scrapeActor!.send({ type: 'TEST_PAGINATION' });
+                testActor.start();
+                testActor.send({ type: 'TEST_PAGINATION' });
             });
         }
     }

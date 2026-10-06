@@ -1,7 +1,10 @@
 import { configure, getConsoleSink, getLogger, type LogRecord } from '@logtape/logtape';
-import { logStore } from '@/ui/sidebar/stores/logs';
 
 let nativePort: browser.runtime.Port | null = null;
+
+let isInitialized = false;
+let backgroundMessageListener: ((message: { action?: string; record?: LogRecord }) => void) | null =
+    null;
 
 function getNativePort() {
     if (!nativePort) {
@@ -28,6 +31,9 @@ function serializeRecord(record: LogRecord) {
 }
 
 export const initExtensionLogger = async () => {
+    if (isInitialized) return;
+    isInitialized = true;
+
     const isBackground =
         typeof window === 'undefined' ||
         (typeof browser !== 'undefined' && browser.extension?.getBackgroundPage?.() === window);
@@ -38,7 +44,6 @@ export const initExtensionLogger = async () => {
                 sinks: {
                     console: getConsoleSink(),
                     store: (record) => {
-                        // logStore.sink(record);
                         if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
                             browser.runtime
                                 .sendMessage({
@@ -69,13 +74,13 @@ export const initExtensionLogger = async () => {
                     {
                         category: ['ext'],
                         lowestLevel: 'debug',
-                        sinks: ['console', 'store', 'relay'],
+                        sinks: ['console', 'store', /* 'relay' */],
                     },
                 ],
             });
 
             if (typeof browser !== 'undefined' && browser.runtime?.onMessage) {
-                browser.runtime.onMessage.addListener((message) => {
+                backgroundMessageListener = (message) => {
                     if (message.action === 'LOG_RAW' && message.record) {
                         const record = message.record;
                         const logger = getLogger(record.category);
@@ -84,10 +89,12 @@ export const initExtensionLogger = async () => {
                             : String(record.message);
                         logger[record.level as 'debug'](messageText, record.properties);
                     }
-                });
+                };
+                browser.runtime.onMessage.addListener(backgroundMessageListener);
             }
         } catch (e) {
             console.error('Failed to initialize background logger:', e);
+            isInitialized = false;
         }
     } else {
         await configure({

@@ -7,159 +7,170 @@ import { initExtensionLogger } from '@/logger';
 import { executeExtraction } from '@pagesieve/core/extractor';
 import { browserEngine } from './browserEngine';
 
-initExtensionLogger();
-const logger = getLogger(['ext', 'content']);
-const inspector: DOMInspector | null = new DOMInspector();
 
-/**
- * Waits for the DOM to stop changing for a specified duration
- */
-async function waitForDOMStable(
-    timeout: number = 5_000,
-    stabilityDuration: number = 700,
-): Promise<boolean> {
-    return new Promise((resolve) => {
-        let stabilityTimer: NodeJS.Timeout | null = null;
-
-        const timeoutTimer = setTimeout(() => {
-            observer.disconnect();
-            if (stabilityTimer) clearTimeout(stabilityTimer);
-            logger.debug('timeout timer elapsed');
-            resolve(false);
-        }, timeout);
-
-        const observer = new MutationObserver(() => {
-            if (stabilityTimer) {
-                clearTimeout(stabilityTimer);
-            }
-
-            stabilityTimer = setTimeout(() => {
-                observer.disconnect();
-                clearTimeout(timeoutTimer);
-                logger.debug('stability timer elapsed');
-                resolve(true);
-            }, stabilityDuration);
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-        });
-    });
-}
-
-/**
- * Extracts data from DOM elements using provided selectors
- */
-async function extractDataFromPage(selectors: SelectorGroup[]): Promise<ExtractedGroup[]> {
-    return executeExtraction(browserEngine, document, selectors);
-}
-
-function cleanup() {
-    inspector?.deactivate();
-}
-
-browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<unknown> => {
-    // console.log('PageSieve content script received message');
-    // console.dir(request);
-    if (request.action === 'sidebar-closing') {
-        // console.log('unloading sidebar in content script');
-        cleanup();
-        return { success: true };
-    } else if (request.action === 'extractData') {
-        try {
-            const result = await extractDataFromPage(request.selectors);
-            return {
-                result,
-                success: true,
-            };
-        } catch (error) {
-            return {
-                result: [],
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error occurred',
-            };
-        }
-    } else if (request.action === 'inspector-activate') {
-        if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
-            inspector.deactivate();
-        }
-        inspector.activate(request.pickerId, request.container);
-        return { isActive: inspector.isActive };
-    } else if (request.action === 'inspector-deactivate') {
-        inspector.deactivate();
-        return { isActive: inspector.isActive };
-    } else if (request.action === 'inspector-highlight') {
-        if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
-            inspector.deactivate();
-        }
-        inspector.activate(request.pickerId, request.container, false);
-        const foundElements = inspector.showSelectorHighlight(request.selector);
-        return { isActive: inspector.isActive, foundElements: foundElements };
-    } else if (request.action === 'inspector-accept') {
-        const selector = inspector.guessSelector();
-        inspector.deactivate();
-        return { computedSelector: selector };
-    } else if (request.action === 'computePageHash') {
-        let text: string = '';
-
-        request.selectors.forEach(async (elem) => {
-            if (elem.container) {
-                const containers = await browserEngine.querySelectorAll(
-                    document.body,
-                    elem.container,
-                );
-                logger.debug('Found {count} container elements', { count: containers.length });
-                if (containers.length > 0) {
-                    text += containers.map((i) => (i as HTMLElement).innerText).join();
-                }
-            }
-        });
-
-        if (text.trim() === '') {
-            text = document.body.innerText.replace(/\s+/g, ' ').trim();
-        }
-
-        const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-
-        const hash = [...new Uint8Array(buffer)]
-            .map((b) => b.toString(16).padStart(2, '0'))
-            .join('');
-        return { bodyHash: hash };
-    } else if (request.action === 'clickAndWaitForStable') {
-        const el = browserEngine.querySelector(document.body, request.selector);
-        if (!el) {
-            logger.error('Element not found for click: {selector}', {
-                selector: request.selector,
-            });
-            return {
-                success: false,
-                error: `Element with selector '${request.selector}' not found.`,
-            };
-        }
-        logger.debug('setting up dom stability');
-
-        const stabilityDuration = request.stabilityDuration ?? 700;
-
-        const waitPromise = waitForDOMStable(request.timeout, stabilityDuration);
-
-        (el as HTMLElement).click();
-
-        logger.debug('Click initiated, now waiting for DOM to stabilize...');
-        const stable = await waitPromise;
-
-        if (!stable) {
-            return {
-                success: false,
-                error: `DOM did not stabilize within ${request.timeout}ms after click.`,
-            };
-        }
-
-        logger.debug('DOM is stable after click.');
-        return { success: true };
+declare global {
+    interface Window {
+        __pagesieveContentScriptLoaded?: boolean;
     }
-    return false;
-});
+}
 
-// console.log('PageSieve content script loaded');
+(() => {
+    if (window.__pagesieveContentScriptLoaded) {
+        return;
+    }
+    window.__pagesieveContentScriptLoaded = true;
+
+    initExtensionLogger();
+    const logger = getLogger(['ext', 'content']);
+    const inspector: DOMInspector | null = new DOMInspector();
+
+    /**
+     * Waits for the DOM to stop changing for a specified duration
+     */
+    async function waitForDOMStable(
+        timeout: number = 5_000,
+        stabilityDuration: number = 700,
+    ): Promise<boolean> {
+        return new Promise((resolve) => {
+            let stabilityTimer: NodeJS.Timeout | null = null;
+
+            const timeoutTimer = setTimeout(() => {
+                observer.disconnect();
+                if (stabilityTimer) clearTimeout(stabilityTimer);
+                logger.debug('timeout timer elapsed');
+                resolve(false);
+            }, timeout);
+
+            const observer = new MutationObserver(() => {
+                if (stabilityTimer) {
+                    clearTimeout(stabilityTimer);
+                }
+
+                stabilityTimer = setTimeout(() => {
+                    observer.disconnect();
+                    clearTimeout(timeoutTimer);
+                    logger.debug('stability timer elapsed');
+                    resolve(true);
+                }, stabilityDuration);
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+            });
+        });
+    }
+
+    /**
+     * Extracts data from DOM elements using provided selectors
+     */
+    async function extractDataFromPage(selectors: SelectorGroup[]): Promise<ExtractedGroup[]> {
+        return executeExtraction(browserEngine, document, selectors);
+    }
+
+    function cleanup() {
+        inspector?.deactivate();
+    }
+
+    browser.runtime.onMessage.addListener(async (request: MessageRequest): Promise<unknown> => {
+        if (request.action === 'sidebar-closing') {
+            // console.log('unloading sidebar in content script');
+            cleanup();
+            return { success: true };
+        } else if (request.action === 'extractData') {
+            try {
+                const result = await extractDataFromPage(request.selectors);
+                return {
+                    result,
+                    success: true,
+                };
+            } catch (error) {
+                return {
+                    result: [],
+                    success: false,
+                    error: error instanceof Error ? error.message : 'Unknown error occurred',
+                };
+            }
+        } else if (request.action === 'inspector-activate') {
+            if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
+                inspector.deactivate();
+            }
+            inspector.activate(request.pickerId, request.container);
+            return { isActive: inspector.isActive };
+        } else if (request.action === 'inspector-deactivate') {
+            inspector.deactivate();
+            return { isActive: inspector.isActive };
+        } else if (request.action === 'inspector-highlight') {
+            if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
+                inspector.deactivate();
+            }
+            inspector.activate(request.pickerId, request.container, false);
+            const foundElements = inspector.showSelectorHighlight(request.selector);
+            return { isActive: inspector.isActive, foundElements: foundElements };
+        } else if (request.action === 'inspector-accept') {
+            const selector = inspector.guessSelector();
+            inspector.deactivate();
+            return { computedSelector: selector };
+        } else if (request.action === 'computePageHash') {
+            let text: string = '';
+
+            request.selectors.forEach(async (elem) => {
+                if (elem.container) {
+                    const containers = await browserEngine.querySelectorAll(
+                        document.body,
+                        elem.container,
+                    );
+                    logger.debug('Found {count} container elements', { count: containers.length });
+                    if (containers.length > 0) {
+                        text += containers.map((i) => (i as HTMLElement).innerText).join();
+                    }
+                }
+            });
+
+            if (text.trim() === '') {
+                text = document.body.innerText.replace(/\s+/g, ' ').trim();
+            }
+
+            const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+
+            const hash = [...new Uint8Array(buffer)]
+                .map((b) => b.toString(16).padStart(2, '0'))
+                .join('');
+            return { bodyHash: hash };
+        } else if (request.action === 'clickAndWaitForStable') {
+            const el = browserEngine.querySelector(document.body, request.selector);
+            if (!el) {
+                logger.error('Element not found for click: {selector}', {
+                    selector: request.selector,
+                });
+                return {
+                    success: false,
+                    error: `Element with selector '${request.selector}' not found.`,
+                };
+            }
+            logger.debug('setting up dom stability');
+
+            const stabilityDuration = request.stabilityDuration ?? 700;
+
+            const waitPromise = waitForDOMStable(request.timeout, stabilityDuration);
+
+            (el as HTMLElement).click();
+
+            logger.debug('Click initiated, now waiting for DOM to stabilize...');
+            const stable = await waitPromise;
+
+            if (!stable) {
+                return {
+                    success: false,
+                    error: `DOM did not stabilize within ${request.timeout}ms after click.`,
+                };
+            }
+
+            logger.debug('DOM is stable after click.');
+            return { success: true };
+        }
+        return false;
+    });
+
+})();
