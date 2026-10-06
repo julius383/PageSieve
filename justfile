@@ -37,7 +37,7 @@ zip-dist:
 
 zip-source:
   rm pagesieve_source.zip || true
-  git ls-files -z apps/extension | xargs -0 zip pagesieve_source.zip
+  git ls-files -z | grep -z -v -E '^(apps/cli|"?docs)' | xargs -0 zip pagesieve_source.zip
 
 render-annotations:
   bun scripts/render-annotations.ts --json docs/reference/ui-annotations.json --out docs/reference/_ui-annotations.html

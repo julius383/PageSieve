@@ -10,6 +10,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.4.0]
+
+### Added
+
+- Add indicator for showing pagination or retry progress.
+- Show errors when selectors are invalid. Stop config run early when errors are
+  detected.
+
+### Changed
+
+- Improve `StatusIndicator` component:
+  - Add relevant icon.
+  - Improve messages shown alongside each status.
+  - Use relevant icon and badge styling.
+- Move "Add Group" button next to "Add Field"
+
+### Fixed
+
+- Correctly handle retrying state in `StatusIndicator`.
+- Add code for preventing double initialization in scripts.
+- Centralize handling of tooltips
+
 ## core
 
 ### Added
