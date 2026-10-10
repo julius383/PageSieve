@@ -1,11 +1,11 @@
 // vim:set foldlevel=3 foldmethod=indent:
-import { setup, assign, type ErrorActorEvent, type PromiseActorLogic } from 'xstate';
+import { setup, assign, type ErrorActorEvent, type PromiseActorLogic, not } from 'xstate';
 import type { ScrapeConfig, SelectorGroup } from './schema';
 import { PaginationStateStatus, type ExtractedGroup } from './types';
 
 export interface ScrapeContext {
     config: ScrapeConfig;
-    currentURL: string;
+    currentURL: string | undefined;
     results: ExtractedGroup[];
     error: string | null;
     currentPage: number;
@@ -21,36 +21,55 @@ type ScrapeEvent =
 
 interface InputType {
     config: ScrapeConfig;
-    startURL: string;
+    startURL: string | undefined;
     driverContext?: unknown;
 }
 
-type ExtractDataActorInput = {
+export type ExtractDataActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
 };
 
-type ComputePageHashActorInput = {
+export type ComputePageHashActorInput = {
     selectors: SelectorGroup[];
     driverContext?: unknown;
 };
 
-type ComputePageHashActorOutput = {
+export type ComputePageHashActorOutput = {
     pageHash: string;
 };
 
-type NavigateActorInput = {
+export type WaitForSelectorInput = {
+    selector: string;
+    timeout: number;
+}
+
+export type WaitForSelectorOutput = {
+    succeeded: boolean;
+}
+
+export type StartNavigateActorInput = {
+    config: ScrapeConfig;
+    driverContext?: unknown;
+};
+
+export type StartNavigateActorOutput = {
+    status: PaginationStateStatus;
+    url: string;
+};
+
+export type NavigateActorInput = {
     config: ScrapeConfig;
     currentURL: string;
     driverContext?: unknown;
 };
 
-type NavigateActorOutput = {
+export type NavigateActorOutput = {
     status: PaginationStateStatus;
     url: string;
 };
 
-type NavigateNextActorOutput = {
+export type NavigateNextActorOutput = {
     type: 'navigation' | 'spa';
     status: PaginationStateStatus;
     url: string;
@@ -61,11 +80,13 @@ export type ExtractDataActorOutput = ExtractedGroup[];
 // Actors contract for different implementations
 // prettier-ignore
 export type ScrapeActorDriver = {
-    extractData:      PromiseActorLogic<ExtractDataActorOutput,     ExtractDataActorInput>,
-    computePageHash:  PromiseActorLogic<ComputePageHashActorOutput, ComputePageHashActorInput>,
-    navigateLinks:    PromiseActorLogic<NavigateActorOutput,        NavigateActorInput>,
-    navigateTemplate: PromiseActorLogic<NavigateActorOutput,        NavigateActorInput>,
-    navigateNext:     PromiseActorLogic<NavigateNextActorOutput,    NavigateActorInput>,
+    waitForSelector:  PromiseActorLogic<WaitForSelectorOutput,      WaitForSelectorInput>;
+    extractData:      PromiseActorLogic<ExtractDataActorOutput,     ExtractDataActorInput>;
+    computePageHash:  PromiseActorLogic<ComputePageHashActorOutput, ComputePageHashActorInput>;
+    navigate:         PromiseActorLogic<StartNavigateActorOutput,   StartNavigateActorInput>;
+    navigateLinks:    PromiseActorLogic<NavigateActorOutput,        NavigateActorInput>;
+    navigateTemplate: PromiseActorLogic<NavigateActorOutput,        NavigateActorInput>;
+    navigateNext:     PromiseActorLogic<NavigateNextActorOutput,    NavigateActorInput>;
 }
 
 export const createScrapeMachine = (driver: ScrapeActorDriver) =>
@@ -80,6 +101,8 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
             DELAY_MS: ({ context }) => context.config.options.pageDelayMs,
         },
         guards: {
+            isValidURL: ({ context }) => context.currentURL != null,
+            hasWaitForSelector: ({ context }) => context.config.options.waitForSelector != null,
             hasPagination: ({ context }) => context.config.pagination.mode !== 'none',
             previouslyNavigated: ({ context }) => {
                 return (
@@ -128,8 +151,10 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
             resetRetries: assign({
                 retries: 0,
             }),
+            clearError: assign({
+                error: null,
+            }),
             setError: assign({
-                // ts-ignore
                 error: ({ event }) => {
                     const e = event as ErrorActorEvent<unknown, string>;
                     return e.error instanceof Error ? e.error.message : String(e.error);
@@ -159,238 +184,305 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
         states: {
             idle: {
                 on: {
-                    START: 'extracting',
+                    START: [
+                        {
+                            guard: 'isValidURL',
+                            target: 'running.extracting',
+                        },
+                        {
+                            target: 'running.navigating',
+                        },
+                    ],
                     TEST_PAGINATION: {
-                        target: 'navigating',
+                        target: 'running.navigating',
                         actions: assign({ isTesting: true }),
                     },
                 },
             },
-            extracting: {
-                invoke: {
-                    src: 'extractData',
-                    input: ({ context }) => ({
-                        selectors: context.config.selectors,
-                        driverContext: context.driverContext,
-                    }),
-                    onDone: [
-                        {
-                            guard: 'hasPagination',
-                            target: 'waiting',
-                            actions: ['saveResults', 'resetRetries'],
-                        },
-                        {
-                            target: 'completed',
-                            actions: ['saveResults', 'resetRetries'],
-                        },
-                    ],
-                    onError: [
+            running: {
+                on: {
+                    'xstate.error.*': [
                         {
                             guard: 'canRetry',
-                            target: 'retrying',
+                            target: '#scraper.retrying',
                             actions: ['incrementRetry', 'setError'],
                         },
                         {
-                            target: 'errored',
+                            target: '#scraper.errored',
                             actions: 'setError',
                         },
-                    ],
+                    ]
+                },
+                initial: 'extracting',
+                states: {
+                    hist: {
+                        type: 'history',
+                        history: 'deep',
+                        target: 'extracting',
+                    },
+                    extracting: {
+                        invoke: {
+                            src: 'extractData',
+                            input: ({ context }) => ({
+                                selectors: context.config.selectors,
+                                driverContext: context.driverContext,
+                            }),
+                            onDone: [
+                                {
+                                    guard: 'hasPagination',
+                                    target: 'waiting',
+                                    actions: ['saveResults', 'resetRetries', 'clearError'],
+                                },
+                                {
+                                    target: '#scraper.completed',
+                                    actions: ['saveResults', 'resetRetries', 'clearError'],
+                                },
+                            ],
+                        },
+                    },
+                    waiting: {
+                        after: {
+                            DELAY_MS: [
+                                { guard: 'isMaxPagesReached', target: '#scraper.completed' },
+                                { target: 'navigating' },
+                            ],
+                        },
+                    },
+                    waitingFor: {
+                        invoke: {
+                            src: 'waitForSelector',
+                            input: ({ context }) => ({
+                                selector: context.config.options.waitForSelector as string,
+                                timeout: context.config.options.timeoutMs,
+                            }),
+                            onDone: [
+                                {
+                                    target: 'extracting',
+                                    actions: 'clearError',
+                                },
+                            ],
+                        },
+                    },
+                    navigating: {
+                        initial: 'deciding',
+                        states: {
+                            deciding: {
+                                always: [
+                                    {
+                                        guard: not('isValidURL'),
+                                        target: 'navigateStart',
+                                    },
+                                    {
+                                        guard: ({ context }) => context.config.pagination.mode === 'links',
+                                        target: 'links',
+                                    },
+                                    {
+                                        guard: ({ context }) =>
+                                            context.config.pagination.mode === 'template',
+                                        target: 'template',
+                                    },
+                                    {
+                                        guard: ({ context }) => context.config.pagination.mode === 'next',
+                                        target: 'next',
+                                    },
+                                ],
+                            },
+                            navigateStart: {
+                                invoke: {
+                                    src: 'navigate',
+                                    input: ({ context }) => ({
+                                        config: context.config,
+                                        driverContext: context.driverContext,
+                                    }),
+                                    onDone: [
+                                        {
+                                            guard: ({ context }) => context.isTesting,
+                                            target: 'deciding',
+                                            actions: ['updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            guard: 'hasWaitForSelector',
+                                            target: '#scraper.running.waitingFor',
+                                            actions: ['updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            target: '#scraper.running.extracting',
+                                            actions: ['updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                    ],
+                                },
+                            },
+                            links: {
+                                invoke: {
+                                    src: 'navigateLinks',
+                                    input: ({ context }) => ({
+                                        config: context.config,
+                                        currentURL: context.currentURL as string,
+                                        driverContext: context.driverContext,
+                                    }),
+                                    onDone: [
+                                        {
+                                            guard: ({ context }) => context.isTesting,
+                                            target: '#scraper.completed',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            guard: ({ event }) =>
+                                                event.output.status === PaginationStateStatus.Complete,
+                                            target: '#scraper.completed',
+                                        },
+                                        {
+                                            guard: 'hasWaitForSelector',
+                                            target: '#scraper.running.waitingFor',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            target: '#scraper.running.extracting',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                    ],
+                                },
+                            },
+                            template: {
+                                invoke: {
+                                    src: 'navigateTemplate',
+                                    input: ({ context }) => ({
+                                        config: context.config,
+                                        currentURL: context.currentURL as string,
+                                        driverContext: context.driverContext,
+                                    }),
+                                    onDone: [
+                                        {
+                                            guard: ({ context }) => context.isTesting,
+                                            target: '#scraper.completed',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            guard: 'hasWaitForSelector',
+                                            target: '#scraper.running.waitingFor',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                        {
+                                            target: '#scraper.running.extracting',
+                                            actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                        },
+                                    ],
+                                },
+                            },
+                            next: {
+                                initial: 'hashingBefore',
+                                states: {
+                                    hashingBefore: {
+                                        invoke: {
+                                            src: 'computePageHash',
+                                            input: ({ context }) => ({
+                                                selectors: context.config.selectors,
+                                                driverContext: context.driverContext,
+                                            }),
+                                            onDone: {
+                                                target: 'clicking',
+                                                actions: assign({
+                                                    pageHash: ({ event }) =>
+                                                        (
+                                                            event as unknown as {
+                                                                output: { pageHash: string };
+                                                            }
+                                                        ).output.pageHash,
+                                                }),
+                                            },
+                                        },
+                                    },
+                                    clicking: {
+                                        invoke: {
+                                            src: 'navigateNext',
+                                            input: ({ context }) => ({
+                                                config: context.config,
+                                                currentURL: context.currentURL as string,
+                                                driverContext: context.driverContext,
+                                            }),
+                                            onDone: [
+                                                {
+                                                    guard: ({ context, event }) =>
+                                                        event.output.type === 'navigation' &&
+                                                        context.isTesting,
+                                                    target: '#scraper.completed',
+                                                    actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                                },
+                                                {
+                                                    guard: 'hasWaitForSelector',
+                                                    target: '#scraper.running.waitingFor',
+                                                    actions: ['incrementPage', 'resetRetries', 'clearError'],
+                                                },
+                                                {
+                                                    guard: ({ event }) =>
+                                                        event.output.type === 'navigation',
+                                                    target: '#scraper.running.extracting',
+                                                    actions: ['incrementPage', 'updateURL', 'resetRetries', 'clearError'],
+                                                },
+                                                { target: 'hashingAfter' },
+                                            ],
+                                            onError: [
+                                                {
+                                                    guard: 'previouslyNavigated',
+                                                    target: '#scraper.completed',
+                                                },
+                                                {
+                                                    guard: 'canRetry',
+                                                    target: '#scraper.retrying',
+                                                    actions: ['incrementRetry', 'setError'],
+                                                },
+                                                {
+                                                    target: '#scraper.errored',
+                                                    actions: 'setError',
+                                                },
+                                            ]
+                                        },
+                                    },
+                                    hashingAfter: {
+                                        invoke: {
+                                            src: 'computePageHash',
+                                            input: ({ context }) => ({
+                                                selectors: context.config.selectors,
+                                                driverContext: context.driverContext,
+                                            }),
+                                            onDone: [
+                                                {
+                                                    guard: ({ context, event }) =>
+                                                        context.pageHash ===
+                                                        (
+                                                            event as unknown as {
+                                                                output: { pageHash: string };
+                                                            }
+                                                        ).output.pageHash,
+                                                    target: '#scraper.completed',
+                                                },
+                                                {
+                                                    guard: ({ context }) => context.isTesting,
+                                                    target: '#scraper.completed',
+                                                    actions: ['incrementPage', 'resetRetries', 'clearError'],
+                                                },
+                                                {
+                                                    guard: 'hasWaitForSelector',
+                                                    target: '#scraper.running.waitingFor',
+                                                    actions: ['incrementPage', 'resetRetries', 'clearError'],
+                                                },
+                                                {
+                                                    target: '#scraper.running.extracting',
+                                                    actions: ['incrementPage', 'resetRetries', 'clearError'],
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
             },
             retrying: {
                 after: {
-                    DELAY_MS: 'extracting',
-                },
-            },
-            waiting: {
-                after: {
-                    DELAY_MS: [
-                        { guard: 'isMaxPagesReached', target: 'completed' },
-                        { target: 'navigating' },
-                    ],
-                },
-            },
-            navigating: {
-                initial: 'deciding',
-                states: {
-                    deciding: {
-                        always: [
-                            {
-                                guard: ({ context }) => context.config.pagination.mode === 'links',
-                                target: 'links',
-                            },
-                            {
-                                guard: ({ context }) =>
-                                    context.config.pagination.mode === 'template',
-                                target: 'template',
-                            },
-                            {
-                                guard: ({ context }) => context.config.pagination.mode === 'next',
-                                target: 'next',
-                            },
-                        ],
-                    },
-                    links: {
-                        invoke: {
-                            src: 'navigateLinks',
-                            input: ({ context }) => ({
-                                config: context.config,
-                                currentURL: context.currentURL,
-                                driverContext: context.driverContext,
-                            }),
-                            onDone: [
-                                {
-                                    guard: ({ context }) => context.isTesting,
-                                    target: '#scraper.completed',
-                                    actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                },
-                                {
-                                    guard: ({ event }) =>
-                                        event.output.status === PaginationStateStatus.Complete,
-                                    target: '#scraper.completed',
-                                },
-                                {
-                                    target: '#scraper.extracting',
-                                    actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                },
-                            ],
-                            onError: [
-                                {
-                                    guard: 'canRetry',
-                                    target: '#scraper.navigating.retryingNav',
-                                    actions: 'incrementRetry',
-                                },
-                                { target: '#scraper.errored', actions: ['setError'] },
-                            ],
-                        },
-                    },
-                    template: {
-                        invoke: {
-                            src: 'navigateTemplate',
-                            input: ({ context }) => ({
-                                config: context.config,
-                                currentURL: context.currentURL,
-                                driverContext: context.driverContext,
-                            }),
-                            onDone: [
-                                {
-                                    guard: ({ context }) => context.isTesting,
-                                    target: '#scraper.completed',
-                                    actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                },
-                                {
-                                    target: '#scraper.extracting',
-                                    actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                },
-                            ],
-                            onError: [
-                                {
-                                    guard: 'canRetry',
-                                    target: '#scraper.navigating.retryingNav',
-                                    actions: ['incrementRetry', 'setError'],
-                                },
-                                { target: '#scraper.errored', actions: ['setError'] },
-                            ],
-                        },
-                    },
-                    next: {
-                        initial: 'hashingBefore',
-                        states: {
-                            hashingBefore: {
-                                invoke: {
-                                    src: 'computePageHash',
-                                    input: ({ context }) => ({
-                                        selectors: context.config.selectors,
-                                        driverContext: context.driverContext,
-                                    }),
-                                    onDone: {
-                                        target: 'clicking',
-                                        actions: assign({
-                                            pageHash: ({ event }) =>
-                                                (
-                                                    event as unknown as {
-                                                        output: { pageHash: string };
-                                                    }
-                                                ).output.pageHash,
-                                        }),
-                                    },
-                                    onError: { target: '#scraper.errored', actions: 'setError' },
-                                },
-                            },
-                            clicking: {
-                                invoke: {
-                                    src: 'navigateNext',
-                                    input: ({ context }) => ({
-                                        config: context.config,
-                                        currentURL: context.currentURL,
-                                        driverContext: context.driverContext,
-                                    }),
-                                    onDone: [
-                                        {
-                                            guard: ({ context, event }) =>
-                                                event.output.type === 'navigation' &&
-                                                context.isTesting,
-                                            target: '#scraper.completed',
-                                            actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                        },
-                                        {
-                                            guard: ({ event }) =>
-                                                event.output.type === 'navigation',
-                                            target: '#scraper.extracting',
-                                            actions: ['incrementPage', 'updateURL', 'resetRetries'],
-                                        },
-                                        { target: 'hashingAfter' },
-                                    ],
-                                    onError: [
-                                        {
-                                            guard: 'canRetry',
-                                            target: '#scraper.navigating.retryingNav',
-                                            actions: 'incrementRetry',
-                                        },
-                                        {
-                                            target: '#scraper.errored',
-                                            actions: 'setError',
-                                        },
-                                    ],
-                                },
-                            },
-                            hashingAfter: {
-                                invoke: {
-                                    src: 'computePageHash',
-                                    input: ({ context }) => ({
-                                        selectors: context.config.selectors,
-                                        driverContext: context.driverContext,
-                                    }),
-                                    onDone: [
-                                        {
-                                            guard: ({ context, event }) =>
-                                                context.pageHash ===
-                                                (
-                                                    event as unknown as {
-                                                        output: { pageHash: string };
-                                                    }
-                                                ).output.pageHash,
-                                            target: '#scraper.completed',
-                                        },
-                                        {
-                                            guard: ({ context }) => context.isTesting,
-                                            target: '#scraper.completed',
-                                            actions: ['incrementPage', 'resetRetries'],
-                                        },
-                                        {
-                                            target: '#scraper.extracting',
-                                            actions: ['incrementPage', 'resetRetries'],
-                                        },
-                                    ],
-                                    onError: { target: '#scraper.errored', actions: 'setError' },
-                                },
-                            },
-                        },
-                    },
-                    retryingNav: {
-                        after: {
-                            DELAY_MS: 'deciding',
-                        },
+                    DELAY_MS: {
+                        target: '#scraper.running.hist',
                     },
                 },
             },
@@ -405,10 +497,13 @@ export const createScrapeMachine = (driver: ScrapeActorDriver) =>
                     },
                 ],
                 on: {
-                    RETRY: 'extracting',
-                    STOP: 'idle',
+                    RETRY: {
+                        target: '#scraper.running.hist',
+                        actions: ['resetRetries', 'clearError'],
+                    },
+                    STOP: { target: 'idle' },
                     TEST_PAGINATION: {
-                        target: 'navigating',
+                        target: 'running.navigating',
                         actions: assign({ isTesting: true }),
                     },
                 },
