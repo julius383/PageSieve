@@ -7,7 +7,6 @@ import { initExtensionLogger } from '@/logger';
 import { executeExtraction } from '@pagesieve/core/extractor';
 import { browserEngine } from './browserEngine';
 
-
 declare global {
     interface Window {
         __pagesieveContentScriptLoaded?: boolean;
@@ -92,6 +91,29 @@ declare global {
                     error: error instanceof Error ? error.message : 'Unknown error occurred',
                 };
             }
+        } else if (request.action === 'waitForSelector') {
+            const { selector, timeout } = request;
+            const pollMs = 50;
+            return new Promise((resolve) => {
+                const start = performance.now();
+
+                const tick = async () => {
+                    const el = await browserEngine.querySelector(document, selector);
+                    if (el && el.checkVisibility()) {
+                        return resolve({ success: true, succeeded: true });
+                    }
+
+                    if (performance.now() - start > timeout) {
+                        return resolve({
+                            success: false,
+                            error: `Timed out waiting for "${selector}"`,
+                        });
+                    }
+                    setTimeout(tick, pollMs);
+                };
+
+                tick();
+            });
         } else if (request.action === 'inspector-activate') {
             if (inspector.isActive && inspector.activePickerId !== request.pickerId) {
                 inspector.deactivate();
@@ -172,5 +194,4 @@ declare global {
         }
         return false;
     });
-
 })();

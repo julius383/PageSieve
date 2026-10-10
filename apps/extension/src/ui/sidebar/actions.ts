@@ -13,7 +13,6 @@ import { ScrapeConfig } from '@pagesieve/core/schema';
 import { saveToBrowser } from '@/ui/sidebar/services/storage';
 import { commitPaginationToScrapeConfig } from '@/ui/sidebar/stores/pagination.svelte';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
-import { navigateAndWait } from './util';
 
 /**
  * Extracts data from current tab using defined selector. Returns via
@@ -166,7 +165,7 @@ export function loadConfig(config: ScrapeConfig) {
 /**
  * Navigate to next page based on defined pagination config
  */
-export async function navigateTo(config: ScrapeConfig, testing: boolean = false) {
+export async function navigateTo(config: ScrapeConfig) {
     return await runWithStatusAsync(
         {
             status: 'navigating',
@@ -175,11 +174,25 @@ export async function navigateTo(config: ScrapeConfig, testing: boolean = false)
         },
         async () => {
             // TODO: validate nav inputs before running
+            const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+            if (!tab?.id) {
+                setStatus('errored', 'Failed to find active tab');
+                return;
+            }
+            let urlPatternNoMatch = true;
+            if (config.urlPattern !== undefined) {
+                const re = RE2JS.compile(config.urlPattern);
+                urlPatternNoMatch = !re.test(config.urlPattern);
+            }
+
+            let currentURL: string | null = tab.url;
+            if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url) && urlPatternNoMatch) {
+                currentURL = null;
+            }
             const navRes = await browser.runtime.sendMessage({
                 action: 'testNavigate',
                 config: config,
-                configHash: await shortHash(config.selectors),
-                testing,
+                tabUrl: currentURL,
             });
             if (navRes.paginationStatus === PaginationStateStatus.Failed) {
                 setStatus(
@@ -207,9 +220,9 @@ export async function runConfig() {
 
     const selectorValidations = Object.values(validateSelectors(config.selectors)).flat();
 
-    console.log('Validating');
-    console.dir(selectorValidations, { depth: null });
-    console.dir(config, { depth: null });
+    // console.log('Validating');
+    // console.dir(selectorValidations, { depth: null });
+    // console.dir(config, { depth: null });
     if (!selectorValidations.reduce((acc, val) => acc && val.valid, true)) {
         const errors = selectorValidations
             .filter((val) => !val.valid)
@@ -241,39 +254,27 @@ export async function runConfig() {
         browser.runtime.sendMessage({
             action: 'runMain',
             config,
-            tabId: tab.id,
+            // tabId: tab.id,
+            tabUrl: tab.url,
         });
     } else {
-        if (tab.url === undefined) {
-            setStatus('errored', 'URL missing from config.');
-            return;
-        }
-
         let urlPatternNoMatch = true;
         if (config.urlPattern !== undefined) {
             const re = RE2JS.compile(config.urlPattern);
             urlPatternNoMatch = !re.test(config.urlPattern);
         }
-        // navigate to page in config before beginning extraction
+        let currentURL: string | undefined = tab?.url;
         if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url) && urlPatternNoMatch) {
-            try {
-                // TODO: open in new tab configurable in settings
-                await navigateAndWait(tab.id, config.url);
-                // await browser.tabs.create({ url: config.url, openerTabId: tab.id })
-            } catch (err) {
-                setStatus(
-                    'errored',
-                    (err as Error)?.message || 'Failed to navigate to correct URL.',
-                );
-                return;
-            }
+            // TODO: open in new tab configurable in settings
+            currentURL = undefined;
         }
         scrapeConfig.id = await generateConfigId(scrapeConfig.url || '', config.selectors);
 
         browser.runtime.sendMessage({
             action: 'runMain',
             config,
-            tabId: tab.id,
+            // tabId: tab.id,
+            tabUrl: currentURL,
         });
     }
 }

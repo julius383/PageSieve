@@ -40,7 +40,7 @@
         <div class="flex flex-col gap-2">
             {#each $displayLogs as log (log.id)}
                 {@const status = getStatus(log)}
-                {@const indicator = getIndicatorColor(status)}
+                {@const indicator = getIndicatorColor(status ?? 'idle')}
                 <div
                     in:fly={{ y: -10, duration: 300 }}
                     class="flex items-start gap-2 rounded-lg bg-gray-100 p-2 text-sm dark:bg-gray-800"

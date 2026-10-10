@@ -3,7 +3,7 @@ import type { Frame, Page } from 'playwright';
 import { ScrapeActorDriver } from '@pagesieve/core/scrapeMachine';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
 import { SelectorGroup } from '@pagesieve/core';
-import { extractWithPlaywright } from './playwrightEngine.js';
+import { extractWithPlaywright, playwrightEngine } from './playwrightEngine.js';
 
 // TODO: simplify and improve this function
 async function computeHashFromPage(
@@ -33,6 +33,20 @@ async function computeHashFromPage(
 }
 export function createPlaywrightDriver(page: Page): ScrapeActorDriver {
     return {
+        waitForSelector: fromPromise(async ({ input }) => {
+            const { selector, timeout } = input;
+            const loc = await playwrightEngine.querySelector(page, selector);
+            if (loc != null){
+                try {
+                    await loc.waitFor({state: "visible", timeout,})
+                    return { succeeded: true }
+                } catch {
+                    throw new Error(`Timed out waiting for "${selector}"`);
+                }
+            } else {
+                throw new Error(`Failed to find "${selector}"`);
+            }
+        }),
         extractData: fromPromise(async ({ input }) => {
             const results = await extractWithPlaywright(page, input.selectors);
             return results as ExtractedGroup[];
@@ -41,6 +55,12 @@ export function createPlaywrightDriver(page: Page): ScrapeActorDriver {
         computePageHash: fromPromise(
             async ({ input }) => await computeHashFromPage(page, input.selectors),
         ),
+
+        navigate: fromPromise(async ({ input }) => {
+            const { config } = input;
+            await page.goto(config.url, { timeout: config.options.timeoutMs, waitUntil: 'load' });
+            return { status: PaginationStateStatus.InProgress, url: config.url };
+        }),
 
         navigateLinks: fromPromise(async ({ input }) => {
             const { config, currentURL } = input;

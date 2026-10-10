@@ -13,6 +13,7 @@ const StatusLevel = z.enum([
     'running',
     'extracting',
     'waiting',
+    'waitingFor',
     'navigating',
     'completed',
 
@@ -29,10 +30,12 @@ const ExtensionStatus = z.object({
     status: StatusLevel,
     message: z.string(),
     timestamp: z.iso.datetime(),
-    progress: z.object({
-        progressIndex: z.number().positive(),
-        progressMax: z.number().positive()
-    }).optional(),
+    progress: z
+        .object({
+            progressIndex: z.number().positive(),
+            progressMax: z.number().positive(),
+        })
+        .optional(),
 });
 
 export type ExtensionStatus = z.infer<typeof ExtensionStatus>;
@@ -50,6 +53,7 @@ type GetTabInfoRequest = {
 type TestNavigateRequest = {
     action: 'testNavigate';
     config: ScrapeConfig;
+    tabUrl: string | undefined;
     configHash: string;
     testing: boolean;
 };
@@ -59,9 +63,16 @@ type ExtractDataRequest = {
     selectors: SelectorGroup[];
 };
 
+type WaitForSelectorRequest = {
+    action: 'waitForSelector';
+    selector: string;
+    timeout: number;
+};
+
 type RunMainRequest = {
     action: 'runMain';
     config: ScrapeConfig;
+    tabUrl: string | undefined;
 };
 
 type StopMainRequest = {
@@ -118,13 +129,14 @@ export type ScrapeStatusUpdateRequest = {
     action: 'updateScrapeStatus';
     status: StatusLevel;
     message?: string;
-    progressIndex?: number;     // either currentPage or retries
-    progressMax?: number;       // either maxPages or maxRetries
+    progressIndex?: number; // either currentPage or retries
+    progressMax?: number; // either maxPages or maxRetries
     results: ExtractedGroup[];
 };
 
 export type MessageRequest =
     | ExtractDataRequest
+    | WaitForSelectorRequest
     | InspectorActivateRequest
     | InspectorDeactivateRequest
     | InspectorPreviewRequest

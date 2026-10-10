@@ -16,14 +16,21 @@ browser.browserAction.onClicked.addListener(() => {
 const scrapeMachine = createScrapeMachine(extensionDriver);
 let scrapeActor: Actor<typeof scrapeMachine> | null = null;
 
+function getStateName(val: string | object) {
+    if (val instanceof Object) {
+        const v = val['running'];
+        return v instanceof Object ? Object.keys(v)[0] : v;
+    }
+    return val;
+}
+
 function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
     const context: ScrapeContext = snapshot.context;
-    const currentState = (
-        snapshot.value instanceof Object ? Object.keys(snapshot.value)[0] : snapshot.value
-    ) as StatusLevel;
+    let currentState = getStateName(snapshot.value) as StatusLevel;
     // logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
-    logger.debug('Current state is {status}', {
+    logger.debug('Current state is {status} ({full}) {context}', {
         status: currentState,
+        full: snapshot.value,
         context: omit(context, ['config', 'results']),
     });
     let message: string = currentState;
@@ -68,13 +75,18 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
             delay: context.config.options.pageDelayMs,
         });
         message = `Waiting for ${context.config.options.pageDelayMs}`;
+    } else if (currentState === 'waitingFor') {
+        logger.info('Waiting for {selector} to be present', {
+            status: currentState,
+            selector: context.config.options.waitForSelector,
+        });
+        message = `Waiting for ${context.config.options.waitForSelector}`;
     } else if (currentState === 'completed') {
-
         const totalResults = context.results.reduce((sum, group) => sum + group.results.length, 0);
         logger.info('Finished scraping. Found {totalResults} items on {totalPages} pages', {
             status: currentState,
             totalResults: totalResults,
-            totalPages: context.currentPage
+            totalPages: context.currentPage,
         });
         message = `Finished scraping. Found ${totalResults} items on ${context.currentPage} pages`;
     }
@@ -119,25 +131,17 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
     if (request.action === 'runMain') {
         if (scrapeActor) scrapeActor.stop();
 
-        const [tab] = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
+        scrapeActor = createActor(scrapeMachine, {
+            input: {
+                config: request.config,
+                startURL: request.tabUrl,
+            },
         });
-        if (tab?.id && tab?.url) {
-            scrapeActor = createActor(scrapeMachine, {
-                input: {
-                    config: request.config,
-                    startURL: tab.url,
-                },
-            });
 
-            logger.debug('Created actor with {config}', { config: request.config });
-            scrapeActor.subscribe(actorSubscriber);
-            scrapeActor.start();
-            scrapeActor.send({ type: 'START' });
-        } else {
-            logger.error('Failed to start in current tab');
-        }
+        logger.debug('Created actor with {config}', { config: request.config });
+        scrapeActor.subscribe(actorSubscriber);
+        scrapeActor.start();
+        scrapeActor.send({ type: 'START' });
     } else if (request.action === 'stopMain') {
         // Handle stop request from Sidebar
         if (scrapeActor) {
@@ -168,7 +172,7 @@ browser.runtime.onMessage.addListener(async (request: BackgroundRequest) => {
             const testActor = createActor(scrapeMachine, {
                 input: {
                     config: request.config,
-                    startURL: tab.url,
+                    startURL: request.tabUrl,
                 },
             });
             scrapeActor = testActor;

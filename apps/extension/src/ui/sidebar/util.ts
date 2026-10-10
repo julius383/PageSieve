@@ -5,9 +5,6 @@ import type { StatusLevel } from '@/types';
 import { sanitizeSegment } from '@pagesieve/core/util';
 import { convertTo, getMimeType } from '@pagesieve/core/converters';
 
-// import { getLogger } from '../logger';
-// const logger = getLogger(["ext", "util"]);
-
 export function formatColumnName(name: string): string {
     return name.charAt(0).toUpperCase() + name.slice(1);
 }
@@ -85,93 +82,10 @@ export function getIndicatorColor(status: StatusLevel): { label: string; style: 
         .with('extracting', () => ({ label, style: '#00bbf9' }))
         .with('navigating', () => ({ label, style: '#00bbf9' }))
         .with('inspecting', () => ({ label, style: '#9b5de5' }))
-        .with('waiting', () => ({ label, style: '#f9c74f' }))
+        .with('waiting', 'waitingFor', () => ({ label, style: '#f9c74f' }))
         .with('saving', 'loading', 'importing', 'exporting', () => ({ label, style: '#f77f00' }))
         .with('errored', 'retrying', () => ({ label, style: '#F87171' }))
         .with('completed', () => ({ label, style: '#228b22' }))
         .exhaustive();
     /* prettier-ignore-end */
-}
-
-// navigation helpers
-export async function navigateAndWait(tabId: number, url: string, timeoutMs: number = 30000) {
-    return new Promise((resolve, reject) => {
-        let listener:
-            | ((
-                  updatedTabId: number,
-                  changeInfo: browser.tabs._OnUpdatedChangeInfo,
-                  tab: browser.tabs.Tab,
-              ) => void)
-            | undefined = undefined;
-
-        const timeoutId = setTimeout(() => {
-            if (listener) browser.tabs.onUpdated.removeListener(listener);
-            reject(new Error(`Navigation to ${url} timed out after ${timeoutMs}ms`));
-        }, timeoutMs);
-
-        browser.tabs
-            .get(tabId)
-            .then((tab) => {
-                const normalize = (u: string) => u.replace(/\/$/, '').split('#')[0];
-                if (normalize(tab.url || '') === normalize(url) && tab.status === 'complete') {
-                    clearTimeout(timeoutId);
-                    resolve(tab);
-                    return;
-                }
-
-                let isNavigating = false;
-                listener = (
-                    updatedTabId: number,
-                    changeInfo: browser.tabs._OnUpdatedChangeInfo,
-                    tab: browser.tabs.Tab,
-                ) => {
-                    if (updatedTabId !== tabId) return;
-                    if (changeInfo.status === 'loading') isNavigating = true;
-                    if (isNavigating && changeInfo.status === 'complete') {
-                        if (normalize(tab.url || '') === normalize(url)) {
-                            clearTimeout(timeoutId);
-                            if (listener) browser.tabs.onUpdated.removeListener(listener);
-                            resolve(tab);
-                        }
-                    }
-                };
-                browser.tabs.onUpdated.addListener(listener, { tabId });
-                browser.tabs.update(tabId, { url }).catch((err) => {
-                    clearTimeout(timeoutId);
-                    if (listener) browser.tabs.onUpdated.removeListener(listener);
-                    reject(err);
-                });
-            })
-            .catch((err) => {
-                clearTimeout(timeoutId);
-                reject(err);
-            });
-    });
-}
-
-export async function waitForTabLoad(
-    tabId: number,
-    timeout: number = 10000,
-): Promise<browser.tabs.Tab> {
-    const tab = await browser.tabs.get(tabId);
-    if (tab.status === 'complete') return tab;
-
-    return new Promise((resolve, reject) => {
-        let listener:
-            | ((updatedTabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo) => void)
-            | undefined = undefined;
-        const timeoutId = setTimeout(() => {
-            if (listener) browser.tabs.onUpdated.removeListener(listener);
-            reject(new Error(`Tab ${tabId} did not load within ${timeout}ms.`));
-        }, timeout);
-
-        listener = (updatedTabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo) => {
-            if (updatedTabId === tabId && changeInfo.status === 'complete') {
-                clearTimeout(timeoutId);
-                if (listener) browser.tabs.onUpdated.removeListener(listener);
-                browser.tabs.get(tabId).then(resolve);
-            }
-        };
-        browser.tabs.onUpdated.addListener(listener);
-    });
 }

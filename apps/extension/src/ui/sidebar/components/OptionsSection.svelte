@@ -7,6 +7,7 @@
 
     import type { ExtractionOptions } from '@pagesieve/core/schema';
 
+    import ElementPicker from './ElementPicker.svelte';
     import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
 
     function update<K extends keyof ExtractionOptions>(key: K, value: ExtractionOptions[K]) {
@@ -16,6 +17,17 @@
 
 <Field.Set>
     <Field.Group>
+        <Field.Field>
+            <ElementPicker
+                label="Wait for Selector"
+                bind:cssSelector={scrapeConfig.options.waitForSelector}
+            />
+            <Field.Content>
+                <Field.Description
+                    >Wait for this selector to be present before extracting</Field.Description
+                >
+            </Field.Content>
+        </Field.Field>
         <Field.Field orientation="horizontal">
             <Checkbox
                 checked={scrapeConfig.options.waitforNetworkIdle ?? false}

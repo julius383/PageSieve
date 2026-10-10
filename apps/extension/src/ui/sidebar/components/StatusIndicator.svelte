@@ -31,6 +31,7 @@
         running: LoaderCircle,
         extracting: Pickaxe,
         waiting: Hourglass,
+        waitingFor: Hourglass,
         navigating: Compass,
         completed: CircleCheck,
         retrying: RotateCw,
@@ -50,6 +51,7 @@
                 'extracting',
                 'navigating',
                 'waiting',
+                'waitingFor',
                 'retrying',
                 () => 'animate-spin',
             )
@@ -69,7 +71,7 @@
     let badgeVariant = $derived.by(() => {
         return match(extensionStatus.status)
             .returnType<BadgeVariant>()
-            .with('running', 'extracting', 'navigating', 'waiting', () => 'ongoing')
+            .with('running', 'extracting', 'navigating', 'waiting', 'waitingFor', () => 'ongoing')
             .with('errored', () => 'failure')
             .with('completed', () => 'success')
             .with('retrying', () => 'recovering')
