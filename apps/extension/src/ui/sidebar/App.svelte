@@ -75,7 +75,9 @@
 <main class="p-2 flex flex-col gap-1 bg-background text-foreground h-screen">
     <Tooltip.Provider>
         <ConfirmDialog />
-        <div class="flex shrink-0 items-center justify-between border-b bg-background py-1.5 w-full gap-1">
+        <div
+            class="flex shrink-0 items-center justify-between border-b bg-background py-1.5 w-full gap-1"
+        >
             <div class="flex items-center gap-1 shrink-0">
                 <ActionBar />
             </div>

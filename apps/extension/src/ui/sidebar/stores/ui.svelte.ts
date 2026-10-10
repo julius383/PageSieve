@@ -101,7 +101,9 @@ browser.runtime.onMessage.addListener(async (request: ScrapeStatusUpdateRequest)
             extractedData.data = [...request.results];
         }
         const progress =
-            progressIndex != null && progressMax != null ? { progressIndex, progressMax } : undefined;
+            progressIndex != null && progressMax != null
+                ? { progressIndex, progressMax }
+                : undefined;
         setStatus(status, message, progress);
         if (status == 'completed') {
             // cleanup succeeded snapshot

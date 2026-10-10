@@ -74,7 +74,7 @@ export const initExtensionLogger = async () => {
                     {
                         category: ['ext'],
                         lowestLevel: 'debug',
-                        sinks: ['console', 'store', /* 'relay' */],
+                        sinks: ['console', 'store' /* 'relay' */],
                     },
                 ],
             });

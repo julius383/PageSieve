@@ -3,7 +3,7 @@
     import FieldGroup from '@/ui/sidebar/components/FieldGroup.svelte';
     import ElementPicker from '@/ui/sidebar/components/ElementPicker.svelte';
     import { Button } from '$lib/components/ui/button';
-    import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
+    import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
     import { Plus, ChevronDown, ChevronUp, X, Pencil, Box, Blocks } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 

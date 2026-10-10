@@ -15,10 +15,8 @@
                     'bg-purple-950 text-purple-300 [a&]:hover:bg-purple-950/90 border-transparent',
                 recovering:
                     'bg-orange-950 text-orange-300 [a&]:hover:bg-orange-950/90 border-transparent',
-                ongoing:
-                    'bg-sky-950 text-sky-300 [a&]:hover:bg-sky-950/90 border-transparent',
-                failure:
-                    'bg-red-950 text-red-300 [a&]:hover:bg-red-950/90 border-transparent',
+                ongoing: 'bg-sky-950 text-sky-300 [a&]:hover:bg-sky-950/90 border-transparent',
+                failure: 'bg-red-950 text-red-300 [a&]:hover:bg-red-950/90 border-transparent',
                 destructive:
                     'bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/70 border-transparent text-white',
                 outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
