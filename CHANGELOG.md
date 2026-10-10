@@ -10,6 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.5.0]
+
+### Added
+
+- You can now wait for a selector to be present on a page before extraction starts
+  after navigation. Useful especially for Single Page Applications.
+
+### Changed
+
+- Navigating to `url` when recipe is run is now handled alongside the rest of
+  the scraping workflow instead on being a separate step.
+- Sending messages to content script now retries to give time for content
+  script to finish being loaded e.g when navigation is triggered.
+
+### Fixed
+
+- Retrying is now done regardless of which part of scraping fails instead of
+  just when extraction fails. Rewrite of internal state machine to use XState
+  history states.
+
 ## [extension-v2.4.0]
 
 ### Added
