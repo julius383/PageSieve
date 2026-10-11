@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-971b92841ed721a4cd107fca89b18e1c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-1ad40953b14a4cfc033ac03aea2ffb2c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-1ad40953b14a4cfc033ac03aea2ffb2c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-1ad40953b14a4cfc033ac03aea2ffb2c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-03551f9c533976c90c978dd15b836d93.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -363,75 +363,87 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#changelog" id="toc-changelog" class="nav-link active" data-scroll-target="#changelog">Changelog</a>
   <ul class="collapse">
   <li><a href="#unreleased" id="toc-unreleased" class="nav-link" data-scroll-target="#unreleased">[Unreleased]</a></li>
-  <li><a href="#core" id="toc-core" class="nav-link" data-scroll-target="#core">core</a>
+  <li><a href="#extension-v2.5.0" id="toc-extension-v2.5.0" class="nav-link" data-scroll-target="#extension-v2.5.0">[extension-v2.5.0]</a>
   <ul class="collapse">
   <li><a href="#added" id="toc-added" class="nav-link" data-scroll-target="#added">Added</a></li>
   <li><a href="#changed" id="toc-changed" class="nav-link" data-scroll-target="#changed">Changed</a></li>
   <li><a href="#fixed" id="toc-fixed" class="nav-link" data-scroll-target="#fixed">Fixed</a></li>
   </ul></li>
-  <li><a href="#cli-v0.1.0" id="toc-cli-v0.1.0" class="nav-link" data-scroll-target="#cli-v0.1.0">[cli-v0.1.0]</a>
+  <li><a href="#extension-v2.4.0" id="toc-extension-v2.4.0" class="nav-link" data-scroll-target="#extension-v2.4.0">[extension-v2.4.0]</a>
   <ul class="collapse">
   <li><a href="#added-1" id="toc-added-1" class="nav-link" data-scroll-target="#added-1">Added</a></li>
-  </ul></li>
-  <li><a href="#extension-v2.3.0---2026-09-08" id="toc-extension-v2.3.0---2026-09-08" class="nav-link" data-scroll-target="#extension-v2.3.0---2026-09-08">[extension-v2.3.0] - 2026-09-08</a>
-  <ul class="collapse">
   <li><a href="#changed-1" id="toc-changed-1" class="nav-link" data-scroll-target="#changed-1">Changed</a></li>
   <li><a href="#fixed-1" id="toc-fixed-1" class="nav-link" data-scroll-target="#fixed-1">Fixed</a></li>
   </ul></li>
-  <li><a href="#extension-v2.2.0---2026-08-17" id="toc-extension-v2.2.0---2026-08-17" class="nav-link" data-scroll-target="#extension-v2.2.0---2026-08-17">[extension-v2.2.0] - 2026-08-17</a>
+  <li><a href="#core" id="toc-core" class="nav-link" data-scroll-target="#core">core</a>
   <ul class="collapse">
+  <li><a href="#added-2" id="toc-added-2" class="nav-link" data-scroll-target="#added-2">Added</a></li>
   <li><a href="#changed-2" id="toc-changed-2" class="nav-link" data-scroll-target="#changed-2">Changed</a></li>
   <li><a href="#fixed-2" id="toc-fixed-2" class="nav-link" data-scroll-target="#fixed-2">Fixed</a></li>
   </ul></li>
-  <li><a href="#extension-v2.1.0---2026-08-16" id="toc-extension-v2.1.0---2026-08-16" class="nav-link" data-scroll-target="#extension-v2.1.0---2026-08-16">[extension-v2.1.0] - 2026-08-16</a>
+  <li><a href="#cli-v0.3.0" id="toc-cli-v0.3.0" class="nav-link" data-scroll-target="#cli-v0.3.0">[cli-v0.3.0]</a>
   <ul class="collapse">
-  <li><a href="#added-2" id="toc-added-2" class="nav-link" data-scroll-target="#added-2">Added</a></li>
+  <li><a href="#added-3" id="toc-added-3" class="nav-link" data-scroll-target="#added-3">Added</a></li>
+  </ul></li>
+  <li><a href="#extension-v2.3.0---2026-09-08" id="toc-extension-v2.3.0---2026-09-08" class="nav-link" data-scroll-target="#extension-v2.3.0---2026-09-08">[extension-v2.3.0] - 2026-09-08</a>
+  <ul class="collapse">
   <li><a href="#changed-3" id="toc-changed-3" class="nav-link" data-scroll-target="#changed-3">Changed</a></li>
   <li><a href="#fixed-3" id="toc-fixed-3" class="nav-link" data-scroll-target="#fixed-3">Fixed</a></li>
   </ul></li>
+  <li><a href="#extension-v2.2.0---2026-08-17" id="toc-extension-v2.2.0---2026-08-17" class="nav-link" data-scroll-target="#extension-v2.2.0---2026-08-17">[extension-v2.2.0] - 2026-08-17</a>
+  <ul class="collapse">
+  <li><a href="#changed-4" id="toc-changed-4" class="nav-link" data-scroll-target="#changed-4">Changed</a></li>
+  <li><a href="#fixed-4" id="toc-fixed-4" class="nav-link" data-scroll-target="#fixed-4">Fixed</a></li>
+  </ul></li>
+  <li><a href="#extension-v2.1.0---2026-08-16" id="toc-extension-v2.1.0---2026-08-16" class="nav-link" data-scroll-target="#extension-v2.1.0---2026-08-16">[extension-v2.1.0] - 2026-08-16</a>
+  <ul class="collapse">
+  <li><a href="#added-4" id="toc-added-4" class="nav-link" data-scroll-target="#added-4">Added</a></li>
+  <li><a href="#changed-5" id="toc-changed-5" class="nav-link" data-scroll-target="#changed-5">Changed</a></li>
+  <li><a href="#fixed-5" id="toc-fixed-5" class="nav-link" data-scroll-target="#fixed-5">Fixed</a></li>
+  </ul></li>
   <li><a href="#extension-v2.0.0---2026-08-09" id="toc-extension-v2.0.0---2026-08-09" class="nav-link" data-scroll-target="#extension-v2.0.0---2026-08-09">[extension-v2.0.0] - 2026-08-09</a>
   <ul class="collapse">
-  <li><a href="#added-3" id="toc-added-3" class="nav-link" data-scroll-target="#added-3">Added</a></li>
-  <li><a href="#changed-4" id="toc-changed-4" class="nav-link" data-scroll-target="#changed-4">Changed</a></li>
+  <li><a href="#added-5" id="toc-added-5" class="nav-link" data-scroll-target="#added-5">Added</a></li>
+  <li><a href="#changed-6" id="toc-changed-6" class="nav-link" data-scroll-target="#changed-6">Changed</a></li>
   </ul></li>
   <li><a href="#cli-v0.1.0---2026-06-15" id="toc-cli-v0.1.0---2026-06-15" class="nav-link" data-scroll-target="#cli-v0.1.0---2026-06-15">[cli-v0.1.0] - 2026-06-15</a>
   <ul class="collapse">
-  <li><a href="#added-4" id="toc-added-4" class="nav-link" data-scroll-target="#added-4">Added</a></li>
+  <li><a href="#added-6" id="toc-added-6" class="nav-link" data-scroll-target="#added-6">Added</a></li>
   </ul></li>
   <li><a href="#extension-v1.5.0---2026-06-15" id="toc-extension-v1.5.0---2026-06-15" class="nav-link" data-scroll-target="#extension-v1.5.0---2026-06-15">[extension-v1.5.0] - 2026-06-15</a>
   <ul class="collapse">
-  <li><a href="#changed-5" id="toc-changed-5" class="nav-link" data-scroll-target="#changed-5">Changed</a></li>
-  <li><a href="#fixed-4" id="toc-fixed-4" class="nav-link" data-scroll-target="#fixed-4">Fixed</a></li>
+  <li><a href="#changed-7" id="toc-changed-7" class="nav-link" data-scroll-target="#changed-7">Changed</a></li>
+  <li><a href="#fixed-6" id="toc-fixed-6" class="nav-link" data-scroll-target="#fixed-6">Fixed</a></li>
   </ul></li>
   <li><a href="#extension-v1.4.0---2026-05-09" id="toc-extension-v1.4.0---2026-05-09" class="nav-link" data-scroll-target="#extension-v1.4.0---2026-05-09">[extension-v1.4.0] - 2026-05-09</a>
   <ul class="collapse">
-  <li><a href="#added-5" id="toc-added-5" class="nav-link" data-scroll-target="#added-5">Added</a></li>
-  <li><a href="#fixed-5" id="toc-fixed-5" class="nav-link" data-scroll-target="#fixed-5">Fixed</a></li>
-  <li><a href="#changed-6" id="toc-changed-6" class="nav-link" data-scroll-target="#changed-6">Changed</a></li>
+  <li><a href="#added-7" id="toc-added-7" class="nav-link" data-scroll-target="#added-7">Added</a></li>
+  <li><a href="#fixed-7" id="toc-fixed-7" class="nav-link" data-scroll-target="#fixed-7">Fixed</a></li>
+  <li><a href="#changed-8" id="toc-changed-8" class="nav-link" data-scroll-target="#changed-8">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.3.0---2026-05-07" id="toc-extension-v1.3.0---2026-05-07" class="nav-link" data-scroll-target="#extension-v1.3.0---2026-05-07">[extension-v1.3.0] - 2026-05-07</a>
   <ul class="collapse">
-  <li><a href="#added-6" id="toc-added-6" class="nav-link" data-scroll-target="#added-6">Added</a></li>
-  <li><a href="#fixed-6" id="toc-fixed-6" class="nav-link" data-scroll-target="#fixed-6">Fixed</a></li>
+  <li><a href="#added-8" id="toc-added-8" class="nav-link" data-scroll-target="#added-8">Added</a></li>
+  <li><a href="#fixed-8" id="toc-fixed-8" class="nav-link" data-scroll-target="#fixed-8">Fixed</a></li>
   </ul></li>
   <li><a href="#extension-v1.2.0---2026-04-22" id="toc-extension-v1.2.0---2026-04-22" class="nav-link" data-scroll-target="#extension-v1.2.0---2026-04-22">[extension-v1.2.0] - 2026-04-22</a>
   <ul class="collapse">
-  <li><a href="#added-7" id="toc-added-7" class="nav-link" data-scroll-target="#added-7">Added</a></li>
-  <li><a href="#fixed-7" id="toc-fixed-7" class="nav-link" data-scroll-target="#fixed-7">Fixed</a></li>
-  <li><a href="#changed-7" id="toc-changed-7" class="nav-link" data-scroll-target="#changed-7">Changed</a></li>
+  <li><a href="#added-9" id="toc-added-9" class="nav-link" data-scroll-target="#added-9">Added</a></li>
+  <li><a href="#fixed-9" id="toc-fixed-9" class="nav-link" data-scroll-target="#fixed-9">Fixed</a></li>
+  <li><a href="#changed-9" id="toc-changed-9" class="nav-link" data-scroll-target="#changed-9">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.1.0---2026-04-05" id="toc-extension-v1.1.0---2026-04-05" class="nav-link" data-scroll-target="#extension-v1.1.0---2026-04-05">[extension-v1.1.0] - 2026-04-05</a>
   <ul class="collapse">
-  <li><a href="#added-8" id="toc-added-8" class="nav-link" data-scroll-target="#added-8">Added</a></li>
-  <li><a href="#fixed-8" id="toc-fixed-8" class="nav-link" data-scroll-target="#fixed-8">Fixed</a></li>
-  <li><a href="#changed-8" id="toc-changed-8" class="nav-link" data-scroll-target="#changed-8">Changed</a></li>
+  <li><a href="#added-10" id="toc-added-10" class="nav-link" data-scroll-target="#added-10">Added</a></li>
+  <li><a href="#fixed-10" id="toc-fixed-10" class="nav-link" data-scroll-target="#fixed-10">Fixed</a></li>
+  <li><a href="#changed-10" id="toc-changed-10" class="nav-link" data-scroll-target="#changed-10">Changed</a></li>
   </ul></li>
   <li><a href="#extension-v1.0.0---2026-03-02" id="toc-extension-v1.0.0---2026-03-02" class="nav-link" data-scroll-target="#extension-v1.0.0---2026-03-02">[extension-v1.0.0] - 2026-03-02</a>
   <ul class="collapse">
-  <li><a href="#added-9" id="toc-added-9" class="nav-link" data-scroll-target="#added-9">Added</a></li>
-  <li><a href="#fixed-9" id="toc-fixed-9" class="nav-link" data-scroll-target="#fixed-9">Fixed</a></li>
+  <li><a href="#added-11" id="toc-added-11" class="nav-link" data-scroll-target="#added-11">Added</a></li>
+  <li><a href="#fixed-11" id="toc-fixed-11" class="nav-link" data-scroll-target="#fixed-11">Fixed</a></li>
   <li><a href="#security" id="toc-security" class="nav-link" data-scroll-target="#security">Security</a></li>
-  <li><a href="#changed-9" id="toc-changed-9" class="nav-link" data-scroll-target="#changed-9">Changed</a></li>
+  <li><a href="#changed-11" id="toc-changed-11" class="nav-link" data-scroll-target="#changed-11">Changed</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -452,33 +464,85 @@ ul.task-list li input[type="checkbox"] {
 <section id="unreleased" class="level2">
 <h2 class="anchored" data-anchor-id="unreleased">[Unreleased]</h2>
 </section>
-<section id="core" class="level2">
-<h2 class="anchored" data-anchor-id="core">core</h2>
+<section id="extension-v2.5.0" class="level2">
+<h2 class="anchored" data-anchor-id="extension-v2.5.0">[extension-v2.5.0]</h2>
 <section id="added" class="level3">
 <h3 class="anchored" data-anchor-id="added">Added</h3>
 <ul>
-<li>Update documentation and add new cli and selector docs.</li>
+<li>You can now wait for a selector to be present on a page before extraction starts after navigation. Useful especially for Single Page Applications.</li>
 </ul>
 </section>
 <section id="changed" class="level3">
 <h3 class="anchored" data-anchor-id="changed">Changed</h3>
 <ul>
-<li>Remove handlebars for exporting to html and markdown</li>
-<li>Separate monorepo into packages/ and apps/ with extension and cli moving to apps/</li>
+<li>Navigating to <code>url</code> when recipe is run is now handled alongside the rest of the scraping workflow instead on being a separate step.</li>
+<li>Sending messages to content script now retries to give time for content script to finish being loaded e.g when navigation is triggered.</li>
 </ul>
 </section>
 <section id="fixed" class="level3">
 <h3 class="anchored" data-anchor-id="fixed">Fixed</h3>
+<ul>
+<li>Retrying is now done regardless of which part of scraping fails instead of just when extraction fails. Rewrite of internal state machine to use XState history states.</li>
+</ul>
+</section>
+</section>
+<section id="extension-v2.4.0" class="level2">
+<h2 class="anchored" data-anchor-id="extension-v2.4.0">[extension-v2.4.0]</h2>
+<section id="added-1" class="level3">
+<h3 class="anchored" data-anchor-id="added-1">Added</h3>
+<ul>
+<li>Add indicator for showing pagination or retry progress.</li>
+<li>Show errors when selectors are invalid. Stop config run early when errors are detected.</li>
+</ul>
+</section>
+<section id="changed-1" class="level3">
+<h3 class="anchored" data-anchor-id="changed-1">Changed</h3>
+<ul>
+<li>Improve <code>StatusIndicator</code> component:
+<ul>
+<li>Add relevant icon.</li>
+<li>Improve messages shown alongside each status.</li>
+<li>Use relevant icon and badge styling.</li>
+</ul></li>
+<li>Move “Add Group” button next to “Add Field”</li>
+</ul>
+</section>
+<section id="fixed-1" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-1">Fixed</h3>
+<ul>
+<li>Correctly handle retrying state in <code>StatusIndicator</code>.</li>
+<li>Add code for preventing double initialization in scripts.</li>
+<li>Centralize handling of tooltips</li>
+</ul>
+</section>
+</section>
+<section id="core" class="level2">
+<h2 class="anchored" data-anchor-id="core">core</h2>
+<section id="added-2" class="level3">
+<h3 class="anchored" data-anchor-id="added-2">Added</h3>
+<ul>
+<li>Update documentation and add new cli and selector docs.</li>
+</ul>
+</section>
+<section id="changed-2" class="level3">
+<h3 class="anchored" data-anchor-id="changed-2">Changed</h3>
+<ul>
+<li>Remove handlebars for exporting to html and markdown</li>
+<li>Separate monorepo into packages/ and apps/ with extension and cli moving to apps/</li>
+</ul>
+</section>
+<section id="fixed-2" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-2">Fixed</h3>
 <ul>
 <li>Make sure results grouping always uses unique id keys</li>
 <li>Correctly handle versions for shared dependencies using catalog</li>
 </ul>
 </section>
 </section>
-<section id="cli-v0.1.0" class="level2">
-<h2 class="anchored" data-anchor-id="cli-v0.1.0">[cli-v0.1.0]</h2>
-<section id="added-1" class="level3">
-<h3 class="anchored" data-anchor-id="added-1">Added</h3>
+<section id="cli-v0.3.0" class="level2">
+<h2 class="anchored" data-anchor-id="cli-v0.3.0">[cli-v0.3.0]</h2>
+<section id="added-3" class="level3">
+<h3 class="anchored" data-anchor-id="added-3">Added</h3>
 <ul>
 <li>Added playwright and cheerio based crawlers through cli</li>
 <li>Automatically use right output type if part of filename</li>
@@ -488,14 +552,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v2.3.0---2026-09-08" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v2.3.0---2026-09-08">[extension-v2.3.0] - 2026-09-08</h2>
-<section id="changed-1" class="level3">
-<h3 class="anchored" data-anchor-id="changed-1">Changed</h3>
+<section id="changed-3" class="level3">
+<h3 class="anchored" data-anchor-id="changed-3">Changed</h3>
 <ul>
 <li>Core ExtractorEngine now expects an async API, modified to simplify support for playwright client.</li>
 </ul>
 </section>
-<section id="fixed-1" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-1">Fixed</h3>
+<section id="fixed-3" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-3">Fixed</h3>
 <ul>
 <li>Correctly handle negative increment in link preview for “URL Template” pagination.</li>
 <li>Update <code>id</code> field in config when an existing config (from load) is modified.</li>
@@ -504,14 +568,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v2.2.0---2026-08-17" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v2.2.0---2026-08-17">[extension-v2.2.0] - 2026-08-17</h2>
-<section id="changed-2" class="level3">
-<h3 class="anchored" data-anchor-id="changed-2">Changed</h3>
+<section id="changed-4" class="level3">
+<h3 class="anchored" data-anchor-id="changed-4">Changed</h3>
 <ul>
 <li>Prevent Content Script from always being loaded and instead only load it when extension sidebar is open.</li>
 </ul>
 </section>
-<section id="fixed-2" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-2">Fixed</h3>
+<section id="fixed-4" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-4">Fixed</h3>
 <ul>
 <li>Properly cleanup inspector when extension sidebar closed i.e remove highlights, event listeners and restore cursor.</li>
 </ul>
@@ -519,8 +583,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v2.1.0---2026-08-16" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v2.1.0---2026-08-16">[extension-v2.1.0] - 2026-08-16</h2>
-<section id="added-2" class="level3">
-<h3 class="anchored" data-anchor-id="added-2">Added</h3>
+<section id="added-4" class="level3">
+<h3 class="anchored" data-anchor-id="added-4">Added</h3>
 <ul>
 <li>Add button for highlighting elements by selector in Field definition component</li>
 <li>Add count field type for counting matched elements as alternative to extracting attributes or properties.</li>
@@ -529,14 +593,14 @@ ul.task-list li input[type="checkbox"] {
 <li>Add urlPattern implementation for controlling which URLs config applies to.</li>
 </ul>
 </section>
-<section id="changed-3" class="level3">
-<h3 class="anchored" data-anchor-id="changed-3">Changed</h3>
+<section id="changed-5" class="level3">
+<h3 class="anchored" data-anchor-id="changed-5">Changed</h3>
 <ul>
 <li>Use IntersectionObserver to prevent hanging when too many elements are highlighted.</li>
 </ul>
 </section>
-<section id="fixed-3" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-3">Fixed</h3>
+<section id="fixed-5" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-5">Fixed</h3>
 <ul>
 <li>Fix problem where sidebar requires multiple clicks to open.</li>
 <li>Cleanup changes made to DOM when inspector is launched such as event listeners and HTML elements.</li>
@@ -545,8 +609,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v2.0.0---2026-08-09" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v2.0.0---2026-08-09">[extension-v2.0.0] - 2026-08-09</h2>
-<section id="added-3" class="level3">
-<h3 class="anchored" data-anchor-id="added-3">Added</h3>
+<section id="added-5" class="level3">
+<h3 class="anchored" data-anchor-id="added-5">Added</h3>
 <ul>
 <li>Add columns sorting to results viewer table.</li>
 <li>Add ability to extract attributes from container element using ‘.’ selector.</li>
@@ -554,8 +618,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Add user confirmation for destructive actions</li>
 </ul>
 </section>
-<section id="changed-4" class="level3">
-<h3 class="anchored" data-anchor-id="changed-4">Changed</h3>
+<section id="changed-6" class="level3">
+<h3 class="anchored" data-anchor-id="changed-6">Changed</h3>
 <ul>
 <li>Breaking refactor of scrape configuration format</li>
 <li>Update field definition UI to support new Field schema</li>
@@ -568,8 +632,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="cli-v0.1.0---2026-06-15" class="level2">
 <h2 class="anchored" data-anchor-id="cli-v0.1.0---2026-06-15">[cli-v0.1.0] - 2026-06-15</h2>
-<section id="added-4" class="level3">
-<h3 class="anchored" data-anchor-id="added-4">Added</h3>
+<section id="added-6" class="level3">
+<h3 class="anchored" data-anchor-id="added-6">Added</h3>
 <ul>
 <li>Add initial version of headless crawler. Uses same scrape config as extension but runs headless through a Cheerio crawler implemented through crawlee.</li>
 </ul>
@@ -577,14 +641,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.5.0---2026-06-15" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.5.0---2026-06-15">[extension-v1.5.0] - 2026-06-15</h2>
-<section id="changed-5" class="level3">
-<h3 class="anchored" data-anchor-id="changed-5">Changed</h3>
+<section id="changed-7" class="level3">
+<h3 class="anchored" data-anchor-id="changed-7">Changed</h3>
 <ul>
 <li>Switch to generalized extractor. Mostly code change as functionality is identical</li>
 </ul>
 </section>
-<section id="fixed-4" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-4">Fixed</h3>
+<section id="fixed-6" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-6">Fixed</h3>
 <ul>
 <li>Fix how logging is handled in content vs background scripts</li>
 <li>Simplify how pages are compared.</li>
@@ -594,20 +658,20 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.4.0---2026-05-09" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.4.0---2026-05-09">[extension-v1.4.0] - 2026-05-09</h2>
-<section id="added-5" class="level3">
-<h3 class="anchored" data-anchor-id="added-5">Added</h3>
+<section id="added-7" class="level3">
+<h3 class="anchored" data-anchor-id="added-7">Added</h3>
 <ul>
 <li>Switch to logtape for logging for clearer information</li>
 </ul>
 </section>
-<section id="fixed-5" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-5">Fixed</h3>
+<section id="fixed-7" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-7">Fixed</h3>
 <ul>
 <li>Handle newlines in results which broke markdown table exports</li>
 </ul>
 </section>
-<section id="changed-6" class="level3">
-<h3 class="anchored" data-anchor-id="changed-6">Changed</h3>
+<section id="changed-8" class="level3">
+<h3 class="anchored" data-anchor-id="changed-8">Changed</h3>
 <ul>
 <li>Improve results downloading</li>
 </ul>
@@ -615,14 +679,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.3.0---2026-05-07" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.3.0---2026-05-07">[extension-v1.3.0] - 2026-05-07</h2>
-<section id="added-6" class="level3">
-<h3 class="anchored" data-anchor-id="added-6">Added</h3>
+<section id="added-8" class="level3">
+<h3 class="anchored" data-anchor-id="added-8">Added</h3>
 <ul>
 <li>Add retries for various failure states</li>
 </ul>
 </section>
-<section id="fixed-6" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-6">Fixed</h3>
+<section id="fixed-8" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-8">Fixed</h3>
 <ul>
 <li>Add better log messages</li>
 <li>Add global stop event for user interruption of execution</li>
@@ -633,24 +697,24 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.2.0---2026-04-22" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.2.0---2026-04-22">[extension-v1.2.0] - 2026-04-22</h2>
-<section id="added-7" class="level3">
-<h3 class="anchored" data-anchor-id="added-7">Added</h3>
+<section id="added-9" class="level3">
+<h3 class="anchored" data-anchor-id="added-9">Added</h3>
 <ul>
 <li>Add editable names for selector groups</li>
 <li>Improve button style in Editable Input</li>
 <li>Add search and sort in library component</li>
 </ul>
 </section>
-<section id="fixed-7" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-7">Fixed</h3>
+<section id="fixed-9" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-9">Fixed</h3>
 <ul>
 <li>Change how selector array type is toggled</li>
 <li>Change button style to be more visible</li>
 <li>Switching to none pagination now works</li>
 </ul>
 </section>
-<section id="changed-7" class="level3">
-<h3 class="anchored" data-anchor-id="changed-7">Changed</h3>
+<section id="changed-9" class="level3">
+<h3 class="anchored" data-anchor-id="changed-9">Changed</h3>
 <ul>
 <li>Default to Use dark colorscheme</li>
 </ul>
@@ -658,23 +722,23 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.1.0---2026-04-05" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.1.0---2026-04-05">[extension-v1.1.0] - 2026-04-05</h2>
-<section id="added-8" class="level3">
-<h3 class="anchored" data-anchor-id="added-8">Added</h3>
+<section id="added-10" class="level3">
+<h3 class="anchored" data-anchor-id="added-10">Added</h3>
 <ul>
 <li>Add ability to group selectors for extracting different data from a single page</li>
 <li>Add multi selector group results display</li>
 <li>Add export for individual group data</li>
 </ul>
 </section>
-<section id="fixed-8" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-8">Fixed</h3>
+<section id="fixed-10" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-10">Fixed</h3>
 <ul>
 <li>Exit early when no pagination defined</li>
 <li>Allow use of xpath for container selector</li>
 </ul>
 </section>
-<section id="changed-8" class="level3">
-<h3 class="anchored" data-anchor-id="changed-8">Changed</h3>
+<section id="changed-10" class="level3">
+<h3 class="anchored" data-anchor-id="changed-10">Changed</h3>
 <ul>
 <li>Modify DataTable style</li>
 </ul>
@@ -682,8 +746,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extension-v1.0.0---2026-03-02" class="level2">
 <h2 class="anchored" data-anchor-id="extension-v1.0.0---2026-03-02">[extension-v1.0.0] - 2026-03-02</h2>
-<section id="added-9" class="level3">
-<h3 class="anchored" data-anchor-id="added-9">Added</h3>
+<section id="added-11" class="level3">
+<h3 class="anchored" data-anchor-id="added-11">Added</h3>
 <ul>
 <li>Add initial addon implementation</li>
 <li>Improve UI and add simple data extraction logic</li>
@@ -729,8 +793,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Add data copying to clipboard including HTML and Markdown tables</li>
 </ul>
 </section>
-<section id="fixed-9" class="level3">
-<h3 class="anchored" data-anchor-id="fixed-9">Fixed</h3>
+<section id="fixed-11" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-11">Fixed</h3>
 <ul>
 <li>Use async function to fix status update</li>
 <li><em>(sidebar)</em> Move StatusIndicator and format</li>
@@ -753,8 +817,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Narrow CSP and update plugin description</li>
 </ul>
 </section>
-<section id="changed-9" class="level3">
-<h3 class="anchored" data-anchor-id="changed-9">Changed</h3>
+<section id="changed-11" class="level3">
+<h3 class="anchored" data-anchor-id="changed-11">Changed</h3>
 <ul>
 <li>Move to pnpm and fix issues found by eslint</li>
 <li>Change package name to page-sieve</li>

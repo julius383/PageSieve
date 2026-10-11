@@ -1,182 +1,191 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-410.3225 -460.5 820.645 921" width="820.645" height="921" class="lini lini-scope-244756c9">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-489.506 -503.5 979.012 1026.5" width="979.012" height="1026.5" class="lini lini-scope-d6b19cf7">
   <style>
     @layer lini.defaults {
-      :root, .lini-scope-244756c9 { color-scheme: light dark; --lini-caption-color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.55)); --lini-caption-font-weight: 400; --lini-fg: light-dark(black, #e8e8ea); --lini-fill: light-dark(white, #26262b); --lini-font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --lini-font-weight: 500; --lini-gray-deep: light-dark(#747474, #acacac); --lini-green-deep: light-dark(#008d51, #42c887); --lini-green-ink: light-dark(#005d26, #8bffc3); --lini-green-wash: light-dark(#d6f8e3, #143121); --lini-group-fill: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.05)); --lini-group-stroke: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4)); --lini-link-font-weight: 400; --lini-purple-deep: light-dark(#6e62cc, #a39cff); --lini-purple-ink: light-dark(#443394, #ded9ff); --lini-purple-wash: light-dark(#eaebff, #282741); --lini-red-deep: light-dark(#bc4943, #fd8379); --lini-red-ink: light-dark(#851618, #ffc1b5); --lini-red-wash: light-dark(#ffe4df, #3e211e); --lini-stroke: light-dark(#444, #9aa0a6); --lini-text-color: var(--lini-fg); }
-      .lini-scope-244756c9[data-theme="dark"], [data-theme="dark"] .lini-scope-244756c9 { color-scheme: dark; }
-      .lini-scope-244756c9[data-theme="light"], [data-theme="light"] .lini-scope-244756c9 { color-scheme: light; }
+      :root, .lini-scope-d6b19cf7 { --lini-caption-color: rgba(255, 255, 255, 0.55); --lini-caption-font-weight: 400; --lini-fg: #e8e8ea; --lini-fill: #26262b; --lini-font-family: "Google Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --lini-font-weight: 500; --lini-gray-deep: #acacac; --lini-green-deep: #42c887; --lini-green-ink: #8bffc3; --lini-green-wash: #143121; --lini-group-fill: rgba(255, 255, 255, 0.05); --lini-group-stroke: rgba(255, 255, 255, 0.4); --lini-link-font-weight: 400; --lini-purple-deep: #a39cff; --lini-purple-ink: #ded9ff; --lini-purple-wash: #282741; --lini-red-deep: #fd8379; --lini-red-ink: #ffc1b5; --lini-red-wash: #3e211e; --lini-stroke: #9aa0a6; --lini-text-color: var(--lini-fg); }
     }
-    .lini-scope-244756c9, .lini-scope-244756c9 text { font-family: var(--lini-font-family); }
-    .lini-scope-244756c9 { font-size: 15px; font-weight: var(--lini-font-weight); color: var(--lini-text-color); }
-    .lini-scope-244756c9 .lini-block { fill: none; stroke: none; stroke-width: 2; stroke-dasharray: none; }
-    .lini-scope-244756c9 .lini-oval { fill: var(--lini-fill); stroke: var(--lini-stroke); stroke-width: 2; stroke-dasharray: none; }
-    .lini-scope-244756c9 .lini-text { fill: currentColor; stroke: none; text-anchor: middle; }
-    .lini-scope-244756c9 .lini-box { fill: var(--lini-fill); stroke: var(--lini-stroke); stroke-width: 2; }
-    .lini-scope-244756c9 .lini-group { fill: var(--lini-group-fill); stroke: var(--lini-group-stroke); stroke-width: 1; stroke-dasharray: 5,4; }
-    .lini-scope-244756c9 .lini-caption { color: var(--lini-caption-color); font-size: 12px; font-weight: var(--lini-caption-font-weight); }
-    .lini-scope-244756c9 .lini-link { fill: none; stroke: var(--lini-gray-deep); stroke-width: 1.5; stroke-dasharray: none; }
-    .lini-scope-244756c9 .lini-marker { fill: var(--lini-stroke); stroke: none; }
-    .lini-scope-244756c9 .lini-link .lini-marker { fill: var(--lini-gray-deep); }
-    .lini-scope-244756c9 .lini-style-good { fill: var(--lini-green-wash); stroke: var(--lini-green-deep); stroke-width: 2; color: var(--lini-green-ink); }
-    .lini-scope-244756c9 .lini-style-good .lini-marker { fill: var(--lini-green-deep); }
-    .lini-scope-244756c9 .lini-style-good-link { stroke: var(--lini-green-deep); stroke-width: 2; color: var(--lini-green-ink); }
-    .lini-scope-244756c9 .lini-style-good-link .lini-marker { fill: var(--lini-green-deep); }
-    .lini-scope-244756c9 .lini-style-bad { fill: var(--lini-red-wash); stroke: var(--lini-red-deep); stroke-width: 2; color: var(--lini-red-ink); }
-    .lini-scope-244756c9 .lini-style-bad .lini-marker { fill: var(--lini-red-deep); }
-    .lini-scope-244756c9 .lini-style-bad-link { stroke: var(--lini-red-deep); stroke-width: 2; color: var(--lini-red-ink); }
-    .lini-scope-244756c9 .lini-style-bad-link .lini-marker { fill: var(--lini-red-deep); }
-    .lini-scope-244756c9 .lini-style-recover { fill: var(--lini-purple-wash); stroke: var(--lini-purple-deep); stroke-width: 2; color: var(--lini-purple-ink); }
-    .lini-scope-244756c9 .lini-style-recover .lini-marker { fill: var(--lini-purple-deep); }
-    .lini-scope-244756c9 .lini-style-recover-link { stroke: var(--lini-purple-deep); stroke-width: 2; color: var(--lini-purple-ink); }
-    .lini-scope-244756c9 .lini-style-recover-link .lini-marker { fill: var(--lini-purple-deep); }
+    .lini-scope-d6b19cf7, .lini-scope-d6b19cf7 text { font-family: var(--lini-font-family); }
+    .lini-scope-d6b19cf7 { font-size: 15px; font-weight: var(--lini-font-weight); color: var(--lini-text-color); }
+    .lini-scope-d6b19cf7 .lini-block { fill: none; stroke: none; stroke-width: 2; stroke-dasharray: none; }
+    .lini-scope-d6b19cf7 .lini-oval { fill: var(--lini-fill); stroke: var(--lini-stroke); stroke-width: 2; stroke-dasharray: none; }
+    .lini-scope-d6b19cf7 .lini-text { fill: currentColor; stroke: none; text-anchor: middle; }
+    .lini-scope-d6b19cf7 .lini-box { fill: var(--lini-fill); stroke: var(--lini-stroke); stroke-width: 2; }
+    .lini-scope-d6b19cf7 .lini-group { fill: var(--lini-group-fill); stroke: var(--lini-group-stroke); stroke-width: 1; stroke-dasharray: 5,4; }
+    .lini-scope-d6b19cf7 .lini-caption { color: var(--lini-caption-color); font-size: 12px; font-weight: var(--lini-caption-font-weight); }
+    .lini-scope-d6b19cf7 .lini-link { fill: none; stroke: var(--lini-gray-deep); stroke-width: 3; stroke-dasharray: none; }
+    .lini-scope-d6b19cf7 .lini-link-label { fill: currentColor; stroke: none; text-anchor: middle; font-size: 24px; font-weight: var(--lini-link-font-weight); }
+    .lini-scope-d6b19cf7 .lini-cut-bg { fill: white; stroke: none; }
+    .lini-scope-d6b19cf7 .lini-cut { fill: black; stroke: none; }
+    .lini-scope-d6b19cf7 .lini-marker { fill: var(--lini-stroke); stroke: none; }
+    .lini-scope-d6b19cf7 .lini-link .lini-marker { fill: var(--lini-gray-deep); }
+    .lini-scope-d6b19cf7 .lini-style-good { fill: var(--lini-green-wash); stroke: var(--lini-green-deep); stroke-width: 2; color: var(--lini-green-ink); }
+    .lini-scope-d6b19cf7 .lini-style-good .lini-marker { fill: var(--lini-green-deep); }
+    .lini-scope-d6b19cf7 .lini-style-good-link { stroke: var(--lini-green-deep); color: var(--lini-green-ink); }
+    .lini-scope-d6b19cf7 .lini-style-good-link .lini-marker { fill: var(--lini-green-deep); }
+    .lini-scope-d6b19cf7 .lini-style-bad { fill: var(--lini-red-wash); stroke: var(--lini-red-deep); color: var(--lini-red-ink); }
+    .lini-scope-d6b19cf7 .lini-style-bad .lini-marker { fill: var(--lini-red-deep); }
+    .lini-scope-d6b19cf7 .lini-style-bad-link { stroke: var(--lini-red-deep); color: var(--lini-red-ink); }
+    .lini-scope-d6b19cf7 .lini-style-bad-link .lini-marker { fill: var(--lini-red-deep); }
+    .lini-scope-d6b19cf7 .lini-style-recover { fill: var(--lini-purple-wash); stroke: var(--lini-purple-deep); stroke-width: 2; color: var(--lini-purple-ink); }
+    .lini-scope-d6b19cf7 .lini-style-recover .lini-marker { fill: var(--lini-purple-deep); }
+    .lini-scope-d6b19cf7 .lini-style-recover-link { stroke: var(--lini-purple-deep); color: var(--lini-purple-ink); }
+    .lini-scope-d6b19cf7 .lini-style-recover-link .lini-marker { fill: var(--lini-purple-deep); }
   </style>
   <defs/>
   <g class="lini-scene">
-    <g class="lini-node lini-oval" data-id="idle" transform="translate(0,-400)">
-      <ellipse cx="0" cy="0" rx="32.39" ry="27.5"/>
+    <g class="lini-node lini-oval" data-id="idle" style="font-size: 24px" transform="translate(0,-420.5)">
+      <ellipse cx="0" cy="0" rx="50" ry="50"/>
       <text class="lini-text" x="0" y="0" dy="0.358em">idle</text>
     </g>
-    <g class="lini-node lini-row lini-block" data-id="outcomes" transform="translate(0,-263)">
-      <rect x="-378.3225" y="-68.5" width="756.645" height="137" rx="0" ry="0"/>
-      <g class="lini-node lini-box lini-block lini-style-recover" data-id="retrying" transform="translate(-289.505,0)">
-        <rect x="-47.8175" y="-27.5" width="95.635" height="55" rx="8" ry="8"/>
+    <g class="lini-node lini-grid lini-block" data-id="outcomes" style="font-size: 18px" transform="translate(0,-189.5)">
+      <rect x="-441.506" y="-140" width="883.012" height="280" rx="0" ry="0"/>
+      <g class="lini-node lini-box lini-block lini-style-recover" data-id="retrying" transform="translate(-307.125,-70)">
+        <rect x="-53.381" y="-29" width="106.762" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">retrying</text>
       </g>
-      <g class="lini-node lini-box lini-block" data-id="extracting" transform="translate(-143.995,0)">
-        <rect x="-55.6925" y="-27.5" width="111.385" height="55" rx="8" ry="8"/>
+      <g class="lini-node lini-box lini-block" data-id="waitFor" transform="translate(163.353,70)">
+        <rect x="-64.433" y="-29" width="128.866" height="58" rx="8" ry="8"/>
+        <text class="lini-text" x="0" y="0" dy="0.358em">waitingFor</text>
+      </g>
+      <g class="lini-node lini-box lini-block" data-id="extracting" transform="translate(-5.911,-70)">
+        <rect x="-62.831" y="-29" width="125.662" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">extracting</text>
       </g>
-      <g class="lini-node lini-box lini-block" data-id="waiting" transform="translate(-0.885,0)">
-        <rect x="-45.4175" y="-27.5" width="90.835" height="55" rx="8" ry="8"/>
+      <g class="lini-node lini-box lini-block" data-id="waiting" transform="translate(-161.243,70)">
+        <rect x="-50.501" y="-29" width="101.002" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">waiting</text>
       </g>
-      <g class="lini-node lini-box lini-block lini-style-good" data-id="completed" transform="translate(144.3325,0)">
-        <rect x="-57.8" y="-27.5" width="115.6" height="55" rx="8" ry="8"/>
+      <g class="lini-node lini-box lini-block lini-style-good" data-id="completed" transform="translate(335.146,70)">
+        <rect x="-65.36" y="-29" width="130.72" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">completed</text>
       </g>
-      <g class="lini-node lini-box lini-block lini-style-bad" data-id="errored" transform="translate(290.7275,0)">
-        <rect x="-46.595" y="-27.5" width="93.19" height="55" rx="8" ry="8"/>
+      <g class="lini-node lini-box lini-block lini-style-bad" data-id="errored" transform="translate(335.146,-70)">
+        <rect x="-51.914" y="-29" width="103.828" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">errored</text>
       </g>
     </g>
-    <g class="lini-node lini-group lini-block" data-id="navigating" transform="translate(0,137)">
-      <rect x="-233.1275" y="-291" width="466.255" height="582" rx="8" ry="8"/>
-      <g class="lini-node lini-box lini-block" data-id="deciding" transform="translate(0,-238.5)">
-        <rect x="-208.1275" y="-27.5" width="416.255" height="55" rx="8" ry="8"/>
+    <g class="lini-node lini-group lini-block" data-id="navigating" transform="translate(0,231)">
+      <rect x="-285.1025" y="-240" width="570.205" height="480" rx="8" ry="8"/>
+      <g class="lini-node lini-box lini-block" data-id="deciding" style="font-size: 18px" transform="translate(0,-186)">
+        <rect x="-260.1025" y="-29" width="520.205" height="58" rx="8" ry="8"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">deciding</text>
       </g>
-      <g class="lini-node lini-box lini-block lini-style-recover" data-id="retryingNav" transform="translate(0,238.5)">
-        <rect x="-208.1275" y="-27.5" width="416.255" height="55" rx="8" ry="8"/>
-        <text class="lini-text" x="0" y="0" dy="0.358em">retryingNav</text>
+      <g class="lini-node lini-box lini-block" data-id="navStart" transform="translate(-210.485,66)">
+        <rect x="-49.6175" y="-149" width="99.235" height="298" rx="8" ry="8"/>
+        <text class="lini-text" x="0" y="0" dy="0.358em">navStart</text>
       </g>
-      <g class="lini-node lini-group lini-block" data-id="next" transform="translate(-112.9875,-12)">
-        <rect x="-95.64" y="-149.5" width="191.28" height="299" rx="8" ry="8"/>
-        <g class="lini-node lini-box lini-block" data-id="hashingBefore" transform="translate(0,-97)">
-          <rect x="-70.64" y="-27.5" width="141.28" height="55" rx="8" ry="8"/>
-          <text class="lini-text" x="0" y="0" dy="0.358em">hashingBefore</text>
+      <g class="lini-node lini-box lini-block" data-id="links" transform="translate(-99.41,66)">
+        <rect x="-35.4575" y="-149" width="70.915" height="298" rx="8" ry="8"/>
+        <text class="lini-text" x="0" y="0" dy="0.358em">links</text>
+      </g>
+      <g class="lini-node lini-box lini-block" data-id="template" transform="translate(13.5775,66)">
+        <rect x="-51.53" y="-149" width="103.06" height="298" rx="8" ry="8"/>
+        <text class="lini-text" x="0" y="0" dy="0.358em">template</text>
+      </g>
+      <g class="lini-node lini-group lini-block" data-id="next" transform="translate(175.605,66)">
+        <rect x="-84.9975" y="-149.5" width="169.995" height="299" rx="8" ry="8"/>
+        <g class="lini-node lini-box lini-block" data-id="hashBefore" transform="translate(0,-97)">
+          <rect x="-59.9975" y="-27.5" width="119.995" height="55" rx="8" ry="8"/>
+          <text class="lini-text" x="0" y="0" dy="0.358em">hashBefore</text>
         </g>
         <g class="lini-node lini-box lini-block" data-id="clicking" transform="translate(0,0)">
           <rect x="-46.4075" y="-27.5" width="92.815" height="55" rx="8" ry="8"/>
           <text class="lini-text" x="0" y="0" dy="0.358em">clicking</text>
         </g>
-        <g class="lini-node lini-box lini-block" data-id="hashingAfter" transform="translate(0,97)">
-          <rect x="-65.315" y="-27.5" width="130.63" height="55" rx="8" ry="8"/>
-          <text class="lini-text" x="0" y="0" dy="0.358em">hashingAfter</text>
+        <g class="lini-node lini-box lini-block" data-id="hashAfter" transform="translate(0,97)">
+          <rect x="-54.6725" y="-27.5" width="109.345" height="55" rx="8" ry="8"/>
+          <text class="lini-text" x="0" y="0" dy="0.358em">hashAfter</text>
         </g>
-        <g class="lini-node lini-caption lini-block" transform="translate(-83.898,-163.5)">
-          <rect x="-11.742" y="-6" width="23.484" height="12" rx="0" ry="0"/>
+        <g class="lini-node lini-caption lini-block" style="color: white; font-size: 18px" transform="translate(67.3845,-160.5)">
+          <rect x="-17.613" y="-9" width="35.226" height="18" rx="0" ry="0"/>
           <text class="lini-text" x="0" y="0" dy="0.358em">next</text>
         </g>
       </g>
-      <g class="lini-node lini-box lini-block" data-id="links" transform="translate(43.61,-12)">
-        <rect x="-35.4575" y="-149" width="70.915" height="298" rx="8" ry="8"/>
-        <text class="lini-text" x="0" y="0" dy="0.358em">links</text>
-      </g>
-      <g class="lini-node lini-box lini-block" data-id="template" transform="translate(156.5975,-12)">
-        <rect x="-51.53" y="-149" width="103.06" height="298" rx="8" ry="8"/>
-        <text class="lini-text" x="0" y="0" dy="0.358em">template</text>
-      </g>
-      <g class="lini-node lini-caption lini-block" transform="translate(-205.1675,-305)">
-        <rect x="-27.96" y="-6" width="55.92" height="12" rx="0" ry="0"/>
+      <g class="lini-node lini-caption lini-block" style="color: white; font-size: 18px; font-weight: bold" transform="translate(-239.5715,251)">
+        <rect x="-45.531" y="-9" width="91.062" height="18" rx="0" ry="0"/>
         <text class="lini-text" x="0" y="0" dy="0.358em">navigating</text>
       </g>
     </g>
   </g>
   <g class="lini-links">
     <g class="lini-link" data-from="idle" data-to="outcomes.extracting">
-      <path d="M -33.39 -400 L -143.995 -400 A 16 16 0 0 0 -159.995 -384 L -159.995 -294"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-159.995,-291 -163.495,-298 -156.495,-298"/>
+      <path d="M -2.9555 -369.5 L -2.9555 -295"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-2.9555,-289 -9.4555,-302 3.5445,-302"/>
+    </g>
+    <g class="lini-link" data-from="idle" data-to="navigating.navStart">
+      <mask id="lini-label-cut-3a394cf0" maskUnits="userSpaceOnUse" x="-460.006" y="-423" width="411.506" height="722.5"><rect class="lini-cut-bg" x="-460.006" y="-423" width="411.506" height="722.5"/><rect class="lini-cut" x="-407.2419" y="-436.1" width="184.32" height="31.2"/></mask>
+      <path d="M -51 -420.5 L -441.506 -420.5 A 16 16 0 0 0 -457.506 -404.5 L -457.506 281 A 16 16 0 0 0 -441.506 297 L -266.6025 297" mask="url(#lini-label-cut-3a394cf0)"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-260.6025,297 -273.6025,303.5 -273.6025,290.5"/>
+      <text class="lini-link-label" x="-315.0819" y="-420.5" dy="0.358em">not(isvalidStart)</text>
     </g>
     <g class="lini-link lini-style-good-link" data-from="outcomes.extracting" data-to="outcomes.completed">
-      <path d="M -127.995 -291.5 L -127.995 -291.5 A 16 16 0 0 1 -111.995 -307.5 L 131.8325 -307.5 A 12.5 12.5 0 0 1 144.3325 -295 L 144.3325 -295"/>
-      <polygon class="lini-marker lini-marker-arrow" points="144.3325,-291 139.8325,-300 148.8325,-300"/>
+      <path d="M 57.92 -251.5 L 154.076 -251.5 A 16 16 0 0 1 170.076 -235.5 L 170.076 -205.5 A 16 16 0 0 0 186.076 -189.5 L 319.146 -189.5 A 16 16 0 0 1 335.146 -173.5 L 335.146 -155"/>
+      <polygon class="lini-marker lini-marker-arrow" points="335.146,-149 328.646,-162 341.646,-162"/>
+    </g>
+    <g class="lini-link lini-style-recover-link" data-from="outcomes.retrying" data-to="navigating">
+      <path d="M -307.125 -224 L -307.125 215 A 16 16 0 0 0 -291.125 231 L -291.1025 231"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-307.125,-230 -300.625,-217 -313.625,-217"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-285.1025,231 -298.1025,237.5 -298.1025,224.5"/>
     </g>
     <g class="lini-link" data-from="navigating" data-to="outcomes.extracting">
-      <path d="M -103.3025 -154.5 L -103.3025 -232"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-103.3025,-235 -99.8025,-228 -106.8025,-228"/>
+      <path d="M 3.5667 -9.5 L 3.5667 -224"/>
+      <polygon class="lini-marker lini-marker-arrow" points="3.5667,-230 10.0667,-217 -2.9333,-217"/>
+    </g>
+    <g class="lini-link" data-from="navigating" data-to="outcomes.waitFor">
+      <path d="M 113.92 -9.5 L 113.92 -84"/>
+      <polygon class="lini-marker lini-marker-arrow" points="113.92,-90 120.42,-77 107.42,-77"/>
     </g>
     <g class="lini-link lini-style-good-link" data-from="navigating" data-to="outcomes.completed">
-      <path d="M 101.5325 -154.5 L 101.5325 -231"/>
-      <polygon class="lini-marker lini-marker-arrow" points="101.5325,-235 106.0325,-226 97.0325,-226"/>
+      <path d="M 285.6025 223 L 319.146 223 A 16 16 0 0 0 335.146 207 L 335.146 -84"/>
+      <polygon class="lini-marker lini-marker-arrow" points="335.146,-90 341.646,-77 328.646,-77"/>
     </g>
     <g class="lini-link" data-from="outcomes.waiting" data-to="navigating">
-      <path d="M -0.4425 -234.5 L -0.4425 -157"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-0.4425,-154 -3.9425,-161 3.0575,-161"/>
+      <path d="M -125.742 -89.5 L -125.742 -15"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-125.742,-9 -132.242,-22 -119.242,-22"/>
     </g>
     <g class="lini-link lini-style-bad-link" data-from="navigating" data-to="outcomes.errored">
-      <path d="M 233.6275 137 L 274.7275 137 A 16 16 0 0 0 290.7275 121 L 290.7275 -231"/>
-      <polygon class="lini-marker lini-marker-arrow" points="290.7275,-235 295.2275,-226 286.2275,-226"/>
+      <path d="M 285.6025 239 L 441.506 239 A 16 16 0 0 0 457.506 223 L 457.506 -243.5 A 16 16 0 0 0 441.506 -259.5 L 393.56 -259.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="387.56,-259.5 400.56,-266 400.56,-253"/>
     </g>
     <g class="lini-link" data-from="outcomes.extracting" data-to="outcomes.waiting">
-      <path d="M -87.3025 -263 L -49.8025 -263"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-46.8025,-263 -53.8025,-259.5 -53.8025,-266.5"/>
-    </g>
-    <g class="lini-link lini-style-recover-link" data-from="outcomes.extracting" data-to="outcomes.retrying">
-      <path d="M -200.6875 -255 L -237.1875 -255"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-241.1875,-255 -232.1875,-259.5 -232.1875,-250.5"/>
+      <path d="M -69.742 -251.5 L -145.243 -251.5 A 16 16 0 0 0 -161.243 -235.5 L -161.243 -155"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-161.243,-149 -167.743,-162 -154.743,-162"/>
     </g>
     <g class="lini-link lini-style-bad-link" data-from="outcomes.extracting" data-to="outcomes.errored">
-      <path d="M -143.995 -291.5 L -143.995 -291.5 A 32 32 0 0 1 -111.995 -323.5 L 274.7275 -323.5 A 16 16 0 0 1 290.7275 -307.5 L 290.7275 -295"/>
-      <polygon class="lini-marker lini-marker-arrow" points="290.7275,-291 286.2275,-300 295.2275,-300"/>
+      <path d="M 57.92 -267.5 L 276.732 -267.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="282.732,-267.5 269.732,-261 269.732,-274"/>
     </g>
-    <g class="lini-link" data-from="outcomes.retrying" data-to="outcomes.extracting">
-      <path d="M -240.6875 -271 L -203.1875 -271"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-200.1875,-271 -207.1875,-267.5 -207.1875,-274.5"/>
+    <g class="lini-link lini-style-recover-link" data-from="outcomes.retrying" data-to="outcomes.extracting">
+      <path d="M -247.244 -267.5 L -75.242 -267.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-253.244,-267.5 -240.244,-274 -240.244,-261"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-69.242,-267.5 -82.242,-261 -82.242,-274"/>
     </g>
-    <g class="lini-link lini-style-recover-link" data-from="navigating.retryingNav" data-to="navigating.deciding">
-      <path d="M -209.1275 375.5 L -209.1275 375.5 A 16 16 0 0 1 -225.1275 359.5 L -225.1275 -89 A 12.5 12.5 0 0 1 -212.6275 -101.5 L -212.6275 -101.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-208.6275,-101.5 -217.6275,-97 -217.6275,-106"/>
+    <g class="lini-link" data-from="outcomes.waitFor" data-to="outcomes.extracting">
+      <path d="M 97.92 -119.5 L 3.5667 -119.5 A 16 16 0 0 1 -12.4333 -135.5 L -12.4333 -224"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-12.4333,-230 -5.9333,-217 -18.9333,-217"/>
     </g>
-    <g class="lini-link" data-from="navigating.deciding" data-to="navigating.next">
-      <path d="M -56.4937 -73 L -56.4937 -27.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-56.4937,-24.5 -59.9937,-31.5 -52.9937,-31.5"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.deciding" data-to="navigating.navStart">
+      <path d="M -175.8675 75 L -175.8675 142.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-175.8675,147.5 -181.3675,136.5 -170.3675,136.5"/>
     </g>
-    <g class="lini-link" data-from="navigating.deciding" data-to="navigating.links">
-      <path d="M 27.801 -73 L 27.801 -27.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="27.801,-24.5 24.301,-31.5 31.301,-31.5"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.deciding" data-to="navigating.next">
+      <path d="M 106.1075 75 L 106.1075 142.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="106.1075,147.5 100.6075,136.5 111.6075,136.5"/>
     </g>
-    <g class="lini-link" data-from="navigating.deciding" data-to="navigating.template">
-      <path d="M 120.0675 -73 L 120.0675 -27.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="120.0675,-24.5 116.5675,-31.5 123.5675,-31.5"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.deciding" data-to="navigating.links">
+      <path d="M -78.9525 75 L -78.9525 142.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="-78.9525,147.5 -84.4525,136.5 -73.4525,136.5"/>
     </g>
-    <g class="lini-link lini-style-recover-link" data-from="navigating.next" data-to="navigating.retryingNav">
-      <path d="M -56.4937 275 L -56.4937 343.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-56.4937,347.5 -60.9937,338.5 -51.9937,338.5"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.deciding" data-to="navigating.template">
+      <path d="M 6.7888 75 L 6.7888 142.5"/>
+      <polygon class="lini-marker lini-marker-arrow" points="6.7888,147.5 1.2888,136.5 12.2888,136.5"/>
     </g>
-    <g class="lini-link lini-style-recover-link" data-from="navigating.links" data-to="navigating.retryingNav">
-      <path d="M 23.1525 275 L 23.1525 343.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="23.1525,347.5 18.6525,338.5 27.6525,338.5"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.next.hashBefore" data-to="navigating.next.clicking">
+      <path d="M 175.605 228.5 L 175.605 264"/>
+      <polygon class="lini-marker lini-marker-arrow" points="175.605,269 170.105,258 181.105,258"/>
     </g>
-    <g class="lini-link lini-style-recover-link" data-from="navigating.template" data-to="navigating.retryingNav">
-      <path d="M 120.0675 275 L 120.0675 343.5"/>
-      <polygon class="lini-marker lini-marker-arrow" points="120.0675,347.5 115.5675,338.5 124.5675,338.5"/>
-    </g>
-    <g class="lini-link" data-from="navigating.next.hashingBefore" data-to="navigating.next.clicking">
-      <path d="M -112.9875 56.5 L -112.9875 94"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-112.9875,97 -116.4875,90 -109.4875,90"/>
-    </g>
-    <g class="lini-link" data-from="navigating.next.clicking" data-to="navigating.next.hashingAfter">
-      <path d="M -112.9875 153.5 L -112.9875 191"/>
-      <polygon class="lini-marker lini-marker-arrow" points="-112.9875,194 -116.4875,187 -109.4875,187"/>
+    <g class="lini-link" style="stroke-width: 2.5" data-from="navigating.next.clicking" data-to="navigating.next.hashAfter">
+      <path d="M 175.605 325.5 L 175.605 361"/>
+      <polygon class="lini-marker lini-marker-arrow" points="175.605,366 170.105,355 181.105,355"/>
     </g>
   </g>
 </svg>
