@@ -1,70 +1,81 @@
 {
   layout: flow; direction: column; gap: 40; padding: 32;
-  |-| { stroke: --gray-deep; stroke-width: 1.5; font-size: 12; }
+  |-| { stroke: --gray-deep; stroke-width: 3; font-size: 24; }
+  |group| |-| { stroke: --gray-deep; stroke-width: 2.5; font-size: 20; }
   |group| { gap: 24; padding: 24; }
 
-  // Classes utilizing Lini's built-in wash/ink palette system
   .good {
     fill: --green-wash; stroke: --green-deep; color: --green-ink; stroke-width: 2;
   }
-  .good-link { stroke: --green-deep; color: --green-ink; stroke-width: 2; }
-  .bad {
-    fill: --red-wash; stroke: --red-deep; color: --red-ink; stroke-width: 2;
-  }
-  .bad-link { stroke: --red-deep; color: --red-ink; stroke-width: 2; }
+  .good-link { stroke: --green-deep; color: --green-ink; }
+  .bad { fill: --red-wash; stroke: --red-deep; color: --red-ink; }
+  .bad-link { stroke: --red-deep; color: --red-ink; }
   .recover {
     fill: --purple-wash; stroke: --purple-deep; color: --purple-ink; stroke-width: 2;
   }
-  .recover-link { stroke: --purple-deep; color: --purple-ink; stroke-width: 2; }
+  .recover-link { stroke: --purple-deep; color: --purple-ink; }
 }
 
-|oval#idle| "idle"
+|oval#idle| "idle" { width: 100; height: 100; font-size: 24; }
 
 // Top Level States / Targets
-|row#outcomes| { gap: 40; padding: 40; } [
-  |box#retrying| "retrying" .recover
-  |box#extracting| "extracting"
-  |box#waiting| "waiting"
-  |box#completed| "completed" .good
-  |box#errored| "errored" .bad
-  extracting -> waiting
-  extracting -> retrying .recover-link
-  extracting:top -> errored .bad-link
-  retrying -> extracting
+|grid#outcomes| {
+  gap: 40; padding: 40; columns: repeat(6); rows: repeat(3); font-size: 18;
+} [
+  |box#retrying| "retrying" .recover { cell: 2 1; }
+  |box#waitFor| "waitingFor" { cell: 5 3; }
+
+  |box#extracting| "extracting" { cell: 4 1; }
+  |box#waiting| "waiting" { cell: 3 3; }
+  |box#completed| "completed" .good { cell: 6 3; }
+  |box#errored| "errored" .bad { cell: 6 1; }
+  extracting:left -> waiting:top
+  //extracting -> retrying .recover-link
+  extracting -> errored .bad-link
+  retrying <-> extracting .recover-link
+  waitFor -> extracting
 ]
 
-|group#navigating| "navigating" {
-  layout: grid; columns: repeat(12); rows: repeat(6); direction: column; align: stretch; justify: stretch;
+|group#navigating| {
+  layout: grid; direction: column; columns: repeat(16); rows: repeat(4); align: stretch; justify: stretch;
 } [
 
-  |box#deciding| "deciding" { cell: 1 1; span: 12 1; gap: 100; }
-  |box#retryingNav| "retryingNav" .recover { cell: 1 6; span: 12 1; }
-  retryingNav:left -> deciding .recover-link
+  |caption| "navigating" {
+    pin: bottom left; translate: 0 20; font-weight: bold; color: white; font-size: 18;
+  }
+  |box#deciding| "deciding" { cell: 1 1; span: 16 1; font-size: 18; }
 
-  |group#next| "next" { direction: column; cell: 1 3; span: 4; gap: 40; } [
-    |box#hashingBefore| "hashingBefore"
+  |box#navStart| "navStart" { cell: 1 4; span: 4; }
+  |box#links| "links" { cell: 5 4; span: 4; }
+  |box#template| "template" { cell: 9 4; span: 4; }
+  |group#next| { direction: column; cell: 13 4; span: 4; gap: 40; } [
+    |caption| "next" {
+      pin: top right; translate: 0 -20; color: white; font-size: 18;
+    }
+    |box#hashBefore| "hashBefore"
     |box#clicking| "clicking"
-    |box#hashingAfter| "hashingAfter"
-    hashingBefore -> clicking -> hashingAfter
+    |box#hashAfter| "hashAfter"
+    hashBefore -> clicking -> hashAfter
 
   ]
-  |box#links| "links" { cell: 5 3; span: 4; }
-  |box#template| "template" { cell: 9 3; span: 4; }
+
+  deciding -> navStart
   deciding -> next
   deciding -> links
   deciding -> template
 
-  next -> retryingNav .recover-link
-  links -> retryingNav .recover-link
-  template -> retryingNav .recover-link
-
 ]
 
 idle -> outcomes.extracting
-outcomes.extracting:top -> outcomes.completed .good-link
+idle:left -> navigating.navStart:left "not(isvalidStart)" { along: 0.2; }
+outcomes.extracting -> outcomes.completed:top .good-link
 
-navigating -> outcomes.extracting
-navigating:top -> outcomes.completed:bottom .good-link
+outcomes.retrying <-> navigating .recover-link
+
+navigating -> outcomes.extracting:bottom
+navigating -> outcomes.waitFor
+navigating -> outcomes.completed .good-link
 outcomes.waiting -> navigating
 navigating:right -> outcomes.errored .bad-link
+
 
