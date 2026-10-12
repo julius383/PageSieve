@@ -23,18 +23,18 @@
     "dependencies": {
         "@json2csv/plainjs": "catalog:",
         "@logtape/logtape": "catalog:",
-        "es-toolkit": "catalog:",
-        "nanoid": "catalog:",
-        "ts-pattern": "catalog:",
-        "xstate": "catalog:",
-        "yaml": "catalog:",
-        "zod": "catalog:",
         "cheerio": "^1.2.0",
         "commander": "^15.0.0",
+        "es-toolkit": "catalog:",
         "fflate": "^0.8.3",
+        "nanoid": "catalog:",
         "ofetch": "^1.5.1",
         "playwright": "^1.63.0",
-        "undici": "^8.11."
+        "ts-pattern": "catalog:",
+        "undici": "^8.11.",
+        "xstate": "catalog:",
+        "yaml": "catalog:",
+        "zod": "catalog:"
     },
     "devDependencies": {
         "@pagesieve/core": "workspace:*",

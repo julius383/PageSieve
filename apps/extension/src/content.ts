@@ -159,7 +159,7 @@ declare global {
             const hash = [...new Uint8Array(buffer)]
                 .map((b) => b.toString(16).padStart(2, '0'))
                 .join('');
-            return { bodyHash: hash };
+            return { pageHash: hash };
         } else if (request.action === 'clickAndWaitForStable') {
             const el = browserEngine.querySelector(document.body, request.selector);
             if (!el) {

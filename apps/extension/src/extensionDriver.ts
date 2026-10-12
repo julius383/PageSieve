@@ -134,7 +134,7 @@ export const extensionDriver: ScrapeActorDriver = {
     }),
     computePageHash: fromPromise(async ({ input }) => {
         const tab = await getActiveTab();
-        return await sendMessageWithRetry<{ bodyHash: string }>(tab.id, {
+        return await sendMessageWithRetry<{ pageHash: string }>(tab.id, {
             action: 'computePageHash',
             selectors: input.selectors,
         });
@@ -227,7 +227,7 @@ export const extensionDriver: ScrapeActorDriver = {
                     };
                 } else {
                     console.debug('Using SPA for next pagination');
-                    const res = result as { success: boolean; error?: string };
+                    const res = result as { type: 'spa'; success: boolean; error?: string };
                     if (!res.success) {
                         throw new Error(res.error || 'SELECTOR NOT FOUND');
                     }

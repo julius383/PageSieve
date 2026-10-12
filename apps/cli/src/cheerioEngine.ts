@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CheerioAPI, Cheerio } from 'crawlee';
+import { CheerioAPI, Cheerio } from 'cheerio';
 import { ExtractionEngine, executeExtraction } from '@pagesieve/core/extractor';
 import { SelectorGroup } from '@pagesieve/core/schema';
 import { ExtractedGroup } from '@pagesieve/core/types';

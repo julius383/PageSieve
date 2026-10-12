@@ -6,15 +6,15 @@
         "packages": ["packages/*", "apps/*"],
         "catalog": {
             "xstate": "^5.33.2",
-            "zod": "^4.6.5",
-            "@logtape/logtape": "^2.3.5",
+            "zod": "^4.6.6",
+            "@logtape/logtape": "^2.4.1",
             "ts-pattern": "^5.9.0",
             "es-toolkit": "^1.52.0",
-            "vite": "^8.3.0",
-            "nanoid": "^6.0.1",
+            "vite": "^8.3.4",
+            "nanoid": "^6.0.2",
             "@json2csv/plainjs": "^7.0.8",
             "dayjs": "^1.11.23",
-            "yaml": "^2.9.0"
+            "yaml": "^2.9.1"
         }
     },
     "description": "PageSieve is a browser extension that assists with the extraction of structured data from any webpage you visit. Define field names, CSS selectors and (optionally) pagination strategy through a sidebar and extract and export data in a variety of formats.",
@@ -33,17 +33,18 @@
         "@eslint/compat": "^2.1.1",
         "@eslint/eslintrc": "^3.3.7",
         "@eslint/js": "^10.0.1",
-        "@eslint/json": "^2.1.0",
-        "@types/bun": "^1.4.2",
-        "@types/node": "^22.20.3",
-        "eslint": "^10.10.0",
+        "@eslint/json": "^2.1.1",
+        "@types/bun": "^1.4.3",
+        "@types/firefox-webext-browser": "^143.0.1",
+        "@types/node": "^26.6.5",
+        "eslint": "^10.12.0",
         "eslint-import-resolver-typescript": "^4.4.5",
         "eslint-plugin-import": "^2.32.0",
-        "eslint-plugin-svelte": "^3.23.0",
+        "eslint-plugin-svelte": "^3.23.1",
         "globals": "^16.5.0",
-        "prettier": "^3.9.7",
+        "prettier": "^3.9.10",
         "prettier-plugin-svelte": "^3.5.2",
-        "typescript": "^5.8.0",
-        "typescript-eslint": "^8.70.0"
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.71.1"
     }
 }
