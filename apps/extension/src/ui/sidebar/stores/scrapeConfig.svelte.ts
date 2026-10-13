@@ -1,7 +1,14 @@
-import type { ScrapeConfig as ScrapeConfigT, PaginationConfig } from '@pagesieve/core/schema';
+import { MatchPattern } from '@webext-core/match-patterns';
+import {
+    type ScrapeConfig as ScrapeConfigT,
+    PaginationConfig,
+    type PaginationConfig as PaginationConfigT,
+} from '@pagesieve/core/schema';
 import { ExtractionOptions, SelectorGroup, Field } from '@pagesieve/core/schema';
 import { nanoid } from 'nanoid';
 import { SvelteDate } from 'svelte/reactivity';
+import * as z from 'zod';
+import { setStatus } from '@/ui/sidebar/stores/ui.svelte';
 
 export const scrapeConfig: ScrapeConfigT = $state({
     id: '',
@@ -130,4 +137,90 @@ export function resetConfig() {
     scrapeConfig.selectors = [SelectorGroup.parse({ fields: [Field.parse({})] })];
     scrapeConfig.options = ExtractionOptions.parse({});
     scrapeConfig.pagination = { mode: 'none' };
+}
+
+/**
+ * Creates the initial state for the pagination store by mapping the pagination
+ * config from the main scrapeConfig store. This ensures the UI has a full object
+ * to bind to, even for modes that are not currently active.
+ */
+function createInitialPaginationState(config: PaginationConfigT) {
+    const newState = {
+        mode: config.mode,
+        none: { mode: 'none' as const },
+        next: {
+            mode: 'next' as const,
+            nextSelector: '',
+            maxPages: 0,
+        },
+        links: {
+            mode: 'links' as const,
+            pageLinks: [''],
+        },
+        template: {
+            mode: 'template' as const,
+            urlTemplate: '',
+            startPage: 1,
+            increment: 1,
+            maxPages: 0,
+        },
+    };
+
+    // Populate the active mode with data from the scrapeConfig
+    if (config.mode === 'next') {
+        newState.next.nextSelector = config.nextSelector;
+        if (config.maxPages) {
+            newState.next.maxPages = config.maxPages;
+        }
+    } else if (config.mode === 'links') {
+        newState.links.pageLinks = config.pageLinks;
+    } else if (config.mode === 'template') {
+        newState.template.urlTemplate = config.urlTemplate;
+        newState.template.startPage = config.startPage;
+        newState.template.increment = config.increment;
+        if (config.maxPages) {
+            newState.template.maxPages = config.maxPages;
+        }
+    }
+    return newState;
+}
+
+// Create the reactive paginationState store, initialized from the main scrapeConfig.
+export const paginationState = $state(createInitialPaginationState(scrapeConfig.pagination));
+
+/**
+ * Validates the current UI pagination state and, if successful,
+ * commits it to the global `scrapeConfig.pagination` store.
+ * Sets UI status based on validation result.
+ * @returns {boolean} True if the commit was successful, false otherwise.
+ */
+export function commitPaginationToScrapeConfig(): boolean {
+    const snapshot = $state.snapshot(paginationState);
+    const result = PaginationConfig.safeParse(snapshot[snapshot.mode]);
+
+    if (!result.success) {
+        setStatus('errored', z.prettifyError(result.error));
+        return false;
+    } else {
+        if (JSON.stringify(scrapeConfig.pagination) !== JSON.stringify(result.data)) {
+            scrapeConfig.pagination = result.data;
+        }
+        setStatus('idle', 'Ready');
+        return true;
+    }
+}
+
+/**
+ * Use simple prefix matching if possible otherwise
+ * fallback to glob based match patterns
+ */
+export function matchURLPattern(pattern: string | undefined, s: string | URL | undefined): boolean {
+    if (!pattern || !s) return false;
+    const converted = s.toString();
+    const containsWildcards = s.toString().includes('*');
+    if (containsWildcards) {
+        const matcher = new MatchPattern(pattern);
+        return matcher.includes(converted);
+    }
+    return converted.startsWith(pattern);
 }

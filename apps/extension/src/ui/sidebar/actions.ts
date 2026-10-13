@@ -1,5 +1,4 @@
 import { SvelteDate } from 'svelte/reactivity';
-import { RE2JS } from 're2js';
 import type { SelectorGroup } from '@pagesieve/core/schema';
 import {
     extractedData,
@@ -7,13 +6,16 @@ import {
     runWithStatusAsync,
     setStatus,
 } from '@/ui/sidebar/stores/ui.svelte';
-import { shortHash, generateConfigId, normalizeUrl, validateSelectors } from '@pagesieve/core/util';
-import { scrapeConfig, setScrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+import { generateConfigId, normalizeUrl, validateSelectors } from '@pagesieve/core/util';
+import {
+    scrapeConfig,
+    setScrapeConfig,
+    commitPaginationToScrapeConfig,
+    matchURLPattern,
+} from '@/ui/sidebar/stores/scrapeConfig.svelte';
 import { ScrapeConfig } from '@pagesieve/core/schema';
 import { getConfig, saveToBrowser } from '@/ui/sidebar/services/storage';
 import { promptConflict } from '@/ui/sidebar/services/conflict.svelte';
-import { saveToBrowser } from '@/ui/sidebar/services/storage';
-import { commitPaginationToScrapeConfig } from '@/ui/sidebar/stores/pagination.svelte';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
 
 /**
@@ -108,7 +110,7 @@ export async function exportConfig(): Promise<string> {
         {
             status: 'exporting',
             message: `exporting config with id ${filename}`,
-            timestamp: new Date().toISOString(),
+            timestamp: new SvelteDate().toISOString(),
         },
         () => {
             const dataStr =
@@ -183,7 +185,7 @@ export function loadConfig(config: ScrapeConfig) {
         {
             status: 'loading',
             message: `Loading config ${config.id} from browser storage`,
-            timestamp: new Date().toISOString(),
+            timestamp: new SvelteDate().toISOString(),
         },
         () => {
             setScrapeConfig(config);
@@ -199,7 +201,7 @@ export async function navigateTo(config: ScrapeConfig) {
         {
             status: 'navigating',
             message: `Navigating to next page based on ${config.pagination.mode}`,
-            timestamp: new Date().toISOString(),
+            timestamp: new SvelteDate().toISOString(),
         },
         async () => {
             // TODO: validate nav inputs before running
@@ -208,15 +210,11 @@ export async function navigateTo(config: ScrapeConfig) {
                 setStatus('errored', 'Failed to find active tab');
                 return;
             }
-            let urlPatternNoMatch = true;
-            if (config.urlPattern !== undefined) {
-                const re = RE2JS.compile(config.urlPattern);
-                urlPatternNoMatch = !re.test(config.urlPattern);
-            }
+            const urlPatternNoMatch = !matchURLPattern(config.urlPattern, tab.url);
 
-            let currentURL: string | null = tab.url;
+            let currentURL: string | undefined = tab.url;
             if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url) && urlPatternNoMatch) {
-                currentURL = null;
+                currentURL = undefined;
             }
             const navRes = await browser.runtime.sendMessage({
                 action: 'testNavigate',
@@ -249,9 +247,6 @@ export async function runConfig() {
 
     const selectorValidations = Object.values(validateSelectors(config.selectors)).flat();
 
-    // console.log('Validating');
-    // console.dir(selectorValidations, { depth: null });
-    // console.dir(config, { depth: null });
     if (!selectorValidations.reduce((acc, val) => acc && val.valid, true)) {
         const errors = selectorValidations
             .filter((val) => !val.valid)
@@ -287,11 +282,7 @@ export async function runConfig() {
             tabUrl: tab.url,
         });
     } else {
-        let urlPatternNoMatch = true;
-        if (config.urlPattern !== undefined) {
-            const re = RE2JS.compile(config.urlPattern);
-            urlPatternNoMatch = !re.test(config.urlPattern);
-        }
+        const urlPatternNoMatch = !matchURLPattern(config.urlPattern, tab.url);
         let currentURL: string | undefined = tab?.url;
         if (normalizeUrl(tab.url as string) !== normalizeUrl(config.url) && urlPatternNoMatch) {
             // TODO: open in new tab configurable in settings

@@ -20,13 +20,14 @@
     import {
         Search,
         Pencil,
-        Trash2,
+        Trash,
         ChevronsUpDownIcon,
         ArrowUpToLine,
         ArrowDownWideNarrow,
         Check,
     } from '@lucide/svelte';
-    import Button from '$lib/components/ui/button/button.svelte';
+    // import Button from '$lib/components/ui/button/button.svelte';
+    import { Button } from '$lib/components/ui/button/index.js';
 
     import { allConfigs, refreshConfigs } from '@/ui/sidebar/stores/ui.svelte';
     import { loadConfig } from '@/ui/sidebar/actions';
@@ -241,7 +242,7 @@
                                     variant="destructive"
                                     size="icon"
                                 >
-                                    <Trash2 />
+                                    <Trash />
                                 </Button>
                             </div>
                         {/if}

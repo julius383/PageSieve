@@ -9,11 +9,11 @@
     import { Button } from '$lib/components/ui/button';
 
     import ElementPicker from './ElementPicker.svelte';
-    import { scrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import {
+        scrapeConfig,
         paginationState,
         commitPaginationToScrapeConfig,
-    } from '@/ui/sidebar/stores/pagination.svelte';
+    } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import { Navigation } from '@lucide/svelte';
     import { navigateTo } from '@/ui/sidebar/actions';
 
@@ -24,7 +24,7 @@
 
     function goToNextPage() {
         if (commitPaginationToScrapeConfig()) {
-            navigateTo($state.snapshot(scrapeConfig), true);
+            navigateTo($state.snapshot(scrapeConfig));
         }
     }
 

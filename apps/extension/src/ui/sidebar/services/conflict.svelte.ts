@@ -1,9 +1,7 @@
 import type { Snippet } from 'svelte';
 
 export type ConflictResolution =
-    | { action: 'rename'; name: string }
-    | { action: 'replace' }
-    | { action: 'cancel' };
+    { action: 'rename'; name: string } | { action: 'replace' } | { action: 'cancel' };
 
 export interface ConflictOptions {
     title?: string | Snippet;
