@@ -17,10 +17,7 @@
         "verbatimModuleSyntax": false,
         "paths": {
             "@pagesieve/core": ["./packages/core/src/index.ts"],
-            "@/*": ["./apps/extension/src/*"],
-            "@pagesieve/core/*": ["./packages/core/src/*"],
-            "$lib": ["./apps/extension/src/lib"],
-            "$lib/*": ["./apps/extension/src/lib/*"]
+            "@pagesieve/core/*": ["./packages/core/src/*"]
         }
     },
     "include": [
@@ -32,6 +29,6 @@
         "apps/**/*.svelte"
     ],
     "exclude": [
-        "apps/extension/src/lib"
+        "apps/extension"
     ]
 }

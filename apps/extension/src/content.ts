@@ -31,7 +31,7 @@ declare global {
         stabilityDuration: number = 700,
     ): Promise<boolean> {
         return new Promise((resolve) => {
-            let stabilityTimer: NodeJS.Timeout | null = null;
+            let stabilityTimer: ReturnType<typeof setTimeout> | null = null;
 
             const timeoutTimer = setTimeout(() => {
                 observer.disconnect();

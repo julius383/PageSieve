@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ES2024"],
+        "types": ["firefox-webext-browser", "vite/client"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"],
+            "$lib": ["./src/lib"],
+            "$lib/*": ["./src/lib/*"],
+            "@pagesieve/core": ["../../packages/core/src/index.ts"],
+            "@pagesieve/core/*": ["../../packages/core/src/*"]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "src/**/*.svelte",
+        "vite.config.js"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
+}
