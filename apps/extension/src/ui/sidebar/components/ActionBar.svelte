@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { resetConfig, resetSelectors, addGroup } from '@/ui/sidebar/stores/scrapeConfig.svelte';
+    import { resetConfig, resetSelectors } from '@/ui/sidebar/stores/scrapeConfig.svelte';
     import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import {
         runConfig,
@@ -21,8 +21,15 @@
         Play,
         Square,
         Save,
-        SquarePlus,
+        CircleQuestionMark,
         EllipsisVertical,
+        BookOpen,
+        Bug,
+        Mail,
+        GraduationCap,
+        PackagePlus,
+        GitGraph,
+        Toolbox,
     } from '@lucide/svelte';
 
     function triggerLoad() {
@@ -63,7 +70,9 @@
         }
     }
 
-    const runningStates = ['running', 'extracting', 'navigating', 'waiting'];
+    const extensionVersion = browser.runtime.getManifest().version;
+
+    const runningStates = ['running', 'extracting', 'navigating', 'waiting', 'waitingFor'];
 </script>
 
 <div class="flex items-center gap-1.5">
@@ -150,6 +159,77 @@
             <Tooltip.Content>Save config to file</Tooltip.Content>
         </Tooltip.Root>
     </ButtonGroup.Root>
+
+    <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+            <Tooltip.Root>
+                <Tooltip.Trigger>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        onclick={() => true}
+                        class="hover:text-gray-400 hover:bg-white/10"
+                    >
+                        <CircleQuestionMark strokeWidth={2.5} />
+                    </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content>Get Help</Tooltip.Content>
+            </Tooltip.Root>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content class="w-56">
+            <div class="bg-background">
+                <DropdownMenu.Group>
+                    <DropdownMenu.Item>
+                        <BookOpen />
+                        <a href="https://julius383.github.io/PageSieve/" target="_blank"
+                            >Documentation</a
+                        >
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item>
+                        <GraduationCap />
+                        <a href="https://julius383.github.io/PageSieve/examples/" target="_blank"
+                            >Tutorials</a
+                        >
+                    </DropdownMenu.Item>
+                </DropdownMenu.Group>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Group>
+                    <DropdownMenu.Item>
+                        <Toolbox />
+                        <a
+                            href="https://julius383.github.io/PageSieve/reference/selectors.html"
+                            target="_blank">Troubleshooting</a
+                        >
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item>
+                        <Bug />
+                        <a href="https://github.com/julius383/PageSieve/issues" target="_blank"
+                            >Report a Bug</a
+                        >
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item>
+                        <Mail />
+                        <a href="mailto:kibunjiajulius@gmail.com" target="_blank"
+                            >Contact Developer</a
+                        >
+                    </DropdownMenu.Item>
+                </DropdownMenu.Group>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Group>
+                    <DropdownMenu.Item>
+                        <GitGraph />
+                        <a href="https://github.com/julius383/PageSieve">Git Repository</a>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item>
+                        <PackagePlus />
+                        <a href="https://julius383.github.io/PageSieve/CHANGELOG.html"
+                            >What's New (v{extensionVersion})</a
+                        >
+                    </DropdownMenu.Item>
+                </DropdownMenu.Group>
+            </div>
+        </DropdownMenu.Content>
+    </DropdownMenu.Root>
 
     <DropdownMenu.Root>
         <DropdownMenu.Trigger>
