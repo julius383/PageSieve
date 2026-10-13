@@ -43,7 +43,7 @@
                 {@const indicator = getIndicatorColor(status ?? 'idle')}
                 <div
                     in:fly={{ y: -10, duration: 300 }}
-                    class="flex items-start gap-2 rounded-lg bg-gray-100 p-2 text-sm dark:bg-gray-800"
+                    class="flex items-start gap-2 rounded-lg p-2 text-sm bg-gray-800"
                 >
                     <div class="flex items-center gap-2">
                         <Tooltip.Root>
@@ -63,7 +63,7 @@
                             <span>{log.category}</span>
                             <span>{formatTime(log.timestamp)}</span>
                         </div>
-                        <p class="break-all font-mono text-gray-800 dark:text-gray-200">
+                        <p class="break-all font-mono text-gray-200 w-full overflow-x-auto">
                             {formatMessage(log.message)}
                         </p>
                         {#if Object.keys(log.properties).length > (log.properties.status ? 1 : 0)}

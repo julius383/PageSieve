@@ -28,10 +28,10 @@ function actorSubscriber(snapshot: SnapshotFrom<typeof scrapeMachine>) {
     const context: ScrapeContext = snapshot.context;
     let currentState = getStateName(snapshot.value) as StatusLevel;
     // logger.debug('Scrape context is {context}', { context: omit(context, ['config']) });
-    logger.debug('Current state is {status} ({full}) {context}', {
+    logger.debug('Current state is {status} ({full})', {
         status: currentState,
         full: snapshot.value,
-        context: omit(context, ['config', 'results']),
+        // context: omit(context, ['config', 'results']),
     });
     let message: string = currentState;
     let progress = {};
