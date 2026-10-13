@@ -122,11 +122,19 @@ export async function getConfig(id: string): Promise<ScrapeConfig | null> {
     return null;
 }
 
-export async function saveToBrowser(id: string, config: ScrapeConfig): Promise<boolean> {
-    const existing = await getConfig(id);
-    if (existing) {
-        return false;
+export async function saveToBrowser(
+    id: string,
+    config: ScrapeConfig,
+    overwrite = false,
+): Promise<boolean> {
+    if (!overwrite) {
+        const existing = await getConfig(id);
+        if (existing) {
+            return false;
+        }
     }
+    config.id = id;
+    config.updatedAt = new SvelteDate().toISOString();
     await localforage.setItem(id, config);
     return true;
 }

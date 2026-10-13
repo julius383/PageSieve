@@ -20,6 +20,7 @@
 
     import { extractedData } from '@/ui/sidebar/stores/ui.svelte';
     import ConfirmDialog from '@/ui/sidebar/components/ConfirmDialog.svelte';
+    import ConflictDialog from '@/ui/sidebar/components/ConflictDialog.svelte';
 
     const { Root: TabsRoot, List: TabsList, Trigger: TabsTrigger, Content: TabsContent } = Tabs;
 
@@ -75,6 +76,7 @@
 <main class="p-2 flex flex-col gap-1 bg-background text-foreground h-screen">
     <Tooltip.Provider>
         <ConfirmDialog />
+        <ConflictDialog />
         <div
             class="flex shrink-0 items-center justify-between border-b bg-background py-1.5 w-full gap-1"
         >

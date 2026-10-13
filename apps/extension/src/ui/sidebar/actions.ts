@@ -10,6 +10,8 @@ import {
 import { shortHash, generateConfigId, normalizeUrl, validateSelectors } from '@pagesieve/core/util';
 import { scrapeConfig, setScrapeConfig } from '@/ui/sidebar/stores/scrapeConfig.svelte';
 import { ScrapeConfig } from '@pagesieve/core/schema';
+import { getConfig, saveToBrowser } from '@/ui/sidebar/services/storage';
+import { promptConflict } from '@/ui/sidebar/services/conflict.svelte';
 import { saveToBrowser } from '@/ui/sidebar/services/storage';
 import { commitPaginationToScrapeConfig } from '@/ui/sidebar/stores/pagination.svelte';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
@@ -129,18 +131,45 @@ export async function exportConfig(): Promise<string> {
 export async function saveConfig() {
     commitPaginationToScrapeConfig();
     const config = JSON.parse(JSON.stringify(scrapeConfig)) as ScrapeConfig;
-    const filename = await generateConfigId(scrapeConfig.url, config.selectors);
+    let targetId = scrapeConfig.id || (await generateConfigId(scrapeConfig.url, config.selectors));
+    let overwrite = false;
+
+    while (await getConfig(targetId)) {
+        const resolution = await promptConflict({
+            key: targetId,
+            title: 'Config name conflict',
+            description: `A configuration with the name "${targetId}" already exists.`,
+            renameLabel: 'Rename',
+            replaceLabel: 'Replace',
+            cancelLabel: 'Cancel',
+        });
+
+        if (resolution.action === 'cancel') {
+            return;
+        }
+
+        if (resolution.action === 'replace') {
+            overwrite = true;
+            break;
+        }
+
+        if (resolution.action === 'rename') {
+            targetId = resolution.name;
+        }
+    }
 
     await runWithStatusAsync(
         {
             status: 'saving',
-            message: `Saving config for ${config.url}`,
+            message: `Saving config "${targetId}" for ${config.url}`,
             timestamp: new SvelteDate().toISOString(),
         },
         async () => {
-            const result = await saveToBrowser(filename, config);
+            const result = await saveToBrowser(targetId, config, overwrite);
             if (!result) {
-                setStatus('errored', `conflict with existing config with id ${config.id}`);
+                setStatus('errored', `Failed to save config with id "${targetId}"`);
+            } else {
+                scrapeConfig.id = targetId;
             }
         },
     );
