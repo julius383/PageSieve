@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.6.0]
+
+### Added
+
+- Add help information in ActionBar menu item
+- Add dialog for handling conflicts when saving recipes
+
 ## [extension-v2.5.0]
 
 ### Added
