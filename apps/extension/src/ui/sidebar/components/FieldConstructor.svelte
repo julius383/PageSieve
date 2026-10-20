@@ -90,75 +90,111 @@
     <section id="field-constructor" class="overflow-y-auto pt-0.5">
         <Accordion.Root type="multiple" bind:value={openGroups}>
             {#each scrapeConfig.selectors as group (group.id)}
-                <div class="relative border rounded-lg px-5 pt-5 pb-4 mb-4">
+                <div class="border rounded-lg overflow-hidden mb-4">
                     {#if showLabels}
                         <div
-                            class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1"
+                            class="flex items-center justify-between px-2 py-1.5 bg-muted/40 cursor-pointer select-none hover:bg-muted/60 transition-colors {openGroups.includes(
+                                group.id,
+                            )
+                                ? 'border-b'
+                                : ''}"
+                            onclick={() => toggleGroup(group.id)}
+                            role="button"
+                            tabindex="0"
+                            onkeydown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    toggleGroup(group.id);
+                                }
+                            }}
                         >
-                            <Tooltip.Root>
-                                <Tooltip.Trigger>
-                                    <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
-                                        onclick={() => toggleGroup(group.id)}
-                                    >
-                                        {#if openGroups.includes(group.id)}
-                                            <ChevronUp class="size-4 transition-transform" />
-                                        {:else}
-                                            <ChevronDown class="size-4 transition-transform" />
-                                        {/if}
-                                    </Button>
-                                </Tooltip.Trigger>
-                                <Tooltip.Content>Toggle group</Tooltip.Content>
-                            </Tooltip.Root>
-
-                            <div
-                                class="text-[11px] text-gray-400 select-none mx-2 flex items-center h-6"
-                            >
-                                <EditableInput
-                                    editing={editingGroupId === group.id}
-                                    bind:editValue
-                                    displayValue={group.name}
-                                    onSave={saveName}
-                                    onCancel={cancelEditing}
-                                    iconSize="icon-sm"
-                                />
-                            </div>
-
-                            {#if editingGroupId !== group.id}
+                            <div class="flex items-center gap-1.5 min-w-0">
                                 <Tooltip.Root>
                                     <Tooltip.Trigger>
                                         <Button
                                             size="icon"
-                                            variant="secondary"
-                                            class="flex items-center justify-center size-6 rounded hover:text-gray-300 hover:bg-white/10"
-                                            onclick={() => startEditing(group)}
+                                            variant="ghost"
+                                            class="size-6 p-0 hover:bg-white/10 shrink-0"
+                                            onclick={(e) => {
+                                                e.stopPropagation();
+                                                toggleGroup(group.id);
+                                            }}
                                         >
-                                            <Pencil class="size-3" />
+                                            {#if openGroups.includes(group.id)}
+                                                <ChevronUp class="size-4 transition-transform" />
+                                            {:else}
+                                                <ChevronDown class="size-4 transition-transform" />
+                                            {/if}
                                         </Button>
                                     </Tooltip.Trigger>
-                                    <Tooltip.Content>Rename group</Tooltip.Content>
+                                    <Tooltip.Content>Toggle group</Tooltip.Content>
                                 </Tooltip.Root>
-                            {/if}
 
-                            <Tooltip.Root>
-                                <Tooltip.Trigger>
-                                    <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        class="flex items-center justify-center size-6 rounded hover:text-red-400 hover:bg-white/10"
-                                        onclick={() => handleDeleteGroup(group.id)}
+                                <div
+                                    class="text-xs font-medium text-foreground flex items-center h-6 min-w-0"
+                                    onclick={(e) => e.stopPropagation()}
+                                    onkeydown={(e) => e.stopPropagation()}
+                                    role="presentation"
+                                >
+                                    <EditableInput
+                                        editing={editingGroupId === group.id}
+                                        bind:editValue
+                                        displayValue={group.name}
+                                        onSave={saveName}
+                                        onCancel={cancelEditing}
+                                        iconSize="icon-sm"
+                                    />
+                                </div>
+
+                                {#if editingGroupId !== group.id}
+                                    <span
+                                        class="text-[11px] text-muted-foreground select-none shrink-0"
                                     >
-                                        <X class="size-3" />
-                                    </Button>
-                                </Tooltip.Trigger>
-                                <Tooltip.Content>Delete group</Tooltip.Content>
-                            </Tooltip.Root>
+                                        ({group.fields.length}
+                                        {group.fields.length === 1 ? 'field' : 'fields'})
+                                    </span>
+                                {/if}
+                            </div>
+
+                            <div
+                                class="flex items-center gap-1 shrink-0"
+                                onclick={(e) => e.stopPropagation()}
+                                role="presentation"
+                            >
+                                {#if editingGroupId !== group.id}
+                                    <Tooltip.Root>
+                                        <Tooltip.Trigger>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                class="size-6 p-0 hover:text-foreground hover:bg-white/10"
+                                                onclick={() => startEditing(group)}
+                                            >
+                                                <Pencil class="size-3.5" />
+                                            </Button>
+                                        </Tooltip.Trigger>
+                                        <Tooltip.Content>Rename group</Tooltip.Content>
+                                    </Tooltip.Root>
+
+                                    <Tooltip.Root>
+                                        <Tooltip.Trigger>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                class="size-6 p-0 hover:text-destructive hover:bg-destructive/10"
+                                                onclick={() => handleDeleteGroup(group.id)}
+                                            >
+                                                <X class="size-3.5" />
+                                            </Button>
+                                        </Tooltip.Trigger>
+                                        <Tooltip.Content>Delete group</Tooltip.Content>
+                                    </Tooltip.Root>
+                                {/if}
+                            </div>
                         </div>
                     {/if}
                     <Accordion.Item value={group.id} class="border-none">
-                        <Accordion.Content>
+                        <Accordion.Content class="p-4">
                             <div class="bg-secondary space-y-4 mb-6">
                                 <ElementPicker
                                     label="Container Selector"

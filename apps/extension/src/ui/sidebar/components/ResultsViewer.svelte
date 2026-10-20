@@ -108,188 +108,213 @@
     }
 </script>
 
-<div class="space-y-4">
-    <hr />
-    <h2 class="text-2xl font-bold">
-        Results {#if totalResults > 0}
-            ({totalResults})
-        {/if}
-    </h2>
-</div>
-<Tabs.Root value="table" class="h-full flex flex-col">
-    <Tabs.List class="flex justify-between items-center w-full">
-        <div class="flex">
-            <Tabs.Trigger value="table">Table</Tabs.Trigger>
-            <Tabs.Trigger value="json">JSON</Tabs.Trigger>
-        </div>
-        <div>
-            <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                class="hover:text-gray-400 hover:bg-white/10"
-                            >
-                                <Download />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Download Data to File</Tooltip.Content>
-                    </Tooltip.Root>
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content>
-                    {#snippet DownloadOption(label: string, type: SupportedExportDataTypes)}
-                        {#if extractedData.data.length > 1}
-                            <DropdownMenu.Sub>
-                                <DropdownMenu.SubTrigger>Download {label}</DropdownMenu.SubTrigger>
-                                <DropdownMenu.SubContent>
-                                    <DropdownMenu.Item
-                                        onclick={() => downloadBundle(extractedData.data, type)}
-                                        >All</DropdownMenu.Item
+<div class="h-full flex flex-col min-h-0">
+    <div class="space-y-4 shrink-0">
+        <hr />
+        <h2 class="text-2xl font-bold">
+            Results {#if totalResults > 0}
+                ({totalResults})
+            {/if}
+        </h2>
+    </div>
+    <Tabs.Root value="table" class="flex-1 min-h-0 flex flex-col">
+        <Tabs.List class="flex justify-between items-center w-full">
+            <div class="flex">
+                <Tabs.Trigger value="table">Table</Tabs.Trigger>
+                <Tabs.Trigger value="json">JSON</Tabs.Trigger>
+            </div>
+            <div>
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                >
+                                    <Download />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>Download Data to File</Tooltip.Content>
+                        </Tooltip.Root>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                        {#snippet DownloadOption(label: string, type: SupportedExportDataTypes)}
+                            {#if extractedData.data.length > 1}
+                                <DropdownMenu.Sub>
+                                    <DropdownMenu.SubTrigger
+                                        >Download {label}</DropdownMenu.SubTrigger
                                     >
-                                    {#each extractedData.data as group_data (group_data.id)}
+                                    <DropdownMenu.SubContent>
                                         <DropdownMenu.Item
-                                            onclick={() => downloadFormat(group_data.results, type)}
-                                            >Group {group_data.id}</DropdownMenu.Item
+                                            onclick={() => downloadBundle(extractedData.data, type)}
+                                            >All</DropdownMenu.Item
                                         >
-                                    {/each}
-                                </DropdownMenu.SubContent>
-                            </DropdownMenu.Sub>
-                        {:else}
-                            <DropdownMenu.Item
-                                onclick={() => downloadFormat(extractedData.data[0]?.results, type)}
-                                >Download {label}</DropdownMenu.Item
-                            >
-                        {/if}
-                    {/snippet}
-                    {@render DownloadOption('JSON', 'json')}
-                    {@render DownloadOption('NDJSON', 'ndjson')}
-                    {@render DownloadOption('CSV', 'csv')}
-                    {@render DownloadOption('HTML', 'html')}
-                    {@render DownloadOption('Markdown', 'markdown')}
-                    {@render DownloadOption('YAML', 'yaml')}
-                </DropdownMenu.Content>
-            </DropdownMenu.Root>
-            <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                    <Tooltip.Root>
-                        <Tooltip.Trigger>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                class="hover:text-gray-400 hover:bg-white/10"
-                            >
-                                <ClipboardCopy />
-                            </Button>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content>Copy Data to Clipboard</Tooltip.Content>
-                    </Tooltip.Root>
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content>
-                    {#snippet CopyOption(label: string, format: SupportedExportDataTypes)}
-                        {#if extractedData.data.length > 1}
-                            <DropdownMenu.Sub>
-                                <DropdownMenu.SubTrigger>Copy {label}</DropdownMenu.SubTrigger>
-                                <DropdownMenu.SubContent>
-                                    <DropdownMenu.Item
-                                        onclick={() => clipboardCopy(extractedData.data, format)}
-                                        >All
-                                    </DropdownMenu.Item>
-                                    {#each extractedData.data as group_data (group_data.id)}
+                                        {#each extractedData.data as group_data (group_data.id)}
+                                            <DropdownMenu.Item
+                                                onclick={() =>
+                                                    downloadFormat(group_data.results, type)}
+                                                >Group {group_data.id}</DropdownMenu.Item
+                                            >
+                                        {/each}
+                                    </DropdownMenu.SubContent>
+                                </DropdownMenu.Sub>
+                            {:else}
+                                <DropdownMenu.Item
+                                    onclick={() =>
+                                        downloadFormat(extractedData.data[0]?.results, type)}
+                                    >Download {label}</DropdownMenu.Item
+                                >
+                            {/if}
+                        {/snippet}
+                        {@render DownloadOption('JSON', 'json')}
+                        {@render DownloadOption('NDJSON', 'ndjson')}
+                        {@render DownloadOption('CSV', 'csv')}
+                        {@render DownloadOption('HTML', 'html')}
+                        {@render DownloadOption('Markdown', 'markdown')}
+                        {@render DownloadOption('YAML', 'yaml')}
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+                <DropdownMenu.Root>
+                    <DropdownMenu.Trigger>
+                        <Tooltip.Root>
+                            <Tooltip.Trigger>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                >
+                                    <ClipboardCopy />
+                                </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Content>Copy Data to Clipboard</Tooltip.Content>
+                        </Tooltip.Root>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                        {#snippet CopyOption(label: string, format: SupportedExportDataTypes)}
+                            {#if extractedData.data.length > 1}
+                                <DropdownMenu.Sub>
+                                    <DropdownMenu.SubTrigger>Copy {label}</DropdownMenu.SubTrigger>
+                                    <DropdownMenu.SubContent>
                                         <DropdownMenu.Item
                                             onclick={() =>
-                                                clipboardCopy(group_data.results, format)}
-                                            >Group {group_data.id}</DropdownMenu.Item
-                                        >
-                                    {/each}
-                                </DropdownMenu.SubContent>
-                            </DropdownMenu.Sub>
-                        {:else}
-                            <DropdownMenu.Item
-                                onclick={() =>
-                                    clipboardCopy(extractedData.data[0]?.results, format)}
-                                >Copy {label}</DropdownMenu.Item
-                            >
-                        {/if}
-                    {/snippet}
-
-                    <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
-                        >Copy Grouped JSON</DropdownMenu.Item
-                    >
-
-                    {@render CopyOption('HTML Table', 'html')}
-                    {@render CopyOption('Markdown Table', 'markdown')}
-                    {@render CopyOption('JSON', 'json')}
-                    {@render CopyOption('NDJSON', 'ndjson')}
-                    {@render CopyOption('CSV', 'csv')}
-                    {@render CopyOption('YAML', 'yaml')}
-                </DropdownMenu.Content>
-            </DropdownMenu.Root>
-            {#if !openInNewTab}
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button size="sm" variant="secondary" onclick={showInNewTab}>
-                            <ExternalLink
-                                strokeWidth={2.5}
-                                class="hover:text-gray-400 hover:bg-white/10"
-                            />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>View Results in New Tab</Tooltip.Content>
-                </Tooltip.Root>
-
-                <Tooltip.Root>
-                    <Tooltip.Trigger>
-                        <Button
-                            size="icon"
-                            variant="destructive"
-                            onclick={handleResetData}
-                            class="bg-red-500 text-white font-bold hover:bg-red-600"
-                        >
-                            <SquareX class="size-4" strokeWidth={2.5} />
-                        </Button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>Clear Data</Tooltip.Content>
-                </Tooltip.Root>
-            {/if}
-        </div>
-    </Tabs.List>
-    <Tabs.Content value="table" class="px-4 overflow-auto grow">
-        <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-4">
-            {#each extractedData.data as groupData (groupData.id)}
-                <div class="relative border rounded-lg px-5 pt-5 pb-4">
-                    <div
-                        class="absolute -top-2.5 left-2 flex items-center gap-1 bg-background px-1"
-                    >
-                        <Button
-                            size="icon"
-                            variant="secondary"
-                            class="flex items-center justify-center size-6 rounded hover:text-gray-400 hover:bg-white/10"
-                            onclick={() => toggleGroup(groupData.id)}
-                        >
-                            {#if openGroups.includes(groupData.id)}
-                                <ChevronUp class="transition-transform" />
+                                                clipboardCopy(extractedData.data, format)}
+                                            >All
+                                        </DropdownMenu.Item>
+                                        {#each extractedData.data as group_data (group_data.id)}
+                                            <DropdownMenu.Item
+                                                onclick={() =>
+                                                    clipboardCopy(group_data.results, format)}
+                                                >Group {group_data.id}</DropdownMenu.Item
+                                            >
+                                        {/each}
+                                    </DropdownMenu.SubContent>
+                                </DropdownMenu.Sub>
                             {:else}
-                                <ChevronDown class="transition-transform" />
+                                <DropdownMenu.Item
+                                    onclick={() =>
+                                        clipboardCopy(extractedData.data[0]?.results, format)}
+                                    >Copy {label}</DropdownMenu.Item
+                                >
                             {/if}
-                        </Button>
-                        <span class="text-[11px] text-gray-400 select-none mx-2">
-                            Group {groupData.id} ({groupData.results.length})
-                        </span>
+                        {/snippet}
+
+                        <DropdownMenu.Item onclick={() => clipboardCopy(extractedData.data, 'json')}
+                            >Copy Grouped JSON</DropdownMenu.Item
+                        >
+
+                        {@render CopyOption('HTML Table', 'html')}
+                        {@render CopyOption('Markdown Table', 'markdown')}
+                        {@render CopyOption('JSON', 'json')}
+                        {@render CopyOption('NDJSON', 'ndjson')}
+                        {@render CopyOption('CSV', 'csv')}
+                        {@render CopyOption('YAML', 'yaml')}
+                    </DropdownMenu.Content>
+                </DropdownMenu.Root>
+                {#if !openInNewTab}
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button size="sm" variant="secondary" onclick={showInNewTab}>
+                                <ExternalLink
+                                    strokeWidth={2.5}
+                                    class="hover:text-gray-400 hover:bg-white/10"
+                                />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>View Results in New Tab</Tooltip.Content>
+                    </Tooltip.Root>
+
+                    <Tooltip.Root>
+                        <Tooltip.Trigger>
+                            <Button
+                                size="icon"
+                                variant="destructive"
+                                onclick={handleResetData}
+                                class="bg-red-500 text-white font-bold hover:bg-red-600"
+                            >
+                                <SquareX class="size-4" strokeWidth={2.5} />
+                            </Button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Content>Clear Data</Tooltip.Content>
+                    </Tooltip.Root>
+                {/if}
+            </div>
+        </Tabs.List>
+        <Tabs.Content value="table" class="flex-1 min-h-0 overflow-auto p-1.5">
+            <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-3">
+                {#each extractedData.data as groupData (groupData.id)}
+                    <div class="border rounded-lg overflow-hidden">
+                        <div
+                            class="flex items-center justify-between px-2 py-1.5 bg-muted/40 cursor-pointer select-none hover:bg-muted/60 {openGroups.includes(
+                                groupData.id,
+                            )
+                                ? 'border-b'
+                                : ''}"
+                            onclick={() => toggleGroup(groupData.id)}
+                            role="button"
+                            tabindex="0"
+                            onkeydown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    toggleGroup(groupData.id);
+                                }
+                            }}
+                        >
+                            <div class="flex items-center gap-1.5">
+                                <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    class="size-6 p-0 hover:bg-white/10"
+                                    onclick={(e) => {
+                                        e.stopPropagation();
+                                        toggleGroup(groupData.id);
+                                    }}
+                                >
+                                    {#if openGroups.includes(groupData.id)}
+                                        <ChevronUp class="size-4 transition-transform" />
+                                    {:else}
+                                        <ChevronDown class="size-4 transition-transform" />
+                                    {/if}
+                                </Button>
+                                <span class="text-xs font-medium">
+                                    Group {groupData.id} ({groupData.results.length})
+                                </span>
+                            </div>
+                        </div>
+                        <Accordion.Item value={groupData.id} class="border-none">
+                            <Accordion.Content class="p-1 pb-2">
+                                <DataTable data={groupData.results} />
+                            </Accordion.Content>
+                        </Accordion.Item>
                     </div>
-                    <Accordion.Item value={groupData.id} class="border-none">
-                        <Accordion.Content>
-                            <DataTable data={groupData.results} />
-                        </Accordion.Content>
-                    </Accordion.Item>
-                </div>
-            {/each}
-        </Accordion.Root>
-    </Tabs.Content>
-    <Tabs.Content value="json" class="px-4 overflow-auto grow">
-        <div class="p-4 rounded-md text-sm overflow-wrap">
-            <JsonViewer value={extractedData.data} />
-        </div>
-    </Tabs.Content>
-</Tabs.Root>
+                {/each}
+            </Accordion.Root>
+        </Tabs.Content>
+        <Tabs.Content value="json" class="flex-1 min-h-0 px-4 overflow-auto">
+            <div class="p-4 rounded-md text-sm overflow-wrap">
+                <JsonViewer value={extractedData.data} />
+            </div>
+        </Tabs.Content>
+    </Tabs.Root>
+</div>

@@ -127,7 +127,7 @@
                     </Resizable.Pane>
                     <Resizable.Handle withHandle />
 
-                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40}>
+                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40} class="flex flex-col">
                         <ResultsViewer openInNewTab={false} />
                     </Resizable.Pane>
                 </Resizable.PaneGroup>
