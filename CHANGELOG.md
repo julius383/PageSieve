@@ -10,7 +10,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [extension-v2.6.0]
+## [extension-v2.7.0] 2026-10-22
+
+### Added
+
+- Improve result Datatable component with
+  - Global search
+  - Pagination
+  - Column Hiding
+  - Column Pinning
+  - Column Reordering
+  - Column Grouping
+- Add confirmation for deleting saved result snapshots.
+
+### Changed
+
+- Improve style of selector group accordion toggles in fields and results component.
+
+### Fixed
+
+- Fix Fullpage for displaying (results, logs, snapshots in separate tab) not rendering due to missing tooltip provider.
+- Improve function for detecting whether selector is CSS or XPath.
+- Prevent extension content from being scrolled off screen in sidebar.
+
+## [extension-v2.6.0] 2026-10-13
 
 ### Added
 
