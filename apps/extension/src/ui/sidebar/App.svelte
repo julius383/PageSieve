@@ -122,12 +122,12 @@
             </TabsList>
             <TabsContent value="selectorDefs" class="pt-4 flex-1 flex flex-col">
                 <Resizable.PaneGroup direction="vertical" class="flex-1 overflow-auto">
-                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 60} class="flex flex-col">
+                    <Resizable.Pane defaultSize={totalResults > 0 ? 40 : 60} class="flex flex-col">
                         <FieldConstructor />
                     </Resizable.Pane>
                     <Resizable.Handle withHandle />
 
-                    <Resizable.Pane defaultSize={totalResults > 0 ? 50 : 40} class="flex flex-col">
+                    <Resizable.Pane defaultSize={totalResults > 0 ? 60 : 40} class="flex flex-col">
                         <ResultsViewer openInNewTab={false} />
                     </Resizable.Pane>
                 </Resizable.PaneGroup>

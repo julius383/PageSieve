@@ -9,6 +9,9 @@
         "typecheck": "sv check"
     },
     "dependencies": {
+        "@dnd-kit-svelte/svelte": "^0.1.6",
+        "@dnd-kit/abstract": "^0.5.1",
+        "@dnd-kit/helpers": "^0.5.1",
         "@json2csv/plainjs": "catalog:",
         "@kaifronsdal/svelte-json-viewer": "^0.1.0",
         "@logtape/logtape": "catalog:",
