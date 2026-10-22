@@ -105,11 +105,15 @@ async function resolveFieldValue<TContext, TElement>(
 }
 
 export function isXPath(selector: string): boolean {
+    const s = selector.trim();
     return (
-        selector.startsWith('./') ||
-        selector.startsWith('//') ||
-        selector.startsWith('../') ||
-        selector.startsWith('(') ||
-        selector.startsWith('/')
+        s.startsWith('/') ||           // /html, //div
+        s.startsWith('./') ||          // ./div
+        s.startsWith('../') ||         // ../div
+        s === '.' || s === '..' ||     // self / parent
+        s.startsWith('(') ||           // (//div)[1]
+        s.startsWith('@') ||           // @id (attribute)
+        /^[a-zA-Z][\w-]*::/.test(s) || // axis: following   -sibling::
+        /^[a-zA-Z][\w-]*\(/.test(s)    // function: normalize-space(.)
     );
 }
