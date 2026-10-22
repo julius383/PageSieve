@@ -62,9 +62,9 @@
                 'exporting',
                 'saving',
                 'errored',
-                'completed',
                 () => 'animate-pulse',
             )
+            .with('completed', () => 'animate-[pulse_2s_cubic-bezier(0.4, 0, 0.6, 1)_60]')
             .with('idle', () => '')
             .exhaustive();
     });

@@ -9,7 +9,7 @@
     import { removeSnapshot } from '@/ui/sidebar/services/storage';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import Button from '$lib/components/ui/button/button.svelte';
-    import { Trash2, Upload } from '@lucide/svelte';
+    import { Trash, Upload } from '@lucide/svelte';
     import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import { default as dayjs } from 'dayjs';
 
@@ -68,7 +68,7 @@
                             variant="outline"
                             size="icon"
                         >
-                            <Trash2 />
+                            <Trash />
                         </Button>
                     </Tooltip.Trigger>
                     <Tooltip.Content>
