@@ -103,7 +103,7 @@
 </script>
 
 <div class="w-full">
-    {#if table.getRowModel().rows.length > 0}
+    {#if data.length > 0}
         <div class="flex items-center gap-2 py-4">
             <DebouncedInput
                 value={globalFilter ?? ''}
