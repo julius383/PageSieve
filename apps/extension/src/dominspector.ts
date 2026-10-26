@@ -250,19 +250,29 @@ export class DOMInspector {
         });
         this.observedMatchElements.clear();
 
-        let elements = browserEngine.querySelectorAll(document.body, selector) as Element[];
-
+        let elements: Element[] | null;
         // narrow highlighted elements by container if possible
         const scope = this.containerScope;
-        if (scope !== undefined && scope !== '' && !isXPath(scope)) {
-            // closest only supports CSS selectors
-            elements = elements.filter((elem) => elem.closest(scope) !== null);
+        if (scope !== undefined && scope !== '') {
+            const containers = browserEngine.querySelectorAll(document.body, scope) as Element[];
+            elements = containers.map((c) => {
+                return browserEngine.querySelector(c, selector) as Element;
+            });
+
+        } else {
+            elements = browserEngine.querySelectorAll(document.body, selector) as Element[];
         }
+        elements = elements.filter((elem) => elem != null);
+        if (elements == null || elements.length == 0) {
+            return 0;
+        }
+
         elements.forEach((element) => {
             const el = element as HTMLElement;
             this.observedMatchElements.add(el);
             this.observer?.observe(el);
         });
+        // console.log(`Element observers initialized.`);
         return elements.length;
     }
 
