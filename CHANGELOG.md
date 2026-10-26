@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [extension-v2.8.0] 2026-10-26
+
+### Added 
+
+- Support highlighting xpath based selectores
+
+### Fixed
+
+- Prevent search query not matching any rows in DataTable from causing search
+  input from being hidden.
+
 ## [extension-v2.7.0] 2026-10-22
 
 ### Added
