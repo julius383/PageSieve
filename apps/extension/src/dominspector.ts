@@ -258,7 +258,6 @@ export class DOMInspector {
             elements = containers.map((c) => {
                 return browserEngine.querySelector(c, selector) as Element;
             });
-
         } else {
             elements = browserEngine.querySelectorAll(document.body, selector) as Element[];
         }

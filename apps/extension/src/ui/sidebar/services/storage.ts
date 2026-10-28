@@ -1,10 +1,10 @@
 import * as z from 'zod';
 import { SvelteDate } from 'svelte/reactivity';
-import { ExtractedGroup } from '@pagesieve/core/types';
+import { type ExtractedGroup } from '@pagesieve/core/types';
 import { ScrapeConfig } from '@pagesieve/core/schema';
 import localforage from 'localforage';
 import { setStatus } from '@/ui/sidebar/stores/ui.svelte';
-import { LogEntry } from '@/ui/sidebar/stores/logs';
+import { type LogEntry } from '@/ui/sidebar/stores/logs';
 
 const CONFIG_STORAGE_KEY = 'pagesieve-configs';
 const RESULTS_STORAGE_KEY = 'pagesieve-results';

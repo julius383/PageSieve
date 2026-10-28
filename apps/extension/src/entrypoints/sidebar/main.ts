@@ -1,4 +1,4 @@
-import '@/ui/app.css';
+import '../app.css';
 import App from '@/ui/sidebar/App.svelte';
 import { mount } from 'svelte';
 // import { initExtensionLogger } from '@/logger';

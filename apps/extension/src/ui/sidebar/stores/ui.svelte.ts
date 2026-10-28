@@ -5,7 +5,7 @@ import type { ScrapeConfig } from '@pagesieve/core/schema';
 import {
     getAllConfigs,
     getAllSnapshots,
-    Snapshot,
+    type Snapshot,
     removeSnapshot,
 } from '@/ui/sidebar/services/storage';
 import { scrapeConfig } from './scrapeConfig.svelte';

@@ -1,5 +1,5 @@
 import { match } from 'ts-pattern';
-import { ExtractionEngine, isXPath } from '@pagesieve/core/extractor';
+import { type ExtractionEngine, isXPath } from '@pagesieve/core/extractor';
 import type { PropertyType } from '@pagesieve/core';
 
 interface QueryOptions {

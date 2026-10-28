@@ -32,7 +32,7 @@
             // TODO: make this configurable in settings in case user only wants content script in activeTab
             registeredScript = await browser.contentScripts.register({
                 matches: ['<all_urls>'],
-                js: [{ file: 'content.js' }],
+                js: [{ file: 'content-scripts/content.js' }],
                 runAt: 'document_idle',
             });
 
@@ -45,7 +45,7 @@
             if (tab?.id !== undefined) {
                 await browser.tabs
                     .executeScript(tab.id, {
-                        file: 'content.js',
+                        file: 'content-scripts/content.js',
                         runAt: 'document_idle',
                     })
                     .catch(() => {});

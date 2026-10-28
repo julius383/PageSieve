@@ -1,5 +1,5 @@
 import { fromPromise } from 'xstate';
-import { ScrapeActorDriver } from '@pagesieve/core/scrapeMachine';
+import { type ScrapeActorDriver } from '@pagesieve/core/scrapeMachine';
 import { type ExtractedGroup, PaginationStateStatus } from '@pagesieve/core/types';
 
 /*  implements timed retry in cases where content script in yet to be injected into
