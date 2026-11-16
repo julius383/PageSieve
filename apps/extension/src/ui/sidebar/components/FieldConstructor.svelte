@@ -4,8 +4,9 @@
     import ElementPicker from '@/ui/sidebar/components/ElementPicker.svelte';
     import { Button } from '$lib/components/ui/button';
     import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
-    import { Plus, ChevronDown, ChevronUp, X, Pencil, Box, Blocks } from '@lucide/svelte';
+    import { ChevronDown, ChevronUp, X, Pencil, Box, Blocks } from '@lucide/svelte';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+    import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
     import {
         addField,
@@ -87,7 +88,8 @@
 </script>
 
 {#if scrapeConfig.selectors !== undefined}
-    <section id="field-constructor" class="overflow-y-auto pt-0.5">
+    <ScrollArea class="h-full">
+        <section id="field-constructor" class="pt-0.5 pr-2">
         <Accordion.Root type="multiple" bind:value={openGroups}>
             {#each scrapeConfig.selectors as group (group.id)}
                 <div class="border rounded-lg overflow-hidden mb-4">
@@ -234,7 +236,8 @@
                 </div>
             {/each}
         </Accordion.Root>
-    </section>
+        </section>
+    </ScrollArea>
 {:else}
     <div>
         <span>Error with Field Group</span>

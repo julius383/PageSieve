@@ -13,6 +13,7 @@
     import MetadataSection from '@/ui/sidebar/components/MetadataSection.svelte';
     import OptionsSection from '@/ui/sidebar/components/OptionsSection.svelte';
     import PaginationSection from '@/ui/sidebar/components/PaginationSection.svelte';
+    import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
     let copied = $state(false);
     let copyTarget = $state('');
@@ -35,7 +36,9 @@
     }, 1000);
 </script>
 
-<div class="space-y-4 text-white">
+<ScrollArea type="auto" class="h-full">
+    <div class="pr-2 pb-4">
+        <div class="space-y-4 text-white">
     <Field.Field id="main-url" class="gap-3">
         <Field.Label for="url">URL</Field.Label>
         <div class="flex items-center justify-between gap-2">
@@ -117,8 +120,10 @@
         </Accordion.Content>
     </Accordion.Item>
 
-    <Accordion.Item value="item-4">
-        <Accordion.Trigger class="text-white font-bold text-xl">Variables</Accordion.Trigger>
-        <Accordion.Content>Some Variables</Accordion.Content>
-    </Accordion.Item>
-</Accordion.Root>
+        <Accordion.Item value="item-4">
+            <Accordion.Trigger class="text-white font-bold text-xl">Variables</Accordion.Trigger>
+            <Accordion.Content>Some Variables</Accordion.Content>
+        </Accordion.Item>
+    </Accordion.Root>
+    </div>
+</ScrollArea>

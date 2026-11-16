@@ -10,6 +10,7 @@
     import * as Card from '$lib/components/ui/card/index.js';
     import * as Tooltip from '$lib/components/ui/tooltip/index.js';
     import { buttonVariants } from '$lib/components/ui/button/index.js';
+    import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
     import { default as dayjs } from 'dayjs';
     // import advancedFormat from 'dayjs/plugin/advancedFormat.js';
@@ -143,140 +144,144 @@
     }
 </script>
 
-<div class="flex">
-    <InputGroup.Root>
-        <InputGroup.Input placeholder="Type to search..." bind:value={searchQuery} />
-        <InputGroup.Addon align="inline-start">
-            <Search />
-        </InputGroup.Addon>
-        <InputGroup.Addon align="inline-end">
-            <InputGroup.Button variant="secondary" onclick={() => (searchQuery = '')}
-                >Clear</InputGroup.Button
-            >
-        </InputGroup.Addon>
-    </InputGroup.Root>
+<div class="flex flex-col h-full gap-2">
+    <div class="flex shrink-0">
+        <InputGroup.Root>
+            <InputGroup.Input placeholder="Type to search..." bind:value={searchQuery} />
+            <InputGroup.Addon align="inline-start">
+                <Search />
+            </InputGroup.Addon>
+            <InputGroup.Addon align="inline-end">
+                <InputGroup.Button variant="secondary" onclick={() => (searchQuery = '')}
+                    >Clear</InputGroup.Button
+                >
+            </InputGroup.Addon>
+        </InputGroup.Root>
 
-    <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-            <Button size="icon" class="ml-2">
-                <ArrowDownWideNarrow />
-            </Button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content class="w-60">
-            {#each sortModes as item (item)}
-                <DropdownMenu.Group>
-                    <DropdownMenu.Item
-                        onSelect={() => {
-                            sortBy.mode = item;
-                            sortBy.reverse = false;
-                        }}
-                    >
-                        {item} ({#if item.startsWith('Date')}
-                            newest on top
-                        {:else}
-                            A on top{/if})
-                        {#if sortBy.mode == item && sortBy.reverse == false}
-                            <Check class="accent-secondary-foreground" />
-                        {/if}
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                        onSelect={() => {
-                            sortBy.mode = item;
-                            sortBy.reverse = true;
-                        }}
-                    >
-                        {item} ({#if item.startsWith('Date')}
-                            oldest on top
-                        {:else}
-                            Z on top{/if})
-                        {#if sortBy.mode == item && sortBy.reverse == true}
-                            <Check class="accent-accent" />
-                        {/if}
-                    </DropdownMenu.Item>
-                </DropdownMenu.Group>
-                <DropdownMenu.Separator />
-            {/each}
-            <DropdownMenu.Item disabled>Apply sorting to configs</DropdownMenu.Item>
-        </DropdownMenu.Content>
-    </DropdownMenu.Root>
-</div>
+        <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+                <Button size="icon" class="ml-2">
+                    <ArrowDownWideNarrow />
+                </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content class="w-60">
+                {#each sortModes as item (item)}
+                    <DropdownMenu.Group>
+                        <DropdownMenu.Item
+                            onSelect={() => {
+                                sortBy.mode = item;
+                                sortBy.reverse = false;
+                            }}
+                        >
+                            {item} ({#if item.startsWith('Date')}
+                                newest on top
+                            {:else}
+                                A on top{/if})
+                            {#if sortBy.mode == item && sortBy.reverse == false}
+                                <Check class="accent-secondary-foreground" />
+                            {/if}
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
+                            onSelect={() => {
+                                sortBy.mode = item;
+                                sortBy.reverse = true;
+                            }}
+                        >
+                            {item} ({#if item.startsWith('Date')}
+                                oldest on top
+                            {:else}
+                                Z on top{/if})
+                            {#if sortBy.mode == item && sortBy.reverse == true}
+                                <Check class="accent-accent" />
+                            {/if}
+                        </DropdownMenu.Item>
+                    </DropdownMenu.Group>
+                    <DropdownMenu.Separator />
+                {/each}
+                <DropdownMenu.Item disabled>Apply sorting to configs</DropdownMenu.Item>
+            </DropdownMenu.Content>
+        </DropdownMenu.Root>
+    </div>
 
-<hr />
-<div>
-    {#each filteredConfigs as item (item.id)}
-        <div class="p-1 rounded-md mb-2 w-full">
-            <Card.Root>
-                <Card.Header>
-                    <Card.Title class="text-wrap break-all">
-                        <EditableInput
-                            editing={editingId === item.id}
-                            displayValue={item.id}
-                            bind:editValue={newIdValue}
-                            onSave={() => saveRename(item.id)}
-                            onCancel={cancelEditing}
-                        />
-                    </Card.Title>
-                    <Card.Description
-                        >Saved on {dayjs(item.updatedAt).format('DD MMM YYYY')}</Card.Description
-                    >
-                    <Card.Action>
-                        {#if editingId !== item.id}
-                            <div class="flex items-end gap-x-1 flex-start">
-                                <Tooltip.Root>
-                                    <Tooltip.Trigger>
+    <hr class="shrink-0" />
+    <ScrollArea class="flex-1 min-h-0 pr-2">
+        <div class="space-y-2 pb-2">
+            {#each filteredConfigs as item (item.id)}
+                <div class="p-1 rounded-md w-full">
+                    <Card.Root>
+                        <Card.Header>
+                            <Card.Title class="text-wrap break-all">
+                                <EditableInput
+                                    editing={editingId === item.id}
+                                    displayValue={item.id}
+                                    bind:editValue={newIdValue}
+                                    onSave={() => saveRename(item.id)}
+                                    onCancel={cancelEditing}
+                                />
+                            </Card.Title>
+                            <Card.Description
+                                >Saved on {dayjs(item.updatedAt).format('DD MMM YYYY')}</Card.Description
+                            >
+                            <Card.Action>
+                                {#if editingId !== item.id}
+                                    <div class="flex items-end gap-x-1 flex-start">
+                                        <Tooltip.Root>
+                                            <Tooltip.Trigger>
+                                                <Button
+                                                    onclick={() => startEditing(item)}
+                                                    variant="outline"
+                                                    size="icon"
+                                                >
+                                                    <Pencil />
+                                                </Button>
+                                            </Tooltip.Trigger>
+                                            <Tooltip.Content>
+                                                <p>Rename config</p>
+                                            </Tooltip.Content>
+                                        </Tooltip.Root>
+
                                         <Button
-                                            onclick={() => startEditing(item)}
-                                            variant="outline"
+                                            onclick={() => handleDelete(item.id)}
+                                            variant="destructive"
                                             size="icon"
                                         >
-                                            <Pencil />
+                                            <Trash />
                                         </Button>
-                                    </Tooltip.Trigger>
-                                    <Tooltip.Content>
-                                        <p>Rename config</p>
-                                    </Tooltip.Content>
-                                </Tooltip.Root>
-
-                                <Button
-                                    onclick={() => handleDelete(item.id)}
-                                    variant="destructive"
-                                    size="icon"
-                                >
-                                    <Trash />
-                                </Button>
-                            </div>
-                        {/if}
-                    </Card.Action>
-                </Card.Header>
-                <Card.Content>
-                    <Collapsible.Root>
-                        <div class="flex items-center justify-between space-x-4">
-                            <h4 class="text-sm">Show Configuration</h4>
-                            <Collapsible.Trigger
-                                class={buttonVariants({
-                                    variant: 'ghost',
-                                    size: 'sm',
-                                    class: 'w-9 p-0',
-                                })}
-                            >
-                                <ChevronsUpDownIcon />
-                                <span class="sr-only">Toggle</span>
-                            </Collapsible.Trigger>
-                        </div>
-                        <Collapsible.Content>
-                            <div class="p-4 rounded-md text-sm overflow-wrap">
-                                <JsonViewer value={item} />
-                            </div>
-                        </Collapsible.Content>
-                    </Collapsible.Root>
-                </Card.Content>
-                <Card.Footer>
-                    <Button class="w-full" onclick={() => loadConfig(item)}>
-                        <ArrowUpToLine />
-                        Load Config
-                    </Button>
-                </Card.Footer>
-            </Card.Root>
+                                    </div>
+                                {/if}
+                            </Card.Action>
+                        </Card.Header>
+                        <Card.Content>
+                            <Collapsible.Root>
+                                <div class="flex items-center justify-between space-x-4">
+                                    <h4 class="text-sm">Show Configuration</h4>
+                                    <Collapsible.Trigger
+                                        class={buttonVariants({
+                                            variant: 'ghost',
+                                            size: 'sm',
+                                            class: 'w-9 p-0',
+                                        })}
+                                    >
+                                        <ChevronsUpDownIcon />
+                                        <span class="sr-only">Toggle</span>
+                                    </Collapsible.Trigger>
+                                </div>
+                                <Collapsible.Content>
+                                    <div class="p-4 rounded-md text-sm overflow-wrap">
+                                        <JsonViewer value={item} />
+                                    </div>
+                                </Collapsible.Content>
+                            </Collapsible.Root>
+                        </Card.Content>
+                        <Card.Footer>
+                            <Button class="w-full" onclick={() => loadConfig(item)}>
+                                <ArrowUpToLine />
+                                Load Config
+                            </Button>
+                        </Card.Footer>
+                    </Card.Root>
+                </div>
+            {/each}
         </div>
-    {/each}
+    </ScrollArea>
 </div>

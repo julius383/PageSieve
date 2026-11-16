@@ -21,6 +21,7 @@
     import GroupedCell from './GroupedCell.svelte';
     import { createColumns } from '@/ui/sidebar/components/results-columns';
     import type { ExtractedRow } from '@pagesieve/core/types';
+    import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
     let { data = [] } = $props<{ data: ExtractedRow[] }>();
     const columns = $derived(createColumns(data));
@@ -102,9 +103,9 @@
     const globalFilter = $derived(table.atoms.globalFilter.get());
 </script>
 
-<div class="w-full">
+<div class="w-full flex flex-col gap-2">
     {#if data.length > 0}
-        <div class="flex items-center gap-2 py-4">
+        <div class="flex items-center gap-2 py-2">
             <DebouncedInput
                 value={globalFilter ?? ''}
                 onchange={(value) => table.setGlobalFilter(String(value))}
@@ -114,51 +115,53 @@
             <DataTableViewOptions {table} />
         </div>
     {/if}
-    <div class="rounded-md">
-        <Table.Root>
-            <Table.Header class="bg-accent">
-                {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-                    <Table.Row>
-                        {#each headerGroup.headers as header (header.id)}
-                            <Table.Head
-                                colspan={header.colSpan}
-                                style={`width: ${header.getSize()}px; min-width: ${header.getSize()}px; ${getCommonPinningStyles(header.column, false, true)}`}
-                            >
-                                {#if !header.isPlaceholder}
-                                    <FlexRender {header} />
-                                {/if}
-                            </Table.Head>
-                        {/each}
-                    </Table.Row>
-                {/each}
-            </Table.Header>
-            <Table.Body>
-                {#each table.getRowModel().rows as row (row.id)}
-                    <Table.Row data-state={row.getIsSelected() && 'selected'}>
-                        {#each row.getVisibleCells() as cell (cell.id)}
+    <div class="rounded-md border overflow-hidden">
+        <ScrollArea orientation="horizontal" type="auto" class="w-full">
+            <Table.Root containerClass="overflow-visible">
+                <Table.Header class="bg-accent">
+                    {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
+                        <Table.Row>
+                            {#each headerGroup.headers as header (header.id)}
+                                <Table.Head
+                                    colspan={header.colSpan}
+                                    style={`width: ${header.getSize()}px; min-width: ${header.getSize()}px; ${getCommonPinningStyles(header.column, false, true)}`}
+                                >
+                                    {#if !header.isPlaceholder}
+                                        <FlexRender {header} />
+                                    {/if}
+                                </Table.Head>
+                            {/each}
+                        </Table.Row>
+                    {/each}
+                </Table.Header>
+                <Table.Body>
+                    {#each table.getRowModel().rows as row (row.id)}
+                        <Table.Row data-state={row.getIsSelected() && 'selected'}>
+                            {#each row.getVisibleCells() as cell (cell.id)}
+                                <Table.Cell
+                                    style={`width: ${cell.column.getSize()}px; min-width: ${cell.column.getSize()}px; ${getCommonPinningStyles(cell.column, row.getIsSelected(), false)}`}
+                                >
+                                    {#if cell.getIsGrouped()}
+                                        <GroupedCell {cell} {row} />
+                                    {:else if !cell.getIsPlaceholder()}
+                                        <FlexRender {cell} />
+                                    {/if}
+                                </Table.Cell>
+                            {/each}
+                        </Table.Row>
+                    {:else}
+                        <Table.Row>
                             <Table.Cell
-                                style={`width: ${cell.column.getSize()}px; min-width: ${cell.column.getSize()}px; ${getCommonPinningStyles(cell.column, row.getIsSelected(), false)}`}
+                                colspan={table.getVisibleLeafColumns().length}
+                                class="h-24 text-center"
                             >
-                                {#if cell.getIsGrouped()}
-                                    <GroupedCell {cell} {row} />
-                                {:else if !cell.getIsPlaceholder()}
-                                    <FlexRender {cell} />
-                                {/if}
+                                No results.
                             </Table.Cell>
-                        {/each}
-                    </Table.Row>
-                {:else}
-                    <Table.Row>
-                        <Table.Cell
-                            colspan={table.getVisibleLeafColumns().length}
-                            class="h-24 text-center"
-                        >
-                            No results.
-                        </Table.Cell>
-                    </Table.Row>
-                {/each}
-            </Table.Body>
-        </Table.Root>
+                        </Table.Row>
+                    {/each}
+                </Table.Body>
+            </Table.Root>
+        </ScrollArea>
     </div>
 
     {#if table.getRowModel().rows.length > 0}

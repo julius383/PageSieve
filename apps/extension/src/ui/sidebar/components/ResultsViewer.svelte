@@ -16,6 +16,7 @@
     import * as Accordion from '$lib/components/ui/accordion/index.js';
     import { confirm } from '@/ui/sidebar/services/confirm.svelte';
     import DataTable from '@/ui/sidebar/components/DataTable.svelte';
+    import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
     import type { SupportedExportDataTypes } from '@pagesieve/core/types';
 
@@ -261,55 +262,59 @@
                 {/if}
             </div>
         </Tabs.List>
-        <Tabs.Content value="table" class="flex-1 min-h-0 overflow-auto p-1.5">
-            <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-3">
-                {#each extractedData.data as groupData (groupData.id)}
-                    <div class="border rounded-lg overflow-hidden">
-                        <div
-                            class="flex items-center justify-between px-2 py-1.5 bg-muted/40 cursor-pointer select-none hover:bg-muted/60 {openGroups.includes(
-                                groupData.id,
-                            )
-                                ? 'border-b'
-                                : ''}"
-                            onclick={() => toggleGroup(groupData.id)}
-                            role="button"
-                            tabindex="0"
-                            onkeydown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault();
-                                    toggleGroup(groupData.id);
-                                }
-                            }}
-                        >
-                            <div class="flex items-center gap-1.5">
-                                <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    class="size-6 p-0 hover:bg-white/10"
-                                    onclick={(e) => {
-                                        e.stopPropagation();
-                                        toggleGroup(groupData.id);
+        <Tabs.Content value="table" class="flex-1 min-h-0 overflow-hidden flex flex-col p-1.5">
+            <ScrollArea type="auto" class="h-full">
+                <div class="pr-3 pb-2">
+                    <Accordion.Root type="multiple" bind:value={openGroups} class="space-y-3">
+                        {#each extractedData.data as groupData (groupData.id)}
+                            <div class="border rounded-lg overflow-hidden">
+                                <div
+                                    class="flex items-center justify-between px-2 py-1.5 bg-muted/40 cursor-pointer select-none hover:bg-muted/60 {openGroups.includes(
+                                        groupData.id,
+                                    )
+                                        ? 'border-b'
+                                        : ''}"
+                                    onclick={() => toggleGroup(groupData.id)}
+                                    role="button"
+                                    tabindex="0"
+                                    onkeydown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            toggleGroup(groupData.id);
+                                        }
                                     }}
                                 >
-                                    {#if openGroups.includes(groupData.id)}
-                                        <ChevronUp class="size-4 transition-transform" />
-                                    {:else}
-                                        <ChevronDown class="size-4 transition-transform" />
-                                    {/if}
-                                </Button>
-                                <span class="text-xs font-medium">
-                                    Group {groupData.id} ({groupData.results.length})
-                                </span>
+                                    <div class="flex items-center gap-1.5">
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            class="size-6 p-0 hover:bg-white/10"
+                                            onclick={(e) => {
+                                                e.stopPropagation();
+                                                toggleGroup(groupData.id);
+                                            }}
+                                        >
+                                            {#if openGroups.includes(groupData.id)}
+                                                <ChevronUp class="size-4 transition-transform" />
+                                            {:else}
+                                                <ChevronDown class="size-4 transition-transform" />
+                                            {/if}
+                                        </Button>
+                                        <span class="text-xs font-medium">
+                                            Group {groupData.id} ({groupData.results.length})
+                                        </span>
+                                    </div>
+                                </div>
+                                <Accordion.Item value={groupData.id} class="border-none">
+                                    <Accordion.Content class="p-1 pb-2">
+                                        <DataTable data={groupData.results} />
+                                    </Accordion.Content>
+                                </Accordion.Item>
                             </div>
-                        </div>
-                        <Accordion.Item value={groupData.id} class="border-none">
-                            <Accordion.Content class="p-1 pb-2">
-                                <DataTable data={groupData.results} />
-                            </Accordion.Content>
-                        </Accordion.Item>
-                    </div>
-                {/each}
-            </Accordion.Root>
+                        {/each}
+                    </Accordion.Root>
+                </div>
+            </ScrollArea>
         </Tabs.Content>
         <Tabs.Content value="json" class="flex-1 min-h-0 px-4 overflow-auto">
             <div class="p-4 rounded-md text-sm overflow-wrap">
