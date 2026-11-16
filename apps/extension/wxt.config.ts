@@ -34,7 +34,7 @@ export default defineConfig({
       ...(browser === 'chrome' ? ['sidePanel', 'scripting'] : []),
     ],
     optional_permissions: ['nativeMessaging'],
-    ...(browser === 'chrome' ? { host_permissions: ['<all_urls>'] } : {}) ,
+    // ...(browser === 'chrome' ? { host_permissions: ['<all_urls>'] } : {}) ,
     content_security_policy: {
       extension_pages: "script-src 'self'; object-src 'self'"
     },
@@ -71,6 +71,11 @@ export default defineConfig({
         side_panel: {
           default_path: 'sidebar.html',
         },
+        icons: {
+          '32': 'icons/icon32.png',
+          '64': 'icons/icon64.png',
+          '128': 'icons/icon128.png',
+        }
       }),
   }),
 });

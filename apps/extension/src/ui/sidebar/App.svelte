@@ -30,11 +30,29 @@
         const port = browser.runtime.connect({ name: 'sidebar' });
         async function setup() {
             // TODO: make this configurable in settings in case user only wants content script in activeTab
-            registeredScript = await browser.contentScripts.register({
-                matches: ['<all_urls>'],
-                js: [{ file: 'content-scripts/content.js' }],
-                runAt: 'document_idle',
-            });
+            if (import.meta.env.MANIFEST_VERSION === 2) {
+                registeredScript = await browser.contentScripts.register({
+                    matches: ['<all_urls>'],
+                    js: [{ file: 'content-scripts/content.js' }],
+                    runAt: 'document_idle',
+                });
+            } else {
+                browser.scripting
+                    .registerContentScripts([{
+                        id: "pagesieve-script",
+                        js: ["content-scripts/content.js"],
+                        persistAcrossSessions: false,
+                        matches: [
+                            "<all_urls>",
+                            "http://*/*",
+                            "https://*/*",
+                        ],
+                        runAt: "document_idle",
+                    }])
+                    .then(() => console.log("registration complete"))
+                    .catch((err) => console.warn("unexpected error", err))
+
+            }
 
             // inject into current tab
             const [tab] = await browser.tabs.query({
@@ -43,15 +61,24 @@
             });
 
             if (tab?.id !== undefined) {
-                await browser.tabs
+                if (import.meta.env.MANIFEST_VERSION === 2) {
+                    await browser.tabs
                     .executeScript(tab.id, {
                         file: 'content-scripts/content.js',
                         runAt: 'document_idle',
                     })
                     .catch(() => {});
+                } else {
+                    await browser.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        files: ['/content-scripts/content.js'],
+                    });
+
+                }
             }
         }
         setup();
+        console.log('Done setting up content-script')
 
         return () => {
             void cleanup();
@@ -63,6 +90,12 @@
         if (registeredScript) {
             await registeredScript.unregister();
             registeredScript = null;
+        }
+
+        if (import.meta.env.MANIFEST_VERSION === 3) {
+            browser.scripting
+                .unregisterContentScripts({ ids: ["pagesieve-script"] })
+                .then(() => console.log("un-registration complete"));
         }
     }
 
@@ -132,12 +165,10 @@
                     </Resizable.Pane>
                 </Resizable.PaneGroup>
             </TabsContent>
-            <TabsContent value="properties" class="pt-4 overflow-y-auto">
-                <div class="space-y-4">
-                    <ConfigPanel />
-                </div>
+            <TabsContent value="properties" class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden">
+                <ConfigPanel />
             </TabsContent>
-            <TabsContent value="saved-configs" class="pt-4 overflow-y-auto">
+            <TabsContent value="saved-configs" class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden">
                 <SavedLibrary />
             </TabsContent>
         </TabsRoot>

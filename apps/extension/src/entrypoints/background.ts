@@ -11,9 +11,15 @@ export default defineBackground(() => {
     initExtensionLogger();
     const logger = getLogger(['ext', 'background']);
 
-    browser.browserAction.onClicked.addListener(() => {
-        browser.sidebarAction.toggle();
-    });
+    if (import.meta.env.BROWSER === 'chrome') {
+        browser.sidePanel
+            .setPanelBehavior({ openPanelOnActionClick: true })
+            .catch((error) => console.error(error));
+    } else {
+        browser.browserAction.onClicked.addListener(() => {
+            browser.sidebarAction.toggle();
+        });
+    }
 
     const scrapeMachine = createScrapeMachine(extensionDriver);
     let scrapeActor: Actor<typeof scrapeMachine> | null = null;
