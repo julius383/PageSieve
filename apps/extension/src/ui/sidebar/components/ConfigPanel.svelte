@@ -39,91 +39,94 @@
 <ScrollArea type="auto" class="h-full">
     <div class="pr-2 pb-4">
         <div class="space-y-4 text-white">
-    <Field.Field id="main-url" class="gap-3">
-        <Field.Label for="url">URL</Field.Label>
-        <div class="flex items-center justify-between gap-2">
-            <Input
-                placeholder="e.g https://en.wikipedia.org/"
-                value={scrapeConfig.url}
-                id="url"
-                class="text-sm text-indigo-300"
-                oninput={(e) => updateKey('url', e.currentTarget.value)}
-            />
-            <Button
-                size="icon"
-                variant="ghost"
-                onclick={() => window.open(scrapeConfig.url, '_blank')}
-            >
-                <ExternalLink class="h-4 w-4" />
-            </Button>
-            <Button
-                size="icon"
-                variant="ghost"
-                onclick={() => copyToClipboard(scrapeConfig.url, 'url')}
-            >
-                {#if copied && copyTarget == 'url'}
-                    <Check color="#2cc55d" class="h-4 w-4" />
-                {:else}
-                    <Copy class="h-4 w-4" />
-                {/if}
-            </Button>
-        </div>
-        <Field.Description>Starting URL for ScrapeConfig.</Field.Description>
-    </Field.Field>
-
-    <Item.Root variant="outline">
-        <Item.Content>
-            <Item.Title>ID</Item.Title>
-            <Item.Description>
+            <Field.Field id="main-url" class="gap-3">
+                <Field.Label for="url">URL</Field.Label>
                 <div class="flex items-center justify-between gap-2">
-                    <span class="text-sm font-mono break-all">{scrapeConfig.id}</span>
+                    <Input
+                        placeholder="e.g https://en.wikipedia.org/"
+                        value={scrapeConfig.url}
+                        id="url"
+                        class="text-sm text-indigo-300"
+                        oninput={(e) => updateKey('url', e.currentTarget.value)}
+                    />
                     <Button
                         size="icon"
                         variant="ghost"
-                        onclick={() => copyToClipboard(scrapeConfig.id, 'id')}
+                        onclick={() => window.open(scrapeConfig.url, '_blank')}
                     >
-                        {#if copied && copyTarget == 'id'}
+                        <ExternalLink class="h-4 w-4" />
+                    </Button>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        onclick={() => copyToClipboard(scrapeConfig.url, 'url')}
+                    >
+                        {#if copied && copyTarget == 'url'}
                             <Check color="#2cc55d" class="h-4 w-4" />
                         {:else}
                             <Copy class="h-4 w-4" />
                         {/if}
                     </Button>
                 </div>
-            </Item.Description>
-        </Item.Content>
-    </Item.Root>
-</div>
+                <Field.Description>Starting URL for ScrapeConfig.</Field.Description>
+            </Field.Field>
 
-<Separator class="my-4" />
+            <Item.Root variant="outline">
+                <Item.Content>
+                    <Item.Title>ID</Item.Title>
+                    <Item.Description>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-sm font-mono break-all">{scrapeConfig.id}</span>
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                onclick={() => copyToClipboard(scrapeConfig.id, 'id')}
+                            >
+                                {#if copied && copyTarget == 'id'}
+                                    <Check color="#2cc55d" class="h-4 w-4" />
+                                {:else}
+                                    <Copy class="h-4 w-4" />
+                                {/if}
+                            </Button>
+                        </div>
+                    </Item.Description>
+                </Item.Content>
+            </Item.Root>
+        </div>
 
-<Accordion.Root type="multiple">
-    <Accordion.Item value="item-1">
-        <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
-        <Accordion.Content>
-            <MetadataSection />
-        </Accordion.Content>
-    </Accordion.Item>
+        <Separator class="my-4" />
 
-    <Accordion.Item value="item-3">
-        <Accordion.Trigger class="text-white font-bold text-xl">Pagination</Accordion.Trigger>
-        <Accordion.Content>
-            <PaginationSection />
-        </Accordion.Content>
-    </Accordion.Item>
+        <Accordion.Root type="multiple">
+            <Accordion.Item value="item-1">
+                <Accordion.Trigger class="text-white font-bold text-xl">Metadata</Accordion.Trigger>
+                <Accordion.Content>
+                    <MetadataSection />
+                </Accordion.Content>
+            </Accordion.Item>
 
-    <Accordion.Item value="item-2">
-        <Accordion.Trigger class="text-white font-bold text-xl"
-            >Extraction Options</Accordion.Trigger
-        >
-        <Accordion.Content>
-            <OptionsSection />
-        </Accordion.Content>
-    </Accordion.Item>
+            <Accordion.Item value="item-3">
+                <Accordion.Trigger class="text-white font-bold text-xl"
+                    >Pagination</Accordion.Trigger
+                >
+                <Accordion.Content>
+                    <PaginationSection />
+                </Accordion.Content>
+            </Accordion.Item>
 
-        <Accordion.Item value="item-4">
-            <Accordion.Trigger class="text-white font-bold text-xl">Variables</Accordion.Trigger>
-            <Accordion.Content>Some Variables</Accordion.Content>
-        </Accordion.Item>
-    </Accordion.Root>
+            <Accordion.Item value="item-2">
+                <Accordion.Trigger class="text-white font-bold text-xl"
+                    >Extraction Options</Accordion.Trigger
+                >
+                <Accordion.Content>
+                    <OptionsSection />
+                </Accordion.Content>
+            </Accordion.Item>
+
+            <Accordion.Item value="item-4">
+                <Accordion.Trigger class="text-white font-bold text-xl">Variables</Accordion.Trigger
+                >
+                <Accordion.Content>Some Variables</Accordion.Content>
+            </Accordion.Item>
+        </Accordion.Root>
     </div>
 </ScrollArea>

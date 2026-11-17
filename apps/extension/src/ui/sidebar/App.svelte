@@ -38,20 +38,17 @@
                 });
             } else {
                 browser.scripting
-                    .registerContentScripts([{
-                        id: "pagesieve-script",
-                        js: ["content-scripts/content.js"],
-                        persistAcrossSessions: false,
-                        matches: [
-                            "<all_urls>",
-                            "http://*/*",
-                            "https://*/*",
-                        ],
-                        runAt: "document_idle",
-                    }])
-                    .then(() => console.log("registration complete"))
-                    .catch((err) => console.warn("unexpected error", err))
-
+                    .registerContentScripts([
+                        {
+                            id: 'pagesieve-script',
+                            js: ['content-scripts/content.js'],
+                            persistAcrossSessions: false,
+                            matches: ['<all_urls>', 'http://*/*', 'https://*/*'],
+                            runAt: 'document_idle',
+                        },
+                    ])
+                    .then(() => console.log('registration complete'))
+                    .catch((err) => console.warn('unexpected error', err));
             }
 
             // inject into current tab
@@ -63,22 +60,21 @@
             if (tab?.id !== undefined) {
                 if (import.meta.env.MANIFEST_VERSION === 2) {
                     await browser.tabs
-                    .executeScript(tab.id, {
-                        file: 'content-scripts/content.js',
-                        runAt: 'document_idle',
-                    })
-                    .catch(() => {});
+                        .executeScript(tab.id, {
+                            file: 'content-scripts/content.js',
+                            runAt: 'document_idle',
+                        })
+                        .catch(() => {});
                 } else {
                     await browser.scripting.executeScript({
                         target: { tabId: tab.id },
                         files: ['/content-scripts/content.js'],
                     });
-
                 }
             }
         }
         setup();
-        console.log('Done setting up content-script')
+        console.log('Done setting up content-script');
 
         return () => {
             void cleanup();
@@ -94,8 +90,8 @@
 
         if (import.meta.env.MANIFEST_VERSION === 3) {
             browser.scripting
-                .unregisterContentScripts({ ids: ["pagesieve-script"] })
-                .then(() => console.log("un-registration complete"));
+                .unregisterContentScripts({ ids: ['pagesieve-script'] })
+                .then(() => console.log('un-registration complete'));
         }
     }
 
@@ -165,10 +161,16 @@
                     </Resizable.Pane>
                 </Resizable.PaneGroup>
             </TabsContent>
-            <TabsContent value="properties" class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden">
+            <TabsContent
+                value="properties"
+                class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden"
+            >
                 <ConfigPanel />
             </TabsContent>
-            <TabsContent value="saved-configs" class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden">
+            <TabsContent
+                value="saved-configs"
+                class="pt-4 flex-1 min-h-0 flex flex-col overflow-hidden"
+            >
                 <SavedLibrary />
             </TabsContent>
         </TabsRoot>
